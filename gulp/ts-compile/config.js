@@ -24,9 +24,9 @@ module.exports = {
         // Background Script
         common: {
             inputFiles: [
-                'page/bg-script/app.tsx'
+                'page/bg-script/main.tsx'
             ],
-            outputFile: 'app.min.js',
+            outputFile: 'main.min.js',
             outputPath: 'dist/',
         }
     }
