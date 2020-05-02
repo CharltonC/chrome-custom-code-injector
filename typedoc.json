@@ -1,0 +1,11 @@
+{
+    "out": "doc/api",
+    "module": "commonjs",
+    "target": "es5",
+    "ignoreCompilerErrors": true,
+    "excludeNotExported": true,
+    "exclude": [
+      "**/*.spec.ts",
+      "node_modules/**/*.d.ts"
+    ]
+}
