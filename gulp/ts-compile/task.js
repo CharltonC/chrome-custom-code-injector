@@ -13,11 +13,12 @@ module.exports = (done) => {
                 packageCache: {}
             })
             .plugin( $.tsify )
-            .plugin('tinyify', {                // already incl. uglify & sourcemap
+            .plugin( $.tinyify, {                // already incl. uglify & sourcemap
                 env: { NODE_ENV: isProd ? 'production' : 'development' }
                 // debug: !isProd,              // NOT required because it is same as the browserify option `debug` property
             })
-            .transform('babelify', {
+            .plugin( $.esmify )
+            .transform( $.babelify, {
                 presets: defOption.babelPresets
             })
             .bundle()

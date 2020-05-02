@@ -25,7 +25,9 @@ const $ = {
     vinylBuffer:    require('vinyl-buffer'),
     vinylStream:    require('vinyl-source-stream'),
     tsify:          require('tsify'),
-    // tslint:         require('gulp-tslint'),
+    tinyify:        require('tinyify'),
+    esmify:         require('esmify'),
+    babelify:       require('babelify'),
 
     // SCSS/CSS
     sass:           require('gulp-sass'),

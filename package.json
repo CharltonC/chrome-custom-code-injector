@@ -12,6 +12,7 @@
   },
   "private": true,
   "dependencies": {
+    "antd": "4.2.0",
     "react": "16.13.1",
     "react-dom": "16.13.1"
   },
@@ -28,6 +29,7 @@
     "browserify": "16.2.0",
     "eslint": "6.8.0",
     "eslint-plugin-react-hooks": "4.0.0",
+    "esmify": "2.1.1",
     "gulp": "4.0.0",
     "gulp-autoprefixer": "5.0.0",
     "gulp-bump": "3.1.1",
