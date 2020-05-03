@@ -31,6 +31,7 @@ const $ = {
     tinyify:        require('tinyify'),
     esmify:         require('esmify'),
     babelify:       require('babelify'),
+    eslint:         require('gulp-eslint'),
 
     // SCSS/CSS
     sass:           require('gulp-sass'),

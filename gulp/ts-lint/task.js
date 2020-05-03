@@ -5,8 +5,9 @@ module.exports = (done) => {
     return util.loopTasks(done, tasks, (task) => {
         return gulp.src(task.inputFiles)
             .pipe( $.plumber() )
-            .pipe( $.tslint(defOption.lint) )
-            .pipe( $.tslint.report(defOption.report) )
+            .pipe( $.eslint() )             // alt: `$.eslint(configObj)` similar to "".eslintrc.json" file
+            .pipe( $.eslint.format() )
+            .pipe( $.eslint.failAfterError() )
             .on('error', util.onWatchError);
     });
 };

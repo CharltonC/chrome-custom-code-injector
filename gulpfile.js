@@ -4,7 +4,7 @@ gulp.task('build-html', require('./gulp/html-pug/task'));
 gulp.task('build-css', require('./gulp/css/task'));
 // gulp.task('build-img', require('./gulp/img-sprite/task'));
 
-// gulp.task('build-ts:lint', require('./gulp/ts-lint/task'));
+gulp.task('build-ts:lint', require('./gulp/ts-lint/task'));
 gulp.task('build-ts:compile', require('./gulp/ts-compile/task'));
 // gulp.task('build-ts:test', gulp.series('build-ts:template', 'build-ts:karma'), done => { done(); });
 // gulp.task('build-ts', gulp.series('build-ts:lint', 'build-ts:test', 'build-ts:compile'), done => { done(); });
