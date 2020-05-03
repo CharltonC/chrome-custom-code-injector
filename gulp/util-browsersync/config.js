@@ -2,7 +2,8 @@ module.exports = {
     defOption: {
         server: { baseDir: 'dist/' },
      //    startPath: '/#/',
-        reloadDelay: 1000
+        reloadDelay: 1000,
+        open: false
      },
      watchFiles: {
         dist: [

@@ -20,6 +20,9 @@ const $ = {
     browserSync:    require('browser-sync').create(),
     bump:           require('gulp-bump'),
 
+    // Html
+    pug:            require('gulp-pug'),
+
     // Typescript, Babel, TreeShake/Optimize
     browserify:     require('browserify'),
     vinylBuffer:    require('vinyl-buffer'),

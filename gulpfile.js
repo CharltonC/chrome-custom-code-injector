@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 
-// gulp.task('build-css', require('./gulp/css/task'));
+gulp.task('build-html', require('./gulp/html-pug/task'));
+gulp.task('build-css', require('./gulp/css/task'));
 // gulp.task('build-img', require('./gulp/img-sprite/task'));
 
 // gulp.task('build-ts:lint', require('./gulp/ts-lint/task'));
