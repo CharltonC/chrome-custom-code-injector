@@ -1,0 +1,7 @@
+// used for unit testing via jest only (NOT used in compiling production/dev build)
+{
+    "presets": [
+        "@babel/preset-env",
+        "@babel/preset-react"
+    ]
+}

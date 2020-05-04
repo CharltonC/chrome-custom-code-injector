@@ -1,11 +1,13 @@
 const gulp = require('gulp');
 const $path = require('path');
+const yargs = require('yargs').argv;
 
 // container for gulp plugins
 const $ = {
     // Util: General
     if:             require('gulp-if'),     // e.g. $>if(condition, fnToRun,
-    yargs:          require('yargs').argv,
+    yargs:          yargs,
+    isProd:         yargs.prod,
     rename:         require('gulp-rename'),
     clean:          require('gulp-clean'),
     zip:            require('gulp-zip'),

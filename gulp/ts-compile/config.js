@@ -4,6 +4,7 @@ const isProd = $.yargs.prod;
 module.exports = {
     defOption: {
         basePath: './src',
+        // babel settings for compiling only, not used for unit testing via Jest
         babel: {
             presets: ['react-app', {'typescript': true}]
         },

@@ -1,5 +1,10 @@
 const gulp = require('gulp');
+const { $ } = require('./gulp/common');
 
+// Set Node Env
+process.env.NODE_ENV = $.isProd ? 'production' : 'development';
+
+// Register Tasks
 gulp.task('build-html', require('./gulp/html-pug/task'));
 gulp.task('build-css', require('./gulp/css/task'));
 // gulp.task('build-img', require('./gulp/img-sprite/task'));
@@ -31,3 +36,11 @@ gulp.task('serve', require('./gulp/util-browsersync/task'));
 // ), (done) => {
 //     done();
 // });
+
+
+const { run } = require("jest-cli");
+gulp.task('test', (done) => {
+    run().then(() => {
+        done();
+    });
+});
