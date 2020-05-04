@@ -1,3 +1,6 @@
+// Ant Design
+// - DO NOT: e.g. `import {Button} from 'antd';` which will import all modules
+// - Do: e.g. `import Button from 'antd/es/button';`
 import React from 'react';
 import { render } from 'react-dom';
 

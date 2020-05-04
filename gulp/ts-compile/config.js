@@ -1,9 +1,15 @@
+const { $ } = require('../common');
+const isProd = $.yargs.prod;
+
 module.exports = {
     defOption: {
         basePath: './src',
-        babelPresets: [
-            ['react-app', {'typescript': true}]
-        ],
+        babel: {
+            presets: ['react-app', {'typescript': true}]
+        },
+        tinyify: {
+            env: { NODE_ENV: 'production' }
+        }
     },
 
     // NOTE: as this is supposed to be entry file, wildcard `**` or `*` is not allowed
@@ -26,7 +32,7 @@ module.exports = {
             inputFiles: [
                 'page/bg-script/main.tsx'
             ],
-            outputFile: 'main.min.js',
+            outputFile: isProd ? 'main.min.js' : 'main.js',
             outputPath: 'dist/',
         }
     }

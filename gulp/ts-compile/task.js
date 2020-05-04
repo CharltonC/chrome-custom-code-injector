@@ -5,22 +5,24 @@ module.exports = (done) => {
     const isProd = $.yargs.prod;
 
     return util.loopTasks(done, tasks, (task) => {
-        return $.browserify({
+        const brsfInst = $.browserify({
                 basedir: defOption.basePath,
                 entries: task.inputFiles,
-                debug: !isProd,                 // true: generate sourcemap
+                debug: !isProd,          // true: generate sourcemap
                 cache: {},
                 packageCache: {}
             })
-            .plugin( $.tsify )                  // ts to js file
-            .plugin( $.tinyify, {               // treeshake, uglify, sourcemap, optimize
-                env: { NODE_ENV: isProd ? 'production' : 'development' }
-                // debug: !isProd,              // NOT required because it is same as the browserify option `debug` property
-            })
-            .plugin( $.esmify )                 // allow use of es6 module in node_modules for library files
-            .transform( $.babelify, {           // jsx to js
-                presets: defOption.babelPresets
-            })
+            .plugin( $.esmify )          // allow use of es6 module in node_modules for library files
+            .plugin( $.tsify );          // ts to js file
+
+        // Do NOT use it for development as it causes error with sourcemap
+        // - details: when `{global: true}` is passed for "uglifyify" during `.transform()`  (i.e. removing dead code, not compress/mangle)
+        if (isProd) {
+            brsfInst.plugin($.tinyify, defOption.tinyify);
+        }
+
+        return brsfInst
+            .transform($.babelify, defOption.babel)            // Transform to Next Gen JS, i.e. new feats (incl. jsx to js)
             .bundle()
             .pipe( $.plumber() )
             .pipe( $.vinylStream(task.outputFile) )
