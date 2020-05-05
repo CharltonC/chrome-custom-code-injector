@@ -1,10 +1,11 @@
 // Ant Design
-// - DO NOT: e.g. `import {Button} from 'antd';` which will import all modules
-// - Do: e.g. `import Button from 'antd/es/button';`
+// - `import {Button} from 'antd';`             does NOT work for Prod build (as it import all modules resulting in large file)
+// - `import Button from 'antd/es/button';`     does NOT work for JEST (as it doesnt allow ES6 import/export in "node_modules/")
+// - `import Button from 'antd/lib/button';`    works for both Prod build (Browserify) + JEST
+
 import React from 'react';
 // import { render } from 'react-dom';
-import {Button} from 'antd';
-// import Button from 'antd/es/button';
+import Button from 'antd/lib/button';
 
 export const Hello = () => <Button>lorem sum</Button>;
 // const containerElem = document.createElement('div');
