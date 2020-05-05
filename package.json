@@ -29,6 +29,7 @@
     "babel-core": "6.26.3",
     "babel-eslint": "10.1.0",
     "babel-jest": "25.5.1",
+    "babel-plugin-import": "1.13.0",
     "babel-preset-react-app": "3.1.2",
     "babelify": "8.0.0",
     "browser-sync": "2.26.7",

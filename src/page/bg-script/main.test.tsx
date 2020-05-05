@@ -4,9 +4,6 @@ import { act } from "react-dom/test-utils";
 
 import {Hello} from "./main";
 
-jest.mock('antd');
-jest.mock('antd/es/button');
-
 let container = null;
 beforeEach(() => {
   // setup a DOM element as a render target
@@ -25,5 +22,5 @@ it("renders with or without a name", () => {
   act(() => {
     render(<Hello />, container);
   });
-  expect(container.textContent).toBe("lorem");
+  expect(container.textContent).toBe("lorem sum");
 });
