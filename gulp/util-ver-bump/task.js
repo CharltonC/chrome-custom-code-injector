@@ -1,5 +1,5 @@
 const { gulp, $path, $, util } = require('../common');
-const { inputFiles } = require('./config');
+const { tasks } = require('./config');
 
 module.exports = (done) => {
     /**
@@ -25,10 +25,14 @@ module.exports = (done) => {
         msg += ' for a ' + type;
     }
 
-    // Bumping up the version in json files
-    return gulp
-        .src(inputFiles)
-        .pipe( $.bump(options) )
-        .pipe( gulp.dest('./') )
-        .on('error', onWatchError);
+    return util.loopTasks(done, tasks, (task) => {
+        const { inputFiles, outputPath } = task;
+
+        // Bumping up the version in json files
+        return gulp
+            .src(inputFiles)
+            .pipe( $.bump(options) )
+            .pipe( gulp.dest(outputPath) )
+            .on('error', util.onWatchError);
+    });
 };

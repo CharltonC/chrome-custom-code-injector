@@ -18,7 +18,7 @@ gulp.task(
 gulp.task('serve', require('./gulp/util-browsersync/task'));
 gulp.task('clean', require('./gulp/util-clean/task'));
 gulp.task('ver-check', require('./gulp/util-ver-check/task'));
-// gulp.task('ver-bump', require('./gulp/util-ver-bump/task'));
+gulp.task('ver-bump', require('./gulp/util-ver-bump/task'));
 gulp.task('zip', require('./gulp/util-zip/task'));
 
 // gulp.task('wait', require('./gulp/util-wait/task'));

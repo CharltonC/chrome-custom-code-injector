@@ -1,6 +1,17 @@
 module.exports = {
-    inputFiles: [
-        './package.json',
-        'src/manifest.pro.json'
-    ]
+    tasks: {
+        packageJson: {
+            inputFiles: [
+                './package.json',
+            ],
+            outputPath: './'
+        },
+        manifestJson: {
+            inputFiles: [
+                './src/manifest.json'
+            ],
+            outputPath: './src'
+        }
+
+    }
 };
