@@ -1,13 +1,12 @@
 const { $ } = require('../common');
 const isProd = $.yargs.prod;
+const babelConfig = require('../../babel.config');
 
 module.exports = {
     defOption: {
         basePath: './src',
         // babel settings for compiling only, not used for unit testing via Jest
-        babel: {
-            presets: ['react-app', {'typescript': true}]
-        },
+        babel: babelConfig,
         tinyify: {
             env: { NODE_ENV: 'production' }
         }

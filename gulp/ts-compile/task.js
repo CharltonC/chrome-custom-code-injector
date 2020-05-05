@@ -12,7 +12,6 @@ module.exports = (done) => {
                 cache: {},
                 packageCache: {}
             })
-            // .plugin( $.esmify )          // allow use of es6 module in node_modules for library files
             .plugin( $.tsify );          // ts to js file
 
         // Do NOT use it for development as it causes error with sourcemap
@@ -22,22 +21,12 @@ module.exports = (done) => {
         }
 
         return brsfInst
-            // .transform($.babelify, defOption.babel)            // Transform to Next Gen JS, i.e. new feats (incl. jsx to js)
-            .transform($.babelify, {
-                "plugins": [
-                    // used only for Ant Design UI Components + "babel-plugin-import"
-                    ["import", {"libraryName": "antd"}]
-                ],
-                "presets": [
-                    // ["@babel/preset-env"],
-                    // ["@babel/preset-react"],
-                    ['react-app', {'typescript': true}]
-                ]
-            })
+            .transform($.babelify, defOption.babel)            // Transform to Next Gen JS, i.e. new feats (incl. jsx to js)
             .bundle()
             .pipe( $.plumber() )
             .pipe( $.vinylStream(task.outputFile) )
             .pipe( $.vinylBuffer() )
+            .pipe( $.size({showFiles: true, title: 'bundled size:'}) )
             .pipe( gulp.dest(task.outputPath) )
             .on('error', util.onWatchError);
     });

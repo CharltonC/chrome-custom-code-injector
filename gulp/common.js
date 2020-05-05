@@ -12,6 +12,7 @@ const $ = {
     clean:          require('gulp-clean'),
     zip:            require('gulp-zip'),
     file:           require('gulp-file'),
+    size:           require('gulp-size'),
     flatmap:        require('gulp-flatmap'),
     sourcemaps:     require('gulp-sourcemaps'),
 
@@ -31,10 +32,12 @@ const $ = {
     vinylStream:    require('vinyl-source-stream'),
     tsify:          require('tsify'),
     tinyify:        require('tinyify'),
-    esmify:         require('esmify'),
     babelify:       require('babelify'),
     eslint:         require('gulp-eslint'),
     uglify:         require('gulp-uglify'),
+
+    // Unit Test
+    jestRun:        require("jest").run,
 
     // SCSS/CSS
     sass:           require('gulp-sass'),

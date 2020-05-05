@@ -1,9 +1,6 @@
 const gulp = require('gulp');
 const { $ } = require('./gulp/common');
 
-// Set Node Env
-process.env.NODE_ENV = $.isProd ? 'production' : 'development';
-
 // Register Tasks
 gulp.task('build-html', require('./gulp/html-pug/task'));
 gulp.task('build-css', require('./gulp/css/task'));
@@ -11,8 +8,12 @@ gulp.task('build-css', require('./gulp/css/task'));
 
 gulp.task('build-ts:lint', require('./gulp/ts-lint/task'));
 gulp.task('build-ts:compile', require('./gulp/ts-compile/task'));
-// gulp.task('build-ts:test', gulp.series('build-ts:template', 'build-ts:karma'), done => { done(); });
-// gulp.task('build-ts', gulp.series('build-ts:lint', 'build-ts:test', 'build-ts:compile'), done => { done(); });
+gulp.task('build-ts:test', require('./gulp/ts-test/task'));
+gulp.task(
+    'build-ts',
+    gulp.series('build-ts:lint', 'build-ts:test', 'build-ts:compile'),
+    done => { done(); }
+);
 
 gulp.task('serve', require('./gulp/util-browsersync/task'));
 // gulp.task('clean', require('./gulp/util-clean/task'));
@@ -36,11 +37,3 @@ gulp.task('serve', require('./gulp/util-browsersync/task'));
 // ), (done) => {
 //     done();
 // });
-
-
-const { run } = require("jest-cli");
-gulp.task('test', (done) => {
-    run().then(() => {
-        done();
-    });
-});
