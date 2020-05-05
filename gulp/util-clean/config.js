@@ -1,10 +1,12 @@
 module.exports = {
     tasks: {
         dist: {
+            // Example:
+            // - 'dist/'        dist folder
+            // - 'dist/*'       all folders under "dist"
             inputFiles: [
-                // 'dist/pro/*'      // all folders under "dist"
-                'dist/',            // "dist" folder
-                '*.zip'
+                'dist/*',
+                'doc/test-report/*'
             ]
         }
     }
