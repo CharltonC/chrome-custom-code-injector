@@ -71,7 +71,7 @@ const util = {
     },
 
     logColor(msg, color) {
-        let colorCode = color || '\x1b[32m';
+        let colorCode = color || '\x1b[32m';    // green by default
 
         switch (color) {
             case 'red':

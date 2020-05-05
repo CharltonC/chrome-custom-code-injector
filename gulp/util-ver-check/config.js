@@ -1,7 +1,7 @@
 module.exports = {
     // relative to root folder
     inputFiles: [
-        'src/manifest.pro.json',
+        'src/manifest.json',
         'package.json'
     ]
 };

@@ -24,7 +24,11 @@ module.exports = (done) => {
     }
 
     // Log
-    if (isConsistent) return done();
-    util.logColor('versions not matched', 'red');
-    throw new Error();
+    if (isConsistent) {
+        util.logColor('versions matched');
+        done();
+    } else {
+        util.logColor('versions not matched', 'red');
+        throw new Error();
+    }
 };
