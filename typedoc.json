@@ -5,7 +5,7 @@
     "ignoreCompilerErrors": true,
     "excludeNotExported": true,
     "exclude": [
-      "**/*.spec.ts",
-      "node_modules/**/*.d.ts"
+        "**/*.spec.ts",
+        "node_modules/**/*.d.ts"
     ]
 }
