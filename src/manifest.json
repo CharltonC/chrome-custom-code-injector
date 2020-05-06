@@ -10,10 +10,10 @@
         "<all_urls>"
     ],
     "icons": {
-        "16": "common/icon_16.png",
-        "32": "common/icon_32.png",
-        "48": "common/icon_48.png",
-        "128": "common/icon_128.png"
+        "16": "asset/icon/icon_16.png",
+        "32": "asset/icon/icon_32.png",
+        "48": "asset/icon/icon_48.png",
+        "128": "asset/icon/icon_128.png"
     },
     "content_scripts": [
         {
@@ -29,9 +29,9 @@
         "default_title": "Custom Code Insertion",
         "default_popup": "popup/index.html",
         "default_icon": {
-            "16": "common/icon_16.png",
-            "24": "common/icon_24.png",
-            "32": "common/icon_32.png"
+            "16": "asset/icon/icon_16.png",
+            "24": "asset/icon/icon_24.png",
+            "32": "asset/icon/icon_32.png"
         }
     },
     "web_accessible_resources":  [
