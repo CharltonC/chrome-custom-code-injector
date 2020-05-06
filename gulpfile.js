@@ -21,9 +21,9 @@ gulp.task('ver-check', require('./gulp/util-ver-check/task'));
 gulp.task('ver-bump', require('./gulp/util-ver-bump/task'));
 gulp.task('zip', require('./gulp/util-zip/task'));
 
-// gulp.task('wait', require('./gulp/util-wait/task'));
-// gulp.task('copy', require('./gulp/util-copy/task'));
-// gulp.task('build-copy', gulp.series('copy', 'wait'), done => { done(); });
+gulp.task('wait', require('./gulp/util-wait/task'));
+gulp.task('copy', require('./gulp/util-copy/task'));
+gulp.task('build-copy', gulp.series('copy', 'wait'), done => { done(); });
 
 // gulp.task('build', gulp.series(
 //     'clean',

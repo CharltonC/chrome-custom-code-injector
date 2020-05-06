@@ -1,36 +1,24 @@
 module.exports = {
     tasks: {
         // Common
-        icon_pro_chromeStore: {
-            inputFiles: [ 'src/common/img/icon/pro/icon_128.png' ],
-            outputPath: 'doc/chrome-store/pro/icon'
-        },
-        icon_lite_chromeStore: {
-            inputFiles: [ 'src/common/img/icon/lite/icon_128.png' ],
-            outputPath: 'doc/chrome-store/lite/icon'
-        },
-        icon_lite: {
+        icon_chromeStore: {
             inputFiles: [
-                'src/common/img/icon/lite/*.png'
+                'src/asset/icon/icon_128.png'
             ],
-            outputPath: 'dist/lite/common/'
+            outputPath: 'doc/chrome-store/icon'
         },
-        icon_pro: {
+        icon: {
             inputFiles: [
-                'src/common/img/icon/pro/*.png',
-                'src/common/font/shl-app-icomoon/fonts/shl-app-icomoon.woff'
+                'src/asset/icon/*.png'
             ],
-            outputPath: 'dist/pro/common/'
+            outputPath: 'dist/build/asset/icon'
         },
-        manifest_lite: {
-            inputFiles: [ 'src/manifest.lite.json' ],
-            rename: 'manifest.json',
-            outputPath: 'dist/lite/'
-        },
-        manifest_pro: {
-            inputFiles: [ 'src/manifest.pro.json' ],
-            rename: 'manifest.json',
-            outputPath: 'dist/pro/'
+        manifest: {
+            inputFiles: [
+                'src/manifest.json'
+            ],
+            // rename: 'manifest.json',
+            outputPath: 'dist/build/'
         }
     }
 };
