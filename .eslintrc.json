@@ -1,3 +1,6 @@
+/*
+ * Used by both VSCode & Gulp-ESLint (where this config file is imported)
+ */
 {
     "extends": [
         "react-app"
