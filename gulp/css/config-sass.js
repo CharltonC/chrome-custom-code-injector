@@ -4,14 +4,14 @@ module.exports = {
     },
     tasks: {
         popupPage: {
-            inputFiles: 'src/page/option/main.scss',              // NOTE: wildcard "*" is not allowed
-            rename: 'main.min.css',
-            outputPath: 'dist/option/'
+            inputFiles: 'src/page/option/style.scss',              // NOTE: wildcard "*" is not allowed
+            rename: 'style.min.css',
+            outputPath: 'dist/build/option/'
         },
         optionPage: {
-            inputFiles: 'src/page/popup/main.scss',
-            rename: 'main.min.css',
-            outputPath: 'dist/popup/'
+            inputFiles: 'src/page/popup/style.scss',
+            rename: 'style.min.css',
+            outputPath: 'dist/build/popup/'
         }
     }
 };

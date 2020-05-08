@@ -4,12 +4,12 @@ module.exports = {
     },
     tasks: {
         popupPage: {
-            inputFiles: [ 'src/page/popup/*.pug' ],
-            outputPath: 'dist/popup'
+            inputFiles: [ 'src/page/popup/index.pug' ],
+            outputPath: 'dist/build/popup'
         },
         optionPage: {
-            inputFiles: [ 'src/page/option/*.pug' ],
-            outputPath: 'dist/option'
+            inputFiles: [ 'src/page/option/index.pug' ],
+            outputPath: 'dist/build/option'
         }
     }
 };

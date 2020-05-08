@@ -9,15 +9,20 @@ module.exports = {
         },
         icon: {
             inputFiles: [
-                'src/asset/icon/*.png'
+                'src/asset/icon/*.*'
             ],
             outputPath: 'dist/build/asset/icon'
+        },
+        font: {
+            inputFiles: [
+                'src/asset/font/*.*'
+            ],
+            outputPath: 'dist/build/asset/font'
         },
         manifest: {
             inputFiles: [
                 'src/manifest.json'
             ],
-            // rename: 'manifest.json',
             outputPath: 'dist/build/'
         }
     }

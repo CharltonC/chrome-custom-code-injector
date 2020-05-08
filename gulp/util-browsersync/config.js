@@ -1,21 +1,19 @@
 module.exports = {
     defOption: {
-        server: { baseDir: 'dist/' },
+        server: { baseDir: 'dist/popup/' },
      //    startPath: '/#/',
         reloadDelay: 1000,
         open: false
      },
      watchFiles: {
         dist: [
-            'dist/pro/**/*.*'
+            'dist/build/**/*.*'
         ],
         html: [
-            'src/page/popup/*.pug'
+            'src/**/*.pug'
         ],
         ts: [
-            'src/**/*.(ts|pug)',
-            '!src/**/*.view.ts',
-            '!src/index.pug',
+            'src/**/*.(tsx|spec.tsx)'
         ],
         css: [
             'src/**/*.scss'

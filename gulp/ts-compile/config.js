@@ -1,5 +1,4 @@
 const { $ } = require('../common');
-const isProd = $.yargs.prod;
 const babelConfig = require('../../babel.config');
 
 module.exports = {
@@ -27,13 +26,33 @@ module.exports = {
     '../node_modules/angular/angular.js',
     */
     tasks: {
-        // Background Script
-        common: {
+        bgScript: {
             inputFiles: [
-                'page/bg-script/main.tsx'
+                'page/bg-script/main.ts'
             ],
-            outputFile: isProd ? 'main.min.js' : 'main.js',
-            outputPath: 'dist/',
+            outputFile: 'main.min.js',
+            outputPath: 'dist/build/bg-script',
+        },
+        contentScript: {
+            inputFiles: [
+                'page/ct-script/main.ts'
+            ],
+            outputFile: 'main.min.js',
+            outputPath: 'dist/build/ct-script',
+        },
+        popup: {
+            inputFiles: [
+                'page/popup/main.tsx'
+            ],
+            outputFile: 'main.min.js',
+            outputPath: 'dist/build/popup',
+        },
+        option: {
+            inputFiles: [
+                'page/option/main.tsx'
+            ],
+            outputFile: 'main.min.js',
+            outputPath: 'dist/build/option',
         }
     }
 };
