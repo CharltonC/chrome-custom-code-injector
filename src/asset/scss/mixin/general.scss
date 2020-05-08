@@ -1,0 +1,191 @@
+/**
+ * Vertically Align Children
+ * --------------------------------------------------------------------
+ *  - Example:
+ *      div > * {
+ *         @include align-children('relative', 'vert');
+ *      }
+ */
+@mixin align-children($pos, $align-mode) {
+    position: $pos;
+    @if ($align-mode == "both") {
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    @else if ($align-mode == "horz") {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    @else if ($align-mode == "vert") {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+
+/**
+ * Image Sprite (via Gulp.imagesprite)
+ * --------------------------------------------------------------------
+ * - Example of variable output inside the file "_sprite-variable.scss" from gulp.imagesprite plugin
+ *      $img-file-name: (0px, 256px, 0px, -256px, 512px, 512px, 512px, 1280px, 'img/sprite.png', 'img1');
+ *
+ * - Example usage:
+ *      @import "_sprite-variable.scss";
+ *      .img-retina { @include imgspr($img-file-name, true, true); }
+ *      .img-normal { @include imgspr($img-file-name, false, true); }
+ */
+@mixin imgspr($imgname, $isRetina: false, $ip: false){
+    $bgsize: _filterVal($spritesheet-width, $isRetina) _filterVal($spritesheet-height, $isRetina);
+    background-size: _filterVal($bgsize, false, true);
+    background-image: url('../img/#{$spritesheet-image}');
+    @for $i from 1 through length($imgname) {
+        $item: nth($imgname, $i);
+        @if $i == 5 { width: _filterVal($item, $isRetina, $ip); }
+        @else if $i == 6 { height: _filterVal($item, $isRetina, $ip); }
+        @else if $i == 3 { background-position-x: _filterVal($item, $isRetina, $ip); }
+        @else if $i == 4 { background-position-y: _filterVal($item, $isRetina, $ip); }
+    }
+}
+@function _filterVal($val, $isRetina:false, $ip:false){
+    $newVal: $val;
+    @if $isRetina != false { $newVal: $val/2;}
+    @if $ip == false { @return $newVal; }
+    @else { @return $newVal; }
+}
+
+
+/**
+ * Set the max width for a component while center it in Desktop Screen
+ */
+@mixin limit-max-width-n-center-horz () {
+    margin: 0 auto;
+    max-width: $w-desktop;
+}
+
+
+/**
+ * Arrow
+ * --------------------------------------------------------------------
+ * - Example:
+ *      @include arrow('vertical', 10px, red);
+ *      @include arrow('up', 10px, red);
+ */
+@mixin arrow($direction, $arrowSize: 5px, $color: gray) {
+    width: 0;
+    height: 0;
+
+    // $arrowSize = Arrow Width
+    @if $direction == 'up' or $direction == 'dn'  {
+        border-left: $arrowSize solid transparent;
+        border-right: $arrowSize solid transparent;
+
+    } @else if $direction == 'lt' or $direction == 'rt'  {
+        border-top: $arrowSize solid transparent;
+        border-bottom: $arrowSize solid transparent;
+    }
+
+    // $arrowSize = Arrow Depth
+    @if $direction == 'up' {
+        border-bottom: $arrowSize solid $color;
+
+    } @else if $direction == 'dn' {
+        border-top: $arrowSize solid $color;
+
+    } @else if $direction == 'lt' {
+        border-right: $arrowSize solid $color;
+
+    } @else if $direction == 'rt' {
+        border-left: $arrowSize solid $color;
+    }
+
+    @content;
+}
+
+
+/* Color Variation for Unauthenticated & Authenticatec User Case */
+@mixin double_border-shadow () {
+    .page--unauth & {
+        border-color: $teal;
+        box-shadow: 0 0 5px -1px $teal;
+    }
+
+    .page--auth & {
+        border-color: $purple;
+        box-shadow: 0 0 5px -1px $purple;
+    }
+}
+
+@mixin double_bg-color () {
+    .page--unauth & {
+        background-color: $teal;
+    }
+
+    .page--auth & {
+        background-color: $purple;
+    }
+}
+
+@mixin double_icon-color () {
+    &.type--unauth, .page--unauth & {
+        border-color: $teal;
+        &::before { color: $teal; }
+    }
+    &.type--auth, .page--auth & {
+        border-color: $purple;
+        &::before { color: $purple; }
+    }
+}
+
+@mixin bi_text-color () {
+    .page--auth & { color: $purple; }
+    .page--unauth & { color: $teal; }
+}
+
+
+/* Table Variation - Total No. of Columns & Column Width in Desktop */
+@mixin tb-col-layout ($totalNoOfCols) {
+    @include mq('d') {
+        @if $totalNoOfCols == 5 {
+            &:first-child, &:nth-child(2), &:nth-child(3) { width: 22%; }
+            &:nth-child(1n + 3) { width: 17%; }     // from 4th column
+
+        } @else if $totalNoOfCols == 6 {
+            &:not(:last-child) { width: 16%; }
+            &:last-child { width: 20%; }
+        }
+    }
+}
+
+/* Menu (Horizontal/Vertical Repeating dots)  */
+@function repeating-dots-bg($color: white, $hover-color: null, $size: 6px, $direction: horz) {
+    $_repeat: null;
+    $width: null;
+    $height: null;
+    $bg: null;
+    $bg-hover: null;
+
+    // Direction
+    @if $direction == horz {
+        $width: $size*3;
+        $height: $size;
+        $_repeat: repeat-x;
+
+    } @else if $direction == vert {
+        $width: $size;
+        $height: $size*3;
+        $_repeat: repeat-y;
+    }
+
+    // Bg
+    $bg: radial-gradient(ellipse at center, $color 0%, $color 50%, transparent 0) 0px center/$size $size $_repeat;
+    @if $hover-color != null {
+        $bg-hover: radial-gradient(ellipse at center, $hover-color 0%, $hover-color 50%, transparent 0) 0px center/$size $size $_repeat;
+    }
+
+    @return (
+        $width,
+        $height,
+        $bg,
+        $bg-hover
+    );
+}

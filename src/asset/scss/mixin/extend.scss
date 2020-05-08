@@ -1,0 +1,15 @@
+%pie {
+    behavior: url(PIE.1.0.htc);
+}
+
+%clearfix {
+    zoom: 1;
+    &::after { clear: both; }
+    &::before, &::after { content: ''; display: table; }
+}
+
+%sudoelem {
+    content: '';
+    display: inline-block;
+    position: absolute;
+}

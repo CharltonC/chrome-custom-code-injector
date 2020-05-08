@@ -1,0 +1,50 @@
+/**
+ * Responsive Media Queries
+ * --------------------------------------------------------------------
+ *  - Example:
+ *      .p {
+ *          @include mq("d"){
+ *              // styles
+ *          }
+ *      }
+ *
+ *      or
+ *
+ *      @include mq("d"){
+ *          .p {
+ *              // styles
+ *          }
+ *      }
+ */
+@mixin mq($mode) {
+    // Mobile
+    @if $mode == "m" {
+        @media screen and (min-width: 300px) and (max-width: 480px) { @content; }
+    }
+    // Tablet
+    @else if $mode == "t" {
+        // @media screen and (min-width: 481px) and (max-width: 678px) { @content; }
+        @media screen and (min-width: 481px) and (max-width: 768px) { @content; }
+    }
+    // Desktop
+    @else if $mode == "d" {
+        // @media screen and (min-width: 679px) { @content; }
+        @media screen and (min-width: 769px) { @content; }
+    }
+    // Mobile & Tablet
+    @else if $mode == "mt" {
+        // @media screen and (min-width: 300px) and (max-width: 678px) { @content; }
+        @media screen and (min-width: 300px) and (max-width: 768px) { @content; }
+    }
+    // Mobile & Desktop
+    @else if $mode == "md" {
+        @media screen and (min-width: 300px) { @content; }
+    }
+    // Tablet & Desktop
+    @else if $mode == "td" {
+        @media screen and (min-width: 481px) { @content; }
+    }
+    @else if $mode == "mtd" {
+        @media screen and (min-width: 300px) and (max-width: 1024px) { @content; }
+    }
+}

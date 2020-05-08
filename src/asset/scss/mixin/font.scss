@@ -1,0 +1,74 @@
+/**
+ * Custom Font
+ * --------------------------------------------------------------------
+ *  - Example:
+ *      @font-face { @include font-face("fontFileName");
+ *      .p { font-family: $fontFileName;  }
+ */
+@mixin font-face($fontfile, $isDev: 'false') {
+    @font-face {
+        font-family: $fontfile;
+        @if ($isDev == 'true') {
+            src: url("../assets/font/#{$fontfile}.eot");
+            src: url("../assets/font/#{$fontfile}..eot?#iefix") format('embedded-opentype'),  // IE6-8
+                url("../assets/font/#{$fontfile}.woff2") format('woff2'),      // Modern Browsers
+                url("../assets/font/#{$fontfile}.woff") format('woff'),      // Modern Browsers
+                url("../assets/font/#{$fontfile}.ttf") format('truetype'),  // Safari, Android, iOS
+                url("../assets/font/#{$fontfile}.svg##{$fontfile}") format('svg');
+
+        } @else {
+            src: unquote('url("{!URLFOR($Resource.fonts, "fonts/#{$fontfile}.eot")}")');                    // IE9
+            src: unquote('url("{!URLFOR($Resource.fonts, "fonts/#{$fontfile}.eot?#iefix")}")') format('embedded-opentype'),  // IE6-8
+                unquote('url("{!URLFOR($Resource.fonts, "fonts/#{$fontfile}.woff")}")') format('woff'),      // Modern Browsers
+                unquote('url("{!URLFOR($Resource.fonts, "fonts/#{$fontfile}.ttf")}")') format('truetype');  // Safari, Android, iOS
+            // unquote('url("{!URLFOR($Resource.fonts, "fonts/#{$fontfile}.svg#svgFontName")}")') format('svg');  // Legacy iOS
+        }
+    }
+}
+
+
+/* == TEXT == */
+/* Heading Text */
+@mixin text-header ($type) {
+    // // margin: 0;
+    // @if ($type == 'h1') {
+    //     font: 20px/135% $font-full_sauna-bold;
+
+    // } @else if ($type == 'h2') {
+    //     font: 20px/135% $font-full_gotham-medium;
+
+    // } @else if ($type == 'h3') {
+    //     font: 16px/135% $font-full_gotham-medium;
+
+    // } @else if ($type == 'h4') {
+    //     font: 20px/135% $font-full_gotham-book;
+
+    // } @else if ($type == 'h5') {
+    //     font: 16px/135% $font-full_gotham-bold;
+    // }
+    @content;
+}
+
+/* Content Text */
+@mixin text-body ($type, $lineHeight: 135%) {
+    // // margin: 0;
+    // @if ($type == 'b1') {
+    //     font: 16px/#{$lineHeight} $font-full_gotham-book;
+
+    // } @else if ($type == 'b2') {
+    //     font: 16px/#{$lineHeight} $font-full_gotham-medium;
+
+    // } @else if ($type == 'b3') {
+    //     font: 16px/#{$lineHeight} $font-full_gotham-bold;
+
+    // } @else if ($type == 'b4') {
+    //     font: 14px/#{$lineHeight} $font-full_gotham-book;
+
+    // } @else if ($type == 'b5') {
+    //     font: 14px/#{$lineHeight} $font-full_gotham-medium;
+
+    // } @else if ($type == 'b6') {
+    //     font: 14px/#{$lineHeight} $font-full_gotham-bold;
+    // }
+    @content;
+}
