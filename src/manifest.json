@@ -20,8 +20,7 @@
             "run_at": "document_end",
             "matches": [ "*://*/*" ],
             "js": [
-                "common/app.min.js",
-                "content-script/main.min.js"
+                "ct-script/main.min.js"
             ]
         }
     ],
@@ -34,8 +33,11 @@
             "32": "asset/icon/icon_32.png"
         }
     },
-    "web_accessible_resources":  [
-        "common/app.min.css",
-        "common/shl-app-icomoon.woff"
-    ]
+    "options_page": "popup/index.html",
+    "background": {
+        "persistent": false,
+        "scripts": [
+            "bt-script/main.min.js"
+        ]
+    }
 }
