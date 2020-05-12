@@ -1,12 +1,14 @@
+@import './var/color-and-bg.scss';
+
 @import './vendor/reset.2.0.min.scss';
 @import './vendor/font.scss';
 @import './vendor/icon.scss';
 
 button {
     -webkit-appearance: none;
-    background-color: transparent;
+    background-color: $clear;
     border-width: 0;
-    border-color: transparent;
+    border-color: $clear;
     padding: 0;
 
     &:not(:disabled):hover {
