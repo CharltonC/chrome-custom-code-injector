@@ -6,7 +6,8 @@ module.exports = {
             // - 'dist/*'       all folders under "dist"
             inputFiles: [
                 'dist/*',
-                'doc/test-report/*'
+                'doc/test-report/*',
+                'doc/ui-component/*'
             ]
         }
     }

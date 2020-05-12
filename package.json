@@ -7,7 +7,8 @@
     "typedoc": "node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, documentation, coverage'",
     "build": "gulp build --prod",
-    "dev": "gulp dev",
+    "dev-ui": "gulp dev --serveidx=ui",
+    "dev-option": "gulp dev --serveidx=option",
     "test": "gulp build-ts:test"
   },
   "private": true,
