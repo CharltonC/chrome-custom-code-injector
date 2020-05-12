@@ -14,8 +14,6 @@ gulp.task(
     gulp.series('build-ts:lint', 'build-ts:test', 'build-ts:compile'),
     done => { done(); }
 );
-
-gulp.task('serve', require('./gulp/util-browsersync/task'));
 gulp.task('clean', require('./gulp/util-clean/task'));
 gulp.task('ver-check', require('./gulp/util-ver-check/task'));
 gulp.task('ver-bump', require('./gulp/util-ver-bump/task'));
@@ -25,15 +23,21 @@ gulp.task('wait', require('./gulp/util-wait/task'));
 gulp.task('copy', require('./gulp/util-copy/task'));
 gulp.task('build-copy', gulp.series('copy', 'wait'), done => { done(); });
 
-// gulp.task('build', gulp.series(
-//     'clean',
-//     'build-html',
-//     'build-css',
-//     'build-img',
-//     'build-ts',
-//     'build-copy',
-//     'ver-check',
-//     'zip'
-// ), (done) => {
-//     done();
-// });
+gulp.task('build', gulp.series(
+    'clean',
+    'build-html',
+    'build-css',
+    'build-ts',
+    'build-copy',
+    'ver-check',
+    'zip'
+), (done) => {
+    done();
+});
+
+gulp.task('serve', require('./gulp/util-browsersync/task'));
+gulp.task(
+    'dev',
+    gulp.series('build', 'serve'),
+    done => { done(); }
+);
