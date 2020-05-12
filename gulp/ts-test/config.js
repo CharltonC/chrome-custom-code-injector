@@ -1,3 +1,7 @@
+const { $ } = require('../common');
+
+const reportSubPath = $.isProd ? 'test-report/' : 'temp-file/test-report/';
+
 module.exports = {
     // `defOption`:
     // - corresp. to file: "node_modules/jest-cli/build/cli/index.js"
@@ -5,7 +9,7 @@ module.exports = {
     // - ref: https://jestjs.io/docs/en/cli
     defOption: [
         '--coverage=true',
-        '--coverageDirectory=./doc/test-report/',
+        `--coverageDirectory=./doc/${reportSubPath}`,
         '--detectOpenHandles'
     ]
 };
