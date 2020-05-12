@@ -4,7 +4,7 @@ module.exports = {
     },
     tasks: {
         sharedCss: {
-            inputFiles: 'src/asset/scss/main.scss',              // NOTE: wildcard "*" is not allowed
+            inputFiles: 'src/asset/scss/base.scss',              // NOTE: wildcard "*" is not allowed
             rename: 'main.min.css',
             outputPath: 'dist/build/asset/'
         },
