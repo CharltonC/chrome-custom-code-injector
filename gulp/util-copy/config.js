@@ -13,13 +13,13 @@ module.exports = {
             inputFiles: [
                 'src/asset/icon/*.*'
             ],
-            outputPath: $.isProd ? 'dist/build/asset/icon' : 'dist/build/option/asset/font'
+            outputPath: 'dist/build/asset/icon'
         },
         font: {
             inputFiles: [
                 'src/asset/font/*.*'
             ],
-            outputPath: 'dist/build/asset/font'
+            outputPath: $.isProd ? 'dist/build/asset/font' : 'dist/build/option/asset/font'
         },
         manifest: {
             inputFiles: [
