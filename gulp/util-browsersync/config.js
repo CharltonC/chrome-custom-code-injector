@@ -1,6 +1,6 @@
 module.exports = {
     defOption: {
-        server: { baseDir: 'dist/build/' },
+        server: { baseDir: 'dist/build/option' },
      //    startPath: '/#/',
         reloadDelay: 1000,
         open: false

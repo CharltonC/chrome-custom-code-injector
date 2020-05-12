@@ -1,3 +1,5 @@
+const { $ } = require('../common');
+
 module.exports = {
     tasks: {
         // Common
@@ -11,7 +13,7 @@ module.exports = {
             inputFiles: [
                 'src/asset/icon/*.*'
             ],
-            outputPath: 'dist/build/asset/icon'
+            outputPath: $.isProd ? 'dist/build/asset/icon' : 'dist/build/option/asset/font'
         },
         font: {
             inputFiles: [
