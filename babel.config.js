@@ -23,6 +23,7 @@ module.exports = {
          * Shared by both build/bundle + Jest Test
          * - `['react-app', {'typescript': true}]` (from pkg "babel-preset-react-app") does not work for Jest
          */
-        "@babel/preset-env", "@babel/preset-react"
+        "@babel/preset-env", "@babel/preset-react",
+        '@babel/preset-typescript'
     ]
 };
