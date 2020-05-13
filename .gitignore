@@ -4,3 +4,4 @@ node_modules/
 doc/design/
 doc/temp-file/
 doc/ui-component/
+package-lock.json
