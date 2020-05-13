@@ -2,25 +2,25 @@ import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-import {Hello} from "./main";
+describe('option page', () => {
+    let elem: HTMLElement;
 
-let container = null;
-beforeEach(() => {
-  // setup a DOM element as a render target
-  container = document.createElement("div");
-  document.body.appendChild(container);
+    beforeEach(() => {
+        elem = document.createElement("div");
+        document.body.appendChild(elem);
+    });
+
+    afterEach(() => {
+        unmountComponentAtNode(elem);
+        elem.remove();
+        elem = null;
+    });
+
+    it("renders", () => {
+        act(() => {
+            render(<h1>lorem</h1>, elem);
+        });
+        expect(elem.textContent).toBe('lorem');
+    });
 });
 
-afterEach(() => {
-  // cleanup on exiting
-  unmountComponentAtNode(container);
-  container.remove();
-  container = null;
-});
-
-it("renders with or without a name", () => {
-  act(() => {
-    render(<Hello />, container);
-  });
-  expect(container.textContent).toBe("lorem sum");
-});
