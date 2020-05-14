@@ -7,85 +7,80 @@
     font-display: block;
 }
 
-[class^="cci-icon--"],
-[class*=" cci-icon--"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
+.icon {
     font-family: "cci-icomoon" !important;
-    // speak: none;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
     text-transform: none;
     line-height: 1;
-
-    /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-.cci-icon--setting:before {
+.icon--setting:before {
     content: "\e900";
 }
-.cci-icon--valid:before {
+.icon--valid:before {
     content: "\e901";
 }
-.cci-icon--close:before {
+.icon--close:before {
     content: "\e902";
 }
-.cci-icon--power:before {
+.icon--power:before {
     content: "\e903";
 }
-.cci-icon--lock-close:before {
+.icon--lock-close:before {
     content: "\e904";
 }
-.cci-icon--lock-open:before {
+.icon--lock-open:before {
     content: "\e905";
 }
-.cci-icon--radio-on:before {
+.icon--radio-on:before {
     content: "\e906";
 }
-.cci-icon--radio-off:before {
+.icon--radio-off:before {
     content: "\e907";
 }
-.cci-icon--download:before {
+.icon--download:before {
     content: "\e908";
 }
-.cci-icon--add-outline:before {
+.icon--add-outline:before {
     content: "\e909";
 }
-.cci-icon--add:before {
+.icon--add:before {
     content: "\e90a";
 }
-.cci-icon--checkbox-off:before {
+.icon--checkbox-off:before {
     content: "\e90b";
 }
-.cci-icon--checkbox-on:before {
+.icon--checkbox-on:before {
     content: "\e90c";
 }
-.cci-icon--arrow-up:before {
+.icon--arrow-up:before {
     content: "\e90d";
 }
-.cci-icon--arrow-dn:before {
+.icon--arrow-dn:before {
     content: "\e90e";
 }
-.cci-icon--search:before {
+.icon--search:before {
     content: "\e90f";
 }
-.cci-icon--arrow-rt:before {
+.icon--arrow-rt:before {
     content: "\e910";
 }
-.cci-icon--arrow-lt:before {
+.icon--arrow-lt:before {
     content: "\e911";
 }
-.cci-icon--edit:before {
+.icon--edit:before {
     content: "\e912";
 }
-.cci-icon--delete:before {
+.icon--delete:before {
     content: "\e913";
 }
-.cci-icon--save:before {
+.icon--save:before {
     content: "\e914";
 }
-.cci-icon--doc:before {
+.icon--doc:before {
     content: "\e915";
 }
