@@ -10,6 +10,7 @@ module.exports = {
     defOption: [
         '--coverage=true',
         `--coverageDirectory=./doc/${reportSubPath}`,
-        '--detectOpenHandles'
+        '--detectOpenHandles',
+        '--testPathPattern=spec.tsx?$'
     ]
 };
