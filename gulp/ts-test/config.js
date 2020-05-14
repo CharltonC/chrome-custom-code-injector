@@ -8,9 +8,7 @@ module.exports = {
     // - for options avail.: "node_modules/jest-cli/build/cli/index.d.ts"
     // - ref: https://jestjs.io/docs/en/cli
     defOption: [
-        '--coverage=true',
-        `--coverageDirectory=./doc/${reportSubPath}`,
+        '--config=./jest.config.js',
         '--detectOpenHandles',
-        '--testPathPattern=spec.tsx?$'
     ]
 };
