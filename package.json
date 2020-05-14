@@ -9,7 +9,8 @@
     "build": "gulp build --prod",
     "dev-ui": "gulp dev --serveidx=ui",
     "dev-option": "gulp dev --serveidx=option",
-    "test": "gulp build-ts:test"
+    "test": "gulp build-ts:test",
+    "ui": "npx start-storybook --ci -p 9001 -s ./dist/build/"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +22,7 @@
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
     "@babel/preset-typescript": "7.9.0",
+    "@storybook/react": "5.3.18",
     "@types/chrome": "0.0.69",
     "@types/jest": "25.2.1",
     "@types/node": "13.13.4",
@@ -31,6 +33,7 @@
     "babel-core": "6.26.3",
     "babel-eslint": "10.1.0",
     "babel-jest": "25.5.1",
+    "babel-loader": "7.1.5",
     "babel-plugin-import": "1.13.0",
     "babelify": "8.0.0",
     "browser-sync": "2.26.7",
@@ -69,6 +72,7 @@
     "pug": "2.0.4",
     "tinyify": "2.5.2",
     "tree-cli": "0.4.12",
+    "ts-loader": "7.0.4",
     "ts-node": "4.1.0",
     "tsify": "4.0.0",
     "typedoc": "0.15.3",
