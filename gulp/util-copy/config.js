@@ -9,6 +9,8 @@ module.exports = {
             ],
             outputPath: 'doc/chrome-store/icon'
         },
+
+        // Asset
         icon: {
             inputFiles: [
                 'src/asset/icon/*.*'
@@ -19,8 +21,10 @@ module.exports = {
             inputFiles: [
                 'src/asset/font/*.*'
             ],
-            outputPath: $.isProd ? 'dist/build/asset/font' : 'dist/build/option/asset/font'
+            outputPath: 'dist/build/asset/font'
         },
+
+        // Chrome
         manifest: {
             inputFiles: [
                 'src/manifest.json'
