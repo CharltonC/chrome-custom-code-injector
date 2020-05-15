@@ -34,13 +34,13 @@ const icons: string[] = [
     'doc'
 ];
 
-export const LightIcon = () => (
+export const Light = () => (
     <div style={{ backgroundColor: '#5AB3AD' }}>
         {icons.map((name: NIcon.TName) => staticIconElem(name))}
     </div>
 );
 
-export const DarkIcon = () => (
+export const Dark = () => (
     <div>
         {icons.map((name: NIcon.TName) => staticIconElem(name, true))}
     </div>
