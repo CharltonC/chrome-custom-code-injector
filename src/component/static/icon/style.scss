@@ -1,5 +1,16 @@
 @import '../../../asset/scss/var/color-and-bg.scss';
 
+// Allow style ONLY IF directly within a non-disabled button
+@mixin state-hover_in-btn($fontColor, $bgColor) {
+    &:hover {
+        input[type="button"]:not(:disabled) > &,
+        button:not(:disabled) > & {
+            color: $fontColor;
+            background-color: $bgColor;
+        }
+    }
+}
+
 .icon {
     display: inline-flex;
     justify-content: center;
@@ -11,25 +22,12 @@
     font-size: 20px;
 
     &--light {
+        @include state-hover_in-btn($teal, $white);
         color: $white;
-
-        &:hover {
-            // allow style ONLY IF directly within a form element that is NOT disabled
-            *:not(:disabled) > & {
-                color: $teal;
-                background-color: $white;
-            }
-        }
     }
 
     &--dark {
+        @include state-hover_in-btn($white, $teal);
         color: $gray;
-
-        &:hover {
-            *:not(:disabled) > & {
-                color: $white;
-                background-color: $teal;
-            }
-        }
     }
 }
