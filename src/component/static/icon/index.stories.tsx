@@ -36,12 +36,12 @@ const icons: string[] = [
 
 export const Light = () => (
     <div style={{ backgroundColor: '#5AB3AD' }}>
-        {icons.map((name: NIcon.TName) => staticIconElem(name))}
+        {icons.map((name: NIcon.TName) => staticIconElem(name, false, `light-${name}`))}
     </div>
 );
 
 export const Dark = () => (
     <div>
-        {icons.map((name: NIcon.TName) => staticIconElem(name, true))}
+        {icons.map((name: NIcon.TName) => staticIconElem(name, true, `dark-${name}`))}
     </div>
 );
