@@ -5,7 +5,7 @@ export interface IIcon {
     darkMode?: boolean;
 }
 
-export interface IProps extends React.HTMLAttributes<HTMLButtonElement> {
+export interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon: IIcon;
     // [prop: string]: any;    // any other unknown prop, e.g. className, id, onClick etc
 }
