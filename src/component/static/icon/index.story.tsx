@@ -36,12 +36,13 @@ const icons: string[] = [
 
 export const Light = () => (
     <div style={{ backgroundColor: '#5AB3AD' }}>
-        {icons.map((name: NIcon.TName) => staticIconElem(name, false, `light-${name}`))}
+        {/* `id` is the html attr. not specified however still passed here */}
+        {icons.map((name: NIcon.TName) => staticIconElem(name, false, {id: `light-${name}`}))}
     </div>
 );
 
 export const Dark = () => (
     <div>
-        {icons.map((name: NIcon.TName) => staticIconElem(name, true, `dark-${name}`))}
+        {icons.map((name: NIcon.TName) => staticIconElem(name, true, {id: `dark-${name}`}))}
     </div>
 );

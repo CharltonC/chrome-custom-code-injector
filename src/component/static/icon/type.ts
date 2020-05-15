@@ -26,3 +26,5 @@ export type TName =
     'delete' |
     'save' |
     'doc';
+
+export type unknProps = Record<string, string>;
