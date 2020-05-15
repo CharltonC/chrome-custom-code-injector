@@ -4,18 +4,5 @@
 @import './vendor/font.scss';
 @import './vendor/icon.scss';
 
-button {
-    -webkit-appearance: none;
-    background-color: $clear;
-    border-width: 0;
-    border-color: $clear;
-    padding: 0;
-
-    &:not(:disabled):hover {
-        cursor: pointer;
-    }
-
-    &:disabled {
-        opacity: 0.4;
-    }
-}
+@import '../../component/static/icon/style.scss';
+@import '../../component/prsntn/icon-btn/style.scss';
