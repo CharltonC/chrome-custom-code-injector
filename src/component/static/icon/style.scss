@@ -1,0 +1,35 @@
+@import '../../../asset/scss/var/color-and-bg.scss';
+
+.icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background-color: $clear;
+    border-radius: 15px;
+    font-size: 20px;
+
+    &--light {
+        color: $white;
+
+        &:hover {
+            // allow style ONLY IF directly within a form element that is NOT disabled
+            *:not(:disabled) > & {
+                color: $teal;
+                background-color: $white;
+            }
+        }
+    }
+
+    &--dark {
+        color: $gray;
+
+        &:hover {
+            *:not(:disabled) > & {
+                color: $white;
+                background-color: $teal;
+            }
+        }
+    }
+}
