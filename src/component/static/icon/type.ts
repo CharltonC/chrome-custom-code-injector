@@ -27,4 +27,4 @@ export type TName =
     'save' |
     'doc';
 
-export type unknProps = Record<string, string>;
+export type unknProps = Record<string, any>;
