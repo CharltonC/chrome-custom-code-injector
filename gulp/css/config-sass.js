@@ -17,11 +17,6 @@ module.exports = {
             inputFiles: 'src/page/popup/style.scss',
             rename: 'style.min.css',
             outputPath: 'dist/build/popup/'
-        },
-        uiCmpIdx: {
-            inputFiles: 'src/page/ui-cmp-doc/style.scss',
-            rename: 'style.min.css',
-            outputPath: 'doc/ui-component/'
         }
     }
 };
