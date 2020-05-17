@@ -1,14 +1,13 @@
-import React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
-import { act } from "react-dom/test-utils";
+import React from 'react';
+import { render, unmountComponentAtNode } from 'react-dom';
+import { act } from 'react-dom/test-utils';
 
 import { IconBtn } from '.';
 import * as NIconBtn from './type';
 
-// import { unmountComponentAtNode } from "react-dom";
 const TestUtil = {
     setupElem(): HTMLElement {
-        const elem: HTMLElement = document.createElement("div");
+        const elem: HTMLElement = document.createElement('div');
         document.body.appendChild(elem);
         return elem;
     },
@@ -26,7 +25,6 @@ describe('option page', () => {
 
     beforeEach(() => {
         elem = TestUtil.setupElem();
-
         icon = {name: 'setting'};
         mockedCbFn = jest.fn();
         act(() => {
@@ -41,7 +39,7 @@ describe('option page', () => {
         elem = null;
     });
 
-    it("should render with an icon", () => {
+    it('should render with an icon', () => {
         const iconElems: NodeListOf<HTMLElement> = document.querySelectorAll('span.icon');
         expect(iconElems.length).toBe(1);
 

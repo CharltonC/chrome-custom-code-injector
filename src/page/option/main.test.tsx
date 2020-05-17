@@ -1,12 +1,12 @@
-import React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
-import { act } from "react-dom/test-utils";
+import React from 'react';
+import { render, unmountComponentAtNode } from 'react-dom';
+import { act } from 'react-dom/test-utils';
 
 describe('option page', () => {
     let elem: HTMLElement;
 
     beforeEach(() => {
-        elem = document.createElement("div");
+        elem = document.createElement('div');
         document.body.appendChild(elem);
     });
 
@@ -16,7 +16,7 @@ describe('option page', () => {
         elem = null;
     });
 
-    it("renders", () => {
+    it('renders', () => {
         act(() => {
             render(<h1>lorem</h1>, elem);
         });
