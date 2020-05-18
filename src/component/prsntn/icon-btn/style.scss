@@ -1,15 +1,1 @@
-.icon-btn {
-    -webkit-appearance: none;
-    background-color: $clear;
-    border-width: 0;
-    border-color: $clear;
-    padding: 0;
-
-    &:not(:disabled):hover {
-        cursor: pointer;
-    }
-
-    &:disabled {
-        opacity: 0.4;
-    }
-}
+.icon-btn {}
