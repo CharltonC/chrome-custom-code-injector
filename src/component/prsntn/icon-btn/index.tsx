@@ -6,7 +6,7 @@ import * as NIconBtn from './type';
 const _IconBtn: FC<NIconBtn.IProps> = ({icon, ...props}) => {
     const { name, darkMode } = icon;
     return (
-        <button type="button" {...props}>
+        <button type="button" className="icon-btn" {...props}>
             { staticIconElem(name, darkMode) }
         </button>
     );
