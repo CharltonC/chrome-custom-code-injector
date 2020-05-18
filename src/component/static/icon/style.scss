@@ -1,8 +1,7 @@
 // Allow style ONLY IF directly within a non-disabled button
 @mixin state-hover_in-btn($fontColor, $bgColor) {
     &:hover {
-        input[type="button"]:not(:disabled) > &,
-        button:not(:disabled) > & {
+        .icon-btn:not(:disabled) > & {
             color: $fontColor;
             background-color: $bgColor;
         }
