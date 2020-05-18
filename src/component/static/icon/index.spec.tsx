@@ -1,9 +1,9 @@
 import React, { ReactElement } from "react";
 
-import { staticIconElem } from "./";
 import * as NIcon from './type';
+import { staticIconElem } from "./";
 
-describe('icon (static react element)', () => {
+describe('Static Component - Icon', () => {
     it("should render the icon with default light mode", () => {
         const iconName: NIcon.TName = 'setting';
         const clsName: string = `icon icon--${iconName} icon--${NIcon.EMode.light}`;

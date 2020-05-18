@@ -2,10 +2,9 @@ import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-import { IconBtn } from '.';
+import { IconBtn } from './';
 import * as NIconBtn from './type';
 
-// import { unmountComponentAtNode } from "react-dom";
 const TestUtil = {
     setupElem(): HTMLElement {
         const elem: HTMLElement = document.createElement("div");
@@ -18,7 +17,7 @@ const TestUtil = {
     }
 }
 
-describe('option page', () => {
+describe('Component - Icon Button', () => {
     let elem: HTMLElement;
     let icon: NIconBtn.IIcon;
     let mockedCbFn: () => void;
