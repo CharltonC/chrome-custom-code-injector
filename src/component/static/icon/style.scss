@@ -1,5 +1,3 @@
-@import '../../../asset/scss/var/color-and-bg.scss';
-
 // Allow style ONLY IF directly within a non-disabled button
 @mixin state-hover_in-btn($fontColor, $bgColor) {
     &:hover {
