@@ -1,3 +1,4 @@
+@import './var/font.scss';
 @import './var/color-and-bg.scss';
 
 @import './vendor/reset.2.0.min.scss';
@@ -6,3 +7,8 @@
 
 @import '../../component/static/icon/style.scss';
 @import '../../component/prsntn/icon-btn/style.scss';
+@import '../../component/prsntn/symbol-btn/style.scss';
+
+* {
+    box-sizing: border-box;
+}
