@@ -1,0 +1,49 @@
+.search {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+
+    &--disabled {
+        opacity: 0.4;
+    }
+
+    &__input:focus,
+    &__btn:focus + &__input {
+        width: 360px;
+    }
+
+    &__input {
+        @extend %blank-input;
+        z-index: 0;
+        transition: width 0.2s ease;
+        width: 250px;
+        height: 36px;
+        padding: 0 10px 0 20px;
+        background-color: $white;
+        border-radius: 50px;
+        font: 14px $roboto-reg;
+        color: $gray;
+
+        &::-webkit-input-placeholder {
+            font: 14px $roboto-reg;
+            color: lighten($gray, 30%);
+        }
+    }
+
+    &__btn {
+        position: absolute;
+        right: 10px;
+        border-radius: 30px;
+        z-index: 100;
+
+        .icon {
+            font-size: 18px;
+        }
+
+        &:not(:disabled):hover {
+            .icon {
+                color: darken($gray, 30%);
+            }
+        }
+    }
+}
