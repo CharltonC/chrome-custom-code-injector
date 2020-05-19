@@ -2,19 +2,8 @@ import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
+import { TestUtil } from '../../../test-util/';
 // import { CmpCls } from './';
-
-const TestUtil = {
-    setupElem(): HTMLElement {
-        const elem: HTMLElement = document.createElement("div");
-        document.body.appendChild(elem);
-        return elem;
-    },
-    teardown(elem: HTMLElement): void {
-        unmountComponentAtNode(elem);
-        elem.remove();
-    }
-}
 
 describe('Component - TODO: Component Name', () => {
     let elem: HTMLElement;
