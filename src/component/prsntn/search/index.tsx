@@ -9,7 +9,7 @@ const _Search: FC<NSearch.IProps> = ({id, text, disabled, onClear, onChange, ...
     const labelCls: string = 'search' + (disabled ? ' search--disabled' : '');
     const isDisabled = typeof disabled === 'undefined' ? false : disabled;
 
-    // Input
+    // Input (w/ private state only)
     const [ value, setValue ] = useState(text ? text : '');
     const inputOnChange: NSearch.cbFn = (evt: Event) => {
         const targetElem = evt.target as HTMLInputElement;

@@ -27,12 +27,13 @@
 
         &::-webkit-input-placeholder {
             font: 14px $roboto-reg;
-            color: lighten($gray, 30%);
+            color: $light-gray;
         }
     }
 
     .icon {
         font-size: 18px;
+        color: $light-gray;
     }
 
     > .icon,
@@ -46,7 +47,7 @@
     &__clear {
         &:not(:disabled):hover {
             .icon {
-                color: darken($gray, 30%);
+                color: $gray-100;
             }
         }
     }
