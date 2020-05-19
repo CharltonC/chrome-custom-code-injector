@@ -2,7 +2,7 @@ import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-describe('option page', () => {
+describe('Page - Option', () => {
     let elem: HTMLElement;
 
     beforeEach(() => {
