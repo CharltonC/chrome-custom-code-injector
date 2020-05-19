@@ -27,6 +27,11 @@ module.exports = {
     // # Folder/File to ignored
     testPathIgnorePatterns: [
         ...defaults.testPathIgnorePatterns,
-        './schematic/'
+        './schematic/',
+
+    ],
+    coveragePathIgnorePatterns: [
+        ...defaults.coveragePathIgnorePatterns,
+        './src/test-util/'
     ]
 };
