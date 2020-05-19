@@ -16,7 +16,7 @@ const TestUtil = {
     }
 }
 
-describe('Component - Symbol Button', () => {
+describe('Component - TODO: Component Name', () => {
     let elem: HTMLElement;
     let childElem: Element;
 
