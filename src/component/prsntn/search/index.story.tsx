@@ -6,42 +6,34 @@ export default {
     component: Search,
 };
 
-const defStyle = {backgroundColor: '#5AB3AD', padding: '15px'};
+const defStyle = {backgroundColor: '#5AB3AD', padding: '15px', color: 'white'};
 
 export const DefaultSearch = () => {
-    // must be set from parent or root lvl cmp which can handle state (via setState or useSTate equivalent)
-    const [ text, setText ] = useState('');
-    const onChange = (e) => { setText(e.target.value); };       // 2way binding (sync change)
-    const onClear = () => { setText(''); };
-    const onSearch = () => { };
-
     return (
         <div style={defStyle} >
-            <Search
-                id=""
-                text={text}
-                disabled={false}
-                onSearch={onSearch}
-                onClear={onClear}
-                onChange={onChange}
-                />
+            <Search id="" />
         </div>
     )
 };
 
 export const DisabledSearch = () => {
-    const dummyCbFn = () => {};
+    return (
+        <div style={defStyle} >
+            <Search id="" disabled />
+        </div>
+    )
+};
+
+export const WithPassedValue = () => {
+    const [ text, setText ] = useState('lorem');
+    const onChange = (evt: Event, val: string) => setText(val);         // 2-way binding
+    const onClear = (evt: Event, val: string) => { setText(''); };
 
     return (
         <div style={defStyle} >
-            <Search
-                id=""
-                text=""
-                disabled={true}
-                onSearch={dummyCbFn}
-                onClear={dummyCbFn}
-                onChange={dummyCbFn}
-                />
+            <p>Text passed to search component: {text}</p>
+            <br/>
+            <Search id="lorem" text={text} onChange={onChange} onClear={onClear}/>
         </div>
     )
 };

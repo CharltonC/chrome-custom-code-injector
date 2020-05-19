@@ -3,13 +3,14 @@
     align-items: center;
     position: relative;
 
-    &--disabled {
-        opacity: 0.4;
+    &:focus-within {
+        .search__input {
+            width: 360px;
+        }
     }
 
-    &__input:focus,
-    &__btn:focus + &__input {
-        width: 360px;
+    &--disabled {
+        opacity: 0.4;
     }
 
     &__input {
@@ -30,16 +31,19 @@
         }
     }
 
-    &__btn {
+    .icon {
+        font-size: 18px;
+    }
+
+    > .icon,
+    &__clear {
         position: absolute;
         right: 10px;
         border-radius: 30px;
         z-index: 100;
+    }
 
-        .icon {
-            font-size: 18px;
-        }
-
+    &__clear {
         &:not(:disabled):hover {
             .icon {
                 color: darken($gray, 30%);
