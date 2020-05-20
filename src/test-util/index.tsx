@@ -22,6 +22,12 @@ export const TestUtil = {
         ntvSetter.call(inputElem, val);
     },
 
+    renderPlain(elem: HTMLElement, Cmp, stateProps = {}) {
+        act(() => {
+            render(<Cmp {...stateProps} />, elem);
+        });
+    },
+
     renderInStatefulWrapper(elem: HTMLElement, Cmp, stateProps = {}) {
         class Wrapper extends Component<any, any> {
             constructor(props) {

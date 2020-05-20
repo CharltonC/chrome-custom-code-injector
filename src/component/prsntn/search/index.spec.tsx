@@ -51,19 +51,10 @@ describe('Component - Search', () => {
         jest.clearAllMocks();
     });
 
-    describe('non-empty input text with disabled', () => {
-        beforeEach(() => {
-            act(() => {
-                render(<Search
-                    id={mockId}
-                    text={mockInputText}
-                    disabled
-                    />, elem);
-            });
+    describe('props: disabled, non-empty text', () => {
+        it('should reflect disabled state in label, input, button', () => {
+            TestUtil.renderPlain(elem, Search, {id: '', text: 'lorem', disabled: true});
             assignChildrenElem(elem);
-        });
-
-        it("should render", () => {
             expect(labelElem.className).toContain('search--disabled');
             expect(inputElem.disabled).toBe(true);
             expect(clearIconBtnElem.disabled).toBe(true);
