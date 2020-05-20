@@ -1,4 +1,4 @@
-import React, { memo, useState, useRef, FC, ReactElement } from 'react';
+import React, { memo, useRef, FC, ReactElement } from 'react';
 
 import { staticIconElem } from '../../static/icon';
 import * as NSearch from './type';
@@ -11,29 +11,14 @@ const _Search: FC<NSearch.IProps> = ({id, text, disabled, onClear, onChange, ...
     // Input (w/ private state only)
     let inputElemRef = useRef(null);
 
-    // Private State only (wont be used if external input value is passed)
-    let value: string, setValue: any;
-    const hasOwnState: boolean = typeof text === 'undefined';
-    if (hasOwnState) [ value, setValue ] = useState('');
-    const inputVal: string = hasOwnState ? value : text;
-
-    const inputOnChange: NSearch.cbFn = (evt: Event) => {
-        const targetElem = evt.target as HTMLInputElement;
-        const val: string = targetElem.value;
-        if (hasOwnState) setValue(val);             // 2-way binding to self
-        if (onChange) onChange(evt, val);
-    }
-
     // Button
-    const btnOnClear: NSearch.cbFn = (evt: Event) => {
+    const onBtnClick: NSearch.cbFn = (evt: Event) => {
         const inputElem = inputElemRef.current;
-
-        if (hasOwnState) setValue('');
-        if (onClear) onClear(evt);
+        onClear(evt);
 
         // `null` is assigned instead of `''` else it wont trigger "change" event
         // - Ref: https://stackoverflow.com/questions/42192346/how-to-reset-reactjs-file-input
-        inputElem.value = null;
+        // inputElem.value = null;
         inputElem.focus();
     };
 
@@ -48,21 +33,21 @@ const _Search: FC<NSearch.IProps> = ({id, text, disabled, onClear, onChange, ...
                 className="search__input"
                 type="text"
                 placeholder="Search"
-                value={inputVal}
+                value={text}
                 ref={inputElemRef}
                 disabled={isDisabled}
-                onChange={inputOnChange}
+                onChange={onChange}
                 {...inputProps}
                 >
             </input>
             {
-                inputVal ?
+                text ?
                 <button
                     className="search__clear"
                     type="button"
                     title="clear the search"
                     disabled={isDisabled}
-                    onClick={btnOnClear}
+                    onClick={onBtnClick}
                     >
                     {clearIcon}
                 </button> :
