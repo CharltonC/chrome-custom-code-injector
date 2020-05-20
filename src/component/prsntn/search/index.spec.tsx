@@ -70,11 +70,9 @@ describe('Component - Search', () => {
         });
 
         it('should not trigger any callbacks when input value is updated or cleared', () => {
-            act(() => {
-                TestUtil.setInputVal(inputElem, mockInputText);
-                TestUtil.triggerEvt(inputElem, 'change');
-                TestUtil.triggerEvt(clearIconBtnElem, 'click');
-            });
+            TestUtil.setInputVal(inputElem, mockInputText);
+            TestUtil.triggerEvt(inputElem, 'change');
+            TestUtil.triggerEvt(clearIconBtnElem, 'click');
             assignChildrenElem(elem);
 
             expect(mockOnChange).toHaveBeenCalledTimes(0);
@@ -100,11 +98,8 @@ describe('Component - Search', () => {
         });
 
         it("should trigger `onClear` callback when input value is cleared", () => {
-            // Clear the text
-            act(() => {
-                clearIconBtnElem.dispatchEvent(new Event('click', {bubbles: true}));
-                inputElem.dispatchEvent(new Event('change', { bubbles: true}));
-            });
+            TestUtil.triggerEvt(clearIconBtnElem, 'click');
+            TestUtil.triggerEvt(inputElem, 'change');
             assignChildrenElem(elem);
 
             const mockOnClearArgs: any[] = mockOnClear.mock.calls[0];
@@ -116,19 +111,9 @@ describe('Component - Search', () => {
     });
 
     describe('empty input text with callbacks', () => {
-        beforeEach(() => {
-
-        });
-
         it('should render', () => {
             mockUseState.mockImplementation(() => ['', mockSetState]);
-            act(() => {
-                render(<Search
-                    id={mockId}
-                    onChange={mockOnChange}
-                    onClear={mockOnClear}
-                    />, elem);
-            });
+            TestUtil.renderPlain(elem, Search, {id: mockId, onChange: mockOnChange, onClear: mockOnClear});
             assignChildrenElem(elem);
 
             expect(mockUseState).toHaveBeenCalledTimes(1);
@@ -142,19 +127,10 @@ describe('Component - Search', () => {
 
         it('should tirgger `onChange` callback when input value is updated', () => {
             mockUseState.mockImplementation(() => ['', mockSetState]);
-            act(() => {
-                render(<Search
-                    id={mockId}
-                    onChange={mockOnChange}
-                    onClear={mockOnClear}
-                    />, elem);
-            });
+            TestUtil.renderPlain(elem, Search, {id: '', onChange: mockOnChange, onClear: mockOnClear});
             assignChildrenElem(elem);
-
-            act(() => {
-                TestUtil.setInputVal(inputElem, mockInputText);
-                inputElem.dispatchEvent(new Event('change', { bubbles: true}));
-            });
+            TestUtil.setInputVal(inputElem, mockInputText);
+            TestUtil.triggerEvt(inputElem, 'change');
             assignChildrenElem(elem);
 
             const mockOnChangeArgs: any[] = mockOnChange.mock.calls[0];
@@ -167,16 +143,10 @@ describe('Component - Search', () => {
 
         it('should tirgger `onChange` callback when input value is updated', () => {
             mockUseState.mockImplementation(() => [mockInputText, mockSetState]);
-            act(() => {
-                render(<Search
-                    id={mockId}
-                    onChange={mockOnChange}
-                    onClear={mockOnClear}
-                    />, elem);
-                assignChildrenElem(elem);
-                clearIconBtnElem.dispatchEvent(new Event('click', {bubbles: true}));
-                inputElem.dispatchEvent(new Event('change', { bubbles: true}));
-            });
+            TestUtil.renderPlain(elem, Search, {id: '', onChange: mockOnChange, onClear: mockOnClear});
+            assignChildrenElem(elem);
+            TestUtil.triggerEvt(clearIconBtnElem, 'click');
+            TestUtil.triggerEvt(inputElem, 'change');
             expect(mockOnClear).toHaveBeenCalledTimes(1);
         });
     });
