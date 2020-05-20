@@ -72,8 +72,8 @@ describe('Component - Search', () => {
         it('should not trigger any callbacks when input value is updated or cleared', () => {
             act(() => {
                 TestUtil.setInputVal(inputElem, mockInputText);
-                inputElem.dispatchEvent(new Event('change', { bubbles: true}));
-                clearIconBtnElem.dispatchEvent(new Event('click', {bubbles: true}));
+                TestUtil.triggerEvt(inputElem, 'change');
+                TestUtil.triggerEvt(clearIconBtnElem, 'click');
             });
             assignChildrenElem(elem);
 
