@@ -44,6 +44,6 @@ export const TestUtil = {
     },
 
     triggerEvt(elem: HTMLElement, evtType: string, EvtCls = Event, bubbles = true) {
-        elem.dispatchEvent(new EvtCls('change', { bubbles }));
+        elem.dispatchEvent(new EvtCls(evtType, { bubbles }));
     }
 }
