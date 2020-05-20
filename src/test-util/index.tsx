@@ -1,4 +1,6 @@
-import { unmountComponentAtNode } from "react-dom";
+import React, { Component } from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
 
 export const TestUtil = {
     setupElem(): HTMLElement {
@@ -18,5 +20,20 @@ export const TestUtil = {
         const ntvProto = isInputElem ? HTMLInputElement.prototype : HTMLTextAreaElement.prototype;
         const ntvSetter = Object.getOwnPropertyDescriptor(ntvProto, 'value').set;
         ntvSetter.call(inputElem, val);
+    },
+
+    renderInStatefulWrapper(elem: HTMLElement, Cmp, stateProps = {}) {
+        class Wrapper extends Component<any, any> {
+            constructor(props) {
+                super(props);
+                this.state = stateProps;
+            }
+            render() {
+                return <Cmp {...this.state} />;
+            }
+        }
+        act(() => {
+            render(<Wrapper />, elem);
+        });
     }
 }
