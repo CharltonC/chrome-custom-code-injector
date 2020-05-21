@@ -1,5 +1,5 @@
 /*
- * Used by JEST (where this config file is auto pickedup) & Build/Bundle (where this config file is imported)
+ * Used by JEST Unit Test (where this config file is auto pickedup) & Build/Bundle (where this config file is imported)
  */
 module.exports = {
     plugins: [
@@ -15,7 +15,12 @@ module.exports = {
          *
          *   `import Button from 'antd/lib/button';`    works for both Prod build (Browserify) + JEST
          */
-        ["import", {"libraryName": "antd"}]
+        ["import", {"libraryName": "antd"}],
+
+        /**
+         * For ES6 Class property defined on top of `constructor`
+         */
+        ["@babel/plugin-proposal-class-properties", { "loose": true }]
     ],
 
     presets: [
