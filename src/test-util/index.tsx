@@ -43,7 +43,7 @@ export const TestUtil = {
         });
     },
 
-    triggerEvt(elem: HTMLElement, evtType: string, EvtCls = Event, bubbles = true) {
+    triggerEvt(elem: HTMLElement, evtType: string, EvtCls: any = Event, bubbles = true) {
         act(() => {
             elem.dispatchEvent(new EvtCls(evtType, { bubbles }));
         });

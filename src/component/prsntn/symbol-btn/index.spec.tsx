@@ -1,24 +1,16 @@
-import React from "react";
-import { render } from "react-dom";
-import { act } from "react-dom/test-utils";
-
 import { TestUtil } from '../../../test-util/';
 import { SymbolBtn } from './';
 
 describe('Component - Symbol Button', () => {
     let elem: HTMLElement;
-    let labelElem: Element;
+    let labelElem: HTMLElement;
     let spanElem: HTMLElement;
     let inputElem: HTMLInputElement;
 
     beforeEach(() => {
         elem = TestUtil.setupElem();
-
-        act(() => {
-            render(<SymbolBtn text="Js" defaultChecked={true} />, elem);
-        });
-
-        labelElem = elem.children[0];
+        TestUtil.renderPlain(elem, SymbolBtn, { text: 'Js', defaultChecked: true});
+        labelElem = elem.children[0] as HTMLElement;
         spanElem = labelElem.querySelector('span');
         inputElem = labelElem.querySelector('input');
     });
@@ -28,7 +20,7 @@ describe('Component - Symbol Button', () => {
         elem = null;
     });
 
-    it("should render", () => {
+    it("should pass the id and text", () => {
         expect(labelElem.getAttribute('for')).toBe('symbol-btn-Js');
         expect(inputElem.id).toBe('symbol-btn-Js');
         expect(spanElem.textContent).toBe('Js');
@@ -36,9 +28,8 @@ describe('Component - Symbol Button', () => {
 
     it('should pass the unknown props', () => {
         expect(inputElem.checked).toBe(true);
-        act(() => {
-            labelElem.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-        });
+
+        TestUtil.triggerEvt(labelElem, 'click', MouseEvent);
         expect(inputElem.checked).toBe(false);
     });
 });
