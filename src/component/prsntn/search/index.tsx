@@ -1,60 +1,90 @@
-import React, { memo, useRef, FC, ReactElement } from 'react';
+import React, { memo, ReactElement, Component } from 'react';
 
 import { staticIconElem } from '../../static/icon';
 import * as NSearch from './type';
 
-const _Search: FC<NSearch.IProps> = ({id, text, disabled, onClear, onChange, ...inputProps}) => {
-    // Label / Input + Button
-    const labelCls: string = 'search' + (disabled ? ' search--disabled' : '');
-    const isDisabled: boolean = typeof disabled === 'undefined' ? false : disabled;
+export class _Search extends Component<NSearch.IProps, NSearch.State> {
+    private inputElem: HTMLInputElement;
+    private hsExtState: boolean;
 
-    // Input (w/ private state only)
-    let inputElemRef = useRef(null);
+    constructor(props: NSearch.IProps) {
+        super(props);
 
-    // Button
-    const onBtnClick: NSearch.cbFn = (evt: Event) => {
-        const inputElem = inputElemRef.current;
-        onClear(evt);
+        // internal state only
+        const { text } = this.props;
+        this.hsExtState = typeof text !== 'undefined';
+        this.state = { hsText: this.hsExtState ? !!text : false };
 
-        // `null` is assigned instead of `''` else it wont trigger "change" event
-        // - Ref: https://stackoverflow.com/questions/42192346/how-to-reset-reactjs-file-input
-        // inputElem.value = null;
-        inputElem.focus();
-    };
+        // handlers
+        this.onInputChange = this.onInputChange.bind(this);
+        this.onBtnClick = this.onBtnClick.bind(this);
+    }
 
-    // Icon
-    const clearIcon: ReactElement = staticIconElem('close', true);
-    const searchIcon: ReactElement = staticIconElem('search', true);
+    onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
+        // handle two way binding internally
+        const text: string = evt.target.value;
+        const lt3Char: boolean = text.length >= 2;
+        this.setState({hsText: !!text});
 
-    return (
-        <label className={labelCls} htmlFor={id}>
-            <input
-                id={id}
-                className="search__input"
-                type="text"
-                placeholder="Search"
-                value={text}
-                ref={inputElemRef}
-                disabled={isDisabled}
-                onChange={onChange}
-                {...inputProps}
-                >
-            </input>
-            {
-                text ?
-                <button
-                    className="search__clear"
-                    type="button"
-                    title="clear the search"
+        // run any external callback (incl. sync external state if needed)
+        const { onChange } = this.props;
+        if (onChange) onChange(evt, text, lt3Char);
+    }
+
+    onBtnClick(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+        // handle two way binding internally
+        this.inputElem.value = '';
+        this.setState({hsText: false});
+        this.inputElem.focus();
+
+        // run any external callback (incl. sync external state if needed)
+        const { onClear } = this.props;
+        if (onClear) onClear(evt);
+    }
+
+    render() {
+        const {id, text, disabled, onClear, onChange, ...props} = this.props;
+
+        // State
+        const inputProps = this.hsExtState ? {...props, value: text} : {...props};
+
+        // Label / Input + Button
+        const labelCls: string = 'search' + (disabled ? ' search--disabled' : '');
+        const isDisabled: boolean = typeof disabled === 'undefined' ? false : disabled;
+
+        // Icon
+        const clearIcon: ReactElement = staticIconElem('close', true);
+        const searchIcon: ReactElement = staticIconElem('search', true);
+
+        return (
+            <label className={labelCls} htmlFor={id}>
+                <input
+                    id={id}
+                    className="search__input"
+                    type="text"
+                    placeholder="Search"
+                    ref={elem => this.inputElem = elem}
                     disabled={isDisabled}
-                    onClick={onBtnClick}
+                    onChange={this.onInputChange}
+                    {...inputProps}
                     >
-                    {clearIcon}
-                </button> :
-                searchIcon
-            }
-        </label>
-    );
+                </input>
+                {
+                    this.state.hsText ?
+                    <button
+                        className="search__clear"
+                        type="button"
+                        title="clear the search"
+                        disabled={isDisabled}
+                        onClick={this.onBtnClick}
+                        >
+                        {clearIcon}
+                    </button> :
+                    searchIcon
+                }
+            </label>
+        );
+    }
 }
 
 export const Search = memo(_Search);
