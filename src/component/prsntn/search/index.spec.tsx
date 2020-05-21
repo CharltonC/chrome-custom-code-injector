@@ -14,12 +14,26 @@ describe('Component - Search', () => {
     const mockId: string = 'lorem';
     const mockText: string = 'some text';
 
-    function assignChildrenElem(elem: HTMLElement) {
-        labelElem = elem.querySelector('label');
-        inputElem = elem.querySelector('input');
-        searchIconElem = elem.querySelector('.icon--search');
-        clearIconBtnElem = elem.querySelector('button');
-    }
+    const helper = {
+        assignChildrenElem() {
+            labelElem = elem.querySelector('label');
+            inputElem = elem.querySelector('input');
+            searchIconElem = elem.querySelector('.icon--search');
+            clearIconBtnElem = elem.querySelector('button');
+        },
+
+        triggerInputChange() {
+            TestUtil.setInputVal(inputElem, mockText);
+            TestUtil.triggerEvt(inputElem, 'change');
+            this.assignChildrenElem();
+        },
+
+        triggerClearBtnClick() {
+            TestUtil.triggerEvt(clearIconBtnElem, 'click');
+            TestUtil.triggerEvt(inputElem, 'change');
+            this.assignChildrenElem();
+        },
+    };
 
     beforeEach(() => {
         mockOnChange = jest.fn();
@@ -37,7 +51,7 @@ describe('Component - Search', () => {
     describe('props: id', () => {
         it('should reflect id state in label, input', () => {
             TestUtil.renderPlain(elem, Search, {...mockProps});
-            assignChildrenElem(elem);
+            helper.assignChildrenElem();
 
             expect(labelElem.getAttribute('for')).toBe(mockId);
             expect(inputElem.id).toBe(mockId);
@@ -48,7 +62,7 @@ describe('Component - Search', () => {
         describe('when input value is not provided', () => {
             it('should reflect internal state input, search icon, clear button', () => {
                 TestUtil.renderPlain(elem, Search, {...mockProps});
-                assignChildrenElem(elem);
+                helper.assignChildrenElem();
 
                 // initial
                 expect(inputElem.value).toBe('');
@@ -56,14 +70,11 @@ describe('Component - Search', () => {
                 expect(clearIconBtnElem).toBeFalsy();
 
                 // input change: input value is auto set to target value when there is not dependent on external text
-                TestUtil.setInputVal(inputElem, mockText);
-                TestUtil.triggerEvt(inputElem, 'change');
-                assignChildrenElem(elem);
+                helper.triggerInputChange();
                 expect(inputElem.value).toBe(mockText);
 
                 // input clear: input value ia auto set to empty when there is not dependent on external text
-                TestUtil.triggerEvt(clearIconBtnElem, 'click');
-                TestUtil.triggerEvt(inputElem, 'change');
+                helper.triggerClearBtnClick();
                 expect(inputElem.value).toBe('');
             });
         });
@@ -71,7 +82,7 @@ describe('Component - Search', () => {
         describe('when input value is provided', () => {
             it('should reflect text state in input, search icon, clear button when value is empty', () => {
                 TestUtil.renderPlain(elem, Search, {...mockProps, text: ''});
-                assignChildrenElem(elem);
+                helper.assignChildrenElem();
 
                 // initial
                 expect(inputElem.value).toBe('');
@@ -79,14 +90,13 @@ describe('Component - Search', () => {
                 expect(clearIconBtnElem).toBeFalsy();
 
                 // input change: input value will only be set when external text is set to the target value
-                TestUtil.setInputVal(inputElem, mockText);
-                TestUtil.triggerEvt(inputElem, 'change');
+                helper.triggerInputChange();
                 expect(inputElem.value).toBe('');
             });
 
             it('should reflect text state in input, search icon, clear button when value is not empty', () => {
                 TestUtil.renderPlain(elem, Search, {...mockProps, text: mockText});
-                assignChildrenElem(elem);
+                helper.assignChildrenElem();
 
                 // initial
                 expect(inputElem.value).toBe(mockText);
@@ -94,8 +104,7 @@ describe('Component - Search', () => {
                 expect(clearIconBtnElem).toBeTruthy();
 
                 // input clear: nput value will only be empty when external text is set to empty
-                TestUtil.triggerEvt(clearIconBtnElem, 'click');
-                TestUtil.triggerEvt(inputElem, 'change');
+                helper.triggerClearBtnClick();
                 expect(inputElem.value).toBe(mockText);
             });
         });
@@ -104,7 +113,7 @@ describe('Component - Search', () => {
     describe('props: disabled', () => {
         it('should reflect non-disabled state in form elements when value is empty or when value is not passed', () => {
             TestUtil.renderPlain(elem, Search, {...mockProps, text: ''});
-            assignChildrenElem(elem);
+            helper.assignChildrenElem();
 
             expect(labelElem.className).not.toContain('search--disabled');
             expect(inputElem.disabled).toBe(false);
@@ -112,7 +121,7 @@ describe('Component - Search', () => {
 
         it('should reflect disabled state in form elements when value is not empty ', () => {
             TestUtil.renderPlain(elem, Search, {...mockProps, disabled: true, text: mockText});
-            assignChildrenElem(elem);
+            helper.assignChildrenElem();
 
             expect(labelElem.className).toContain('search--disabled');
             expect(inputElem.disabled).toBe(true);
@@ -127,13 +136,9 @@ describe('Component - Search', () => {
         describe('when callbacks `onChage`, `onClear` are provided', () => {
             beforeEach(() => {
                 spySetState = jest.spyOn(_Search.prototype, 'setState');
-
                 TestUtil.renderPlain(elem, Search, {...mockProps});
-                assignChildrenElem(elem);
-
-                TestUtil.setInputVal(inputElem, mockText);
-                TestUtil.triggerEvt(inputElem, 'change');
-                assignChildrenElem(elem);
+                helper.assignChildrenElem();
+                helper.triggerInputChange();
             });
 
             it('should handle the input change', () => {
@@ -145,9 +150,9 @@ describe('Component - Search', () => {
             });
 
             it('should handle the clear input button click', () => {
-                spyInputFocus = jest.spyOn(inputElem, 'focus');     // Only spy input element after it's assigned & exists
-                TestUtil.triggerEvt(clearIconBtnElem, 'click');
-                TestUtil.triggerEvt(inputElem, 'change');
+                // Only spy input element after it's assigned & exists
+                spyInputFocus = jest.spyOn(inputElem, 'focus');
+                helper.triggerClearBtnClick();
 
                 expect(mockOnClear).toHaveBeenCalled();
                 expect(spySetState).toHaveBeenCalledWith({hsText: false});
@@ -159,11 +164,8 @@ describe('Component - Search', () => {
             beforeEach(() => {
                 spySetState = jest.spyOn(_Search.prototype, 'setState');
                 TestUtil.renderPlain(elem, Search, {...mockProps, onChange: null, onClear: null});
-                assignChildrenElem(elem);
-
-                TestUtil.setInputVal(inputElem, mockText);
-                TestUtil.triggerEvt(inputElem, 'change');
-                assignChildrenElem(elem);
+                helper.assignChildrenElem();
+                helper.triggerInputChange();
             });
 
             it('should handle the input change', () => {
@@ -172,9 +174,9 @@ describe('Component - Search', () => {
             });
 
             it('should handle the clear input button click', () => {
-                spyInputFocus = jest.spyOn(inputElem, 'focus');     // Only spy input element after it's assigned & exists
-                TestUtil.triggerEvt(clearIconBtnElem, 'click');
-                TestUtil.triggerEvt(inputElem, 'change');
+                // Only spy input element after it's assigned & exists
+                spyInputFocus = jest.spyOn(inputElem, 'focus');
+                helper.triggerClearBtnClick();
 
                 expect(mockOnClear).not.toHaveBeenCalled();
                 expect(spySetState).toHaveBeenCalledWith({hsText: false});
