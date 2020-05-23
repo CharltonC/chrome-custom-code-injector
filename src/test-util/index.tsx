@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
+import { IEvtCls, TCmpCls, TCmpProps } from './type';
+
 export const TestUtil = {
     setupElem(): HTMLElement {
         const elem: HTMLElement = document.createElement("div");
@@ -16,19 +18,19 @@ export const TestUtil = {
 
     // Fix to Issue w/ Change event not fired when Setting Input value
     // - Ref: https://stackoverflow.com/questions/23892547/what-is-the-best-way-to-trigger-onchange-event-in-react-js/46012210#46012210
-    setInputVal(inputElem: HTMLInputElement | HTMLTextAreaElement, val: string, isInputElem: boolean = true) {
+    setInputVal(inputElem: HTMLInputElement | HTMLTextAreaElement, val: string, isInputElem: boolean = true): void {
         const ntvProto = isInputElem ? HTMLInputElement.prototype : HTMLTextAreaElement.prototype;
         const ntvSetter = Object.getOwnPropertyDescriptor(ntvProto, 'value').set;
         ntvSetter.call(inputElem, val);
     },
 
-    renderPlain(elem: HTMLElement, Cmp, stateProps = {}) {
+    renderPlain(elem: HTMLElement, Cmp: TCmpCls, stateProps: TCmpProps = {}): void {
         act(() => {
             render(<Cmp {...stateProps} />, elem);
         });
     },
 
-    renderInStatefulWrapper(elem: HTMLElement, Cmp, stateProps = {}) {
+    renderInStatefulWrapper(elem: HTMLElement, Cmp: TCmpCls, stateProps: TCmpProps = {}): void {
         class Wrapper extends Component<any, any> {
             constructor(props) {
                 super(props);
@@ -43,7 +45,7 @@ export const TestUtil = {
         });
     },
 
-    triggerEvt(elem: HTMLElement, evtType: string, EvtCls: any = Event, bubbles = true) {
+    triggerEvt(elem: HTMLElement, evtType: string, EvtCls: IEvtCls = Event, bubbles = true): void {
         act(() => {
             elem.dispatchEvent(new EvtCls(evtType, { bubbles }));
         });
