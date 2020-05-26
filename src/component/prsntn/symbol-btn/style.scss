@@ -17,6 +17,13 @@
             }
         }
 
+
+        &:not(:disabled) {
+            & + .symbol-btn__text:hover {
+                cursor: pointer;
+            }
+        }
+
         &:disabled {
             & + .symbol-btn__text {
                 opacity: 0.4;

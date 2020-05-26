@@ -1,18 +1,17 @@
 import React, { memo, FC } from 'react';
 import * as NSymbolBtn from './type';
 
-const _SymbolBtn: FC<NSymbolBtn.IProps> = ({text, ...checkboxProps}) => {
+const _SymbolBtn: FC<NSymbolBtn.IProps> = ({id, text, ...checkboxProps}) => {
     const baseCls = 'symbol-btn';
     const inputCls = `${baseCls}__checkbox`;
-    const inputId = `${baseCls}-${text}`;
     const spanCls = `${baseCls}__text`;
 
     return (
-        <label htmlFor={inputId} className={baseCls}>
+        <label htmlFor={id} className={baseCls}>
             <input
                 type="checkbox"
                 className={inputCls}
-                id={inputId}
+                id={id}
                 {...checkboxProps}
                 >
             </input>

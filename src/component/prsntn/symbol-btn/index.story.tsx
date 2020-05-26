@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SymbolBtn } from '.';
 
 export default {
@@ -6,15 +6,25 @@ export default {
     component: SymbolBtn,
 };
 
-export const JsSymbol = () => (
-    <>
-        <SymbolBtn text="Js" defaultChecked />
-        <SymbolBtn text="Js" defaultChecked disabled />
-        <SymbolBtn text="Js" />
-        <SymbolBtn text="Js" disabled />
-    </>
-);
+export const JsSymbol = () => {
+    // 2-way binding
+    const [ checked, setChecked ] = useState(true);
+    const onChange = (evt: Event, isChecked: boolean) => setChecked(checked);
+    const onChangeWoState = () => console.log('onChangeWoState');
 
+    return (
+        <>
+            <SymbolBtn id="js-1" text="Js" />
+            <SymbolBtn id="js-2" text="Js" defaultChecked />
+            <SymbolBtn id="js-3" text="Js" defaultChecked={checked} onChange={onChange} />
+            <SymbolBtn id="js-4" text="Js" onChange={onChangeWoState} />
+            <SymbolBtn id="js-5" text="Js" defaultChecked={true} disabled />
+            <SymbolBtn id="js-5" text="Js" disabled />
+        </>
+    )
+};
+
+/*
 export const CssSymbol = () => (
     <>
         <SymbolBtn text="Css" defaultChecked />
@@ -31,3 +41,4 @@ export const LibSymbol = () => (
         <SymbolBtn text="Lib" disabled />
     </>
 );
+ */

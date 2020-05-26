@@ -1,3 +1,5 @@
 export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    text: string
+    id: string;
+    text: string;
+    onChange?: (...args: any[]) => void
 }

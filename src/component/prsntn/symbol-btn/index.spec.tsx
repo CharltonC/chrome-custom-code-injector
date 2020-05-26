@@ -1,5 +1,6 @@
 import { TestUtil } from '../../../test-util/';
 import { SymbolBtn } from './';
+import * as NSymbolBtn from './type';
 
 describe('Component - Symbol Button', () => {
     let elem: HTMLElement;
@@ -7,9 +8,16 @@ describe('Component - Symbol Button', () => {
     let spanElem: HTMLElement;
     let inputElem: HTMLInputElement;
 
+    const mockProps: NSymbolBtn.IProps = {
+        id: 'js-1',
+        text: 'Js',
+        defaultChecked: true,
+        onChange: jest.fn()
+    };
+
     beforeEach(() => {
         elem = TestUtil.setupElem();
-        TestUtil.renderPlain(elem, SymbolBtn, { text: 'Js', defaultChecked: true});
+        TestUtil.renderPlain(elem, SymbolBtn, mockProps);
         labelElem = elem.children[0] as HTMLElement;
         spanElem = labelElem.querySelector('span');
         inputElem = labelElem.querySelector('input');
@@ -21,16 +29,14 @@ describe('Component - Symbol Button', () => {
     });
 
     it("should pass the id and text", () => {
-        expect(labelElem.getAttribute('for')).toBe('symbol-btn-Js');
-        expect(inputElem.id).toBe('symbol-btn-Js');
-        expect(spanElem.textContent).toBe('Js');
+        expect(labelElem.getAttribute('for')).toBe(mockProps.id);
+        expect(inputElem.id).toBe(mockProps.id);
+        expect(spanElem.textContent).toBe(mockProps.text);
     });
 
-    it('should pass the unknown props', () => {
-        expect(inputElem.checked).toBe(true);
-
+    it('should trigger the optional `onChange` callback', () => {
         TestUtil.triggerEvt(labelElem, 'click', MouseEvent);
-        expect(inputElem.checked).toBe(false);
+        expect(mockProps.onChange).toHaveBeenCalled();
     });
 });
 
