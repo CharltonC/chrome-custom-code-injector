@@ -1,4 +1,4 @@
-import React, { memo, Component } from 'react';
+import React, { memo, Component, ReactElement } from 'react';
 
 import { staticIconElem } from '../../static/icon';
 import * as NInput from './type';
@@ -13,22 +13,28 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
         // Text input (either use internal or external)
         const { text, validate } = this.props;
         this.hsExtState = typeof text !== 'undefined';
-        this.hsValidationRules = typeof validate !== 'undefined' && validate.length >= 1;
+        this.hsValidationRules = typeof validate !== 'undefined' && validate.length > 0;
 
         // Internal state only
         this.state = {
-            isValid: true,
+            isValid: null,
             errMsg: []
         };
 
         // handlers
-        this.onInputChange = this.onInputChange.bind(this);
+        this.onTriggerValidate = this.onTriggerValidate.bind(this);
     }
 
     /**
      * Note:
-     * - wont work: let isValid: boolean = isFnRule ? rule(val) : rule.test(val);
-     * - works: if (rule instanceOf Function) { isValid = rule(val); }
+     * - wont work: `
+     * let isFnRule = rule instanceof Function;
+     * let isValid: boolean = isFnRule ? rule(val) : rule.test(val);
+     * `
+     * - works:
+     * `const isValid = (rule instanceof Function) ? rule(val) : rule.test(val);`
+     * or
+     * `if (rule instanceof Function) { isValid = rule(val); }`
      */
     getErrMsg(val: string, rules: NInput.IValidationConfig[]): string[] {
         const errMsg: string[] = [];
@@ -39,7 +45,7 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
                 isValid = rule(val);
 
             } else if (rule instanceof RegExp) {
-                isValid = rule.test(val);
+                isValid = val.search(rule) !== -1;
             }
 
             if (!isValid) errMsg.push(msg);
@@ -47,7 +53,8 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
         return errMsg;
     }
 
-    onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
+    // only trigger validation when blur & input
+    onTriggerValidate(evt: React.ChangeEvent<HTMLInputElement>): void {
         const { onChange, validate } = this.props;
         const val: string = evt.target.value;
 
@@ -56,7 +63,7 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
 
         // Only validate when there validation rules passed
         if (this.hsValidationRules) {
-            const errMsg: string[] = this.getErrMsg(val, validate);
+            const errMsg = this.getErrMsg(val, validate);
             const isValid: boolean = !errMsg.length;
             this.setState({isValid, errMsg});
         }
@@ -68,11 +75,14 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
 
         // Wrapper
         const baseCls: string = 'text-ipt';
-        const validateCls: string = validate ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
+        const validateCls: string = (validate && (isValid !== null)) ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
         const wrapperCls: string = `${baseCls} ${validateCls}`;
 
         // Input
         const inputProps = this.hsExtState ? {...props, value: text} : {...props};
+
+        // Icon
+        const validIcon: ReactElement = (this.hsValidationRules && isValid) ? staticIconElem('valid') : null;
 
         return (
             <div className={wrapperCls} >
@@ -81,19 +91,19 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
                         id={id}
                         className="text-ipt__input"
                         type="text"
-                        onChange={this.onInputChange}
+                        onChange={this.onTriggerValidate}
+                        onBlur={this.onTriggerValidate}
                         {...inputProps}
                         >
                     </input>
-                    { (validate && isValid) ? staticIconElem('valid') : null }
+                    { validIcon }
                 </label>
-                { validate ?
+                { !validate ? null :
                 <ul className="text-ipt__err">
                     { this.state.errMsg.map((msg, idx) => (
                         <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>
                     )) }
-                </ul> :
-                null }
+                </ul> }
             </div>
         );
     }

@@ -43,6 +43,7 @@
     }
 
     &__err {
+        display: none;
         list-style-type: disc;
         list-style-position: inside;
         margin-top: 5px;
@@ -54,13 +55,13 @@
         .text-ipt__input:focus {
             border-bottom: 1px solid #FF0000;
         }
+
+        .text-ipt__err {
+            display: block;
+        }
     }
 
     &--valid {
-        .text-ipt {
-            display: none;
-        }
-
         .text-ipt__input:focus ~ .icon {
             display: inline-flex;
         }

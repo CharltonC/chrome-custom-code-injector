@@ -12,7 +12,7 @@ export const DefaultInput = () => {
     const validationRules = [
         {rule: val => !!val, msg: 'must not be empty' },
         {rule: val => val.length >=3 , msg: 'must be more than or equal to 3 characters' },
-        {rule: /ab/g , msg: 'must contain character `ab`' },
+        {rule: /(abc)/g , msg: 'must contain character `ab`'},
     ];
 
     return (
