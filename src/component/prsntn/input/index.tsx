@@ -1,13 +1,13 @@
 import React, { memo, Component, ReactElement } from 'react';
 
 import { staticIconElem } from '../../static/icon';
-import * as NInput from './type';
+import { IProps, IState, IValidationConfig } from './type';
 
-export class _Input extends Component<NInput.IProps, NInput.IState> {
+export class _Input extends Component<IProps, IState> {
     private hsExtState: boolean;
     private hsValidationRules: boolean;
 
-    constructor(props: NInput.IProps) {
+    constructor(props: IProps) {
         super(props);
 
         // Text input (either use internal or external)
@@ -16,17 +16,20 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
         this.hsValidationRules = typeof validate !== 'undefined' && validate.length > 0;
 
         // Internal state only
+        // - `isValid: null` is used for indicating if it has been set for the 1st time or not
         this.state = {
             isValid: null,
             errMsg: []
         };
 
         // handlers
-        this.onTriggerValidate = this.onTriggerValidate.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onBlur = this.onBlur.bind(this);
     }
 
+    //// HELPER FN
     /**
-     * Note:
+     * TODONote:
      * - wont work: `
      * let isFnRule = rule instanceof Function;
      * let isValid: boolean = isFnRule ? rule(val) : rule.test(val);
@@ -36,41 +39,56 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
      * or
      * `if (rule instanceof Function) { isValid = rule(val); }`
      */
-    getErrMsg(val: string, rules: NInput.IValidationConfig[]): string[] {
+    // only trigger validation when blur & input
+    // when there are 3 char or more
+    getValidState(text: string, rules: IValidationConfig[]): IState {
         const errMsg: string[] = [];
-        rules.forEach(({rule, msg}: NInput.IValidationConfig) => {
+        rules.forEach(({rule, msg}: IValidationConfig) => {
             let isValid: boolean = true;
 
             if (rule instanceof Function) {
-                isValid = rule(val);
+                isValid = rule(text);
 
             } else if (rule instanceof RegExp) {
-                isValid = val.search(rule) !== -1;
+                isValid = text.search(rule) !== -1;
             }
 
             if (!isValid) errMsg.push(msg);
         });
-        return errMsg;
+        const isValid: boolean = !errMsg.length;
+        return { isValid, errMsg };
     }
 
-    // only trigger validation when blur & input
-    onTriggerValidate(evt: React.ChangeEvent<HTMLInputElement>): void {
-        const { onChange, validate } = this.props;
+    setValidateState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (...args: any[]) => void, charLimit: number): void {
+        const { validate } = this.props;
+        const { isValid } = this.state;
+        const { hsValidationRules } = this;
         const val: string = evt.target.value;
 
-        // handle two way binding internally if needed for external state
-        if (onChange) onChange(evt, val, val.length >= 2);
+        // Get validate state anyway
+        const validState: IState = hsValidationRules ? this.getValidState(val, validate) : null;
 
-        // Only validate when there validation rules passed
-        if (this.hsValidationRules) {
-            const errMsg = this.getErrMsg(val, validate);
-            const isValid: boolean = !errMsg.length;
-            this.setState({isValid, errMsg});
-        }
+        // Only set validate state only when there r validation rules & either of the following:
+        // - when its 1st time focus & there r more than or eq. to 3 characters + validation rules exist
+        // - when its blurred (regardless of character limit, i.e. `charLimit=0`) + validation rules exist
+        const isFitForValidation: boolean = hsValidationRules && ((isValid === null && val.length >= charLimit) || isValid !== null);
+        if (isFitForValidation) this.setState(validState);
+
+        // handle two way binding internally if needed for external state
+        if (evtCbFn) evtCbFn(evt, val, val.length >= 3, validState);
+    }
+
+    //// EVENT HANDLE
+    onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
+        this.setValidateState(evt, this.props.onInputChange, 3);
+    }
+
+    onBlur(evt: React.ChangeEvent<HTMLInputElement>): void {
+        this.setValidateState(evt, this.props.onInputBlur, 0);
     }
 
     render() {
-        const {id, text, onChange, validate, ...props} = this.props;
+        const {id, text, onInputChange, onInputBlur, validate, ...props} = this.props;
         const { isValid } = this.state;
 
         // Wrapper
@@ -91,8 +109,8 @@ export class _Input extends Component<NInput.IProps, NInput.IState> {
                         id={id}
                         className="text-ipt__input"
                         type="text"
-                        onChange={this.onTriggerValidate}
-                        onBlur={this.onTriggerValidate}
+                        onChange={this.onChange}
+                        onBlur={this.onBlur}
                         {...inputProps}
                         >
                     </input>

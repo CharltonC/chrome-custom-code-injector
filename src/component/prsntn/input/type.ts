@@ -7,10 +7,11 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
     text?: string;
     validate?: IValidationConfig[];
-    onChange?: (...args: any[]) => void;
+    onInputChange?: (...args: any[]) => void;
+    onInputBlur?: (...args: any[]) => void;
 }
 
 export interface IState {
-    isValid: boolean;
+    isValid: boolean | null;
     errMsg: string[];
 }
