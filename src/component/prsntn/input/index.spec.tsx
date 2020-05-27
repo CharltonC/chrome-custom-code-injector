@@ -283,14 +283,3 @@ describe('Component - Text Input', () => {
         });
     });
 });
-
-/**
- * TODO:
- *
- * DOM
- * - id, text/value, wrapper validation class
- * - callbacks
- * - validation, icon
- * - error msg
- * - event: blur, change
- */
