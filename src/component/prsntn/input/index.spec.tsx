@@ -3,7 +3,7 @@
 // import { act } from "react-dom/test-utils";
 
 import { TestUtil } from '../../../test-util/';
-import { IProps, IState , IValidationConfig } from './type';
+import { IProps, State , IValidationConfig } from './type';
 import { _TextInput, TextInput } from './';
 
 describe('Component - Text Input', () => {
@@ -46,7 +46,7 @@ describe('Component - Text Input', () => {
             let mockFnRule: jest.Mock;
             let mockRegexRule: RegExp;
             let spyStrSearch: jest.SpyInstance;
-            let validState: IState;
+            let validState: State;
 
             beforeEach(() => {
                 mockFnRule = jest.fn();
@@ -104,7 +104,7 @@ describe('Component - Text Input', () => {
 
         describe('Method - Set valid state', () => {
             const mockText: string = 'lorem';
-            const mockRtnState: IState = {isValid: true, errMsg: []};
+            const mockRtnState: State = {isValid: true, errMsg: []};
             const mockEvtCbFn: jest.Mock = jest.fn();
             const mockEvt: any = { target: { value: mockText }};
             const mockProps: IProps = {id: ''};

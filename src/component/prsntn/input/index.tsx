@@ -1,9 +1,9 @@
 import React, { memo, Component } from 'react';
 
 import { staticIconElem } from '../../static/icon';
-import { IProps, IState, IValidationConfig } from './type';
+import { IProps, State, IValidationConfig } from './type';
 
-export class _TextInput extends Component<IProps, IState> {
+export class _TextInput extends Component<IProps, State> {
     private hsExtState: boolean;
     private hsValidationRules: boolean;
 
@@ -14,13 +14,7 @@ export class _TextInput extends Component<IProps, IState> {
         const { text, validate } = this.props;
         this.hsExtState = typeof text !== 'undefined';
         this.hsValidationRules = typeof validate !== 'undefined' && validate.length > 0;
-
-        // Internal state only
-        // - `isValid: null` is used for indicating if it has been set for the 1st time or not
-        this.state = {
-            isValid: null,
-            errMsg: []
-        };
+        this.state = new State();
 
         // handlers
         this.onChange = this.onChange.bind(this);
@@ -41,7 +35,7 @@ export class _TextInput extends Component<IProps, IState> {
      */
     // only trigger validation when blur & input
     // when there are 3 char or more
-    getValidState(text: string, rules: IValidationConfig[]): IState {
+    getValidState(text: string, rules: IValidationConfig[]): State {
         const errMsg: string[] = [];
         rules.forEach(({rule, msg}: IValidationConfig) => {
             let isValid: boolean = true;
@@ -66,7 +60,7 @@ export class _TextInput extends Component<IProps, IState> {
         const val: string = evt.target.value;
 
         // Get validate state anyway
-        const validState: IState = hsValidationRules ? this.getValidState(val, validate) : null;
+        const validState: State = hsValidationRules ? this.getValidState(val, validate) : null;
 
         // Only set validate state only when there r validation rules & either of the following:
         // - when its 1st time focus & there r more than or eq. to 3 characters + validation rules exist
@@ -91,20 +85,21 @@ export class _TextInput extends Component<IProps, IState> {
         const {id, text, onInputChange, onInputBlur, validate, ...props} = this.props;
         const { isValid } = this.state;
         const { hsValidationRules } = this;
+        const hsValidState: boolean = hsValidationRules && (isValid !== null);
 
         // Wrapper
         const baseCls: string = 'text-ipt';
-        const validateCls: string = (validate && (isValid !== null)) ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
+        const validateCls: string = hsValidState ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
         const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
 
         // Input
         const inputProps = this.hsExtState ? {...props, value: text} : {...props};
 
         // Icon
-        const hsIcon: boolean = hsValidationRules && isValid;
+        const hsIcon: boolean = hsValidState && isValid;
 
         // Error Msg
-        const hsErrMsg: boolean = hsValidationRules && !isValid;
+        const hsErrMsg: boolean = hsValidState && !isValid;
 
         return (
             <div className={wrapperCls} >

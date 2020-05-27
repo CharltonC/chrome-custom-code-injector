@@ -11,7 +11,11 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     onInputBlur?: (...args: any[]) => void;
 }
 
-export interface IState {
-    isValid: boolean | null;
-    errMsg: string[];
+/**
+ * Internal state only
+ */
+export class State {
+    // null` is used for indicating if it has been set for the 1st time or not
+    isValid: boolean | null = null;
+    errMsg: string[] = [];
 }
