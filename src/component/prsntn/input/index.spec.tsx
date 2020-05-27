@@ -223,7 +223,7 @@ describe('Component - Text Input', () => {
         });
 
         describe('props: validation rules', () => {
-            it('should not render class names, validated icon and error list when rules are not provided', () => {
+            it('should render class names, validated icon and error list correctly when rules are not provided', () => {
                 TestUtil.renderPlain(elem, TextInput, mockProps);
                 getChildElem();
 
