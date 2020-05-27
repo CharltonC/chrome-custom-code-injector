@@ -18,11 +18,11 @@
         transition: border 0.2s ease;
         outline: none;
         border: none;
-        border-bottom: 1px solid #c4c4c4;
+        border-bottom: 1px solid $light-gray;
         padding: 5px 30px 5px 10px;
         clear: both;
         font: 14px $roboto-reg;
-        color: #505050;
+        color: $dark-gray-100;
 
         &::-webkit-input-placeholder {
             font: 14px $roboto-reg;
@@ -30,7 +30,7 @@
         }
 
         &:focus {
-            border-bottom: 1px solid #5AB3AD;
+            border-bottom: 1px solid $teal;
         }
     }
 
@@ -48,12 +48,12 @@
         list-style-position: inside;
         margin-top: 5px;
         font: 12px $roboto-reg;
-        color: #FF0000;
+        color: $red;
     }
 
     &--invalid {
         .text-ipt__input:focus {
-            border-bottom: 1px solid #FF0000;
+            border-bottom: 1px solid $red;
         }
 
         .text-ipt__err {

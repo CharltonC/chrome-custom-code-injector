@@ -12,7 +12,7 @@
                 z-index: 100;
                 width: 24px;
                 height: 2px;
-                background: $green;
+                background: $teal-100;
                 transform: rotateZ(-45deg);
             }
         }
@@ -47,8 +47,8 @@
         width: 24px;
         height: 24px;
         border-radius: 12px;
-        border: 2px solid $green;
+        border: 2px solid $teal-100;
         font: bold 9px $arial;
-        color: $green;
+        color: $teal-100;
     }
 }
