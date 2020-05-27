@@ -40,7 +40,7 @@ describe('Component - Text Input', () => {
             });
         });
 
-        describe('Component Method - Get Valid State', () => {
+        describe('Method - Get Valid State', () => {
             const mockTextVal: string = 'lorem';
             const getValidState = _TextInput.prototype.getValidState;
             let mockFnRule: jest.Mock;
@@ -102,7 +102,7 @@ describe('Component - Text Input', () => {
             });
         });
 
-        describe('Component Method - Set valid state', () => {
+        describe('Method - Set valid state', () => {
             const mockText: string = 'lorem';
             const mockRtnState: IState = {isValid: true, errMsg: []};
             const mockEvtCbFn: jest.Mock = jest.fn();
@@ -156,7 +156,7 @@ describe('Component - Text Input', () => {
             });
         });
 
-        describe('Component Method - Event handlers', () => {
+        describe('Method - Event handlers', () => {
             let spySetValidState: jest.SpyInstance;
             let cmpInst: _TextInput;
             const mockEvt: any = {};
