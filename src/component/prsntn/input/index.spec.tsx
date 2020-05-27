@@ -7,20 +7,12 @@ import { IProps, IState , IValidationConfig } from './type';
 import { _TextInput, TextInput } from './';
 
 describe('Component - Text Input', () => {
-    let elem: HTMLElement;
-
     beforeEach(() => {
-        elem = TestUtil.setupElem();
-        // TestUtil.renderPlain(elem, TextInput, {
-
-        // });
-        // childElem = elem.children[0];
     });
 
     afterEach(() => {
-        TestUtil.teardown(elem);
-        elem = null;
         jest.clearAllMocks();
+        jest.restoreAllMocks();
     });
 
     describe('Component Class', () => {
@@ -188,7 +180,107 @@ describe('Component - Text Input', () => {
     });
 
     describe('DOM', () => {
+        let elem: HTMLElement;
+        let wrapperElem: HTMLElement;
+        let labelElem: HTMLElement;
+        let inputElem: HTMLInputElement;
+        let iconElem: HTMLElement;
+        let listElem: HTMLElement;
 
+        const mockId: string = 'lorem';
+        const mockTxtInput: string = 'some';
+        const mockValidationRules: IValidationConfig[] = [
+            {rule: /abc/g, msg: 'should contain abc'}
+        ];
+        const mockProps: IProps = {id: mockId};
+
+        function getChildElem() {
+            wrapperElem = elem.children[0] as HTMLElement;
+            labelElem = elem.querySelector('label');
+            inputElem = elem.querySelector('input');
+            iconElem = elem.querySelector('.icon');
+            listElem = elem.querySelector('ul');
+        }
+
+        beforeEach(() => {
+            elem = TestUtil.setupElem();
+        });
+
+        afterEach(() => {
+            TestUtil.teardown(elem);
+            elem = null;
+        });
+
+        describe('props: validation rules', () => {
+            it('should render correctly when not provided', () => {
+                TestUtil.renderPlain(elem, TextInput, mockProps);
+                getChildElem();
+
+                expect(wrapperElem.className).toBe('text-ipt');
+                expect(labelElem.getAttribute('for')).toBe(mockId);
+                expect(inputElem.id).toBe(mockId);
+                expect(iconElem).toBeFalsy();
+                expect(listElem).toBeFalsy();
+            });
+
+            it('should render correctly when provided', () => {
+                TestUtil.renderPlain(elem, TextInput, {...mockProps, validate: mockValidationRules});
+                getChildElem();
+
+                TestUtil.triggerEvt(inputElem, 'blur');
+                getChildElem();
+                expect(wrapperElem.className).toContain('text-ipt--invalid');
+                expect(iconElem).toBeFalsy();
+                expect(listElem.textContent).toContain(mockValidationRules[0].msg);
+
+                inputElem.value = 'abc';
+                TestUtil.triggerEvt(inputElem, 'blur');
+                getChildElem();
+                expect(wrapperElem.className).toContain('text-ipt--valid');
+                expect(iconElem).toBeTruthy();
+                expect(listElem).toBeFalsy();
+            });
+        });
+
+        describe('props: text', () => {
+            it('should render with id and class initially', () => {
+                TestUtil.renderPlain(elem, TextInput, mockProps);
+                getChildElem();
+
+                expect(inputElem.value).toBe('');
+            });
+
+            it('should render the passed text input', () => {
+                TestUtil.renderPlain(elem, TextInput, {...mockProps, text: mockTxtInput});
+                getChildElem();
+
+                expect(inputElem.value).toBe(mockTxtInput);
+            });
+        });
+
+        describe('internal event handlers', () => {
+            let spyOnChange: jest.SpyInstance;
+            let spyOnBlur: jest.SpyInstance;
+
+            beforeEach(() => {
+                spyOnChange = jest.spyOn(_TextInput.prototype, 'onChange');
+                spyOnBlur = jest.spyOn(_TextInput.prototype, 'onBlur');
+
+                TestUtil.renderPlain(elem, TextInput, mockProps);
+                getChildElem();
+            });
+
+            it('should trigger `onChange`', () => {
+                TestUtil.setInputVal(inputElem, 'dummy');
+                TestUtil.triggerEvt(inputElem, 'change');
+                expect(spyOnChange).toHaveBeenCalled();
+            });
+
+            it('should trigger `onBlur`', () => {
+                TestUtil.triggerEvt(inputElem, 'blur');
+                expect(spyOnBlur).toHaveBeenCalled();
+            });
+        });
     });
 });
 
