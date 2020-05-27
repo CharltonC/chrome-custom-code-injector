@@ -90,6 +90,7 @@ export class _TextInput extends Component<IProps, IState> {
     render() {
         const {id, text, onInputChange, onInputBlur, validate, ...props} = this.props;
         const { isValid } = this.state;
+        const { hsValidationRules } = this;
 
         // Wrapper
         const baseCls: string = 'text-ipt';
@@ -100,7 +101,7 @@ export class _TextInput extends Component<IProps, IState> {
         const inputProps = this.hsExtState ? {...props, value: text} : {...props};
 
         // Icon
-        const validIcon: ReactElement = (this.hsValidationRules && isValid) ? staticIconElem('valid') : null;
+        const validIcon: ReactElement = (hsValidationRules && isValid) ? staticIconElem('valid') : null;
 
         return (
             <div className={wrapperCls} >
@@ -116,7 +117,7 @@ export class _TextInput extends Component<IProps, IState> {
                     </input>
                     { validIcon }
                 </label>
-                { !validate ? null :
+                { !hsValidationRules ? null :
                 <ul className="text-ipt__err">
                     { this.state.errMsg.map((msg, idx) => (
                         <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>
