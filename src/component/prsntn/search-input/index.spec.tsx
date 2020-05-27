@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../test-util/';
-import { _Search, Search } from './';
+import { _SearchInput, SearchInput } from './';
 
 describe('Component - Search', () => {
     let elem: HTMLElement;
@@ -50,7 +50,7 @@ describe('Component - Search', () => {
 
     describe('props: id', () => {
         it('should reflect id state in label, input', () => {
-            TestUtil.renderPlain(elem, Search, {...mockProps});
+            TestUtil.renderPlain(elem, SearchInput, {...mockProps});
             helper.assignChildrenElem();
 
             expect(labelElem.getAttribute('for')).toBe(mockId);
@@ -61,7 +61,7 @@ describe('Component - Search', () => {
     describe('props: text', () => {
         describe('when input value is not provided', () => {
             it('should reflect internal state input, search icon, clear button', () => {
-                TestUtil.renderPlain(elem, Search, {...mockProps});
+                TestUtil.renderPlain(elem, SearchInput, {...mockProps});
                 helper.assignChildrenElem();
 
                 // initial
@@ -81,7 +81,7 @@ describe('Component - Search', () => {
 
         describe('when input value is provided', () => {
             it('should reflect text state in input, search icon, clear button when value is empty', () => {
-                TestUtil.renderPlain(elem, Search, {...mockProps, text: ''});
+                TestUtil.renderPlain(elem, SearchInput, {...mockProps, text: ''});
                 helper.assignChildrenElem();
 
                 // initial
@@ -95,7 +95,7 @@ describe('Component - Search', () => {
             });
 
             it('should reflect text state in input, search icon, clear button when value is not empty', () => {
-                TestUtil.renderPlain(elem, Search, {...mockProps, text: mockText});
+                TestUtil.renderPlain(elem, SearchInput, {...mockProps, text: mockText});
                 helper.assignChildrenElem();
 
                 // initial
@@ -112,7 +112,7 @@ describe('Component - Search', () => {
 
     describe('props: disabled', () => {
         it('should reflect non-disabled state in form elements when value is empty or when value is not passed', () => {
-            TestUtil.renderPlain(elem, Search, {...mockProps, text: ''});
+            TestUtil.renderPlain(elem, SearchInput, {...mockProps, text: ''});
             helper.assignChildrenElem();
 
             expect(labelElem.className).not.toContain('search--disabled');
@@ -120,7 +120,7 @@ describe('Component - Search', () => {
         });
 
         it('should reflect disabled state in form elements when value is not empty ', () => {
-            TestUtil.renderPlain(elem, Search, {...mockProps, disabled: true, text: mockText});
+            TestUtil.renderPlain(elem, SearchInput, {...mockProps, disabled: true, text: mockText});
             helper.assignChildrenElem();
 
             expect(labelElem.className).toContain('search--disabled');
@@ -135,8 +135,8 @@ describe('Component - Search', () => {
 
         describe('when callbacks `onChage`, `onClear` are provided', () => {
             beforeEach(() => {
-                spySetState = jest.spyOn(_Search.prototype, 'setState');
-                TestUtil.renderPlain(elem, Search, {...mockProps});
+                spySetState = jest.spyOn(_SearchInput.prototype, 'setState');
+                TestUtil.renderPlain(elem, SearchInput, {...mockProps});
                 helper.assignChildrenElem();
                 helper.triggerInputChange();
             });
@@ -162,8 +162,8 @@ describe('Component - Search', () => {
 
         describe('when callbacks `onChage`, `onClear` are not provided', () => {
             beforeEach(() => {
-                spySetState = jest.spyOn(_Search.prototype, 'setState');
-                TestUtil.renderPlain(elem, Search, {...mockProps, onChange: null, onClear: null});
+                spySetState = jest.spyOn(_SearchInput.prototype, 'setState');
+                TestUtil.renderPlain(elem, SearchInput, {...mockProps, onChange: null, onClear: null});
                 helper.assignChildrenElem();
                 helper.triggerInputChange();
             });

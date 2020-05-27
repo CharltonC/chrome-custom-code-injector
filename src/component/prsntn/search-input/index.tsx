@@ -3,7 +3,7 @@ import React, { memo, ReactElement, Component } from 'react';
 import { staticIconElem } from '../../static/icon';
 import * as NSearch from './type';
 
-export class _Search extends Component<NSearch.IProps, NSearch.State> {
+export class _SearchInput extends Component<NSearch.IProps, NSearch.State> {
     private inputElem: HTMLInputElement;
     private hsExtState: boolean;
 
@@ -87,4 +87,4 @@ export class _Search extends Component<NSearch.IProps, NSearch.State> {
     }
 }
 
-export const Search = memo(_Search);
+export const SearchInput = memo(_SearchInput);

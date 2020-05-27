@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Search } from '.';
+import { SearchInput } from '.';
 
 export default {
-    title: 'Search',
-    component: Search,
+    title: 'Search Input',
+    component: SearchInput,
 };
 
 const defStyle = {backgroundColor: '#5AB3AD', padding: '15px', color: 'white'};
@@ -11,7 +11,7 @@ const defStyle = {backgroundColor: '#5AB3AD', padding: '15px', color: 'white'};
 export const DefaultSearch = () => {
     return (
         <div style={defStyle} >
-            <Search id="" />
+            <SearchInput id="" />
         </div>
     )
 };
@@ -19,7 +19,7 @@ export const DefaultSearch = () => {
 export const DisabledSearch = () => {
     return (
         <div style={defStyle} >
-            <Search id="" disabled />
+            <SearchInput id="" disabled />
         </div>
     )
 };
@@ -33,7 +33,7 @@ export const WithPassedValue = () => {
         <div style={defStyle} >
             <p>Text passed to search component: {text}</p>
             <br/>
-            <Search id="lorem" text={text} onChange={onChange} onClear={onClear}/>
+            <SearchInput id="lorem" text={text} onChange={onChange} onClear={onClear}/>
         </div>
     )
 };
