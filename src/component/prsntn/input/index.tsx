@@ -95,7 +95,7 @@ export class _TextInput extends Component<IProps, IState> {
         // Wrapper
         const baseCls: string = 'text-ipt';
         const validateCls: string = (validate && (isValid !== null)) ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
-        const wrapperCls: string = `${baseCls} ${validateCls}`;
+        const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
 
         // Input
         const inputProps = this.hsExtState ? {...props, value: text} : {...props};
