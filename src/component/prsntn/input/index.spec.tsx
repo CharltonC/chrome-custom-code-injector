@@ -33,3 +33,31 @@
 //     });
 // });
 
+/**
+ * TODO:
+ *
+ * constructor
+ * - hsExtState
+ * - hsValidationRules
+ *
+ * getValidState
+ * - fn rule (jest)
+ * - regext (String.prototype.search)
+ * - return state
+ *
+ * setValidateState
+ * - validState call
+ * - callback (jest) + args
+ * - chracter limit
+ * - state.isValid null
+ *
+ * onChange, onBlur
+ * - args
+ *
+ * DOM
+ * - id, text/value, wrapper validation class
+ * - callbacks
+ * - validation, icon
+ * - error msg
+ * - event: blur, change
+ */
