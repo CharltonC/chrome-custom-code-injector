@@ -46,7 +46,7 @@ export class _TextInput extends Component<IProps, IState> {
         rules.forEach(({rule, msg}: IValidationConfig) => {
             let isValid: boolean = true;
 
-            if (rule instanceof Function) {
+            if (typeof rule === 'function') {
                 isValid = rule(text);
 
             } else if (rule instanceof RegExp) {
