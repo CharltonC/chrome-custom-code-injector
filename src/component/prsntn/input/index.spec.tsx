@@ -1,7 +1,3 @@
-// import React from "react";
-// import { render } from "react-dom";
-// import { act } from "react-dom/test-utils";
-
 import { TestUtil } from '../../../test-util/';
 import { IProps, State , IValidationConfig } from './type';
 import { _TextInput, TextInput } from './';
@@ -189,6 +185,7 @@ describe('Component - Text Input', () => {
 
         const mockId: string = 'lorem';
         const mockTxtInput: string = 'some';
+        const mockValidTxtInput: string  = 'abc';
         const mockValidationRules: IValidationConfig[] = [
             {rule: /abc/g, msg: 'should contain abc'}
         ];
@@ -245,7 +242,7 @@ describe('Component - Text Input', () => {
                 expect(listElem.textContent).toContain(mockValidationRules[0].msg);
 
                 // Trigger valid state
-                TestUtil.setInputVal(inputElem, 'abc');
+                TestUtil.setInputVal(inputElem, mockValidTxtInput);
                 TestUtil.triggerEvt(inputElem, 'change');
                 getChildElem();
                 expect(wrapperElem.className).toContain('text-ipt--valid');
