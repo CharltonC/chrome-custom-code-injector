@@ -1,4 +1,4 @@
-import React, { memo, Component, ReactElement } from 'react';
+import React, { memo, Component } from 'react';
 
 import { staticIconElem } from '../../static/icon';
 import { IProps, IState, IValidationConfig } from './type';
@@ -101,7 +101,10 @@ export class _TextInput extends Component<IProps, IState> {
         const inputProps = this.hsExtState ? {...props, value: text} : {...props};
 
         // Icon
-        const validIcon: ReactElement = (hsValidationRules && isValid) ? staticIconElem('valid') : null;
+        const hsIcon: boolean = hsValidationRules && isValid;
+
+        // Error Msg
+        const hsErrMsg: boolean = hsValidationRules && !isValid;
 
         return (
             <div className={wrapperCls} >
@@ -115,14 +118,17 @@ export class _TextInput extends Component<IProps, IState> {
                         {...inputProps}
                         >
                     </input>
-                    { validIcon }
+                    { hsIcon ? staticIconElem('valid') : null }
                 </label>
-                { !hsValidationRules ? null :
-                <ul className="text-ipt__err">
-                    { this.state.errMsg.map((msg, idx) => (
-                        <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>
-                    )) }
-                </ul> }
+                {
+                    hsErrMsg ?
+                    <ul className="text-ipt__err">
+                        { this.state.errMsg.map((msg, idx) => (
+                            <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>
+                        )) }
+                    </ul> :
+                    null
+                }
             </div>
         );
     }
