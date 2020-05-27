@@ -59,7 +59,7 @@ export class _TextInput extends Component<IProps, IState> {
         return { isValid, errMsg };
     }
 
-    setValidateState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (...args: any[]) => void, charLimit: number): void {
+    setValidState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (...args: any[]) => void, charLimit: number): void {
         const { validate } = this.props;
         const { isValid } = this.state;
         const { hsValidationRules } = this;
@@ -80,11 +80,11 @@ export class _TextInput extends Component<IProps, IState> {
 
     //// EVENT HANDLE
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
-        this.setValidateState(evt, this.props.onInputChange, 3);
+        this.setValidState(evt, this.props.onInputChange, 3);
     }
 
     onBlur(evt: React.ChangeEvent<HTMLInputElement>): void {
-        this.setValidateState(evt, this.props.onInputBlur, 0);
+        this.setValidState(evt, this.props.onInputBlur, 0);
     }
 
     render() {
