@@ -179,7 +179,7 @@ describe('Component - Text Input', () => {
         });
     });
 
-    describe('DOM', () => {
+    describe('Render/DOM', () => {
         let elem: HTMLElement;
         let wrapperElem: HTMLElement;
         let labelElem: HTMLElement;
