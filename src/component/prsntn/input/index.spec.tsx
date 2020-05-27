@@ -211,30 +211,40 @@ describe('Component - Text Input', () => {
             elem = null;
         });
 
-        describe('props: validation rules', () => {
-            it('should render correctly when not provided', () => {
+        describe('general', () => {
+            it('should render id, base class name', () => {
                 TestUtil.renderPlain(elem, TextInput, mockProps);
                 getChildElem();
 
                 expect(wrapperElem.className).toBe('text-ipt');
                 expect(labelElem.getAttribute('for')).toBe(mockId);
                 expect(inputElem.id).toBe(mockId);
+            });
+        });
+
+        describe('props: validation rules', () => {
+            it('should not render class names, validated icon and error list when rules are not provided', () => {
+                TestUtil.renderPlain(elem, TextInput, mockProps);
+                getChildElem();
+
                 expect(iconElem).toBeFalsy();
                 expect(listElem).toBeFalsy();
             });
 
-            it('should render correctly when provided', () => {
+            it('should render class names, validated icon and error list correctly when rules are provided', () => {
                 TestUtil.renderPlain(elem, TextInput, {...mockProps, validate: mockValidationRules});
                 getChildElem();
 
+                // Trigger invalid state
                 TestUtil.triggerEvt(inputElem, 'blur');
                 getChildElem();
                 expect(wrapperElem.className).toContain('text-ipt--invalid');
                 expect(iconElem).toBeFalsy();
                 expect(listElem.textContent).toContain(mockValidationRules[0].msg);
 
-                inputElem.value = 'abc';
-                TestUtil.triggerEvt(inputElem, 'blur');
+                // Trigger valid state
+                TestUtil.setInputVal(inputElem, 'abc');
+                TestUtil.triggerEvt(inputElem, 'change');
                 getChildElem();
                 expect(wrapperElem.className).toContain('text-ipt--valid');
                 expect(iconElem).toBeTruthy();
@@ -243,7 +253,7 @@ describe('Component - Text Input', () => {
         });
 
         describe('props: text', () => {
-            it('should render with id and class initially', () => {
+            it('should render empty input value', () => {
                 TestUtil.renderPlain(elem, TextInput, mockProps);
                 getChildElem();
 
@@ -258,7 +268,7 @@ describe('Component - Text Input', () => {
             });
         });
 
-        describe('internal event handlers', () => {
+        describe('event handlers', () => {
             let spyOnChange: jest.SpyInstance;
             let spyOnBlur: jest.SpyInstance;
 
@@ -270,13 +280,13 @@ describe('Component - Text Input', () => {
                 getChildElem();
             });
 
-            it('should trigger `onChange`', () => {
+            it('should trigger `onChange` on input `change` event', () => {
                 TestUtil.setInputVal(inputElem, 'dummy');
                 TestUtil.triggerEvt(inputElem, 'change');
                 expect(spyOnChange).toHaveBeenCalled();
             });
 
-            it('should trigger `onBlur`', () => {
+            it('should trigger `onBlur` on input `blur` event', () => {
                 TestUtil.triggerEvt(inputElem, 'blur');
                 expect(spyOnBlur).toHaveBeenCalled();
             });
