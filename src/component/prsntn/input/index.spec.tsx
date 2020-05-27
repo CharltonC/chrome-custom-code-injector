@@ -227,6 +227,8 @@ describe('Component - Text Input', () => {
                 TestUtil.renderPlain(elem, TextInput, mockProps);
                 getChildElem();
 
+                expect(wrapperElem.className).not.toContain('text-ipt--valid');
+                expect(wrapperElem.className).not.toContain('text-ipt--invalid');
                 expect(iconElem).toBeFalsy();
                 expect(listElem).toBeFalsy();
             });
