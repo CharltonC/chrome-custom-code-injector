@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Input } from '.';
+import { TextInput } from '.';
 
 export default {
     title: 'Text Input',
-    component: Input,
+    component: TextInput,
 };
 
 const defStyle = {padding: '10px', width: '300px'};
@@ -17,7 +17,7 @@ export const WithValidation = () => {
 
     return (
         <div style={defStyle} >
-            <Input id="lorem1" placeholder="some text" validate={validationRules} />
+            <TextInput id="lorem1" placeholder="some text" validate={validationRules} />
         </div>
     )
 };
@@ -29,7 +29,7 @@ export const WithPassedInput  = () => {
 
     return (
         <div style={defStyle} >
-            <Input id="lorem2" placeholder="some text" text={text} onInputChange={onInputChange} />
+            <TextInput id="lorem2" placeholder="some text" text={text} onInputChange={onInputChange} />
         </div>
     )
 };
@@ -47,7 +47,7 @@ export const WithPassedInputAndValidation  = () => {
 
     return (
         <div style={defStyle} >
-            <Input id="lorem3" placeholder="some text" text={text} onInputChange={onInputChange} validate={validationRules} />
+            <TextInput id="lorem3" placeholder="some text" text={text} onInputChange={onInputChange} validate={validationRules} />
         </div>
     )
 };

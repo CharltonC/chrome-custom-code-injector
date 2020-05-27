@@ -3,7 +3,7 @@ import React, { memo, Component, ReactElement } from 'react';
 import { staticIconElem } from '../../static/icon';
 import { IProps, IState, IValidationConfig } from './type';
 
-export class _Input extends Component<IProps, IState> {
+export class _TextInput extends Component<IProps, IState> {
     private hsExtState: boolean;
     private hsValidationRules: boolean;
 
@@ -127,4 +127,4 @@ export class _Input extends Component<IProps, IState> {
     }
 }
 
-export const Input = memo(_Input);
+export const TextInput = memo(_TextInput);
