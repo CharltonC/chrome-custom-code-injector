@@ -11,6 +11,9 @@ class _TabSwitch extends Component<IProps, IState> {
         this.state = {
             activeTab: list.length ? ((activeIdx && list[activeIdx]) ? list[activeIdx] : list[0]) : null
         };
+
+        this.onRdoChange = this.onRdoChange.bind(this);
+        this.onCheckboxChange = this.onCheckboxChange.bind(this);
     }
 
     onRdoChange(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem): void {
