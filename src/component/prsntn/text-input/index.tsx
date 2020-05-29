@@ -21,20 +21,7 @@ export class _TextInput extends Component<IProps, State> {
         this.onBlur = this.onBlur.bind(this);
     }
 
-    //// HELPER FN
-    /**
-     * TODONote:
-     * - wont work: `
-     * let isFnRule = rule instanceof Function;
-     * let isValid: boolean = isFnRule ? rule(val) : rule.test(val);
-     * `
-     * - works:
-     * `const isValid = (rule instanceof Function) ? rule(val) : rule.test(val);`
-     * or
-     * `if (rule instanceof Function) { isValid = rule(val); }`
-     */
-    // only trigger validation when blur & input
-    // when there are 3 char or more
+    //// HELPER FN ////
     getValidState(text: string, rules: IValidationConfig[]): State {
         const errMsg: string[] = [];
         rules.forEach(({rule, msg}: IValidationConfig) => {
@@ -72,7 +59,7 @@ export class _TextInput extends Component<IProps, State> {
         if (evtCbFn) evtCbFn(evt, val, val.length >= 3, validState);
     }
 
-    //// EVENT HANDLE
+    //// EVENT HANDLE ////
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
         this.setValidState(evt, this.props.onInputChange, 3);
     }
