@@ -18,7 +18,7 @@ class _TabSwitch extends Component<IProps, IState> {
         };
 
         this.onRdoChecked = this.onRdoChecked.bind(this);
-        this.onCheckboxChecked = this.onCheckboxChecked.bind(this);
+        this.onCheckboxChanged = this.onCheckboxChanged.bind(this);
     }
 
     onRdoChecked(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
@@ -28,10 +28,10 @@ class _TabSwitch extends Component<IProps, IState> {
         if (onTabActive) onTabActive(evt, activeTab, idx, isCurrActive);
     }
 
-    onCheckboxChecked(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
+    onCheckboxChanged(evt: React.ChangeEvent<HTMLInputElement>, tab: ITabItem, idx: number): void {
         const { onTabEnable } = this.props;
-        const isCurrActive: boolean = this.state.activeTab === activeTab;
-        if (onTabEnable) onTabEnable(evt, activeTab, idx, isCurrActive);
+        const isCurrActive: boolean = this.state.activeTab === tab;
+        if (onTabEnable) onTabEnable(evt, tab, idx, !tab.isEnable, isCurrActive);
     }
 
     render() {
@@ -74,7 +74,7 @@ class _TabSwitch extends Component<IProps, IState> {
                                 type="checkbox"
                                 id={rowCbId}
                                 defaultChecked={tab.isEnable}
-                                onChange={(e) => this.onCheckboxChecked(e, tab, idx)}
+                                onChange={(e) => this.onCheckboxChanged(e, tab, idx)}
                                 />
                             <label htmlFor={rowCbId} className={cbCls}>{powerIcon}</label>
                         </li>
