@@ -62,13 +62,10 @@
         text-transform: uppercase;
     }
 
-    input[type="checkbox"]:checked + &__checkbox .icon {
-        color: $teal;
-    }
-
     &__checkbox {
         position: absolute;
         right: 8px;
+
 
         &:hover {
             cursor: pointer;
@@ -81,6 +78,10 @@
             height: 14px;
             font-size: 14px;
             color: $gray-200;
+
+            input[type="checkbox"]:checked + & {
+                color: $teal;
+            }
         }
     }
 }
