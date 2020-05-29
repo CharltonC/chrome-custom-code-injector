@@ -34,6 +34,10 @@ class _TabSwitch extends Component<IProps, IState> {
         const liBaseCls: string = 'tab-switch__item';
         const liAtvCls: string = `${liBaseCls} ${liBaseCls}--active`;
 
+        // Radio & Checkbox
+        const rdoCls = 'tab-switch__rdo';
+        const cbCls = 'tab-switch__checkbox';
+
         // Icon Elem
         const powerIcon: ReactElement = staticIconElem('power');
 
@@ -41,40 +45,30 @@ class _TabSwitch extends Component<IProps, IState> {
             <ul className="tab-switch">
                 {list.map((tab: ITabItem, idx: number) => {
                     const rowId: string = `${id}-${idx}`;
-                    const rdoId: string = `rdo-${rowId}`;
-                    const cbId: string = `checkbox-${rowId}`;
-                    const liCls: string = (tab === activeTab) ? liAtvCls : liBaseCls;
+                    const rowCls: string = (tab === activeTab) ? liAtvCls : liBaseCls;
+                    const rowRdoId: string = `rdo-${rowId}`;
+                    const rowCbId: string = `checkbox-${rowId}`;
 
                     return (
-                        <li key={rowId} className={liCls}>
+                        <li key={rowId} className={rowCls}>
                             <input
                                 type="radio"
                                 name={id}
-                                id={rdoId}
+                                id={rowRdoId}
                                 onChange={(e) => {
                                     this.onRdoChange(e, tab);
                                 }}
                                 />
-                            <label
-                                htmlFor={rdoId}
-                                className="tab-switch__rdo"
-                                >
-                                {tab.name}
-                            </label>
+                            <label htmlFor={rowRdoId} className={rdoCls}>{tab.name}</label>
                             <input
                                 type="checkbox"
-                                id={cbId}
+                                id={rowCbId}
                                 defaultChecked={tab.isEnable}
                                 onChange={(e) => {
                                     this.onCheckboxChange(e, tab, idx);
                                 }}
                                 />
-                            <label
-                                htmlFor={cbId}
-                                className="tab-switch__checkbox"
-                                >
-                                {powerIcon}
-                            </label>
+                            <label htmlFor={rowCbId} className={cbCls}>{powerIcon}</label>
                         </li>
                     );
 

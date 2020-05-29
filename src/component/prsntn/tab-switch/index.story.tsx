@@ -8,7 +8,7 @@ export default {
 
 const defStyle = {padding: '15px'};
 
-export const DefaultComponent = () => {
+export const Demo = () => {
     const list = [
         {name: 'js' , isEnable: true},
         {name: 'css', isEnable: false},
