@@ -4,33 +4,39 @@ import { staticIconElem } from '../../static/icon/';
 import { IProps, IState, ITabItem } from './type';
 
 class _TabSwitch extends Component<IProps, IState> {
+    hsList: boolean;
+    hsAtvIdx: boolean;
+
     constructor(props: IProps) {
         super(props);
 
         const { list, activeIdx } = props;
+        this.hsList = !!list.length;
+        this.hsAtvIdx = typeof activeIdx !== 'undefined' && !!list[activeIdx];
         this.state = {
-            activeTab: list.length ? ((activeIdx && list[activeIdx]) ? list[activeIdx] : list[0]) : null
+            activeTab: this.hsList ? (this.hsAtvIdx ? list[activeIdx] : list[0]) : null
         };
 
-        this.onRdoChange = this.onRdoChange.bind(this);
-        this.onCheckboxChange = this.onCheckboxChange.bind(this);
+        this.onRdoChecked = this.onRdoChecked.bind(this);
+        this.onCheckboxChecked = this.onCheckboxChecked.bind(this);
     }
 
-    onRdoChange(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem): void {
+    onRdoChecked(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
         const { onTabActive } = this.props;
-        const isCurrActive: boolean = activeTab === this.state.activeTab;
-
-        if (onTabActive) onTabActive(evt, activeTab, isCurrActive);
+        const isCurrActive: boolean = this.state.activeTab === activeTab;
         if (!isCurrActive) this.setState({activeTab});
+        if (onTabActive) onTabActive(evt, activeTab, idx, isCurrActive);
     }
 
-    onCheckboxChange(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
+    onCheckboxChecked(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
         const { onTabEnable } = this.props;
-        if (onTabEnable) onTabEnable(evt, activeTab, idx);
+        const isCurrActive: boolean = this.state.activeTab === activeTab;
+        if (onTabEnable) onTabEnable(evt, activeTab, idx, isCurrActive);
     }
 
     render() {
-        const { id, list } = this.props;
+        const { hsList, hsAtvIdx } = this;
+        const { id, list, activeIdx } = this.props;
         const { activeTab } = this.state;
 
         // List item
@@ -44,11 +50,13 @@ class _TabSwitch extends Component<IProps, IState> {
         // Icon Elem
         const powerIcon: ReactElement = staticIconElem('power');
 
-        return (
+        return hsList ?
             <ul className="tab-switch">
                 {list.map((tab: ITabItem, idx: number) => {
+                    // Use `activeIdx` if it is provided/valid  to compare if Tab is active
+                    const isRowAtv: boolean = hsAtvIdx ? (activeIdx === idx) : (tab === activeTab);
                     const rowId: string = `${id}-${idx}`;
-                    const rowCls: string = (tab === activeTab) ? liAtvCls : liBaseCls;
+                    const rowCls: string = isRowAtv ? liAtvCls : liBaseCls;
                     const rowRdoId: string = `rdo-${rowId}`;
                     const rowCbId: string = `checkbox-${rowId}`;
 
@@ -58,26 +66,23 @@ class _TabSwitch extends Component<IProps, IState> {
                                 type="radio"
                                 name={id}
                                 id={rowRdoId}
-                                onChange={(e) => {
-                                    this.onRdoChange(e, tab);
-                                }}
+                                defaultChecked={isRowAtv}
+                                onChange={(e) => this.onRdoChecked(e, tab, idx)}
                                 />
                             <label htmlFor={rowRdoId} className={rdoCls}>{tab.name}</label>
                             <input
                                 type="checkbox"
                                 id={rowCbId}
                                 defaultChecked={tab.isEnable}
-                                onChange={(e) => {
-                                    this.onCheckboxChange(e, tab, idx);
-                                }}
+                                onChange={(e) => this.onCheckboxChecked(e, tab, idx)}
                                 />
                             <label htmlFor={rowCbId} className={cbCls}>{powerIcon}</label>
                         </li>
                     );
 
                 })}
-            </ul>
-        );
+            </ul> :
+            null;
     }
 }
 
