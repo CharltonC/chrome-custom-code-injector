@@ -3,10 +3,10 @@ import { SymbolBtn } from './';
 import * as NSymbolBtn from './type';
 
 describe('Component - Symbol Button', () => {
-    let elem: HTMLElement;
-    let labelElem: HTMLElement;
-    let spanElem: HTMLElement;
-    let inputElem: HTMLInputElement;
+    let $elem: HTMLElement;
+    let $label: HTMLElement;
+    let $span: HTMLElement;
+    let $checkbox: HTMLInputElement;
 
     const mockProps: NSymbolBtn.IProps = {
         id: 'js-1',
@@ -16,26 +16,26 @@ describe('Component - Symbol Button', () => {
     };
 
     beforeEach(() => {
-        elem = TestUtil.setupElem();
-        TestUtil.renderPlain(elem, SymbolBtn, mockProps);
-        labelElem = elem.children[0] as HTMLElement;
-        spanElem = labelElem.querySelector('span');
-        inputElem = labelElem.querySelector('input');
+        $elem = TestUtil.setupElem();
+        TestUtil.renderPlain($elem, SymbolBtn, mockProps);
+        $label = $elem.children[0] as HTMLElement;
+        $span = $label.querySelector('span');
+        $checkbox = $label.querySelector('input');
     });
 
     afterEach(() => {
-        TestUtil.teardown(elem);
-        elem = null;
+        TestUtil.teardown($elem);
+        $elem = null;
     });
 
     it("should pass the id and text", () => {
-        expect(labelElem.getAttribute('for')).toBe(mockProps.id);
-        expect(inputElem.id).toBe(mockProps.id);
-        expect(spanElem.textContent).toBe(mockProps.text);
+        expect($label.getAttribute('for')).toBe(mockProps.id);
+        expect($checkbox.id).toBe(mockProps.id);
+        expect($span.textContent).toBe(mockProps.text);
     });
 
     it('should trigger the optional `onChange` callback', () => {
-        TestUtil.triggerEvt(labelElem, 'click', MouseEvent);
+        TestUtil.triggerEvt($label, 'click', MouseEvent);
         expect(mockProps.onChange).toHaveBeenCalled();
     });
 });
