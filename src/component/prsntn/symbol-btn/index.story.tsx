@@ -15,10 +15,10 @@ export const JsSymbol = () => {
     const onChangeWoState = () => console.log('onChangeWoState');
 
     const mockProps = [
-        {defaultChecked: true},
-        {defaultChecked: checked, onChecked},
+        {isChecked: true},
+        {isChecked: checked, onChecked},
         {onChecked: onChangeWoState},
-        {defaultChecked: true, disabled: true},
+        {isChecked: true, disabled: true},
         {disabled: true}
     ];
 
@@ -38,8 +38,8 @@ export const JsSymbol = () => {
 
 export const CssSymbol = () => {
     const mockProps = [
-        {defaultChecked: true},
-        {defaultChecked: true, disabled: true},
+        {isChecked: true},
+        {isChecked: true, disabled: true},
         {},
         {disabled: true}
     ];
@@ -59,8 +59,8 @@ export const CssSymbol = () => {
 
 export const LibSymbol = () => {
     const mockProps = [
-        {defaultChecked: true},
-        {defaultChecked: true, disabled: true},
+        {isChecked: true},
+        {isChecked: true, disabled: true},
         {},
         {disabled: true}
     ];
