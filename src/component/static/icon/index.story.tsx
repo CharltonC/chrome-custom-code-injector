@@ -34,21 +34,21 @@ const icons: string[] = [
     'doc'
 ];
 
-export const Light = () => (
+export const PlainModeWithoutHoverState = () => (
+    <div>
+        {icons.map((name: NIcon.TName) => staticIconElem(name))}
+    </div>
+);
+
+export const LightMode = () => (
     <div style={{ backgroundColor: '#5AB3AD' }}>
         {/* `id` is the html attr. not specified however still passed here */}
         {icons.map((name: NIcon.TName) => staticIconElem(name, false, {key: `light-${name}`}))}
     </div>
 );
 
-export const Dark = () => (
+export const DarkMode = () => (
     <div>
         {icons.map((name: NIcon.TName) => staticIconElem(name, true, {key: `dark-${name}`}))}
-    </div>
-);
-
-export const Plain = () => (
-    <div>
-        {icons.map((name: NIcon.TName) => staticIconElem(name))}
     </div>
 );
