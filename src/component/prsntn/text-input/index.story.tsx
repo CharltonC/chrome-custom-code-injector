@@ -47,6 +47,7 @@ export const WithPassedInputAndValidation  = () => {
 
     return (
         <div style={defStyle} >
+            <p>Passed input: {text}</p>
             <TextInput id="lorem3" placeholder="some text" text={text} onInputChange={onInputChange} validate={validationRules} />
         </div>
     )
