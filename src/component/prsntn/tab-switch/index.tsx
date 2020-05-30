@@ -3,7 +3,7 @@ import React, { Component, memo, ReactElement } from "react";
 import { staticIconElem } from '../../static/icon/';
 import { IProps, IState, ITabItem } from './type';
 
-class _TabSwitch extends Component<IProps, IState> {
+export class _TabSwitch extends Component<IProps, IState> {
     hsList: boolean;
     hsAtvIdx: boolean;
 
