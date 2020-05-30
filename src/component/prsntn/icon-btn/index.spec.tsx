@@ -23,7 +23,7 @@ describe('Component - Icon Button', () => {
         const iconElem: HTMLElement = iconElems[0];
 
         expect(iconElems.length).toBe(1);
-        expect(iconElem.className).toBe('icon icon--setting icon--light');
+        expect(iconElem.className).toBe('icon icon--setting icon--plain');
     });
 
     it('should trigger callback fn when clicked', () => {

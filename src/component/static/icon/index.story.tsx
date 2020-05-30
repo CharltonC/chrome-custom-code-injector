@@ -46,3 +46,9 @@ export const Dark = () => (
         {icons.map((name: NIcon.TName) => staticIconElem(name, true, {key: `dark-${name}`}))}
     </div>
 );
+
+export const Plain = () => (
+    <div>
+        {icons.map((name: NIcon.TName) => staticIconElem(name))}
+    </div>
+);

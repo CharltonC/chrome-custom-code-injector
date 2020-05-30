@@ -53,8 +53,8 @@ export class _SearchInput extends Component<NSearch.IProps, NSearch.State> {
         const isDisabled: boolean = typeof disabled === 'undefined' ? false : disabled;
 
         // Icon
-        const clearIcon: ReactElement = staticIconElem('close', true);
-        const searchIcon: ReactElement = staticIconElem('search', true);
+        const clearIcon: ReactElement = staticIconElem('close');
+        const searchIcon: ReactElement = staticIconElem('search');
 
         return (
             <label className={labelCls} htmlFor={id}>

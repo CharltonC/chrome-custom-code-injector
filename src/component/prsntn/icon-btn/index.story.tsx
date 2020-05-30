@@ -39,7 +39,7 @@ export const Light = () => (
         { icons.map((name: any) =>
             <IconBtn
                 key={`light-${name}`}
-                icon={{ name }}
+                icon={{ name, darkMode: false }}
                 onClick={() => { console.log('click'); }}       // `onClick` being an "unknown" prop here
                 />
         )}
@@ -51,7 +51,7 @@ export const LightDisabled = () => (
         { icons.map((name: any) =>
             <IconBtn
                 key={`light-disabled-${name}`}
-                icon={{ name }}
+                icon={{ name, darkMode: false }}
                 disabled        // `disabled` being an "unknown" prop here
                 />
         )}
