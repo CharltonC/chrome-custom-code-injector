@@ -1,6 +1,6 @@
 import React, { memo, ReactElement, Component } from 'react';
 
-import { staticIconElem } from '../../static/icon';
+import { inclStaticIcon } from '../../static/icon';
 import * as NSearch from './type';
 
 export class _SearchInput extends Component<NSearch.IProps, NSearch.State> {
@@ -53,8 +53,8 @@ export class _SearchInput extends Component<NSearch.IProps, NSearch.State> {
         const isDisabled: boolean = typeof disabled === 'undefined' ? false : disabled;
 
         // Icon
-        const clearIcon: ReactElement = staticIconElem('close');
-        const searchIcon: ReactElement = staticIconElem('search');
+        const clearIcon: ReactElement = inclStaticIcon('close');
+        const searchIcon: ReactElement = inclStaticIcon('search');
 
         return (
             <label className={labelCls} htmlFor={id}>

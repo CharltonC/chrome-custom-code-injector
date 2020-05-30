@@ -1,6 +1,6 @@
 import React, { memo, Component } from 'react';
 
-import { staticIconElem } from '../../static/icon';
+import { inclStaticIcon } from '../../static/icon';
 import { IProps, State, IValidationConfig } from './type';
 
 export class _TextInput extends Component<IProps, State> {
@@ -100,7 +100,7 @@ export class _TextInput extends Component<IProps, State> {
                         {...inputProps}
                         >
                     </input>
-                    { hsIcon ? staticIconElem('valid') : null }
+                    { hsIcon ? inclStaticIcon('valid') : null }
                 </label>
                 {
                     hsErrMsg ?

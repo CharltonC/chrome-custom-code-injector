@@ -1,6 +1,6 @@
 import React, { Component, memo, ReactElement } from "react";
 
-import { staticIconElem } from '../../static/icon/';
+import { inclStaticIcon } from '../../static/icon/';
 import { IProps, IState, ITabItem } from './type';
 
 export class _TabSwitch extends Component<IProps, IState> {
@@ -48,7 +48,7 @@ export class _TabSwitch extends Component<IProps, IState> {
         const cbCls = 'tab-switch__checkbox';
 
         // Icon Elem
-        const powerIcon: ReactElement = staticIconElem('power');
+        const powerIcon: ReactElement = inclStaticIcon('power');
 
         return hsList ?
             <ul className="tab-switch">

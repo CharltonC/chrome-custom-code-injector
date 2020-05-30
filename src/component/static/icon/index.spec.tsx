@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 
 import * as NIcon from './type';
-import { staticIconElem } from "./";
+import { inclStaticIcon } from "./";
 
 describe('Static Component - Icon', () => {
     const iconName: NIcon.TName = 'setting';
@@ -11,20 +11,20 @@ describe('Static Component - Icon', () => {
         const clsName: string = `${iconBaseCls}--${NIcon.EMode.light}`;
         const expIconElem: ReactElement = <span className={clsName} />
 
-        expect(staticIconElem(iconName, false)).toEqual(expIconElem);
+        expect(inclStaticIcon(iconName, false)).toEqual(expIconElem);
     });
 
     it("should render the icon with dark mode", () => {
         const clsName: string = `${iconBaseCls}--${NIcon.EMode.dark}`;
         const expIconElem: ReactElement = <span className={clsName} />
 
-        expect(staticIconElem(iconName, true)).toEqual(expIconElem);
+        expect(inclStaticIcon(iconName, true)).toEqual(expIconElem);
     });
 
     it('should render the icon in plain mode', () => {
         const clsName: string = `${iconBaseCls}--plain`;
         const expIconElem: ReactElement = <span className={clsName} />
 
-        expect(staticIconElem(iconName)).toEqual(expIconElem);
+        expect(inclStaticIcon(iconName)).toEqual(expIconElem);
     });
 });

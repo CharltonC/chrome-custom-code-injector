@@ -1,12 +1,12 @@
 import React from 'react';
 
 import * as NIcon from './type';
-import { staticIconElem } from '.';
+import { inclStaticIcon } from '.';
 
 
 export default {
     title: 'Icon',
-    component: staticIconElem('setting')
+    component: inclStaticIcon('setting')
 };
 
 const icons: string[] = [
@@ -36,19 +36,19 @@ const icons: string[] = [
 
 export const PlainModeWithoutHoverState = () => (
     <div>
-        {icons.map((name: NIcon.TName) => staticIconElem(name))}
+        {icons.map((name: NIcon.TName) => inclStaticIcon(name))}
     </div>
 );
 
 export const LightMode = () => (
     <div style={{ backgroundColor: '#5AB3AD' }}>
         {/* `id` is the html attr. not specified however still passed here */}
-        {icons.map((name: NIcon.TName) => staticIconElem(name, false, {key: `light-${name}`}))}
+        {icons.map((name: NIcon.TName) => inclStaticIcon(name, false, {key: `light-${name}`}))}
     </div>
 );
 
 export const DarkMode = () => (
     <div>
-        {icons.map((name: NIcon.TName) => staticIconElem(name, true, {key: `dark-${name}`}))}
+        {icons.map((name: NIcon.TName) => inclStaticIcon(name, true, {key: `dark-${name}`}))}
     </div>
 );
