@@ -9,15 +9,15 @@ export default {
 export const JsSymbol = () => {
     // with state (2-way binding)
     const [ checked, setChecked ] = useState(true);
-    const onChange = () => setChecked(!checked);
+    const onChecked = () => setChecked(!checked);
 
     // w/o state
     const onChangeWoState = () => console.log('onChangeWoState');
 
     const mockProps = [
         {defaultChecked: true},
-        {defaultChecked: checked, onChange},
-        {onChange: onChangeWoState},
+        {defaultChecked: checked, onChecked},
+        {onChecked: onChangeWoState},
         {defaultChecked: true, disabled: true},
         {disabled: true}
     ];
@@ -25,11 +25,11 @@ export const JsSymbol = () => {
     return (
         <>
             { mockProps.map((props, idx) => (
-                    <SymbolBtn
-                        key={idx}
-                        id={`js-${idx}`}
-                        text="Js" {...props}
-                        />
+                <SymbolBtn
+                    key={idx}
+                    id={`js-${idx}`}
+                    text="Js" {...props}
+                    />
             )) }
         </>
     )
@@ -47,11 +47,11 @@ export const CssSymbol = () => {
     return (
         <>
             { mockProps.map((props, idx) => (
-                    <SymbolBtn
-                        key={idx}
-                        id={`css-${idx}`}
-                        text="Css" {...props}
-                        />
+                <SymbolBtn
+                    key={idx}
+                    id={`css-${idx}`}
+                    text="Css" {...props}
+                    />
             )) }
         </>
     );
@@ -68,11 +68,11 @@ export const LibSymbol = () => {
     return (
         <>
             { mockProps.map((props, idx) => (
-                    <SymbolBtn
-                        key={idx}
-                        id={`lib-${idx}`}
-                        text="Lib" {...props}
-                        />
+                <SymbolBtn
+                    key={idx}
+                    id={`lib-${idx}`}
+                    text="Lib" {...props}
+                    />
             )) }
         </>
     );
