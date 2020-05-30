@@ -16,8 +16,7 @@ export class _SymbolBtn extends Component<IProps, {}> {
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
         const { onChecked } = this.props;
         const checked: boolean = evt.target.checked;
-        console.log(checked);
-        if (onChecked) onChecked(checked);
+        if (onChecked) onChecked(evt, checked);
     }
 
     render() {
