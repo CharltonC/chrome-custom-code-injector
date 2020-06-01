@@ -9,7 +9,7 @@ module.exports = () => {
 
     // Watch Specific only (e.g. Cmd `gulp serve --css`)
     const isWatchOnly = args.some(arg => {
-        const isMatch = arg === 'css' || arg === 'ts' || arg === 'ts';
+        const isMatch = arg === 'css' || arg === 'ts' || arg === 'html';
         if (isMatch) gulp.watch( watchFiles[arg], gulp.series(gulpTask[arg]) );
         return isMatch;
     });
