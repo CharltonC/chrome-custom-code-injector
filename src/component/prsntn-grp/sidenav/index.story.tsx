@@ -1,9 +1,9 @@
 import React from 'react';
-import { SidebarNav } from '.';
+import { SideNav } from '.';
 
 export default {
-    title: 'Sidebar Nav',
-    component: SidebarNav,
+    title: 'Side Nav',
+    component: SideNav,
 };
 
 const defStyle = {};
@@ -11,7 +11,7 @@ const defStyle = {};
 export const DefaultComponent = () => {
     return (
         <div style={defStyle} >
-            <SidebarNav />
+            <SideNav />
         </div>
     )
 };
