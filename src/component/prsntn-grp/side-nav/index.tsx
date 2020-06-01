@@ -12,9 +12,9 @@ export class _SideNav extends Component<IProps, any> {
                 <ul className="side-nav__ls--top">
                     {/* TODO: `key attr` */}
                     <li>
-                        <ul className="side-nav__ls--mid">
+                        <ul className="side-nav__ls--nst">
                             {/* TODO: `key attr` */}
-                            <li className="s">Path ID 1</li>
+                            <li>Path ID 1</li>
                             <li>Path ID 2</li>
                             <li>Path ID 3</li>
                         </ul>
