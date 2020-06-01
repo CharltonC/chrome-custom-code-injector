@@ -45,7 +45,6 @@
         &--atv {
             .icon {
                 color: white;
-                &--arrow-rt { display: none; }
             }
 
             p {
@@ -60,11 +59,6 @@
         }
 
         &:not(&--atv) {
-            .icon--arrow-dn,
-            ul {
-                display: none;
-            }
-
             p:hover {
                 cursor: pointer;
                 background-color: #2E8B85;
@@ -81,6 +75,11 @@
         padding-left: 50px;
         line-height: 40px;
         height: 40px;
+
+        &--atv {
+            color: white;
+            background-color: #364858;
+        }
 
         &:not(&--atv):hover {
             cursor: pointer;

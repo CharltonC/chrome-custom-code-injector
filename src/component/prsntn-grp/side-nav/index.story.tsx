@@ -9,9 +9,9 @@ export default {
 const defStyle = {};
 
 const sampleList = [
-    {name: 'Host Id 1', nestedList: ['Path ID 1', 'Path ID 2']},
-    {name: 'Host Id 2', nestedList: ['Path ID 1', 'Path ID 2']},
-    {name: 'Host Id 3', nestedList: ['Path ID 1', 'Path ID 2', 'Path ID 3']}
+    {id: 'Host Id 1', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]},
+    {id: 'Host Id 2', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]},
+    {id: 'Host Id 3', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]}
 ];
 
 export const DefaultComponent = () => {

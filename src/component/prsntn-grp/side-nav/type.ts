@@ -1,12 +1,17 @@
 export interface IList {
-    name: string;
-    nestedList?: string[];
+    id: string;
+}
+
+export interface INestList {
+    id: string;
+    nestList?: IList[];
 }
 
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-    list: IList[];
+    list: INestList[];
 }
 
 export interface IState {
-    atvIdx: number;
+    atvLsIdx: number;
+    atvNestLsIdx: number;
 }

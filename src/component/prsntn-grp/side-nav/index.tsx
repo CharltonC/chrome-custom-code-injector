@@ -1,5 +1,5 @@
 import React, { Component, memo, ReactElement } from "react";
-import { IProps, IState, IList } from './type';
+import { IProps, IState, INestList, IList } from './type';
 import { inclStaticIcon } from '../../static/icon/';
 
 export class _SideNav extends Component<IProps, IState> {
@@ -9,21 +9,46 @@ export class _SideNav extends Component<IProps, IState> {
         super(props);
 
         const { list } = props;
-        this.hsList = typeof list !== 'undefined';
+        this.hsList = typeof list !== 'undefined' && list.length > 0;
         this.state = {
-            atvIdx: this.hsList ? 0 : null
+            atvLsIdx: this.hsList ? 0 : null,
+            atvNestLsIdx: null,
         };
+
+        this.onClick = this.onClick.bind(this);
     }
 
-    onListClick(evt): void {
+    getLsCls(baseCls: string, isAtv: boolean): string {
+        return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
+    }
 
+    getBadgeTxt(total: number): string {
+        return total > 9 ? '9+' : `${total}`;
+    }
+
+    onClick(evt: React.MouseEvent<HTMLElement, MouseEvent>, atvLsIdx: number, atvNestLsIdx: number = null): void {
+        evt.stopPropagation();
+
+        const { state } = this;
+        const isAtvList: boolean = atvLsIdx === state.atvLsIdx;
+        const isNotSameNestedList = atvNestLsIdx !== state.atvNestLsIdx;
+
+        if (!isAtvList) this.setState({
+            atvLsIdx,
+            atvNestLsIdx: null
+        });
+
+        if (isAtvList && isNotSameNestedList) this.setState({
+            atvNestLsIdx
+        });
     }
 
     render() {
         const { list } = this.props;
-        const { atvIdx } = this.state;
+        const { atvLsIdx, atvNestLsIdx } = this.state;
 
-        const lsCls: string = 'side-nav__ls';
+        const lsBaseCls: string = 'side-nav__ls';
+        const nstLsBaseCls: string = 'side-nav__nls';
 
         const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
         const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
@@ -32,25 +57,40 @@ export class _SideNav extends Component<IProps, IState> {
 
         return (
             <nav className="side-nav">
-                <ul>{list.map(({name, nestedList}: IList, idx: number) => {
-                    const isAtv: boolean = atvIdx === idx;
-                    const listCls: string = isAtv ? `${lsCls} ${lsCls}--atv` : lsCls;
-                    const totalList: number = nestedList.length;
-                    const totalListTxt: string = totalList > 9 ? '9+' : `${totalList}`;
+                <ul>{list.map((ls: INestList, lsIdx: number) => {
+                    const { id, nestList } = ls;
+                    const isAtvIdx: boolean = atvLsIdx === lsIdx;
+                    const lsTotal: number = nestList.length;
+
+                    const lsCls: string = this.getLsCls(lsBaseCls, (isAtvIdx && atvNestLsIdx === null));
+                    const lsKey: string = `${lsBaseCls}-${lsIdx}`;
+                    const lsTotalTxt: string = this.getBadgeTxt(lsTotal);
+
                     /* TODO: `key attr` */
 
-                    return (<li className={listCls}>
+                    return <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
                             <p>
-                                {isAtv ? dnIconElem : rtIconElem}
-                                <span className="side-nav__title">{name}</span>
-                                <span className="badge">{totalListTxt}</span>
+                                {isAtvIdx ? dnIconElem : rtIconElem}
+                                <a className="side-nav__title">{id}</a>
+                                <span className="badge">{lsTotalTxt}</span>
                             </p>
-                            <ul>{nestedList.map((lsName: string, idx: number) => {
-                                return (
-                                    <li className="side-nav__nls">{lsName}</li>
-                                );
-                            })}</ul>
-                    </li>);
+                            {
+                                isAtvIdx ?
+                                <ul>{nestList.map((nstLs: IList, nstLsIdx: number) => {
+                                    const nstLsCls: string = this.getLsCls(nstLsBaseCls, atvNestLsIdx === nstLsIdx);
+                                    const nstLsKey: string = `${nstLsBaseCls}-${nstLsIdx}`;
+
+                                    return (
+                                    <li className={nstLsCls} key={nstLsKey} onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}>
+                                        <a className="side-nav__title">
+                                            {nstLs.id}
+                                        </a>
+                                    </li>
+                                    );
+                                })}</ul> :
+                                null
+                            }
+                    </li>;
                 })}</ul>
             </nav>
         );
