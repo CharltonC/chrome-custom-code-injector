@@ -1,15 +1,73 @@
 .side-nav {
-    &__ls {
+    padding: 40px 0;
+    min-width: 220px;
+    width: 220px;
+    background-color: #13283B;
+    color: #94A9C1;
 
-        &--top {
-            font: 16px $roboto-bold;
+    &__ls {
+        p {
+            display: flex;
+            align-items: center;
+            padding: 0 15px 0 25px;
+            height: 40px;
+            font: 16px $roboto-bld;
+
+            .icon--plain {
+                width: 12px;
+                height: 12px;
+                font-weight: 600;
+            }
+
+            span:last-child {
+                margin-left: 10px;
+            }
         }
 
-        &--nst {
+        ul {
+            list-style-type: circle;
+            list-style-position: inside;
             font: 16px $roboto-reg;
         }
 
+        &--atv {
+            .icon {
+                color: white;
+                &--arrow-rt { display: none; }
+            }
+
+            p {
+                color: white;
+                background-color: #364858;
+            }
+        }
+
+        &:not(&--atv) {
+            .icon--arrow-dn,
+            ul {
+                display: none;
+            }
+
+            p:hover {
+                cursor: pointer;
+                background-color: #2E8B85;
+                color: white;
+            }
+        }
     }
+
+    &__nls {
+        padding-left: 50px;
+        line-height: 40px;
+        height: 40px;
+
+        &:not(&--atv):hover {
+            cursor: pointer;
+            background-color: #2E8B85;
+            color: white;
+        }
+    }
+
 
     // Host font size, color, bold
     // path font size, color
