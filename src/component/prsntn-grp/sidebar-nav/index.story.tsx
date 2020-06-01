@@ -1,9 +1,9 @@
 import React from 'react';
-// import { CmpCls } from '.';
+import { SidebarNav } from '.';
 
 export default {
-    title: 'Search',
-    // component: CmpCls,
+    title: 'Sidebar Nav',
+    component: SidebarNav,
 };
 
 const defStyle = {};
@@ -11,7 +11,7 @@ const defStyle = {};
 export const DefaultComponent = () => {
     return (
         <div style={defStyle} >
-            {/* <CmpCls id="" /> */}
+            <SidebarNav />
         </div>
     )
 };
