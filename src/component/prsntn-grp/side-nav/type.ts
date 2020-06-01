@@ -1,11 +1,12 @@
-export interface IListItem {
+export interface IList {
     name: string;
-}
-
-export interface IList extends IListItem {
-    nedstList?: IListItem[];
+    nestedList?: string[];
 }
 
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-    // list: IList[];
+    list: IList[];
+}
+
+export interface IState {
+    atvIdx: number;
 }
