@@ -9,6 +9,7 @@ export interface INestList {
 
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     list: INestList[];
+    onAtvListChange?: (...args: any[]) => void;
 }
 
 export interface IState {
