@@ -23,5 +23,6 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
  * - not named `text` as not to conflict in case there is an external state
  */
 export class IState {
+    hsExtState: boolean;
     hsText: boolean = false;
 }

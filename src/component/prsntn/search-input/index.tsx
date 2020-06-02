@@ -5,7 +5,6 @@ import { IProps, IState } from './type';
 
 export class _SearchInput extends Component<IProps, IState> {
     inputElem: HTMLInputElement;
-    hsExtState: boolean;
 
     constructor(props: IProps) {
         super(props);
@@ -26,8 +25,11 @@ export class _SearchInput extends Component<IProps, IState> {
     }
 
     getIntState(text?: string): IState {
-        this.hsExtState = typeof text !== 'undefined';
-        return { hsText: this.hsExtState ? !!text : false };
+        const hsExtState: boolean = typeof text !== 'undefined';
+        return {
+            hsExtState,
+            hsText: hsExtState ? !!text : false
+        };
     }
 
     onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
@@ -54,9 +56,10 @@ export class _SearchInput extends Component<IProps, IState> {
 
     render() {
         const {id, text, disabled, onClear, onChange, ...props} = this.props;
+        const { hsExtState } = this.state;
 
         // State
-        const inputProps = this.hsExtState ? {...props, value: text} : {...props};
+        const inputProps = hsExtState ? {...props, value: text} : {...props};
 
         // Label / Input + Button
         const labelCls: string = 'search' + (disabled ? ' search--disabled' : '');

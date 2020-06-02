@@ -28,8 +28,10 @@ describe('Component - Search', () => {
         describe('Constructor', () => {
             it('should set the internal state initially', () => {
                 expect(spyGetIntState).toHaveBeenCalledWith(mockBaseProps.text);
-                expect(searchInput.state.hsText).toEqual(true);
-                expect(searchInput.hsExtState).toBe(true);
+                expect(searchInput.state).toEqual({
+                    hsText: true,
+                    hsExtState: true
+                });
             });
         });
 
@@ -42,7 +44,7 @@ describe('Component - Search', () => {
             });
 
             it('should set the internal state when a diff. input text is passed', () => {
-                const mockIntState: IState = { hsText: true };
+                const mockIntState: IState = { hsExtState: true, hsText: true };
                 spyGetIntState.mockReturnValue(mockIntState);
                 searchInput.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockNewText});
 
@@ -56,15 +58,19 @@ describe('Component - Search', () => {
             it('should return an initial state when text is defined', () => {
                 intState = searchInput.getIntState('some text');
 
-                expect(searchInput.hsExtState).toBe(true);
-                expect(intState.hsText).toBe(true);
+                expect(intState).toEqual({
+                    hsExtState: true,
+                    hsText: true
+                });
             });
 
             it('should return an initial state when text is not defined', () => {
                 intState = searchInput.getIntState();
 
-                expect(searchInput.hsExtState).toBe(false);
-                expect(intState.hsText).toBe(false);
+                expect(intState).toEqual({
+                    hsExtState: false,
+                    hsText: false
+                });
             });
         });
 
