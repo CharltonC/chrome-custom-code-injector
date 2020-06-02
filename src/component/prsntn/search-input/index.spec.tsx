@@ -249,10 +249,10 @@ describe('Component - Search', () => {
 
                 TestUtil.renderPlain(elem, SearchInput, {...mockProps});
                 helper.assignChildrenElem();
+                helper.triggerInputChange();
             });
 
             it('should trigger `onInputChange` when input change', () => {
-                helper.triggerInputChange();
                 expect(spyOnInputChange).toHaveBeenCalled();
             });
 
