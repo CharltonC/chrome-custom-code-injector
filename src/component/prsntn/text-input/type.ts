@@ -14,8 +14,9 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
 /**
  * Internal state only
  */
-export class State {
-    // null` is used for indicating if it has been set for the 1st time or not
-    isValid: boolean | null = null;
-    errMsg: string[] = [];
+export interface IState {
+    hsExtState: boolean;
+    hsValidationRules: boolean;
+    isValid: boolean;       // null` is used for indicating if it has been set for the 1st time or not
+    errMsg: string[];
 }

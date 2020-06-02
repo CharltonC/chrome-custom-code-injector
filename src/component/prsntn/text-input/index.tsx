@@ -1,28 +1,49 @@
 import React, { memo, Component } from 'react';
 
 import { inclStaticIcon } from '../../static/icon';
-import { IProps, State, IValidationConfig } from './type';
+import { IProps, IState, IValidationConfig } from './type';
 
-export class _TextInput extends Component<IProps, State> {
-    private hsExtState: boolean;
-    private hsValidationRules: boolean;
-
+export class _TextInput extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
         // Text input (either use internal or external)
         const { text, validate } = this.props;
-        this.hsExtState = typeof text !== 'undefined';
-        this.hsValidationRules = typeof validate !== 'undefined' && validate.length > 0;
-        this.state = new State();
+        this.state = this.getIntState(text, validate);
 
         // handlers
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
 
+    /**
+     * Deal with change for passed text or validation rules
+     */
+    UNSAFE_componentWillReceiveProps({text, validate}: IProps): void {
+        const { props } = this;
+        const isDiffText: boolean = text !== props.text;
+        const isDiffRules: boolean = validate !== props.validate;
+
+        // We dont care about if other props change except for the passed text and validation rules
+        if (!isDiffText && !isDiffRules) return;
+
+        // Only Update internal state when either text/validation passed is different
+        const baseState: IState = this.getIntState(text, validate);
+        const validState: Partial<IState> = this.getValidState(text, validate);
+        this.setState({...baseState, ...validState});
+    }
+
     //// HELPER FN ////
-    getValidState(text: string, rules: IValidationConfig[]): State {
+    getIntState(text: string, validate: IValidationConfig[]) {
+        return {
+            hsExtState: typeof text !== 'undefined',
+            hsValidationRules: typeof validate !== 'undefined' && validate.length > 0,
+            isValid: null,
+            errMsg: []
+        }
+    }
+
+    getValidState(text: string, rules: IValidationConfig[]): Partial<IState> {
         const errMsg: string[] = [];
         rules.forEach(({rule, msg}: IValidationConfig) => {
             let isValid: boolean = true;
@@ -42,18 +63,17 @@ export class _TextInput extends Component<IProps, State> {
 
     setValidState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (...args: any[]) => void, charLimit: number): void {
         const { validate } = this.props;
-        const { isValid } = this.state;
-        const { hsValidationRules } = this;
+        const { isValid, hsValidationRules } = this.state;
         const val: string = evt.target.value;
 
         // Get validate state anyway
-        const validState: State = hsValidationRules ? this.getValidState(val, validate) : null;
+        const validState: Partial<IState> = hsValidationRules ? this.getValidState(val, validate) : null;
 
         // Only set validate state only when there r validation rules & either of the following:
         // - when its 1st time focus & there r more than or eq. to 3 characters + validation rules exist
         // - when its blurred (regardless of character limit, i.e. `charLimit=0`) + validation rules exist
         const isFitForValidation: boolean = hsValidationRules && ((isValid === null && val.length >= charLimit) || isValid !== null);
-        if (isFitForValidation) this.setState(validState);
+        if (isFitForValidation) this.setState({...this.state, ...validState});
 
         // handle two way binding internally if needed for external state
         if (evtCbFn) evtCbFn(evt, val, val.length >= 3, validState);
@@ -70,8 +90,7 @@ export class _TextInput extends Component<IProps, State> {
 
     render() {
         const {id, text, onInputChange, onInputBlur, validate, ...props} = this.props;
-        const { isValid } = this.state;
-        const { hsValidationRules } = this;
+        const { isValid, hsValidationRules, hsExtState } = this.state;
         const hsValidState: boolean = hsValidationRules && (isValid !== null);
 
         // Wrapper
@@ -80,7 +99,7 @@ export class _TextInput extends Component<IProps, State> {
         const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
 
         // Input
-        const inputProps = this.hsExtState ? {...props, value: text} : {...props};
+        const inputProps = hsExtState ? {...props, value: text} : {...props};
 
         // Icon
         const hsIcon: boolean = hsValidState && isValid;

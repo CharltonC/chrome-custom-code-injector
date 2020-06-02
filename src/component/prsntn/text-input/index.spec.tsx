@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../test-util/';
-import { IProps, State , IValidationConfig } from './type';
+import { IProps, IState , IValidationConfig } from './type';
 import { _TextInput, TextInput } from './';
 
 describe('Component - Text Input', () => {
@@ -15,9 +15,9 @@ describe('Component - Text Input', () => {
         describe('Constructor', () => {
             it('should have no external state nor validation rules when there are no text nor rules passsed', () => {
                 const cmpInst: any = new _TextInput({id: ''});
-                expect(cmpInst.hsExtState).toBe(false);
-                expect(cmpInst.hsValidationRules).toBe(false);
                 expect(cmpInst.state).toEqual({
+                    hsExtState: false,
+                    hsValidationRules: false,
                     isValid: null,
                     errMsg: []
                 })
@@ -25,14 +25,97 @@ describe('Component - Text Input', () => {
 
             it('should have no external state nor validation rules when there are no text and empty rules passed ', () => {
                 const cmpInst: any = new _TextInput({id: '', validate: []});
-                expect(cmpInst.hsValidationRules).toBe(false);
+                expect(cmpInst.state.hsValidationRules).toBe(false);
             });
 
             it('should have external state and validation rules when there are text and non-empty rules passed', () => {
                 const mockRules: IValidationConfig[] = [{rule: jest.fn(), msg: ''}];
                 const cmpInst: any = new _TextInput({id: '', text: '', validate: mockRules});
-                expect(cmpInst.hsExtState).toBe(true);
-                expect(cmpInst.hsValidationRules).toBe(true);
+                expect(cmpInst.state.hsExtState).toBe(true);
+                expect(cmpInst.state.hsValidationRules).toBe(true);
+            });
+        });
+
+        describe('Lifecycle - `UNSAFE_componentWillReceiveProps`', () => {
+            const mockBaseProps: IProps = {id: '', text: '', validate: []};
+            const mockChangedText: string = 'text';
+            const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
+            const mockIntState: any = {};
+            const mockValidState: Partial<IState> = {errMsg: [], isValid: true};
+            let spyGetIntState: jest.SpyInstance;
+            let spyGetValideState: jest.SpyInstance;
+            let spySetState: jest.SpyInstance;
+            let cmpInst: _TextInput;
+
+            beforeEach(() => {
+                spyGetIntState = jest.spyOn(_TextInput.prototype, 'getIntState').mockReturnValue(mockIntState);
+                spyGetValideState = jest.spyOn(_TextInput.prototype, 'getValidState').mockReturnValue(mockValidState);
+                spySetState = jest.spyOn(_TextInput.prototype, 'setState').mockImplementation(() => {});
+                cmpInst = new _TextInput(mockBaseProps);
+            });
+
+            it('should not set initial state if the passed text or validation rules are unchanged', () => {
+                cmpInst.UNSAFE_componentWillReceiveProps(mockBaseProps);
+
+                expect(spyGetIntState).toHaveBeenCalledTimes(1);    // constructor only
+                expect(spySetState).not.toHaveBeenCalled();
+                expect(spyGetValideState).not.toHaveBeenCalled();
+            });
+
+            it('should set initial state if the passed text is changed', () => {
+                cmpInst.UNSAFE_componentWillReceiveProps({
+                    ...mockBaseProps,
+                    text: mockChangedText,
+                });
+
+                expect(spyGetIntState).toHaveBeenCalledTimes(2);
+                expect(spyGetIntState).toHaveBeenCalledWith(mockChangedText, mockBaseProps.validate);
+                expect(spyGetValideState).toHaveBeenCalledWith(mockChangedText, mockBaseProps.validate);
+                expect(spySetState).toHaveBeenCalledWith(mockValidState);
+            });
+
+            it('should set initial state if the passed validation rules r changed ', () => {
+                cmpInst.UNSAFE_componentWillReceiveProps({
+                    ...mockBaseProps,
+                    validate: mockValidationRules,
+                });
+
+                expect(spyGetIntState).toHaveBeenCalledTimes(2);
+                expect(spyGetIntState).toHaveBeenCalledWith(mockBaseProps.text, mockValidationRules);
+                expect(spyGetValideState).toHaveBeenCalledWith(mockBaseProps.text, mockValidationRules);
+                expect(spySetState).toHaveBeenCalledWith(mockValidState);
+            });
+        });
+
+        describe('Method - Get Internal State', () => {
+            const baseIntState: Partial<IState> = {isValid: null, errMsg: []};
+            const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
+            const { getIntState } = _TextInput.prototype;
+
+            it('should get internal state', () => {
+                expect(getIntState(undefined, undefined)).toEqual({
+                    ...baseIntState,
+                    hsExtState: false,
+                    hsValidationRules: false
+                });
+
+                expect(getIntState(undefined, [])).toEqual({
+                    ...baseIntState,
+                    hsExtState: false,
+                    hsValidationRules: false
+                });
+
+                expect(getIntState('', undefined)).toEqual({
+                    ...baseIntState,
+                    hsExtState: true,
+                    hsValidationRules: false
+                });
+
+                expect(getIntState('', mockValidationRules)).toEqual({
+                    ...baseIntState,
+                    hsExtState: true,
+                    hsValidationRules: true
+                });
             });
         });
 
@@ -42,7 +125,7 @@ describe('Component - Text Input', () => {
             let mockFnRule: jest.Mock;
             let mockRegexRule: RegExp;
             let spyStrSearch: jest.SpyInstance;
-            let validState: State;
+            let validState: Partial<IState>;
 
             beforeEach(() => {
                 mockFnRule = jest.fn();
@@ -100,7 +183,7 @@ describe('Component - Text Input', () => {
 
         describe('Method - Set valid state', () => {
             const mockText: string = 'lorem';
-            const mockRtnState: State = {isValid: true, errMsg: []};
+            const mockRtnState: Partial<IState> = {isValid: true, errMsg: []};
             const mockEvtCbFn: jest.Mock = jest.fn();
             const mockEvt: any = { target: { value: mockText }};
             const mockProps: IProps = {id: ''};
@@ -124,18 +207,18 @@ describe('Component - Text Input', () => {
             });
 
             it('should set valid state when validation rules exist, valid state has not been previously set and input text characters are more than the specified limit', () => {
-                (cmpInst as any).hsValidationRules = true;      // force set private property
+                (cmpInst.state as any).hsValidationRules = true;    // force set private property
                 cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
 
-                expect(spySetState).toHaveBeenCalledWith(mockRtnState);
+                expect(spySetState).toHaveBeenCalledWith({...cmpInst.state, ...mockRtnState});
             });
 
             it('should set valid state when validation rules exist and valid state has been previously set (regardless of character limit)', () => {
-                (cmpInst as any).hsValidationRules = true;
-                (cmpInst as any).state.isValid = true;          // force set read-only property
+                (cmpInst.state as any).hsValidationRules = true;
+                (cmpInst.state as any).isValid = true;          // force set read-only property
                 cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
 
-                expect(spySetState).toHaveBeenCalledWith(mockRtnState);
+                expect(spySetState).toHaveBeenCalledWith({...cmpInst.state, ...mockRtnState});
             });
 
             it('should not set valid state when validation rules dont exist', () => {
