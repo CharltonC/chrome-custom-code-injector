@@ -29,7 +29,7 @@ export class _TextInput extends Component<IProps, IState> {
 
         // Only Update internal state when either text/validation passed is different
         const baseState: IState = this.getIntState(text, validate);
-        const validState: Partial<IState> = this.getValidState(text, validate);
+        const validState: Partial<IState> = baseState.hsValidationRules ? this.getValidState(text, validate) : {};
         this.setState({...baseState, ...validState});
     }
 
