@@ -21,6 +21,9 @@ export class _TabSwitch extends Component<IProps, IState> {
         this.onCheckboxChanged = this.onCheckboxChanged.bind(this);
     }
 
+    // TODO: UNSAFE_componentWillReceiveProps
+    // TODO: Move class property to internal state
+
     onRdoChecked(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
         const { onTabActive } = this.props;
         const isCurrActive: boolean = this.state.activeTab === activeTab;
