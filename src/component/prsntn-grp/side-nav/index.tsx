@@ -11,6 +11,7 @@ export class _SideNav extends Component<IProps, IState> {
 
     /**
      * ONLY After initial render and when a diff. props (list) is received
+     * - this will def. the active item to be the top/1st list item
      */
     UNSAFE_componentWillReceiveProps({list}: IProps): void {
         if (list === this.props.list) return;
@@ -21,7 +22,7 @@ export class _SideNav extends Component<IProps, IState> {
     onClick(evt: React.MouseEvent<HTMLElement, MouseEvent>, atvLsIdx: number, atvNestLsIdx: number = null): void {
         evt.stopPropagation();
         const { state } = this;
-        const { onAtvListChange } = this.props;
+        const { list, onAtvListChange } = this.props;
         const isAtvList: boolean = atvLsIdx === state.atvLsIdx;
         const isNotSameNestedList = atvNestLsIdx !== state.atvNestLsIdx;
 
@@ -36,7 +37,7 @@ export class _SideNav extends Component<IProps, IState> {
             atvNestLsIdx
         });
 
-        if (onAtvListChange) onAtvListChange(atvLsIdx, atvNestLsIdx);
+        if (onAtvListChange) onAtvListChange(list, atvLsIdx, atvNestLsIdx);
     }
 
     render() {
