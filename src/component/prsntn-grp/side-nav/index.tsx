@@ -68,8 +68,9 @@ export class _SideNav extends Component<IProps, IState> {
                                 <a className="side-nav__title">{id}</a>
                                 <span className="badge">{lsTotalTxt}</span>
                             </p>
+                            {/* only render nested list under active list for performance */}
                             {
-                                isAtvIdx ?
+                                isAtvIdx && lsTotal ?
                                 <ul>{nestList.map((nstLs: IList, nstLsIdx: number) => {
                                     const nstLsCls: string = this.getLsCls(nstLsBaseCls, atvNestLsIdx === nstLsIdx);
                                     const nstLsKey: string = `${nstLsBaseCls}-${nstLsIdx}`;
