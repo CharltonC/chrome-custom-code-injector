@@ -22,6 +22,6 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
  * - internal only to control show/hide of certain element (instead of relying on external state, i.e. `IProps.text`)
  * - not named `text` as not to conflict in case there is an external state
  */
-export class State {
+export class IState {
     hsText: boolean = false;
 }

@@ -1,23 +1,33 @@
 import React, { memo, ReactElement, Component } from 'react';
 
 import { inclStaticIcon } from '../../static/icon';
-import * as NSearch from './type';
+import { IProps, IState } from './type';
 
-export class _SearchInput extends Component<NSearch.IProps, NSearch.State> {
-    private inputElem: HTMLInputElement;
-    private hsExtState: boolean;
+export class _SearchInput extends Component<IProps, IState> {
+    inputElem: HTMLInputElement;
+    hsExtState: boolean;
 
-    constructor(props: NSearch.IProps) {
+    constructor(props: IProps) {
         super(props);
 
         // internal state only
         const { text } = this.props;
-        this.hsExtState = typeof text !== 'undefined';
-        this.state = { hsText: this.hsExtState ? !!text : false };
+        this.state = this.getIntState(text);
 
         // handlers
         this.onInputChange = this.onInputChange.bind(this);
         this.onBtnClick = this.onBtnClick.bind(this);
+    }
+
+    UNSAFE_componentWillReceiveProps({text}: IProps): void {
+        if (text === this.props.text) return;
+        const state: IState = this.getIntState(text);
+        this.setState(state);
+    }
+
+    getIntState(text?: string): IState {
+        this.hsExtState = typeof text !== 'undefined';
+        return { hsText: this.hsExtState ? !!text : false };
     }
 
     onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
