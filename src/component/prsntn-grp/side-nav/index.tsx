@@ -3,41 +3,34 @@ import { IProps, IState, INestList, IList } from './type';
 import { inclStaticIcon } from '../../static/icon/';
 
 export class _SideNav extends Component<IProps, IState> {
-    hsList: boolean;
-
     constructor(props: IProps) {
         super(props);
-
-        const { list } = props;
-        this.hsList = typeof list !== 'undefined' && list.length > 0;
-        this.state = {
-            atvLsIdx: this.hsList ? 0 : null,
-            atvNestLsIdx: null,
-        };
-
+        this.state = this.getIntState(props.list);
         this.onClick = this.onClick.bind(this);
     }
 
-    getLsCls(baseCls: string, isAtv: boolean): string {
-        return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
-    }
-
-    getBadgeTxt(total: number): string {
-        return total > 9 ? '9+' : `${total}`;
+    /**
+     * ONLY After initial render and when a diff. props (list) is received
+     */
+    UNSAFE_componentWillReceiveProps({list}: IProps): void {
+        if (list === this.props.list) return;
+        let state: IState = this.getIntState(list);
+        this.setState(state);
     }
 
     onClick(evt: React.MouseEvent<HTMLElement, MouseEvent>, atvLsIdx: number, atvNestLsIdx: number = null): void {
         evt.stopPropagation();
-
         const { state } = this;
         const isAtvList: boolean = atvLsIdx === state.atvLsIdx;
         const isNotSameNestedList = atvNestLsIdx !== state.atvNestLsIdx;
 
+        // If parent list is diff.
         if (!isAtvList) this.setState({
             atvLsIdx,
             atvNestLsIdx: null
         });
 
+        // if parent list is same but child list is diff.
         if (isAtvList && isNotSameNestedList) this.setState({
             atvNestLsIdx
         });
@@ -54,7 +47,6 @@ export class _SideNav extends Component<IProps, IState> {
         const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
         // TODO: static badge
 
-
         return (
             <nav className="side-nav">
                 <ul>{list.map((ls: INestList, lsIdx: number) => {
@@ -65,8 +57,6 @@ export class _SideNav extends Component<IProps, IState> {
                     const lsCls: string = this.getLsCls(lsBaseCls, (isAtvIdx && atvNestLsIdx === null));
                     const lsKey: string = `${lsBaseCls}-${lsIdx}`;
                     const lsTotalTxt: string = this.getBadgeTxt(lsTotal);
-
-                    /* TODO: `key attr` */
 
                     return <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
                             <p>
@@ -95,6 +85,26 @@ export class _SideNav extends Component<IProps, IState> {
             </nav>
         );
     }
+
+    getLsCls(baseCls: string, isAtv: boolean): string {
+        return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
+    }
+
+    getBadgeTxt(total: number): string {
+        return total > 9 ? '9+' : `${total}`;
+    }
+
+    /**
+     * Config the active list when a new or diff. list is passed
+     */
+    getIntState(list: INestList[]): IState {
+        const hsList: boolean = typeof list !== 'undefined' && list.length > 0;
+        return {
+            atvLsIdx: hsList ? 0 : null,
+            atvNestLsIdx: null
+        };
+    }
+    ////
 }
 
 export const SideNav = memo(_SideNav);
