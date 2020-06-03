@@ -4,12 +4,14 @@ import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState, IValidationConfig } from './type';
 
 export class _TextInput extends Component<IProps, IState> {
+    inputElem: HTMLInputElement;
+
     constructor(props: IProps) {
         super(props);
 
         // Text input (either use internal or external)
         const { text, validate } = this.props;
-        this.state = this.getIntState(text, validate);
+        this.state = this.getInitialState(text, validate);
 
         // handlers
         this.onChange = this.onChange.bind(this);
@@ -17,24 +19,23 @@ export class _TextInput extends Component<IProps, IState> {
     }
 
     /**
-     * Deal with change for passed text or validation rules
+     * Revalidate when passed validation rules have changed
      */
     UNSAFE_componentWillReceiveProps({text, validate}: IProps): void {
         const { props } = this;
-        const isDiffText: boolean = text !== props.text;
-        const isDiffRules: boolean = validate !== props.validate;
+        const isSameRules: boolean = props.validate === validate;
 
         // We dont care about if other props change except for the passed text and validation rules
-        if (!isDiffText && !isDiffRules) return;
+        if (isSameRules) return;
 
-        // Only Update internal state when either text/validation passed is different
-        const baseState: IState = this.getIntState(text, validate);
-        const validState: Partial<IState> = baseState.hsValidationRules ? this.getValidState(text, validate) : {};
-        this.setState({...baseState, ...validState});
+        // Only Revalidate & Update internal state when the passed Validation rules have changed
+        const state: IState = this.getInitialState(text, validate);
+        const validateText: string = state.hsExtState ? text : this.inputElem.value;
+        const validState: Partial<IState> = state.hsValidationRules ? this.getValidState(validateText, validate) : {};
+        this.setState({...state, ...validState});
     }
 
-    //// HELPER FN ////
-    getIntState(text: string, validate: IValidationConfig[]) {
+    getInitialState(text: string, validate: IValidationConfig[]): IState {
         return {
             hsExtState: typeof text !== 'undefined',
             hsValidationRules: typeof validate !== 'undefined' && validate.length > 0,
@@ -114,6 +115,7 @@ export class _TextInput extends Component<IProps, IState> {
                         id={id}
                         className="text-ipt__input"
                         type="text"
+                        ref={elem => this.inputElem = elem}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
                         {...inputProps}

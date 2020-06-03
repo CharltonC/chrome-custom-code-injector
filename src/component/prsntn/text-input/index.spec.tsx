@@ -13,106 +13,121 @@ describe('Component - Text Input', () => {
 
     describe('Component Class', () => {
         describe('Constructor', () => {
-            it('should have no external state nor validation rules when there are no text nor rules passsed', () => {
-                const cmpInst: any = new _TextInput({id: ''});
-                expect(cmpInst.state).toEqual({
-                    hsExtState: false,
-                    hsValidationRules: false,
-                    isValid: null,
-                    errMsg: []
-                })
-            });
+            it('should init', () => {
+                const mockInitialState: any = {};
+                const mockProps: IProps = {id: '', text: 'abc'};
+                let spyGetInitialState: jest.SpyInstance = jest.spyOn(_TextInput.prototype, 'getInitialState').mockReturnValue(mockInitialState);
+                const cmpInst: any = new _TextInput(mockProps);
 
-            it('should have no external state nor validation rules when there are no text and empty rules passed ', () => {
-                const cmpInst: any = new _TextInput({id: '', validate: []});
-                expect(cmpInst.state.hsValidationRules).toBe(false);
-            });
-
-            it('should have external state and validation rules when there are text and non-empty rules passed', () => {
-                const mockRules: IValidationConfig[] = [{rule: jest.fn(), msg: ''}];
-                const cmpInst: any = new _TextInput({id: '', text: '', validate: mockRules});
-                expect(cmpInst.state.hsExtState).toBe(true);
-                expect(cmpInst.state.hsValidationRules).toBe(true);
+                expect(spyGetInitialState).toHaveBeenCalledWith(mockProps.text, undefined);
+                expect(cmpInst.state).toEqual(mockInitialState);
             });
         });
 
         describe('Lifecycle - `UNSAFE_componentWillReceiveProps`', () => {
-            const mockBaseProps: IProps = {id: '', text: '', validate: []};
-            const mockChangedText: string = 'text';
+            const mockText: string = 'lorem';
+            const mockBaseProps: IProps = {id: '', validate: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
-            const mockIntState: any = {};
             const mockValidState: Partial<IState> = {errMsg: [], isValid: true};
-            let spyGetIntState: jest.SpyInstance;
-            let spyGetValideState: jest.SpyInstance;
+            let mockInitialState: Partial<IState>;
+
+            let spyGetInitialState: jest.SpyInstance;
+            let spyGetValidState: jest.SpyInstance;
             let spySetState: jest.SpyInstance;
             let cmpInst: _TextInput;
 
             beforeEach(() => {
-                spyGetIntState = jest.spyOn(_TextInput.prototype, 'getIntState').mockReturnValue(mockIntState);
-                spyGetValideState = jest.spyOn(_TextInput.prototype, 'getValidState').mockReturnValue(mockValidState);
+                spyGetInitialState = jest.spyOn(_TextInput.prototype, 'getInitialState');
+                spyGetValidState = jest.spyOn(_TextInput.prototype, 'getValidState').mockReturnValue(mockValidState);
                 spySetState = jest.spyOn(_TextInput.prototype, 'setState').mockImplementation(() => {});
-                cmpInst = new _TextInput(mockBaseProps);
             });
 
-            it('should not set initial state if the passed text or validation rules are unchanged', () => {
+            it('should revalidate using passed text if text is passed and validation rules have changed', () => {
+                mockInitialState = { hsExtState: true, hsValidationRules: true };
+                spyGetInitialState.mockReturnValue(mockInitialState);
+                cmpInst = new _TextInput({...mockBaseProps, text: mockText});
+                cmpInst.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: mockValidationRules});
+
+                expect(spyGetInitialState).toHaveBeenCalledTimes(2);    // incl. constructor
+                expect(spyGetInitialState.mock.calls[1]).toEqual([mockText, mockValidationRules]);
+                expect(spyGetValidState).toHaveBeenCalledWith(mockText, mockValidationRules);
+                expect(spySetState).toHaveBeenCalledWith({
+                    ...mockInitialState,
+                    ...mockValidState,
+                });
+            });
+
+            it('should revalidate using text value from Input Elem Ref if no text is passed and validation rules have changed', () => {
+                mockInitialState = { hsExtState: false, hsValidationRules: true };
+                spyGetInitialState.mockReturnValue(mockInitialState);
+                cmpInst = new _TextInput(mockBaseProps);
+
+                // Force validation rules change & call `UNSAFE_componentWillReceiveProps`
+                const mockInputVal: string = 'abc';
+                (cmpInst.inputElem as any) = {value: mockInputVal};
+                cmpInst.UNSAFE_componentWillReceiveProps({...mockBaseProps, validate: mockValidationRules});
+
+                expect(spyGetInitialState).toHaveBeenCalledTimes(2);    // incl. constructor
+                expect(spyGetInitialState.mock.calls[1]).toEqual([undefined, mockValidationRules]);
+                expect(spyGetValidState).toHaveBeenCalledWith(mockInputVal, mockValidationRules);
+                expect(spySetState).toHaveBeenCalledWith({
+                    ...mockInitialState,
+                    ...mockValidState
+                });
+            });
+
+            it('should not revalidate if validation rules have changed but empty', () => {
+                mockInitialState = { hsExtState: true, hsValidationRules: false };
+                spyGetInitialState.mockReturnValue(mockInitialState);
+                cmpInst = new _TextInput({...mockBaseProps, text: mockText});
+                cmpInst.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: []});
+
+                expect(spyGetInitialState).toHaveBeenCalledTimes(2);    // incl. constructor
+                expect(spyGetInitialState.mock.calls[1]).toEqual([mockText, []]);
+                expect(spyGetValidState).not.toHaveBeenCalled();
+                expect(spySetState).toHaveBeenCalledWith(mockInitialState);
+            });
+
+            it('should not revalidate if validation rules have not changed', () => {
+                mockInitialState = { hsExtState: false, hsValidationRules: true };
+                spyGetInitialState.mockReturnValue(mockInitialState);
+                cmpInst = new _TextInput(mockBaseProps);
                 cmpInst.UNSAFE_componentWillReceiveProps(mockBaseProps);
 
-                expect(spyGetIntState).toHaveBeenCalledTimes(1);    // constructor only
+                expect(spyGetInitialState).toHaveBeenCalledTimes(1);    // incl. constructor
+                expect(spyGetValidState).not.toHaveBeenCalled();
                 expect(spySetState).not.toHaveBeenCalled();
-                expect(spyGetValideState).not.toHaveBeenCalled();
-            });
-
-            it('should set initial state if the passed text is changed', () => {
-                cmpInst.UNSAFE_componentWillReceiveProps({
-                    ...mockBaseProps,
-                    text: mockChangedText,
-                });
-
-                expect(spyGetIntState).toHaveBeenCalledTimes(2);
-                expect(spyGetIntState).toHaveBeenCalledWith(mockChangedText, mockBaseProps.validate);
-                expect(spyGetValideState).toHaveBeenCalledWith(mockChangedText, mockBaseProps.validate);
-                expect(spySetState).toHaveBeenCalledWith(mockValidState);
-            });
-
-            it('should set initial state if the passed validation rules r changed ', () => {
-                cmpInst.UNSAFE_componentWillReceiveProps({
-                    ...mockBaseProps,
-                    validate: mockValidationRules,
-                });
-
-                expect(spyGetIntState).toHaveBeenCalledTimes(2);
-                expect(spyGetIntState).toHaveBeenCalledWith(mockBaseProps.text, mockValidationRules);
-                expect(spyGetValideState).toHaveBeenCalledWith(mockBaseProps.text, mockValidationRules);
-                expect(spySetState).toHaveBeenCalledWith(mockValidState);
             });
         });
 
-        describe('Method - Get Internal State', () => {
-            const baseIntState: Partial<IState> = {isValid: null, errMsg: []};
+        describe('Method - getInitialState', () => {
+            const mockInitialBaseState: Partial<IState> = {isValid: null, errMsg: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
-            const { getIntState } = _TextInput.prototype;
+            const { getInitialState } = _TextInput.prototype;
 
-            it('should get internal state', () => {
-                expect(getIntState(undefined, undefined)).toEqual({
-                    ...baseIntState,
+            it('should get Initial state when text is not provided', () => {
+                expect(getInitialState(undefined, undefined)).toEqual({
+                    ...mockInitialBaseState,
                     hsExtState: false,
                     hsValidationRules: false
                 });
 
-                expect(getIntState(undefined, [])).toEqual({
-                    ...baseIntState,
+                expect(getInitialState(undefined, [])).toEqual({
+                    ...mockInitialBaseState,
                     hsExtState: false,
                     hsValidationRules: false
                 });
+            });
 
-                expect(getIntState('', undefined)).toEqual({
-                    ...baseIntState,
+            it('should get Initial state when text is provided', () => {
+                expect(getInitialState('', undefined)).toEqual({
+                    ...mockInitialBaseState,
                     hsExtState: true,
                     hsValidationRules: false
                 });
 
-                expect(getIntState('', mockValidationRules)).toEqual({
-                    ...baseIntState,
+                expect(getInitialState('', mockValidationRules)).toEqual({
+                    ...mockInitialBaseState,
                     hsExtState: true,
                     hsValidationRules: true
                 });
