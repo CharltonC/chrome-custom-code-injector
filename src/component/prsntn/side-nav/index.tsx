@@ -10,13 +10,49 @@ export class _SideNav extends Component<IProps, IState> {
     }
 
     /**
-     * ONLY After initial render and when a diff. props (list) is received
-     * - this will def. the active item to be the top/1st list item
+     * Check if the active list is still in the new list
+     * - if YES, make it still active
+     * - if not, make the 1st list active by def
      */
     UNSAFE_componentWillReceiveProps({list}: IProps): void {
-        if (list === this.props.list) return;
-        let state: IState = this.getIntState(list);
-        this.setState(state);
+        const { props } = this;
+        const { atvLsIdx } = this.state;
+
+        // Only proceed when passed list is different
+        if (list === props.list) return;
+        const currAtvLs = props.list[atvLsIdx];
+        const currAtvLsIdxInNewList: number = list.indexOf(currAtvLs);
+        const isCurrAtvLsInNewList: boolean = currAtvLsIdxInNewList !== -1;
+        const isCurrAtvLsIdxDiffInNewList: boolean = isCurrAtvLsInNewList && (currAtvLsIdxInNewList !== atvLsIdx);
+
+        // If the active list is in the new passed list however not in the same index we update the active state
+        if (isCurrAtvLsIdxDiffInNewList) {
+            this.setState({atvLsIdx: currAtvLsIdxInNewList});
+
+        // If the active list is NOT in the new passed list, by def. we just make the 1st (if exist) active
+        } else if (!isCurrAtvLsInNewList) {
+            const state: IState = this.getIntState(list);
+            this.setState(state);
+        }
+    }
+
+    getLsCls(baseCls: string, isAtv: boolean): string {
+        return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
+    }
+
+    getBadgeTxt(total: number): string {
+        return total > 9 ? '9+' : `${total}`;
+    }
+
+    /**
+     * Config the active list when a new or diff. list is passed
+     */
+    getIntState(list: INestList[]): IState {
+        const hsList: boolean = typeof list !== 'undefined' && list.length > 0;
+        return {
+            atvLsIdx: hsList ? 0 : null,
+            atvNestLsIdx: null
+        };
     }
 
     onClick(evt: React.MouseEvent<HTMLElement, MouseEvent>, atvLsIdx: number, atvNestLsIdx: number = null): void {
@@ -89,25 +125,6 @@ export class _SideNav extends Component<IProps, IState> {
                 })}</ul>
             </nav>
         );
-    }
-
-    getLsCls(baseCls: string, isAtv: boolean): string {
-        return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
-    }
-
-    getBadgeTxt(total: number): string {
-        return total > 9 ? '9+' : `${total}`;
-    }
-
-    /**
-     * Config the active list when a new or diff. list is passed
-     */
-    getIntState(list: INestList[]): IState {
-        const hsList: boolean = typeof list !== 'undefined' && list.length > 0;
-        return {
-            atvLsIdx: hsList ? 0 : null,
-            atvNestLsIdx: null
-        };
     }
 }
 

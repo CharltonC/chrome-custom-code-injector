@@ -9,23 +9,27 @@ export default {
 const defStyle = {};
 
 
-export const DefaultComponent = () => {
+export const ActiveListItemRemainsActiveWhenListChanges = () => {
     const sampleList = [
         {id: 'Host Id 1', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]},
         {id: 'Host Id 2', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]},
         {id: 'Host Id 3', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]}
     ];
 
-    const [ list ] = useState(sampleList);
+    const [ list, setList ] = useState(sampleList);
 
-    // const onClick = () => {
-    //     setList([
-    //         {id: 'Host Id 3', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]}
-    //     ]);
-    // };
+    // e.g. we click 2nd item in `sampleList` (either itself or its child), then we change the list via `onClick` to change the list
+    // - the active item will still persist
+    const onClick = () => {
+        setList([
+            sampleList[1],
+            sampleList[2],
+        ]);
+    };
 
     return (
         <div style={defStyle} >
+            <button type="button" onClick={onClick}>change list</button>
             <SideNav list={list} />
         </div>
     )
