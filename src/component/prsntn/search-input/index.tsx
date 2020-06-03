@@ -18,12 +18,6 @@ export class _SearchInput extends Component<IProps, IState> {
         this.onBtnClick = this.onBtnClick.bind(this);
     }
 
-    UNSAFE_componentWillReceiveProps({text}: IProps): void {
-        if (text === this.props.text) return;
-        const state: IState = this.getIntState(text);
-        this.setState(state);
-    }
-
     getIntState(text?: string): IState {
         const hsExtState: boolean = typeof text !== 'undefined';
         return {

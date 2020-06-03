@@ -35,25 +35,6 @@ describe('Component - Search', () => {
             });
         });
 
-        describe('Lifecycle - UNSAFE_componentWillReceiveProps', () => {
-            it('should not set the internal staet when same input text is passed', () => {
-                searchInput.UNSAFE_componentWillReceiveProps(mockBaseProps);
-
-                expect(spyGetIntState).toHaveBeenCalledTimes(1);
-                expect(spySetState).not.toHaveBeenCalled();
-            });
-
-            it('should set the internal state when a diff. input text is passed', () => {
-                const mockIntState: IState = { hsExtState: true, hsText: true };
-                spyGetIntState.mockReturnValue(mockIntState);
-                searchInput.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockNewText});
-
-                expect(spyGetIntState).toHaveBeenCalledTimes(2);
-                expect(spyGetIntState).toHaveBeenCalledWith(mockNewText);
-                expect(spySetState).toHaveBeenCalledWith(mockIntState);
-            });
-        });
-
         describe('Method - getIntState', () => {
             it('should return an initial state when text is defined', () => {
                 intState = searchInput.getIntState('some text');
