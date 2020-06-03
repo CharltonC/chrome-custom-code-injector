@@ -22,8 +22,8 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     // - the active item will still persist
     const onClick = () => {
         setList([
-            sampleList[1],
-            sampleList[2],
+            list[0],
+            list[1],
         ]);
     };
 
