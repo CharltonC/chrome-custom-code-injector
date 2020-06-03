@@ -15,5 +15,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
  * Internal State only
  */
 export interface IState {
+    hsList: boolean;
+    hsAtvIdx: boolean;
     activeTab: ITabItem;
 }

@@ -4,25 +4,23 @@ import { inclStaticIcon } from '../../static/icon/';
 import { IProps, IState, ITabItem } from './type';
 
 export class _TabSwitch extends Component<IProps, IState> {
-    hsList: boolean;
-    hsAtvIdx: boolean;
-
     constructor(props: IProps) {
         super(props);
-
         const { list, activeIdx } = props;
-        this.hsList = !!list.length;
-        this.hsAtvIdx = typeof activeIdx !== 'undefined' && !!list[activeIdx];
-        this.state = {
-            activeTab: this.hsList ? (this.hsAtvIdx ? list[activeIdx] : list[0]) : null
-        };
-
+        this.state = this.getInitialState(list, activeIdx);
         this.onRdoChecked = this.onRdoChecked.bind(this);
         this.onCheckboxChanged = this.onCheckboxChanged.bind(this);
     }
 
-    // TODO: UNSAFE_componentWillReceiveProps
-    // TODO: Move class property to internal state
+    getInitialState(list: ITabItem[], activeIdx: number): IState {
+        const hsList: boolean = typeof list !== 'undefined' && !!list.length;
+        const hsAtvIdx: boolean = typeof activeIdx !== 'undefined' && !!list[activeIdx];
+        return {
+            hsList,
+            hsAtvIdx,
+            activeTab: hsList ? (hsAtvIdx ? list[activeIdx] : list[0]) : null
+        };
+    }
 
     onRdoChecked(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
         const { onTabActive } = this.props;
@@ -38,9 +36,8 @@ export class _TabSwitch extends Component<IProps, IState> {
     }
 
     render() {
-        const { hsList, hsAtvIdx } = this;
         const { id, list, activeIdx } = this.props;
-        const { activeTab } = this.state;
+        const { hsList, hsAtvIdx, activeTab } = this.state;
 
         // List item
         const liBaseCls: string = 'tab-switch__item';

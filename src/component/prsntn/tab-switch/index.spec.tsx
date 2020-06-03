@@ -10,6 +10,7 @@ describe('Component - Tab Switch', () => {
     let spyOnRdoChecked: jest.SpyInstance;
     let spyOnCbChanged: jest.SpyInstance;
     let spySetState: jest.SpyInstance;
+    let spyGetInitialState: jest.SpyInstance;
 
     beforeEach(() => {
         mockList = [
@@ -21,6 +22,7 @@ describe('Component - Tab Switch', () => {
         spyOnRdoChecked = jest.spyOn(_TabSwitch.prototype, 'onRdoChecked');
         spyOnCbChanged = jest.spyOn(_TabSwitch.prototype, 'onCheckboxChanged');
         spySetState = jest.spyOn(_TabSwitch.prototype, 'setState');
+        spyGetInitialState = jest.spyOn(_TabSwitch.prototype, 'getInitialState');
     });
 
     afterEach(() => {
@@ -30,40 +32,59 @@ describe('Component - Tab Switch', () => {
 
     describe('Component Class', () => {
         describe('Constructor', () => {
-            it('should have no list nor state when empty list is passed regardless of active index value', () => {
+            it('should initialize', () => {
+                const mockInitialState: any = {};
+                spyGetInitialState.mockReturnValue(mockInitialState);
                 tabSwitch = new _TabSwitch(mockBaseProps);
-                const { hsList, hsAtvIdx, state } = tabSwitch;
 
-                expect(hsList).toBe(false);
-                expect(hsAtvIdx).toBe(false);
-                expect(state.activeTab).toBe(null);
+                expect(spyGetInitialState).toHaveBeenCalledWith(mockBaseProps.list, undefined);
+                expect(tabSwitch.state).toBe(mockInitialState);
+            });
+        });
+
+        describe('Method - getIntiialState', () => {
+            beforeEach(() => {
+                tabSwitch = new _TabSwitch(mockBaseProps);
             });
 
-            it('should default to the 1st list item when list is passed and no/invalid active index is passed', () => {
-                tabSwitch = new _TabSwitch(mockListProps);
-                const { hsList, hsAtvIdx, state } = tabSwitch;
+            it('should get initial state when list is not provided', () => {
+                expect(tabSwitch.getInitialState(undefined, undefined)).toEqual({
+                    hsList: false,
+                    hsAtvIdx: false,
+                    activeTab: null
+                });
 
-                expect(hsList).toBe(true);
-                expect(hsAtvIdx).toBe(false);
-                expect(state.activeTab).toBe(mockList[0]);
+                expect(tabSwitch.getInitialState([], undefined)).toEqual({
+                    hsList: false,
+                    hsAtvIdx: false,
+                    activeTab: null
+                });
+
+                expect(tabSwitch.getInitialState([], 0)).toEqual({
+                    hsList: false,
+                    hsAtvIdx: false,
+                    activeTab: null
+                });
             });
 
-            it('should default to the 1st list item when list is passed and invalid active index is passed', () => {
-                tabSwitch = new _TabSwitch({...mockListProps, activeIdx: 99});
-                const { hsList, hsAtvIdx, state } = tabSwitch;
+            it('should get initial state when list is provided', () => {
+                expect(tabSwitch.getInitialState(mockList, undefined)).toEqual({
+                    hsList: true,
+                    hsAtvIdx: false,
+                    activeTab: mockList[0]
+                });
 
-                expect(hsList).toBe(true);
-                expect(hsAtvIdx).toBe(false);
-                expect(state.activeTab).toBe(mockList[0]);
-            });
+                expect(tabSwitch.getInitialState(mockList, 99)).toEqual({
+                    hsList: true,
+                    hsAtvIdx: false,
+                    activeTab: mockList[0]
+                });
 
-            it('should point to the corresponding active tab when list is passed and valid active index is passed', () => {
-                tabSwitch = new _TabSwitch({...mockListProps, activeIdx: 1});
-                const { hsList, hsAtvIdx, state } = tabSwitch;
-
-                expect(hsList).toBe(true);
-                expect(hsAtvIdx).toBe(true);
-                expect(state.activeTab).toBe(mockList[1]);
+                expect(tabSwitch.getInitialState(mockList, 1)).toEqual({
+                    hsList: true,
+                    hsAtvIdx: true,
+                    activeTab: mockList[1]
+                });
             });
         });
 
