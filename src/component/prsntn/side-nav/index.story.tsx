@@ -21,9 +21,10 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     // e.g. we click 2nd item in `sampleList` (either itself or its child), then we change the list via `onClick` to change the list
     // - the active item will still persist
     const onClick = () => {
+        list[1].nestList.push({id: 'Path ID 3'});
         setList([
             list[0],
-            list[1],
+            list[1]
         ]);
     };
 
