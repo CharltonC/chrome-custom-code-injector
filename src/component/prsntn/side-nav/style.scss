@@ -5,16 +5,6 @@
     background-color: #13283B;
     color: #94A9C1;
 
-    .badge {
-        background-color: #334453;
-        width: 24px;
-        height: 18px;
-        border-radius: 18px;
-        text-align: center;
-        font: 12px $roboto-reg;
-        color: #94A9C1;
-    }
-
     &__title {
         flex: auto;
         margin-left: 10px;
@@ -87,16 +77,4 @@
             color: white;
         }
     }
-
-
-    // Host font size, color, bold
-    // path font size, color
-    // badage
-    // list style type
-
-    // top lvl
-    // mid lvl
-
-    // hover state
-    // active state
 }

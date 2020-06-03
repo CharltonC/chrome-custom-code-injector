@@ -1,6 +1,7 @@
 import React, { Component, memo, ReactElement } from "react";
 import { IProps, IState, INestList, IList } from './type';
 import { inclStaticIcon } from '../../static/icon/';
+import { inclStaticNumBadge } from '../../static/num-badge/';
 
 export class _SideNav extends Component<IProps, IState> {
     constructor(props: IProps) {
@@ -38,10 +39,6 @@ export class _SideNav extends Component<IProps, IState> {
 
     getLsCls(baseCls: string, isAtv: boolean): string {
         return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
-    }
-
-    getBadgeTxt(total: number): string {
-        return total > 9 ? '9+' : `${total}`;
     }
 
     /**
@@ -96,13 +93,12 @@ export class _SideNav extends Component<IProps, IState> {
 
                     const lsCls: string = this.getLsCls(lsBaseCls, (isAtvIdx && atvNestLsIdx === null));
                     const lsKey: string = `${lsBaseCls}-${lsIdx}`;
-                    const lsTotalTxt: string = this.getBadgeTxt(lsTotal);
 
                     return <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
                             <p>
-                                {isAtvIdx ? dnIconElem : rtIconElem}
+                                { isAtvIdx ? dnIconElem : rtIconElem }
                                 <a className="side-nav__title">{id}</a>
-                                <span className="badge">{lsTotalTxt}</span>
+                                { inclStaticNumBadge(lsTotal) }
                             </p>
                             {/* only render nested list under active list for performance */}
                             {
