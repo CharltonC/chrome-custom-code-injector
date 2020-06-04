@@ -82,7 +82,6 @@ export class _SideNav extends Component<IProps, IState> {
 
         const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
         const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
-        // TODO: static badge
 
         return (
             <nav className="side-nav">
@@ -94,30 +93,32 @@ export class _SideNav extends Component<IProps, IState> {
                     const lsCls: string = this.getLsCls(lsBaseCls, (isAtvIdx && atvNestLsIdx === null));
                     const lsKey: string = `${lsBaseCls}-${lsIdx}`;
 
-                    return <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
-                            <p>
-                                { isAtvIdx ? dnIconElem : rtIconElem }
-                                <a className="side-nav__title">{id}</a>
-                                { inclStaticNumBadge(lsTotal) }
-                            </p>
-                            {/* only render nested list under active list for performance */}
-                            {
-                                isAtvIdx && lsTotal ?
-                                <ul>{nestList.map((nstLs: IList, nstLsIdx: number) => {
-                                    const nstLsCls: string = this.getLsCls(nstLsBaseCls, atvNestLsIdx === nstLsIdx);
-                                    const nstLsKey: string = `${nstLsBaseCls}-${nstLsIdx}`;
+                    return (
+                    <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
+                        <p>
+                            { isAtvIdx ? dnIconElem : rtIconElem }
+                            <a className="side-nav__title">{id}</a>
+                            { inclStaticNumBadge(lsTotal) }
+                        </p>
+                        {/* only render nested list under active list for performance */}
+                        {
+                            isAtvIdx && lsTotal ?
+                            <ul>{nestList.map((nstLs: IList, nstLsIdx: number) => {
+                                const nstLsCls: string = this.getLsCls(nstLsBaseCls, atvNestLsIdx === nstLsIdx);
+                                const nstLsKey: string = `${nstLsBaseCls}-${nstLsIdx}`;
 
-                                    return (
-                                    <li className={nstLsCls} key={nstLsKey} onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}>
-                                        <a className="side-nav__title">
-                                            {nstLs.id}
-                                        </a>
-                                    </li>
-                                    );
-                                })}</ul> :
-                                null
-                            }
-                    </li>;
+                                return (
+                                <li className={nstLsCls} key={nstLsKey} onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}>
+                                    <a className="side-nav__title">
+                                        {nstLs.id}
+                                    </a>
+                                </li>
+                                );
+                            })}</ul> :
+                            null
+                        }
+                    </li>
+                    );
                 })}</ul>
             </nav>
         );
