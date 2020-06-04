@@ -71,8 +71,17 @@ describe('Component - Side Nav', () => {
                 expect(setStateSpy).toHaveBeenCalledTimes(1);
             });
 
+            it('should not update active state if current active list is in the new/passed list however in a same index', () => {
+                // By def. the active index is mockDefProps.list[0], it remains the same
+                const mockNewList: INestList[] = [...mockDefProps.list, {id: '0'} ];
+                sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
+
+                expect(getIntitalStateSpy).toHaveBeenCalledTimes(1);    // incl. constructor
+                expect(setStateSpy).not.toHaveBeenCalled();
+            });
+
             it('should set 1st list item in the new/passed list as active by default if current active list item OR parent list item of active nested list is in no longer in the new/passed list', () => {
-                const mockNewList: INestList[] = [{id: '0'}, {id: '1'}];
+                const mockNewList: INestList[] = [{id: 'a'}, {id: 'b'}];
                 getIntitalStateSpy.mockReturnValue(mockRtnNullState);
                 sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
 
