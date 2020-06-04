@@ -2,8 +2,8 @@
     padding: 40px 0;
     min-width: 220px;
     width: 220px;
-    background-color: #13283B;
-    color: #94A9C1;
+    background-color: $dark-blue-200;
+    color: $light-blue-100;
 
     &__title {
         flex: auto;
@@ -27,56 +27,73 @@
         }
 
         ul {
-            max-height: 320px;
             overflow-y: auto;
             list-style-type: circle;
             list-style-position: inside;
             font: 16px $roboto-reg;
 
+            /* TODO: mixin */
             &::-webkit-scrollbar {
                 width: 5px;
             }
 
             &::-webkit-scrollbar-track {
-                background-color: #13283B;
+                background-color: $dark-blue-200;
             }
 
             &::-webkit-scrollbar-thumb {
-                border-right: 3px solid #13283B;
-                background-color: #94A9C1;
+                border-right: 3px solid $dark-blue-200;
+                background-color: $light-blue-100;
             }
         }
 
         &--atv {
-            ul { transition: max-height 0.2s linear; }
-
-            .icon {
-                color: white;
-            }
-
             p {
-                color: white;
-                background-color: #364858;
+                .icon {
+                    color: $white;
+                }
+
+                .badge {
+                    color: $white;
+                    background-color: $teal-200;
+                }
             }
 
-            .badge {
-                color: white;
-                background-color: #2E8B85;
+            ul {
+                transition: max-height 0.2s linear;
             }
         }
 
         &:not(&--atv) {
-            ul { transition: max-height 0.1s linear; }
-
             p:hover {
-                cursor: pointer;
-                background-color: #2E8B85;
-                color: white;
+                // cursor: pointer;
+                // background-color: $teal-200;
+                // color: $white;
 
                 .badge {
-                    color: white;
+                    color: $white;
                 }
             }
+
+            ul {
+                transition: max-height 0.1s linear;
+            }
+        }
+    }
+
+    /* TODO: Mixin */
+    &__ls--atv p,
+    &__nls--atv {
+        color: $white;
+        background-color: $dark-blue-300;
+    }
+
+    &__ls:not(&__ls--atv) p,
+    &__nls:not(&__nls--atv) {
+        &:hover {
+            cursor: pointer;
+            background-color: $teal-200;
+            color: $white;
         }
     }
 
@@ -85,15 +102,10 @@
         line-height: 40px;
         height: 40px;
 
-        &--atv {
-            color: white;
-            background-color: #364858;
-        }
-
-        &:not(&--atv):hover {
-            cursor: pointer;
-            background-color: #2E8B85;
-            color: white;
-        }
+        // &:not(&--atv):hover {
+        //     cursor: pointer;
+        //     background-color: $teal-200;
+        //     color: $white;
+        // }
     }
 }
