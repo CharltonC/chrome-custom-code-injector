@@ -31,7 +31,7 @@ export class _SideNav extends Component<IProps, IState> {
             this.setState({atvLsIdx: currAtvLsIdxInNewList});
 
         // If the active list is NOT in the new passed list, by def. we just make the 1st (if exist) active
-        } else if (!isCurrAtvLsInNewList) {
+        } else {
             const state: IState = this.getIntitalState(list);
             this.setState(state);
         }
