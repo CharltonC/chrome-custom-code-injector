@@ -1,35 +1,61 @@
-// import React from "react";
-// import { render } from "react-dom";
-// import { act } from "react-dom/test-utils";
+import { TestUtil } from '../../../test-util/';
+// import { _SideNav } from './';
 
-// import { TestUtil } from '../../../test-util/';
-// // import { CmpCls } from './';
+describe('Component - Side Nav', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
 
-// describe('Component - TODO: Component Name', () => {
-//     let elem: HTMLElement;
-//     let childElem: Element;
+    describe('Component Class', () => {
+        describe('Constructor', () => {
 
-//     beforeEach(() => {
-//         elem = TestUtil.setupElem();
+        });
 
-//         act(() => {
-//             // render(<CmpCls />, elem);
-//         });
+        describe('Lifecycle - UNSAFE_componentWillReceiveProps', () => {
 
-//         act(() => {
-//             // elem.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-//         });
+        });
 
-//         childElem = elem.children[0];
-//     });
+        describe('Method - getLisCls', () => {
 
-//     afterEach(() => {
-//         TestUtil.teardown(elem);
-//         elem = null;
-//     });
+        });
 
-//     it("should render", () => {
-//         expect(true).toBe(true);
-//     });
-// });
+        describe('Method - getInitialState', () => {
+
+        });
+
+        describe('Method - onCLick', () => {
+
+        });
+    });
+
+    describe('Render/DOM', () => {
+        let elem: HTMLElement;
+        let childElem: Element;
+
+        beforeEach(() => {
+            elem = TestUtil.setupElem();
+            childElem = elem.children[0];
+        });
+
+        afterEach(() => {
+            TestUtil.teardown(elem);
+            elem = null;
+        });
+
+        /*
+        * TODO:
+        * active
+        * - list item: class name, key, arrow, nested list <li> length & maxHeight
+        * - nested list item: class name, key
+        *
+        * not-active
+        * - list item: class name, arrow, nested list <li> length
+        * - nested list item: class name, key
+        *
+        * class name
+        * nav, ul, li, p, a, span
+        */
+    });
+});
 
