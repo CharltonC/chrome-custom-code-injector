@@ -89,6 +89,7 @@ export class _SideNav extends Component<IProps, IState> {
                     const { id, nestList } = ls;
                     const isAtvIdx: boolean = atvLsIdx === lsIdx;
                     const lsTotal: number = nestList.length;
+                    const isAtvWithChildLs: boolean = isAtvIdx && !!lsTotal;
 
                     const lsCls: string = this.getLsCls(lsBaseCls, (isAtvIdx && atvNestLsIdx === null));
                     const lsKey: string = `${lsBaseCls}-${lsIdx}`;
@@ -100,10 +101,10 @@ export class _SideNav extends Component<IProps, IState> {
                             <a className="side-nav__title">{id}</a>
                             { inclStaticNumBadge(lsTotal) }
                         </p>
-                        {/* only render nested list under active list for performance */}
-                        {
-                            isAtvIdx && lsTotal ?
-                            <ul>{nestList.map((nstLs: IList, nstLsIdx: number) => {
+                        <ul style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
+                            { /* only render nested list under active list for performance */
+                            isAtvWithChildLs ?
+                            nestList.map((nstLs: IList, nstLsIdx: number) => {
                                 const nstLsCls: string = this.getLsCls(nstLsBaseCls, atvNestLsIdx === nstLsIdx);
                                 const nstLsKey: string = `${nstLsBaseCls}-${nstLsIdx}`;
 
@@ -114,9 +115,9 @@ export class _SideNav extends Component<IProps, IState> {
                                     </a>
                                 </li>
                                 );
-                            })}</ul> :
-                            null
-                        }
+                            }):
+                            null }
+                        </ul>
                     </li>
                     );
                 })}</ul>

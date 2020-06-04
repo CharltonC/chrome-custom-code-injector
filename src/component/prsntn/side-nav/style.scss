@@ -48,6 +48,8 @@
         }
 
         &--atv {
+            ul { transition: max-height 0.2s linear; }
+
             .icon {
                 color: white;
             }
@@ -64,6 +66,8 @@
         }
 
         &:not(&--atv) {
+            ul { transition: max-height 0.1s linear; }
+
             p:hover {
                 cursor: pointer;
                 background-color: #2E8B85;
