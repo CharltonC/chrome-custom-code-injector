@@ -77,9 +77,15 @@ export class _SideNav extends Component<IProps, IState> {
         const { list } = this.props;
         const { atvLsIdx, atvNestLsIdx } = this.state;
 
+        // List & List Item
         const lsBaseCls: string = 'side-nav__ls';
         const nstLsBaseCls: string = 'side-nav__nls';
+        const lsItemBaseCls: string = `${lsBaseCls}-item`;
+        const nstLsItemBaseCls: string = `${nstLsBaseCls}-item`;
 
+        // List Item content: Row, Title Text, Dropdown Arrows
+        const lsTierCls: string = `side-nav__tier`;
+        const titleCls: string = 'side-nav__title';
         const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
         const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
 
@@ -90,27 +96,26 @@ export class _SideNav extends Component<IProps, IState> {
                     const isAtvIdx: boolean = atvLsIdx === lsIdx;
                     const lsTotal: number = nestList.length;
                     const isAtvWithChildLs: boolean = isAtvIdx && !!lsTotal;
-
-                    const lsCls: string = this.getLsCls(lsBaseCls, (isAtvIdx && atvNestLsIdx === null));
-                    const lsKey: string = `${lsBaseCls}-${lsIdx}`;
+                    const lsCls: string = this.getLsCls(lsItemBaseCls, (isAtvIdx && atvNestLsIdx === null));
+                    const lsKey: string = `${lsItemBaseCls}-${lsIdx}`;
 
                     return (
                     <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
-                        <p>
+                        <p className={lsTierCls}>
                             { isAtvIdx ? dnIconElem : rtIconElem }
-                            <a className="side-nav__title">{id}</a>
+                            <a className={titleCls}>{id}</a>
                             { inclStaticNumBadge(lsTotal) }
                         </p>
-                        <ul style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
+                        <ul className={nstLsBaseCls} style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
                             { /* only render nested list under active list for performance */
                             isAtvWithChildLs ?
                             nestList.map((nstLs: IList, nstLsIdx: number) => {
-                                const nstLsCls: string = this.getLsCls(nstLsBaseCls, atvNestLsIdx === nstLsIdx);
-                                const nstLsKey: string = `${nstLsBaseCls}-${nstLsIdx}`;
+                                const nstLsCls: string = this.getLsCls(nstLsItemBaseCls, atvNestLsIdx === nstLsIdx);
+                                const nstLsKey: string = `${nstLsItemBaseCls}-${nstLsIdx}`;
 
                                 return (
                                 <li className={nstLsCls} key={nstLsKey} onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}>
-                                    <a className="side-nav__title">
+                                    <a className={titleCls}>
                                         {nstLs.id}
                                     </a>
                                 </li>

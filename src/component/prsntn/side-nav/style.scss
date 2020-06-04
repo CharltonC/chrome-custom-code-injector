@@ -1,4 +1,4 @@
-@mixin side-nav__list-item($bgColor, $isHover: false) {
+@mixin side-nav__tier($bgColor, $isHover: false) {
     @if $isHover == true {
         cursor: pointer;
     }
@@ -14,33 +14,18 @@
     background-color: $dark-blue-200;
     color: $light-blue-100;
 
-    &__ls {
-        p {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px 0 25px;
-            height: 40px;
-            font: 16px $roboto-bld;
+    &__nls {
+        @include self-custom-scrollbar($dark-blue-200, $light-blue-100, 2px);
+        overflow-y: auto;
+        list-style-type: circle;
+        list-style-position: inside;
+        font: 16px $roboto-reg;
+    }
 
-            .icon--plain {
-                width: 12px;
-                height: 12px;
-                font-weight: 600;
-            }
-        }
-
-        ul {
-            @include self-custom-scrollbar($dark-blue-200, $light-blue-100, 2px);
-            overflow-y: auto;
-            list-style-type: circle;
-            list-style-position: inside;
-            font: 16px $roboto-reg;
-        }
-
+    &__ls-item {
         &--atv {
-            p {
-                @include side-nav__list-item($dark-blue-300);
+            .side-nav__tier {
+                @include side-nav__tier($dark-blue-300);
 
                 .badge {
                     color: $white;
@@ -48,37 +33,52 @@
                 }
             }
 
-            ul {
+            .side-nav__nls {
                 transition: max-height 0.2s linear;
             }
         }
 
         &:not(&--atv) {
-            p:hover {
-                @include side-nav__list-item($teal-200, true);
+            .side-nav__tier:hover {
+                @include side-nav__tier($teal-200, true);
 
                 .badge {
                     color: $white;
                 }
             }
 
-            ul {
+            .side-nav__nls {
                 transition: max-height 0.1s linear;
             }
         }
     }
 
-    &__nls {
+    &__nls-item  {
         padding-left: 50px;
         line-height: 40px;
         height: 40px;
 
         &--atv {
-            @include side-nav__list-item($dark-blue-300);
+            @include side-nav__tier($dark-blue-300);
         }
 
         &:not(&--atv):hover {
-            @include side-nav__list-item($teal-200, true);
+            @include side-nav__tier($teal-200, true);
+        }
+    }
+
+    &__tier {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px 0 25px;
+        height: 40px;
+        font: 16px $roboto-bld;
+
+        .icon--plain {
+            width: 12px;
+            height: 12px;
+            font-weight: 600;
         }
     }
 
