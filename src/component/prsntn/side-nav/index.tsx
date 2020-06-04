@@ -76,21 +76,22 @@ export class _SideNav extends Component<IProps, IState> {
     render() {
         const { list } = this.props;
         const { atvLsIdx, atvNestLsIdx } = this.state;
+        const baseCls: string = 'side-nav';
 
         // List & List Item
-        const lsBaseCls: string = 'side-nav__ls';
-        const nstLsBaseCls: string = 'side-nav__nls';
+        const lsBaseCls: string = `${baseCls}__ls`;
+        const nstLsBaseCls: string = `${baseCls}__nls`;
         const lsItemBaseCls: string = `${lsBaseCls}-item`;
         const nstLsItemBaseCls: string = `${nstLsBaseCls}-item`;
 
         // List Item content: Row, Title Text, Dropdown Arrows
-        const lsTierCls: string = `side-nav__tier`;
-        const titleCls: string = 'side-nav__title';
+        const lsTierCls: string = `${baseCls}__tier`;
+        const titleCls: string = `${baseCls}__title`;
         const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
         const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
 
         return (
-            <nav className="side-nav">
+            <nav className={baseCls}>
                 <ul>{list.map((ls: INestList, lsIdx: number) => {
                     const { id, nestList } = ls;
                     const isAtvIdx: boolean = atvLsIdx === lsIdx;
