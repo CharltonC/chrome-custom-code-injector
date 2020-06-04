@@ -6,7 +6,7 @@ import { inclStaticNumBadge } from '../../static/num-badge/';
 export class _SideNav extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
-        this.state = this.getIntState(props.list);
+        this.state = this.getIntitalState(props.list);
         this.onClick = this.onClick.bind(this);
     }
 
@@ -32,7 +32,7 @@ export class _SideNav extends Component<IProps, IState> {
 
         // If the active list is NOT in the new passed list, by def. we just make the 1st (if exist) active
         } else if (!isCurrAtvLsInNewList) {
-            const state: IState = this.getIntState(list);
+            const state: IState = this.getIntitalState(list);
             this.setState(state);
         }
     }
@@ -44,7 +44,7 @@ export class _SideNav extends Component<IProps, IState> {
     /**
      * Config the active list when a new or diff. list is passed
      */
-    getIntState(list: INestList[]): IState {
+    getIntitalState(list: INestList[]): IState {
         const hsList: boolean = typeof list !== 'undefined' && list.length > 0;
         return {
             atvLsIdx: hsList ? 0 : null,
