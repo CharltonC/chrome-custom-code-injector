@@ -5,8 +5,8 @@ import { inclStaticIcon } from '.';
 
 
 export default {
-    title: 'Icon',
-    component: inclStaticIcon('setting')
+    title: 'Static Icon',
+    // component: inclStaticIcon('setting')
 };
 
 const icons: string[] = [
