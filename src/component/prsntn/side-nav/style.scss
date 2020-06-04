@@ -1,14 +1,18 @@
+@mixin side-nav__list-item($bgColor, $isHover: false) {
+    @if $isHover == true {
+        cursor: pointer;
+    }
+    background-color: $bgColor;
+    color: $white;
+    @content;
+}
+
 .side-nav {
     padding: 40px 0;
     min-width: 220px;
     width: 220px;
     background-color: $dark-blue-200;
     color: $light-blue-100;
-
-    &__title {
-        flex: auto;
-        margin-left: 10px;
-    }
 
     &__ls {
         p {
@@ -27,31 +31,16 @@
         }
 
         ul {
+            @include self-custom-scrollbar($dark-blue-200, $light-blue-100, 2px);
             overflow-y: auto;
             list-style-type: circle;
             list-style-position: inside;
             font: 16px $roboto-reg;
-
-            /* TODO: mixin */
-            &::-webkit-scrollbar {
-                width: 5px;
-            }
-
-            &::-webkit-scrollbar-track {
-                background-color: $dark-blue-200;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                border-right: 3px solid $dark-blue-200;
-                background-color: $light-blue-100;
-            }
         }
 
         &--atv {
             p {
-                .icon {
-                    color: $white;
-                }
+                @include side-nav__list-item($dark-blue-300);
 
                 .badge {
                     color: $white;
@@ -66,9 +55,7 @@
 
         &:not(&--atv) {
             p:hover {
-                // cursor: pointer;
-                // background-color: $teal-200;
-                // color: $white;
+                @include side-nav__list-item($teal-200, true);
 
                 .badge {
                     color: $white;
@@ -81,31 +68,22 @@
         }
     }
 
-    /* TODO: Mixin */
-    &__ls--atv p,
-    &__nls--atv {
-        color: $white;
-        background-color: $dark-blue-300;
-    }
-
-    &__ls:not(&__ls--atv) p,
-    &__nls:not(&__nls--atv) {
-        &:hover {
-            cursor: pointer;
-            background-color: $teal-200;
-            color: $white;
-        }
-    }
-
     &__nls {
         padding-left: 50px;
         line-height: 40px;
         height: 40px;
 
-        // &:not(&--atv):hover {
-        //     cursor: pointer;
-        //     background-color: $teal-200;
-        //     color: $white;
-        // }
+        &--atv {
+            @include side-nav__list-item($dark-blue-300);
+        }
+
+        &:not(&--atv):hover {
+            @include side-nav__list-item($teal-200, true);
+        }
+    }
+
+    &__title {
+        flex: auto;
+        margin-left: 10px;
     }
 }

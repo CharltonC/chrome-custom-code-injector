@@ -189,3 +189,19 @@
         $bg-hover
     );
 }
+
+/* Custom Scroll bar for Element as a Container (-webkit only) */
+@mixin self-custom-scrollbar($bgColor, $barColor, $barWidth) {
+    &::-webkit-scrollbar {
+        width: ($barWidth+3);
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: $bgColor;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-right: 3px solid $bgColor;
+        background-color: $barColor;
+    }
+}
