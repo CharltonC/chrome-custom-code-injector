@@ -13,7 +13,8 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     const sampleList = [
         {id: 'Host Id 1', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]},
         {id: 'Host Id 2', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]},
-        {id: 'Host Id 3', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]}
+        {id: 'Host Id 3', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'}]},
+        {id: 'Host Id 4', nestList: [{id: 'Path ID 1'}, {id: 'Path ID 2'},{id: 'Path ID 1'}, {id: 'Path ID 2'},{id: 'Path ID 1'}, {id: 'Path ID 2'},{id: 'Path ID 1'}, {id: 'Path ID 2'},{id: 'Path ID 1'}, {id: 'Path ID 2'}]}
     ];
 
     const [ list, setList ] = useState(sampleList);

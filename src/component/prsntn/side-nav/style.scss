@@ -27,9 +27,24 @@
         }
 
         ul {
+            max-height: 320px;
+            overflow-y: auto;
             list-style-type: circle;
             list-style-position: inside;
             font: 16px $roboto-reg;
+
+            &::-webkit-scrollbar {
+                width: 5px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background-color: #13283B;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                border-right: 3px solid #13283B;
+                background-color: #94A9C1;
+            }
         }
 
         &--atv {
