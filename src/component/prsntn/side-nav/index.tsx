@@ -92,7 +92,7 @@ export class _SideNav extends Component<IProps, IState> {
 
         return (
             <nav className={baseCls}>
-                <ul>{list.map((ls: INestList, lsIdx: number) => {
+                <ul className={lsBaseCls}>{list.map((ls: INestList, lsIdx: number) => {
                     const { id, nestList } = ls;
                     const isAtvIdx: boolean = atvLsIdx === lsIdx;
                     const lsTotal: number = nestList.length;

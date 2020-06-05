@@ -1,12 +1,22 @@
-// import { TestUtil } from '../../../test-util/';
+import { TestUtil } from '../../../test-util/';
 import { IProps, IState, INestList } from './type';
-import { _SideNav } from './';
+import { _SideNav, SideNav } from './';
 
 describe('Component - Side Nav', () => {
+    const mockNullProps: IProps = {list: []};
+    const mockDefProps: IProps = {
+        list: [
+            {id: '1', nestList: [{id: '1a'}, {id: '1b'}]},
+            {id: '2', nestList: [{id: '2a'}, {id: '2b'}]}
+        ]
+    };
+
+    let onClickSpy: jest.SpyInstance;
     let getIntitalStateSpy: jest.SpyInstance;
     let setStateSpy: jest.SpyInstance;
 
     beforeEach(() => {
+        onClickSpy = jest.spyOn(_SideNav.prototype, 'onClick');
         getIntitalStateSpy = jest.spyOn(_SideNav.prototype, 'getIntitalState');
         setStateSpy = jest.spyOn(_SideNav.prototype, 'setState');
     });
@@ -17,13 +27,6 @@ describe('Component - Side Nav', () => {
     });
 
     describe('Component Class', () => {
-        const mockNullProps: IProps = {list: []};
-        const mockDefProps: IProps = {
-            list: [
-                {id: '1', nestList: [{id: '1a'}, {id: '1b'}]},
-                {id: '2', nestList: [{id: '2a'}, {id: '2b'}]}
-            ]
-        };
         const mockRtnNullState: IState = {atvLsIdx: null, atvNestLsIdx: null};
         const mockRtnDefState: IState = {atvLsIdx: 0, atvNestLsIdx: null};
         let sideNav: _SideNav;
@@ -44,7 +47,7 @@ describe('Component - Side Nav', () => {
                 sideNav = new _SideNav(mockDefProps);
             });
 
-            it('should do nothing if new/passed list is the same', () => {
+            it('should not update active state if new/passed list is the same', () => {
                 sideNav.UNSAFE_componentWillReceiveProps(mockDefProps);
 
                 expect(getIntitalStateSpy).toHaveBeenCalledTimes(1);    // incl. constructor
@@ -180,32 +183,82 @@ describe('Component - Side Nav', () => {
     });
 
     describe('Render/DOM', () => {
-        // let elem: HTMLElement;
-        // let childElem: Element;
+        let $elem: HTMLElement;
+        let $nav: HTMLElement;
+        let $list: HTMLElement;
+        let $listItems: NodeListOf<HTMLElement>;
+        let $nestLists: NodeListOf<HTMLElement>;
+        let $nestListItems: NodeListOf<HTMLElement>;
 
-        // beforeEach(() => {
-        //     elem = TestUtil.setupElem();
-        //     childElem = elem.children[0];
-        // });
+        function assignChildElem() {
+            $nav = $elem.children[0] as HTMLElement;
+            $list = $elem.querySelector('nav > ul');
+            $listItems = $elem.querySelectorAll('nav > ul > li');
+            $nestLists = $elem.querySelectorAll('nav li > ul');
+            $nestListItems = $elem.querySelectorAll('nav li > ul > li');
+        }
 
-        // afterEach(() => {
-        //     TestUtil.teardown(elem);
-        //     elem = null;
-        // });
+        beforeEach(() => {
+            $elem = TestUtil.setupElem();
+            TestUtil.renderPlain($elem, SideNav, mockDefProps);
+            assignChildElem();
+        });
 
-        /*
-        * TODO:
-        * active
-        * - list item: class name, key, arrow, nested list <li> length & maxHeight
-        * - nested list item: class name, key
-        *
-        * not-active
-        * - list item: class name, arrow, nested list <li> length
-        * - nested list item: class name, key
-        *
-        * class name
-        * nav, ul, li, p, a, span
-        */
+
+        afterEach(() => {
+            TestUtil.teardown($elem);
+            $elem = null;
+        });
+
+        it('should render the 1st list item as active by default', () => {
+            expect($listItems[0].className).toContain('side-nav__ls-item--atv');
+            expect($listItems[0].querySelector('.side-nav__title').textContent).toBe(mockDefProps.list[0].id);
+            expect($listItems[0].querySelector('.icon--arrow-dn')).toBeTruthy();
+            expect($listItems[0].querySelector('.icon--arrow-rt')).toBeFalsy();
+            expect($listItems[0].querySelector('.badge').textContent).toBe('2');
+            expect($listItems[0].querySelector('ul').style.maxHeight).toBe('320px');
+            expect($listItems[1].querySelector('ul').style.maxHeight).toBe('0');
+        });
+
+        it('should only render the current active/1st list item`s nested list items', () => {
+            expect($nestLists.length).toBe(2);
+            expect($nestListItems.length).toBe(2);
+            expect($listItems[0].querySelectorAll('li').length).toBe(2);
+            expect($listItems[1].querySelectorAll('li').length).toBe(0);
+        });
+
+        it('should make the clicked list item active if it`s not active', () => {
+            TestUtil.triggerEvt($listItems[1], 'click');
+            assignChildElem();
+
+            expect(onClickSpy).toHaveBeenCalled();
+            expect(onClickSpy.mock.calls[0][1]).toBe(1);
+
+            expect($listItems[1].className).toContain('side-nav__ls-item--atv');
+            expect($listItems[1].querySelector('.icon--arrow-dn')).toBeTruthy();
+            expect($listItems[1].querySelector('.icon--arrow-rt')).toBeFalsy();
+            expect($listItems[1].querySelector('ul').style.maxHeight).toBe('320px');
+            expect($listItems[0].querySelector('ul').style.maxHeight).toBe('0');
+            expect($listItems[0].querySelectorAll('li').length).toBe(0);
+        });
+
+        it('should make the clicked nested list item active if it`s not active', () => {
+            TestUtil.triggerEvt($nestListItems[1], 'click');
+            assignChildElem();
+
+            const onClickSpyArgs = onClickSpy.mock.calls[0];
+            expect(onClickSpy).toHaveBeenCalled();
+            expect(onClickSpyArgs[1]).toBe(0);
+            expect(onClickSpyArgs[2]).toBe(1);
+
+            expect($nestListItems[1].className).toContain('side-nav__nls-item--atv');
+            expect($listItems[0].className).toBe('side-nav__ls-item');
+            expect($listItems[0].querySelector('.icon--arrow-dn')).toBeTruthy();
+            expect($listItems[0].querySelector('.icon--arrow-rt')).toBeFalsy();
+            expect($listItems[0].querySelector('ul').style.maxHeight).toBe('320px');
+            expect($listItems[1].querySelector('ul').style.maxHeight).toBe('0');
+            expect($listItems[1].querySelectorAll('li').length).toBe(0);
+        });
     });
 });
 
