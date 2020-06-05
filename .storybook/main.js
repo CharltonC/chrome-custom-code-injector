@@ -1,7 +1,15 @@
+const path = require('path');
+
 module.exports = {
-    stories: ['../src/component/**/**/*.story.tsx'],
+    stories: [
+        // base story used just for importing assets e.g. css
+        './base.story.js',
+
+        // all compoennt stories
+        '../src/component/**/**/*.story.tsx'
+    ],
     webpackFinal: async config => {
-        // Parse Ts
+        //// Parse Ts
         config.module.rules.push({
             test: /\.(ts|tsx)$/,
             use: [{
@@ -10,7 +18,7 @@ module.exports = {
         });
         config.resolve.extensions.push('.ts', '.tsx');
 
-        // For Debugging, use the following setting alone + CMD `npm run ui --debug-webpack`:
+        //// For Debugging, use the following setting alone + CMD `npm run ui --debug-webpack`:
         // console.dir(config, { depth: null })
 
         return config;
