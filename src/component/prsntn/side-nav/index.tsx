@@ -104,7 +104,7 @@ export class _SideNav extends Component<IProps, IState> {
                     <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
                         <p className={lsTierCls}>
                             { isAtvIdx ? dnIconElem : rtIconElem }
-                            <a className={titleCls}>{id}</a>
+                            <span className={titleCls}>{id}</span>
                             { inclStaticNumBadge(lsTotal) }
                         </p>
                         <ul className={nstLsBaseCls} style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
@@ -116,9 +116,9 @@ export class _SideNav extends Component<IProps, IState> {
 
                                 return (
                                 <li className={nstLsCls} key={nstLsKey} onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}>
-                                    <a className={titleCls}>
+                                    <span className={titleCls}>
                                         {nstLs.id}
-                                    </a>
+                                    </span>
                                 </li>
                                 );
                             }):
