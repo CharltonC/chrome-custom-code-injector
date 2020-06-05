@@ -16,7 +16,6 @@
             "es2017",
             "dom"
         ],
-        "noUnusedLocals": true,
         "jsx": "react",
         "esModuleInterop": true
     },
