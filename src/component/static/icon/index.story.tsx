@@ -36,7 +36,7 @@ const icons: string[] = [
 
 export const PlainModeWithoutHoverState = () => (
     <div>
-        {icons.map((name: NIcon.TName) => inclStaticIcon(name))}
+        {icons.map((name: NIcon.TName) => inclStaticIcon(name, null, {key: `plain-${name}`}))}
     </div>
 );
 
