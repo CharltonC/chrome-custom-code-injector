@@ -8,9 +8,9 @@ export class _CmpCls extends Component {
 
     render() {
         return (
-            <nav>
+            <div>
                 lorem
-            </nav>
+            </div>
         );
     }
 }

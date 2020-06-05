@@ -1,35 +1,48 @@
-import React from "react";
-import { render } from "react-dom";
-import { act } from "react-dom/test-utils";
-
 import { TestUtil } from '../../../test-util/';
+// import { IProps, IState } from './type';
 // import { CmpCls } from './';
 
 describe('Component - TODO: Component Name', () => {
-    let elem: HTMLElement;
-    let childElem: Element;
-
-    beforeEach(() => {
-        elem = TestUtil.setupElem();
-
-        act(() => {
-            // render(<CmpCls />, elem);
+    describe('Component Class', () => {
+        describe('constructor', () => {
+            it("should init", () => {
+                expect(true).toBe(true);
+            });
         });
 
-        act(() => {
-            // elem.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        describe('Lifecycle - TODO: Name', () => {
+
         });
 
-        childElem = elem.children[0];
+        describe('Method - TODO: Name', () => {
+
+        });
     });
 
-    afterEach(() => {
-        TestUtil.teardown(elem);
-        elem = null;
-    });
+    describe('Render/DOM', () => {
+        let $elem: HTMLElement;
 
-    it("should render", () => {
-        expect(true).toBe(true);
+        function syncChildElem() {
+            // $childElem: HTMLElement = $elem.querySelector('');
+        }
+
+        beforeEach(() => {
+            $elem = TestUtil.setupElem();
+            syncChildElem();
+        });
+
+        afterEach(() => {
+            TestUtil.teardown($elem);
+            $elem = null;
+        });
+
+        describe('default render', () => {
+            it('should render ..', () => {});
+        });
+
+        describe('interaction', () => {
+
+        });
     });
 });
 
