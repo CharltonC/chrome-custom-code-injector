@@ -5,7 +5,6 @@
 * Setup (Mac based) 
 * CLI Command
 * Folder Structure
-* Design/Pattern
 
 ---
 
@@ -13,20 +12,18 @@
 Primary Tech Stack: 
 * SCSS (CSS)
 * JADE (HTML)
-* TypeScript 2.5.3
+* TypeScript 3.8.3
 * Node 13.12.0 | Npm 6.14.4
+* React 16.13.1
+* Jest (Unit Testing)
 
 
 ## Setup (Mac based) 
 #### Dependencies
 1. Install Node
-2. Install Typescript in Terminal:  
+2. Under Project Root, Install the dependencies in Terminal:  
 ```
-npm install -g typescript
-```
-3. Under Project Root, Install the dependencies in Terminal:  
-```
-npm run setup
+npm install
 ```
 
 #### VisualStudio Code Editor
@@ -44,7 +41,23 @@ npm run setup
 
 
 ## CLI Command (refer to `gulpfile.js` file for the rest)
-* Build (dev/prod):
+* Generate Compnents (dev):
+```
+npm run cmp-[s|p|g|v]
+```
+* Start a Server to View All UI Components (dev):
+```
+npm run ui
+```
+* Start a Server to view the Specific page (dev):
+```
+npm run serve-[popup|option]
+```
+* Watch & Auto Compile Html/Ts/Scss files (dev):
+```
+npm run --[html|ts|scss]
+```
+* Build
 ```
 gulp build [--prod]?
 ``` 
@@ -64,18 +77,7 @@ gulp build-ts:lint
 ```
 gulp build-ts:test [--watch]?
 ```    
-* Build Watch with optional Development server:
-```
-gulp serve [--server]?
-```
-* Generate Docs:
-```
-npm run doc
-```
-* Generate Directory Tree (required to be copied from terminal upon generation & added to README):  
-```
-npm run dir-tree
-```  
+
 
 ## Folder Structure
     .storybook/                 // setting for Storybook (doc generation tool)
