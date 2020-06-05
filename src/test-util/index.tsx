@@ -4,51 +4,11 @@ import { act } from "react-dom/test-utils";
 
 import { IEvtCls, TCmpCls, TCmpProps } from './type';
 
-class ElemContainerCls {
-    _keys: string[];
-    _wrapper: HTMLElement;
-    _elemConfig: Record<string, string>;
-
-    constructor($wrapper: HTMLElement, elemConfig: Record<string, string>) {
-        this._wrapper = $wrapper;
-        this._keys = Object.getOwnPropertyNames(elemConfig);
-        this._elemConfig = elemConfig;
-    }
-
-    syncChildElem(doSync: boolean = true): this {
-        if (doSync) {
-            this._keys.forEach((key: string) => {
-                const selector: string = this._elemConfig[key];
-                const $childElem: HTMLElement = this._wrapper.querySelector(selector);
-                this[key] = $childElem;
-            });
-        } else {
-            this._wrapper = null;
-            this._keys.forEach((key: string) => this[key] = null);
-        }
-        return this;
-    }
-
-    tearDown(): void {
-        unmountComponentAtNode(this._wrapper);
-        this._wrapper.remove();
-        this.syncChildElem(false);
-    }
-}
-
 export const TestUtil = {
     setupElem(): HTMLElement {
         const elem: HTMLElement = document.createElement("div");
         document.body.appendChild(elem);
         return elem;
-    },
-
-    setElems(elemConfig: Record<string, string>): ElemContainerCls {
-        const $elem: HTMLElement = document.createElement("div");
-        document.body.appendChild($elem);
-        const $: ElemContainerCls = new ElemContainerCls($elem, elemConfig);
-        $.syncChildElem();
-        return $;
     },
 
     teardown(elem: HTMLElement): void {
