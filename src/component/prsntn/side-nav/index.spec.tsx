@@ -184,15 +184,11 @@ describe('Component - Side Nav', () => {
 
     describe('Render/DOM', () => {
         let $elem: HTMLElement;
-        let $nav: HTMLElement;
-        let $list: HTMLElement;
         let $listItems: NodeListOf<HTMLElement>;
         let $nestLists: NodeListOf<HTMLElement>;
         let $nestListItems: NodeListOf<HTMLElement>;
 
         function assignChildElem() {
-            $nav = $elem.children[0] as HTMLElement;
-            $list = $elem.querySelector('nav > ul');
             $listItems = $elem.querySelectorAll('nav > ul > li');
             $nestLists = $elem.querySelectorAll('nav li > ul');
             $nestListItems = $elem.querySelectorAll('nav li > ul > li');

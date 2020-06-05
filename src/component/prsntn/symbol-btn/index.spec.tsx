@@ -1,7 +1,6 @@
 import { TestUtil } from '../../../test-util/';
 import { _SymbolBtn, SymbolBtn } from './';
 import { IProps} from './type';
-import { _TabSwitch } from '../tab-switch';
 
 describe('Component - Symbol Button', () => {
     let mockBaseProps: IProps = {id: 'js-1', text: 'Js'};
