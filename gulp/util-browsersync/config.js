@@ -1,11 +1,11 @@
 const { $ } = require('../common');
 
-const serveUI = $.yargs.serveidx === 'ui';
+const serveIdxPage = $.yargs.indexpage ? $.yargs.indexpage === 'popup' : 'option';
 
 module.exports = {
     defOption: {
         server: {
-            baseDir: serveUI ? 'doc/ui-component/' : 'dist/build/option',
+            baseDir: `dist/build/${serveIdxPage}`,
         },
         // startPath:
         reloadDelay: 1000,
