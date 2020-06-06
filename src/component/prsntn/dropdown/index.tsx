@@ -8,13 +8,15 @@ export class _Dropdown extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        const { list, selectIdx } = props;
-        this.state = {
+        this.state = this.getInitialState(props);
+        this.onSelect = this.onSelect.bind(this);
+    }
+
+    getInitialState({list, selectIdx}: IProps): IState {
+        return {
             hsList: !!list.length,
             hsSelectIdx: typeof selectIdx !== 'undefined' && !!list[selectIdx]
         };
-
-        this.onSelect = this.onSelect.bind(this);
     }
 
     onSelect(evt: React.ChangeEvent<HTMLSelectElement>): void {
@@ -25,25 +27,27 @@ export class _Dropdown extends Component<IProps, IState> {
 
     render() {
         const { id, list, border, selectIdx, disabled } = this.props;
-        const { hsSelectIdx } = this.state;
+        const { hsList, hsSelectIdx } = this.state;
 
         const baseCls: string = 'dropdown';
         const wrapperCls: string = border ? `${baseCls} ${baseCls}--border` : `${baseCls} ${baseCls}--plain`;
 
         const selectedOptionVal: number = hsSelectIdx ? selectIdx : 0;
 
-        return (
+        return hsList ?
             <div className={wrapperCls}>
-                <select id={id} value={selectedOptionVal} disabled={disabled} onChange={this.onSelect}>
-                    {
-                        list.map((text: string, idx: number) =>
-                            <option value={idx}>{text}</option>
-                        )
-                    }
+                <select id={id}
+                    value={selectedOptionVal}
+                    disabled={disabled}
+                    onChange={this.onSelect}
+                    >
+                    { list.map((text: string, idx: number) =>
+                        <option key={`${id}-${idx}`} value={idx}>{text}</option>
+                    )}
                 </select>
                 { dnArrowElem }
-            </div>
-        );
+            </div> :
+            null;
     }
 }
 
