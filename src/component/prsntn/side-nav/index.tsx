@@ -4,6 +4,15 @@ import { inclStaticIcon } from '../../static/icon/';
 import { inclStaticNumBadge } from '../../static/num-badge/';
 
 export class _SideNav extends Component<IProps, IState> {
+    //// Element class name constants: list, list items, list item contents (Row, Title Text, Dropdown Arrows)
+    readonly baseCls: string = 'side-nav';
+    readonly lsBaseCls: string = `${this.baseCls}__ls`;
+    readonly nstLsBaseCls: string = `${this.baseCls}__nls`;
+    readonly lsItemBaseCls: string = `${this.lsBaseCls}-item`;
+    readonly nstLsItemBaseCls: string = `${this.nstLsBaseCls}-item`;
+    readonly lsTierCls: string = `${this.baseCls}__tier`;
+    readonly titleCls: string = `${this.baseCls}__title`;
+
     constructor(props: IProps) {
         super(props);
         this.state = this.getIntitalState(props.list);
@@ -41,6 +50,24 @@ export class _SideNav extends Component<IProps, IState> {
         return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
     }
 
+    getNestedLsItems(nestList: IList[], lsIdx: number, atvNestLsIdx: number): ReactElement[] {
+        const { nstLsItemBaseCls, titleCls } = this;
+
+        return nestList.map((nstLs: IList, nstLsIdx: number) => {
+            const nstLsCls: string = this.getLsCls(nstLsItemBaseCls, atvNestLsIdx === nstLsIdx);
+            const nstLsKey: string = `${nstLsItemBaseCls}-${nstLsIdx}`;
+
+            return (
+            <li className={nstLsCls}
+                key={nstLsKey}
+                onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}
+                >
+                <span className={titleCls}>{nstLs.id}</span>
+            </li>
+            );
+        })
+    }
+
     /**
      * Config the active list when a new or diff. list is passed
      */
@@ -74,19 +101,11 @@ export class _SideNav extends Component<IProps, IState> {
     }
 
     render() {
+        const { baseCls, lsBaseCls, nstLsBaseCls, lsItemBaseCls, lsTierCls, titleCls } = this;
         const { list } = this.props;
         const { atvLsIdx, atvNestLsIdx } = this.state;
-        const baseCls: string = 'side-nav';
 
-        // List & List Item
-        const lsBaseCls: string = `${baseCls}__ls`;
-        const nstLsBaseCls: string = `${baseCls}__nls`;
-        const lsItemBaseCls: string = `${lsBaseCls}-item`;
-        const nstLsItemBaseCls: string = `${nstLsBaseCls}-item`;
-
-        // List Item content: Row, Title Text, Dropdown Arrows
-        const lsTierCls: string = `${baseCls}__tier`;
-        const titleCls: string = `${baseCls}__title`;
+        // Dropdown Arrows
         const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
         const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
 
@@ -108,21 +127,10 @@ export class _SideNav extends Component<IProps, IState> {
                             { inclStaticNumBadge(lsTotal) }
                         </p>
                         <ul className={nstLsBaseCls} style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
-                            { /* only render nested list under active list for performance */
-                            isAtvWithChildLs ?
-                            nestList.map((nstLs: IList, nstLsIdx: number) => {
-                                const nstLsCls: string = this.getLsCls(nstLsItemBaseCls, atvNestLsIdx === nstLsIdx);
-                                const nstLsKey: string = `${nstLsItemBaseCls}-${nstLsIdx}`;
-
-                                return (
-                                <li className={nstLsCls} key={nstLsKey} onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}>
-                                    <span className={titleCls}>
-                                        {nstLs.id}
-                                    </span>
-                                </li>
-                                );
-                            }):
-                            null }
+                            {
+                                /* only render nested list under active list for performance */
+                                isAtvWithChildLs ? this.getNestedLsItems(nestList, lsIdx, atvNestLsIdx) : null
+                            }
                         </ul>
                     </li>
                     );

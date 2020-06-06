@@ -1,6 +1,7 @@
 import { TestUtil } from '../../../test-util/';
-import { IProps, IState, INestList } from './type';
+import { IProps, IState, INestList, IList } from './type';
 import { _SideNav, SideNav } from './';
+import { ReactElement } from 'react';
 
 describe('Component - Side Nav', () => {
     const mockNullProps: IProps = {list: []};
@@ -14,11 +15,13 @@ describe('Component - Side Nav', () => {
     let onClickSpy: jest.SpyInstance;
     let getIntitalStateSpy: jest.SpyInstance;
     let setStateSpy: jest.SpyInstance;
+    let getLsClsSpy: jest.SpyInstance;
 
     beforeEach(() => {
         onClickSpy = jest.spyOn(_SideNav.prototype, 'onClick');
         getIntitalStateSpy = jest.spyOn(_SideNav.prototype, 'getIntitalState');
         setStateSpy = jest.spyOn(_SideNav.prototype, 'setState');
+        getLsClsSpy = jest.spyOn(_SideNav.prototype, 'getLsCls');
     });
 
     afterEach(() => {
@@ -95,13 +98,38 @@ describe('Component - Side Nav', () => {
             });
         });
 
-        describe('Method - getLisCls', () => {
+        describe('Method - getLsCls', () => {
             const { getLsCls } = _SideNav.prototype;
             const mockCls: string = 'x';
 
             it('should return class based on the active flag', () => {
                 expect(getLsCls(mockCls, true)).toBe(`${mockCls} ${mockCls}--atv`);
                 expect(getLsCls(mockCls, false)).toBe(mockCls);
+            });
+        });
+
+        describe('Method - getNestedLsItems', () => {
+            const mockLs: IList[] = [{id: 'a'}];
+            const mockNestedLsItemCls: string = 'nest-item';
+
+            beforeEach(() => {
+                getLsClsSpy.mockReturnValue(mockNestedLsItemCls);
+                sideNav = new _SideNav(mockDefProps);
+            });
+
+            it('should return nested list items', () => {
+                const { nstLsItemBaseCls, titleCls } = sideNav;
+                const items: ReactElement[] = sideNav.getNestedLsItems(mockLs, undefined, undefined);
+                const listItem: ReactElement = items[0];
+                const listItemChild: ReactElement = listItem.props.children;
+
+                expect(getLsClsSpy).toHaveBeenCalledWith(nstLsItemBaseCls, false);
+                expect(items.length).toBe(1);
+                expect(listItem.type).toBe('li');
+                expect(listItem.key).toBe(`${nstLsItemBaseCls}-0`);
+                expect(listItem.props.className).toBe(mockNestedLsItemCls);
+                expect(listItemChild.type).toBe('span');
+                expect(listItemChild.props.className).toBe(titleCls);
             });
         });
 
