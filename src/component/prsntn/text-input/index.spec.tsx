@@ -218,7 +218,12 @@ describe('Component - Text Input', () => {
                 expect(mockEvtCbFn).not.toHaveBeenCalled();
 
                 cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
-                expect(mockEvtCbFn).toHaveBeenCalledWith(mockEvt, mockText, mockText.length >=3, null);
+                expect(mockEvtCbFn).toHaveBeenCalledWith({
+                    evt: mockEvt,
+                    val: mockText,
+                    isGte3: mockText.length >=3,
+                    validState: null
+                });
             });
 
             it('should set valid state when validation rules exist, valid state has not been previously set and input text characters are more than the specified limit', () => {
