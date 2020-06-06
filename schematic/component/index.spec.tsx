@@ -3,7 +3,22 @@ import { TestUtil } from '../../../test-util/';
 // import { CmpCls } from './';
 
 describe('Component - TODO: Component Name', () => {
+    // const mockBareProps: IProps = {};
+    // const mockDefProps: IProps = {};
+    // let methodSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        // methodSpy = jest.spyOn(_CmpCls.prototype, 'method');
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
     describe('Component Class', () => {
+        // let cmp: _CmpCls;
+
         describe('constructor', () => {
             it("should init", () => {
                 expect(true).toBe(true);
@@ -21,9 +36,10 @@ describe('Component - TODO: Component Name', () => {
 
     describe('Render/DOM', () => {
         let $elem: HTMLElement;
+        // let $childElem: HTMLElement;
 
         function syncChildElem() {
-            // $childElem: HTMLElement = $elem.querySelector('');
+            // $childElem = $elem.querySelector('');
         }
 
         beforeEach(() => {
