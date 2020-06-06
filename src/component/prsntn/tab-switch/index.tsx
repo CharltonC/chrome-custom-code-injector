@@ -24,15 +24,16 @@ export class _TabSwitch extends Component<IProps, IState> {
 
     onRdoChecked(evt: React.ChangeEvent<HTMLInputElement>, activeTab: ITabItem, idx: number): void {
         const { onTabActive } = this.props;
-        const isCurrActive: boolean = this.state.activeTab === activeTab;
-        if (!isCurrActive) this.setState({activeTab});
-        if (onTabActive) onTabActive(evt, activeTab, idx, isCurrActive);
+        const isActive: boolean = this.state.activeTab === activeTab;
+        if (!isActive) this.setState({activeTab});
+        if (onTabActive) onTabActive({evt, activeTab, idx, isActive});
     }
 
     onCheckboxChanged(evt: React.ChangeEvent<HTMLInputElement>, tab: ITabItem, idx: number): void {
         const { onTabEnable } = this.props;
-        const isCurrActive: boolean = this.state.activeTab === tab;
-        if (onTabEnable) onTabEnable(evt, tab, idx, !tab.isEnable, isCurrActive);
+        const isActive: boolean = this.state.activeTab === tab;
+        const isEnable: boolean = !tab.isEnable;
+        if (onTabEnable) onTabEnable({evt, tab, idx, isEnable, isActive});
     }
 
     render() {

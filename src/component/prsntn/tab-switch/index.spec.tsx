@@ -122,7 +122,12 @@ describe('Component - Tab Switch', () => {
                 tabSwitch = new _TabSwitch({...mockListProps, onTabActive: mockOnTabAtv});
                 tabSwitch.onRdoChecked(mockEvt, mockCheckedTab, mockCheckedTabIdx);
 
-                expect(mockOnTabAtv).toHaveBeenCalledWith(mockEvt, mockCheckedTab, mockCheckedTabIdx, false);
+                expect(mockOnTabAtv).toHaveBeenCalledWith({
+                    evt: mockEvt,
+                    activeTab: mockCheckedTab,
+                    idx: mockCheckedTabIdx,
+                    isActive: false
+                });
             });
         });
 
@@ -138,7 +143,13 @@ describe('Component - Tab Switch', () => {
                 tabSwitch = new _TabSwitch({...mockListProps, onTabEnable: mockOnTabEnable});
                 tabSwitch.onCheckboxChanged(mockEvt, mockEnabledTab, mockEnabledTabIdx);
 
-                expect(mockOnTabEnable).toHaveBeenCalledWith(mockEvt, mockEnabledTab, mockEnabledTabIdx, mockEnabledTabEnable, true);
+                expect(mockOnTabEnable).toHaveBeenCalledWith({
+                    evt: mockEvt,
+                    tab: mockEnabledTab,
+                    idx: mockEnabledTabIdx,
+                    isEnable: mockEnabledTabEnable,
+                    isActive: true
+                });
             });
         });
     });
