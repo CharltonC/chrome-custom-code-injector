@@ -55,7 +55,7 @@ npm run serve-[popup|option]
 ```
 * Watch & Auto Compile Html/Ts/Scss files (dev):
 ```
-npm run --[html|ts|scss]
+gulp serve --[html|scss]  |  gulp build-ts:compile [--prod --watchify]?
 ```
 * Build
 ```
