@@ -9,4 +9,4 @@ export function inclStaticNumBadge(total: number = 0): ReactElement {
     return (
         <span className="badge">{badgeText}</span>
     );
-};
+}
