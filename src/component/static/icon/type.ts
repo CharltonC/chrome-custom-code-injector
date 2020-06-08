@@ -27,4 +27,5 @@ export type TName =
     'save' |
     'doc';
 
-export type unknProps = Record<string, any>;
+export interface IProps extends React.HTMLAttributes<HTMLSpanElement> {
+}
