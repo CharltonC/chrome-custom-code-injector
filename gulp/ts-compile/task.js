@@ -3,11 +3,12 @@ const { tasks, defOption } = require('./config');
 
 module.exports = (done) => {
     const isProd = $.yargs.prod;
+    const isWatch = !isProd || $.yargs.watchify;
     let time;
 
-    return util.loopTasks(done, tasks, ({inputFiles, outputPath, outputFile}) => {
-        const getBundleSizeTxt = () => $.chalk.white('  Bundled output ') + $.chalk.blue(`${outputPath}/`);
-        const getBundleEndTxt = () => `  Finished compiling for ${$.chalk.blue(inputFiles)} in ${time}, file watch restarts...`;
+    return util.loopTasks(done, tasks, ({inputFiles, outputFile}) => {
+        const getBundleSizeTxt = () => $.chalk.white('  Bundled output');
+        const getBundleEndTxt = () => (`  Finished compiling for ${$.chalk.blue(inputFiles)}` + (isWatch ? ` in ${time}, file watch restarts...`: ''));
         const getBundleUpdateTxt = (filePath) => `Detected changes in files: ${$.chalk.cyan(filePath)}`
 
         //// Browserify Instance
@@ -28,22 +29,22 @@ module.exports = (done) => {
                 .pipe( $.plumber() )
                 .pipe( $.vinylStream(outputFile) )
                 .pipe( $.vinylBuffer() )
-                .pipe( $.size({showFiles: true, title: getBundleSizeTxt()}) )
-                .pipe( gulp.dest(outputPath) )
+                .pipe( $.size({showFiles: true, title: getBundleSizeTxt() }) )
+                .pipe( gulp.dest(defOption.outputPath) )
                 .pipe( $.print(getBundleEndTxt) )
                 .on('error', util.onWatchError);
         }
 
         //// Plugin Config
         // Do NOT use it for development as it causes error with sourcemap
-        // - details: when `{global: true}` is passed for "uglifyify" during `.transform()`  (i.e. removing dead code, not compress/mangle)
+        // - details: when `{global: true}` is passed for "uglifyify" during `.transform()` (i.e. removing dead code, not compress/mangle)
         if (isProd) {
             brsfInst.plugin($.tinyify, defOption.tinyify);
         }
 
         // Watch the files & Speed up the build by caching files which didnt change
         // - for Development mode or Production mode by providing an extra `watchify` flag
-        if (!isProd || (isProd && $.yargs.watchify)) {
+        if (isWatch) {
             brsfInst
                 .plugin( $.watchify )
                 .on('update', (filePath) => {

@@ -4,6 +4,7 @@ const babelConfig = require('../../babel.config');
 module.exports = {
     defOption: {
         basePath: './src',
+        outputPath: './',
         // babel settings for compiling only, not used for unit testing via Jest
         babel: babelConfig,
         tinyify: {
@@ -30,29 +31,25 @@ module.exports = {
             inputFiles: [
                 'page/bg-script/main.ts'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/bg-script',
+            outputFile: 'dist/build/bg-script/main.min.js',
         },
         contentScript: {
             inputFiles: [
                 'page/ct-script/main.ts'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/ct-script',
+            outputFile: 'dist/build/ct-script/main.min.js',
         },
         popup: {
             inputFiles: [
                 'page/popup/main.tsx'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/popup',
+            outputFile: 'dist/build/popup/main.min.js',
         },
         option: {
             inputFiles: [
                 'page/option/main.tsx'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/option',
+            outputFile: 'dist/build/option/main.min.js',
         }
     }
 };
