@@ -70,29 +70,6 @@ const util = {
 
         // Required - this allos the watch to continue after you fix the file
         this.emit('end');
-    },
-
-    logColor(msg, color) {
-        let colorCode = color || '\x1b[32m';    // green by default
-
-        switch (color) {
-            case 'red':
-                colorCode = '\x1b[31m';
-                break;
-
-            case 'cyan':
-                colorCode = '\x1b[36m';
-                break;
-
-            case 'magenta':
-                colorCode = '\x1b[35m';
-                break;
-
-            case 'green':
-            default:
-                break;
-        }
-        console.log(`${colorCode}%s\x1b[0m`, msg);
     }
 }
 

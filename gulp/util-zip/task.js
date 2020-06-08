@@ -4,7 +4,7 @@ const { tasks, defOption } = require('./config');
 module.exports = (done) => {
     // Skip if not production mode
     if (!$.yargs.prod) {
-        util.logColor('"zip" task not run for dev mode', 'magenta');
+        console.log($.chalk.magenta('"zip" task not run for dev mode'));
         return done();
     }
 

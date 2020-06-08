@@ -4,7 +4,7 @@ const { inputFiles } = require('./config');
 module.exports = (done) => {
     // Exit (No check) if there is only 1 file with version
     if (!$.yargs.prod) {
-        util.logColor('"version-checkeq" task not run for dev mode', 'magenta');
+        console.log($.chalk.magenta('"version-checkeq" task not run for dev mode'));
         return done();
     }
 
@@ -25,10 +25,10 @@ module.exports = (done) => {
 
     // Log
     if (isConsistent) {
-        util.logColor('versions matched');
+        console.log($.chalk.green('versions matched'));
         done();
     } else {
-        util.logColor('versions not matched', 'red');
+        console.log($.chalk.red('versions not matched'));
         throw new Error();
     }
 };
