@@ -53,11 +53,6 @@ module.exports = {
             ],
             outputFile: 'main.min.js',
             outputPath: 'dist/build/option',
-        },
-        uiCmpIdx: {
-            inputFiles: 'page/ui-cmp-doc/main.tsx',
-            outputFile: 'main.min.js',
-            outputPath: 'doc/ui-component/'
         }
     }
 };

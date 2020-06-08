@@ -15,6 +15,7 @@ const $ = {
     size:           require('gulp-size'),
     flatmap:        require('gulp-flatmap'),
     sourcemaps:     require('gulp-sourcemaps'),
+    chalk:          require('chalk'),
 
     // Util: Log
     taskListing:    require('gulp-task-listing'),
@@ -28,6 +29,7 @@ const $ = {
 
     // Typescript, Babel, TreeShake/Optimize
     browserify:     require('browserify'),
+    watchify:       require('watchify'),
     vinylBuffer:    require('vinyl-buffer'),
     vinylStream:    require('vinyl-source-stream'),
     tsify:          require('tsify'),
