@@ -24,20 +24,25 @@ describe('Component - Text Input', () => {
             });
         });
 
-        describe('Lifecycle - `UNSAFE_componentWillReceiveProps`', () => {
+        fdescribe('Lifecycle - `UNSAFE_componentWillReceiveProps`', () => {
             const mockText: string = 'lorem';
             const mockBaseProps: IProps = {id: '', validate: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
             const mockValidState: Partial<IState> = {errMsg: [], isValid: true};
             let mockInitialState: Partial<IState>;
-
             let spyGetInitialState: jest.SpyInstance;
             let spyGetValidState: jest.SpyInstance;
             let spySetState: jest.SpyInstance;
-            let cmpInst: _TextInput;
+            let cmpWithText: _TextInput;
+            let cmpWithoutText: _TextInput;
 
             beforeEach(() => {
-                spyGetInitialState = jest.spyOn(_TextInput.prototype, 'getInitialState');
+                jest.clearAllMocks();
+
+                cmpWithText = new _TextInput({...mockBaseProps, text: mockText});
+                cmpWithoutText = new _TextInput(mockBaseProps);
+
+                spyGetInitialState = jest.spyOn(_TextInput.prototype, 'getInitialState')
                 spyGetValidState = jest.spyOn(_TextInput.prototype, 'getValidState').mockReturnValue(mockValidState);
                 spySetState = jest.spyOn(_TextInput.prototype, 'setState').mockImplementation(() => {});
             });
@@ -45,11 +50,9 @@ describe('Component - Text Input', () => {
             it('should revalidate using passed text if text is passed and validation rules have changed', () => {
                 mockInitialState = { hsExtState: true, hsValidationRules: true };
                 spyGetInitialState.mockReturnValue(mockInitialState);
-                cmpInst = new _TextInput({...mockBaseProps, text: mockText});
-                cmpInst.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: mockValidationRules});
+                cmpWithText.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: mockValidationRules});
 
-                expect(spyGetInitialState).toHaveBeenCalledTimes(2);    // incl. constructor
-                expect(spyGetInitialState.mock.calls[1]).toEqual([mockText, mockValidationRules]);
+                expect(spyGetInitialState).toHaveBeenCalledWith(mockText, mockValidationRules);
                 expect(spyGetValidState).toHaveBeenCalledWith(mockText, mockValidationRules);
                 expect(spySetState).toHaveBeenCalledWith({
                     ...mockInitialState,
@@ -60,15 +63,13 @@ describe('Component - Text Input', () => {
             it('should revalidate using text value from Input Elem Ref if no text is passed and validation rules have changed', () => {
                 mockInitialState = { hsExtState: false, hsValidationRules: true };
                 spyGetInitialState.mockReturnValue(mockInitialState);
-                cmpInst = new _TextInput(mockBaseProps);
 
                 // Force validation rules change & call `UNSAFE_componentWillReceiveProps`
                 const mockInputVal: string = 'abc';
-                (cmpInst.inputElem as any) = {value: mockInputVal};
-                cmpInst.UNSAFE_componentWillReceiveProps({...mockBaseProps, validate: mockValidationRules});
+                (cmpWithoutText.inputElem as any) = {value: mockInputVal};
+                cmpWithoutText.UNSAFE_componentWillReceiveProps({...mockBaseProps, validate: mockValidationRules});
 
-                expect(spyGetInitialState).toHaveBeenCalledTimes(2);    // incl. constructor
-                expect(spyGetInitialState.mock.calls[1]).toEqual([undefined, mockValidationRules]);
+                expect(spyGetInitialState).toHaveBeenCalledWith(undefined, mockValidationRules);
                 expect(spyGetValidState).toHaveBeenCalledWith(mockInputVal, mockValidationRules);
                 expect(spySetState).toHaveBeenCalledWith({
                     ...mockInitialState,
@@ -79,11 +80,9 @@ describe('Component - Text Input', () => {
             it('should not revalidate if validation rules have changed but empty', () => {
                 mockInitialState = { hsExtState: true, hsValidationRules: false };
                 spyGetInitialState.mockReturnValue(mockInitialState);
-                cmpInst = new _TextInput({...mockBaseProps, text: mockText});
-                cmpInst.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: []});
+                cmpWithText.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: []});
 
-                expect(spyGetInitialState).toHaveBeenCalledTimes(2);    // incl. constructor
-                expect(spyGetInitialState.mock.calls[1]).toEqual([mockText, []]);
+                expect(spyGetInitialState).toHaveBeenCalledWith(mockText, []);
                 expect(spyGetValidState).not.toHaveBeenCalled();
                 expect(spySetState).toHaveBeenCalledWith(mockInitialState);
             });
@@ -91,10 +90,9 @@ describe('Component - Text Input', () => {
             it('should not revalidate if validation rules have not changed', () => {
                 mockInitialState = { hsExtState: false, hsValidationRules: true };
                 spyGetInitialState.mockReturnValue(mockInitialState);
-                cmpInst = new _TextInput(mockBaseProps);
-                cmpInst.UNSAFE_componentWillReceiveProps(mockBaseProps);
+                cmpWithoutText.UNSAFE_componentWillReceiveProps(mockBaseProps);
 
-                expect(spyGetInitialState).toHaveBeenCalledTimes(1);    // incl. constructor
+                expect(spyGetInitialState).not.toHaveBeenCalled();
                 expect(spyGetValidState).not.toHaveBeenCalled();
                 expect(spySetState).not.toHaveBeenCalled();
             });
