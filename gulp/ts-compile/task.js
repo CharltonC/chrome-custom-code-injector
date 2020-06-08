@@ -10,6 +10,7 @@ module.exports = (done) => {
         const getBundleEndTxt = () => `  Finished compiling for ${$.chalk.blue(inputFiles)} in ${time}, file watch restarts...`;
         const getBundleUpdateTxt = (filePath) => `Detected changes in files: ${$.chalk.cyan(filePath)}`
 
+        //// Browserify Instance
         const brsfInst = $.browserify({
             basedir: defOption.basePath,
             entries: inputFiles,
@@ -19,6 +20,7 @@ module.exports = (done) => {
         })
         .plugin( $.tsify );
 
+        //// Main compile Logic (to be used initial compile & later re-compile when file changes)
         function bundle() {
             return brsfInst
                 .transform($.babelify, defOption.babel)            // Transform to Next Gen JS, i.e. new feats (incl. jsx to js)
@@ -32,13 +34,16 @@ module.exports = (done) => {
                 .on('error', util.onWatchError);
         }
 
+        //// Plugin Config
         // Do NOT use it for development as it causes error with sourcemap
         // - details: when `{global: true}` is passed for "uglifyify" during `.transform()`  (i.e. removing dead code, not compress/mangle)
         if (isProd) {
             brsfInst.plugin($.tinyify, defOption.tinyify);
+        }
 
-        // - Watch the files & Speed up the build by caching files which didnt change
-        } else {
+        // Watch the files & Speed up the build by caching files which didnt change
+        // - for Development mode or Production mode by providing an extra `watchify` flag
+        if (!isProd || (isProd && $.yargs.watchify)) {
             brsfInst
                 .plugin( $.watchify )
                 .on('update', (filePath) => {
@@ -50,6 +55,7 @@ module.exports = (done) => {
                 });
         }
 
+        //// Start compile
         return bundle();
     });
 };
