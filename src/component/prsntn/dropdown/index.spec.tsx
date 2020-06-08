@@ -7,10 +7,12 @@ describe('Component - TODO: Component Name', () => {
     const mockDefProps: IProps = {id: 'id', list: ['a', 'b']};
     let getInitialStateSpy: jest.SpyInstance;
     let onSelectSpy: jest.SpyInstance;
+    let setStateSpy: jest.SpyInstance;
 
     beforeEach(() => {
         getInitialStateSpy = jest.spyOn(_Dropdown.prototype, 'getInitialState');
         onSelectSpy = jest.spyOn(_Dropdown.prototype, 'onSelect');
+        setStateSpy = jest.spyOn(_Dropdown.prototype, 'setState');
     });
 
     afterEach(() => {
@@ -19,15 +21,62 @@ describe('Component - TODO: Component Name', () => {
     });
 
     describe('Component Class', () => {
+        const mockRtnState = {} as IState;
         let cmp: _Dropdown;
 
         describe('constructor', () => {
             it("should init ", () => {
-                const mockRtnState = {};
                 getInitialStateSpy.mockReturnValue(mockRtnState);
                 cmp = new _Dropdown(mockBareProps);
 
                 expect(cmp.state).toEqual(mockRtnState);
+            });
+        });
+
+        describe('Lifecycle - shouldComponentUpdate', () => {
+            const mockPropsWithInitialSelectIdx: IProps = {...mockDefProps, selectIdx: 0};
+            const mockPropsWithSameSelectIdx = {selectIdx: 0} as IProps;
+            const mockPropsWithDiffSelectIdx = {selectIdx: 1} as IProps;
+            let cmpWithSelectIdx: _Dropdown;
+            let cmpWithoutSelectIdx: _Dropdown;
+            let shallUpdate: boolean;
+
+            beforeEach(() => {
+                // Override/Clear all the spies set in the parent so that Component Methods called dont get recorded before they are instantiated
+                jest.restoreAllMocks();
+
+                cmpWithSelectIdx = new _Dropdown(mockPropsWithInitialSelectIdx);
+                cmpWithoutSelectIdx = new _Dropdown(mockDefProps);
+
+                getInitialStateSpy = jest.spyOn(_Dropdown.prototype, 'getInitialState').mockReturnValue(mockRtnState);
+                setStateSpy = jest.spyOn(_Dropdown.prototype, 'setState').mockImplementation(() => {});
+            });
+
+            it('should not set state and not proceed with update when select index is not provided in the first place', () => {
+                shallUpdate = cmpWithoutSelectIdx.shouldComponentUpdate(mockPropsWithDiffSelectIdx);
+
+                expect(shallUpdate).toBe(false);
+                expect(getInitialStateSpy).not.toHaveBeenCalled();
+                expect(setStateSpy).not.toHaveBeenCalled();
+            });
+
+            it('should set state and proceed with update if new select index is different to old one when select index is provided in the first place', () => {
+                const { list } = mockPropsWithInitialSelectIdx;
+                const { selectIdx } = mockPropsWithDiffSelectIdx;
+                shallUpdate = cmpWithSelectIdx.shouldComponentUpdate(mockPropsWithDiffSelectIdx);
+
+                expect(shallUpdate).toBe(true);
+                expect(getInitialStateSpy).toHaveBeenCalledTimes(1);
+                expect(getInitialStateSpy).toHaveBeenCalledWith({list, selectIdx});
+                expect(setStateSpy).toHaveBeenCalledWith(mockRtnState);
+            });
+
+            it('should not set state and not proceed with update if new select index is same as old one when select index is provided in the first place', () => {
+                shallUpdate = cmpWithSelectIdx.shouldComponentUpdate(mockPropsWithSameSelectIdx);
+
+                expect(shallUpdate).toBe(false);
+                expect(getInitialStateSpy).not.toHaveBeenCalled();
+                expect(setStateSpy).not.toHaveBeenCalled();
             });
         });
 
