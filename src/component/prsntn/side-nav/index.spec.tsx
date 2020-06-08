@@ -46,14 +46,18 @@ describe('Component - Side Nav', () => {
 
         describe('Lifecycle - UNSAFE_componentWillReceiveProps', () => {
             beforeEach(() => {
-                setStateSpy.mockImplementation(() => {});
+                jest.restoreAllMocks();
+
                 sideNav = new _SideNav(mockDefProps);
+
+                getIntitalStateSpy = jest.spyOn(_SideNav.prototype, 'getIntitalState');
+                setStateSpy = jest.spyOn(_SideNav.prototype, 'setState').mockImplementation(() => {});
             });
 
             it('should not update active state if new/passed list is the same', () => {
                 sideNav.UNSAFE_componentWillReceiveProps(mockDefProps);
 
-                expect(getIntitalStateSpy).toHaveBeenCalledTimes(1);    // incl. constructor
+                expect(getIntitalStateSpy).not.toHaveBeenCalled();
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
 
@@ -62,9 +66,7 @@ describe('Component - Side Nav', () => {
                 sideNav.UNSAFE_componentWillReceiveProps(mockNullProps);
 
                 expect(getIntitalStateSpy).toHaveBeenCalledWith(mockNullProps.list);
-                expect(getIntitalStateSpy).toHaveBeenCalledTimes(2);    // incl. constructor
                 expect(setStateSpy).toHaveBeenCalledWith(mockRtnNullState);
-                expect(setStateSpy).toHaveBeenCalledTimes(1);
             });
 
             it('should update active state if current active list is in the new/passed list however in a different index', () => {
@@ -72,9 +74,8 @@ describe('Component - Side Nav', () => {
                 const mockNewList: INestList[] = [ {id: '0'}, ...mockDefProps.list ];
                 sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
 
-                expect(getIntitalStateSpy).toHaveBeenCalledTimes(1);    // incl. constructor
+                expect(getIntitalStateSpy).not.toHaveBeenCalled();
                 expect(setStateSpy).toHaveBeenCalledWith({atvLsIdx: 1});
-                expect(setStateSpy).toHaveBeenCalledTimes(1);
             });
 
             it('should not update active state if current active list is in the new/passed list however in a same index', () => {
@@ -82,7 +83,7 @@ describe('Component - Side Nav', () => {
                 const mockNewList: INestList[] = [...mockDefProps.list, {id: '0'} ];
                 sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
 
-                expect(getIntitalStateSpy).toHaveBeenCalledTimes(1);    // incl. constructor
+                expect(getIntitalStateSpy).not.toHaveBeenCalled();
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
 
@@ -92,9 +93,7 @@ describe('Component - Side Nav', () => {
                 sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
 
                 expect(getIntitalStateSpy).toHaveBeenCalledWith(mockNewList);
-                expect(getIntitalStateSpy).toHaveBeenCalledTimes(2);    // incl. constructor
                 expect(setStateSpy).toHaveBeenCalledWith(mockRtnNullState);
-                expect(setStateSpy).toHaveBeenCalledTimes(1);
             });
         });
 
