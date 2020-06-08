@@ -5,7 +5,7 @@ module.exports = (done) => {
     const isProd = $.yargs.prod;
     let time;
 
-    return util.loopTasks(done, tasks, ({inputFiles, outputPath}) => {
+    return util.loopTasks(done, tasks, ({inputFiles, outputPath, outputFile}) => {
         const getBundleSizeTxt = () => $.chalk.white('  Bundled output ') + $.chalk.blue(`${outputPath}/`);
         const getBundleEndTxt = () => `  Finished compiling for ${$.chalk.blue(inputFiles)} in ${time}, file watch restarts...`;
         const getBundleUpdateTxt = (filePath) => `Detected changes in files: ${$.chalk.cyan(filePath)}`
