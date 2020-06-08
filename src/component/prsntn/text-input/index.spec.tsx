@@ -24,7 +24,7 @@ describe('Component - Text Input', () => {
             });
         });
 
-        fdescribe('Lifecycle - `UNSAFE_componentWillReceiveProps`', () => {
+        describe('Lifecycle - `UNSAFE_componentWillReceiveProps`', () => {
             const mockText: string = 'lorem';
             const mockBaseProps: IProps = {id: '', validate: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
