@@ -6,12 +6,12 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import Button from 'antd/lib/button';
+// import Button from 'antd/lib/button';
 
-export const Hello = () => <Button>lorem sum</Button>;
+// export const Hello = () => <Button>lorem sum</Button>;
 const containerElem = document.createElement('div');
 // document.body.appendChild(containerElem);
 // render(<Button>lorem sum</Button>, containerElem);
 
 
-render(<Hello />, containerElem);
+render(<div />, containerElem);

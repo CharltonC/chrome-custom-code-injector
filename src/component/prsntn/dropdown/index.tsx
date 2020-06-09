@@ -44,13 +44,12 @@ export class _Dropdown extends Component<IProps, IState> {
 
         const baseCls: string = 'dropdown';
         const wrapperCls: string = border ? `${baseCls} ${baseCls}--border` : `${baseCls} ${baseCls}--plain`;
-
-        const selectedOptionVal: number = hsSelectIdx ? selectIdx : 0;
+        const selectValueProp = hsSelectIdx ? { value: selectIdx } : {};
 
         return hsList ?
             <div className={wrapperCls}>
                 <select id={id}
-                    value={selectedOptionVal}
+                    {...selectValueProp}
                     disabled={disabled}
                     onChange={this.onSelect}
                     >

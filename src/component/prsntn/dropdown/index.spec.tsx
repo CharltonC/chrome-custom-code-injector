@@ -201,6 +201,18 @@ describe('Component - TODO: Component Name', () => {
             expect($options[1].selected).toBe(false);
         });
 
+        it('should trigger the `onSelect` event handler', () => {
+            TestUtil.renderPlain($elem, Dropdown, mockDefProps);
+            syncChildElem();
+            expect($options[0].selected).toBe(true);
+            expect($options[1].selected).toBe(false);
+
+            $select.value = '1';
+            TestUtil.triggerEvt($select, 'change');
+            expect(onSelectSpy).toHaveBeenCalled();
+            expect($options[0].selected).toBe(false);
+            expect($options[1].selected).toBe(true);
+        });
     });
 });
 
