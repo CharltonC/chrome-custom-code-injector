@@ -19,7 +19,8 @@ gulp.task('build-copy', gulp.series('copy', 'wait'), done => { done(); });
 /**
  * Watch files + Optionally Start a local server (if `startIdxPage` is specified)
  *
- * CMD: `gulp browsersync [--startIdxPage=<indexPageName>]?`
+ * CMD: `gulp watch [--files=[html|ts|css]]? [--startIdxPage=<indexPageName>]?`
+ * @param: files - which category of files to watch (ts files only trigger lint and test tasks)
  * @param: indexPageName - starting index page at the output folder, e.g. option | poup
  * @param: startIdxPage - starts a local server
  */

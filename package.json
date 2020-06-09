@@ -11,7 +11,7 @@
     "serve-files-prod": "gulp serve --prod --watchify",
     "serve-index-popup": "gulp serve --startIdxPage=popup",
     "serve-index-option": "gulp serve --startIdxPage=option",
-    "serve-styleguide": "gulp serve --css & npx start-storybook --ci -p 9001 -s ./dist/build/",
+    "serve-styleguide": "gulp build-copy && gulp build-css; gulp watch --files=css & npx start-storybook --ci -p 9001 -s ./dist/build/",
     "doc": "./node_modules/.bin/esdoc",
     "typedoc": "node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, doc, coverage'",
