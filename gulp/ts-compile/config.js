@@ -11,8 +11,19 @@ module.exports = {
             env: { NODE_ENV: 'production' }
         }
     },
+    watchifyOption: {
+        // './path' does not work, use '**' instead
+        ignoreWatch: [
+            '**/node_modules/**',
+            '**/schematic/**',
+            '**/dist/**',
+            '**/doc/**',
+            '**/gulp/**',
+            '**/package.json'
+        ]
+    },
 
-    // NOTE: as this is supposed to be entry file, wildcard `**` or `*` is not allowed
+    //// NOTE: as this is supposed to be entry file, wildcard `**` or `*` is not allowed
     /* Exclude Test files, e.g. '!ts/service/elem-selector/*.spec.ts' */
     /* jQuery: required if you import it - does not make diff. if you do `import * as $ from 'jquery';` */
     /* AngularJs:

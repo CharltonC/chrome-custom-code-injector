@@ -1,5 +1,5 @@
 const { gulp, $path, $, util } = require('../common');
-const { tasks, defOption } = require('./config');
+const { tasks, defOption, watchifyOption } = require('./config');
 
 module.exports = (done) => {
     const isProd = $.yargs.prod;
@@ -46,7 +46,7 @@ module.exports = (done) => {
         // - for Development mode or Production mode by providing an extra `watchify` flag
         if (isWatch) {
             brsfInst
-                .plugin( $.watchify )
+                .plugin( $.watchify, watchifyOption )
                 .on('update', (filePath) => {
                     console.log(getBundleUpdateTxt(filePath));
                     return bundle();
