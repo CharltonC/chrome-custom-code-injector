@@ -1,11 +1,12 @@
 const { $ } = require('../common');
 
-const serveIdxPage = $.yargs.indexpage ? $.yargs.indexpage === 'popup' : 'option';
+const { startIdxPage } = $.yargs;
+const indexPage = startIdxPage ? startIdxPage : '';
 
 module.exports = {
     defOption: {
         server: {
-            baseDir: `dist/build/${serveIdxPage}`,
+            baseDir: `dist/build/${indexPage}`,
         },
         // startPath:
         reloadDelay: 1000,
@@ -28,6 +29,6 @@ module.exports = {
      gulpTask: {
          html: 'build-html',
          css: 'build-css',
-         ts: 'build-ts'
+         ts: ['build-ts:lint', 'build-ts:test']
      }
 };

@@ -45,17 +45,17 @@ npm install
 ```
 npm run cmp-[s|p|g|v]
 ```
-* Start a Server to View All UI Components (dev):
+* Serve: Watch files + Compile:
 ```
-npm run ui
+npm run files-[dev|prod]
 ```
-* Start a Server to view the Specific page (dev):
+* Serve: Watch files + Compile + Start a Server to view the Specific page:
 ```
-npm run serve-[popup|option]
+npm run serve-index-[popup|option] [--prod --watchify?]?
 ```
-* Watch & Auto Compile Html/Ts/Scss files (dev):
+* Serve: Start a Server to View All UI Components (dev):
 ```
-gulp serve --[html|scss]  |  gulp build-ts:compile [--prod --watchify]?
+npm run serve-styleguide
 ```
 * Build
 ```
