@@ -32,8 +32,13 @@ module.exports = {
         '@babel/preset-typescript'
     ],
 
-    global: true,
-    ignore: [
-        './node_modules/@fluentui/react/lib'
-    ]
+    /**
+     * Support for importing from a Library in "node_modules"which uses ES6 via `import/export`
+     * - `ignore` requires `global: true`
+     * - `ignore` filters down the allowed path
+     */
+    // global: true,
+    // ignore: [
+    //     './node_modules/<ui-library-path-where-it-is-imported-in-your-js/ts-file>'
+    // ]
 };
