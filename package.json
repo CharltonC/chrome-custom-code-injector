@@ -19,16 +19,8 @@
   },
   "private": true,
   "dependencies": {
-    "@blueprintjs/core": "3.28.1",
-    "@blueprintjs/table": "3.8.8",
-    "@fluentui/react": "7.118.0",
-    "antd": "4.2.0",
-    "element-react": "1.4.34",
-    "evergreen-ui": "4.27.4",
     "react": "16.13.1",
-    "react-bootstrap-table-next": "4.0.3",
-    "react-dom": "16.13.1",
-    "react-virtualized": "9.21.2"
+    "react-dom": "16.13.1"
   },
   "devDependencies": {
     "@babel/core": "7.10.2",
