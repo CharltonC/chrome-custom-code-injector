@@ -30,5 +30,10 @@ module.exports = {
          */
         "@babel/preset-env", "@babel/preset-react",
         '@babel/preset-typescript'
+    ],
+
+    global: true,
+    ignore: [
+        './node_modules/@fluentui/react/lib'
     ]
 };
