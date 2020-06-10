@@ -86,6 +86,7 @@
     "gulp-zip": "4.1.0",
     "gulp.spritesmith": "6.11.0",
     "jest": "25.5.3",
+    "minify-stream": "2.0.1",
     "pug": "2.0.4",
     "tinyify": "2.5.2",
     "tree-cli": "0.4.12",

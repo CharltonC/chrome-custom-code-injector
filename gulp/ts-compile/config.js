@@ -2,25 +2,32 @@ const { $ } = require('../common');
 const babelConfig = require('../../babel.config');
 
 module.exports = {
+    //// Browserify & Plugins Config
     defOption: {
+        // General
         basePath: './src',
         outputPath: './',
-        // babel settings for compiling only, not used for unit testing via Jest
+
+        // Babel settings for compiling only, not used for unit testing via Jest
         babel: babelConfig,
-        tinyify: {
-            env: { NODE_ENV: 'production' }
+
+        // Prod Build Optimization
+        minifyStream: { sourceMap: false },
+        envify: {NODE_ENV: 'production'},
+        brwsrfyTrnsfm: { global: true },
+
+        // Dev Build Optimization
+        watchify: {
+            // './path' does not work, use '**' instead
+            ignoreWatch: [
+                '**/node_modules/**',
+                '**/schematic/**',
+                '**/dist/**',
+                '**/doc/**',
+                '**/gulp/**',
+                '**/package.json'
+            ]
         }
-    },
-    watchifyOption: {
-        // './path' does not work, use '**' instead
-        ignoreWatch: [
-            '**/node_modules/**',
-            '**/schematic/**',
-            '**/dist/**',
-            '**/doc/**',
-            '**/gulp/**',
-            '**/package.json'
-        ]
     },
 
     //// NOTE: as this is supposed to be entry file, wildcard `**` or `*` is not allowed

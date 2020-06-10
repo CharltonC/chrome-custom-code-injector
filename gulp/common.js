@@ -28,15 +28,20 @@ const $ = {
     pug:            require('gulp-pug'),
 
     // Typescript, Babel, TreeShake/Optimize
-    browserify:     require('browserify'),
-    watchify:       require('watchify'),
     vinylBuffer:    require('vinyl-buffer'),
     vinylStream:    require('vinyl-source-stream'),
-    tsify:          require('tsify'),
-    tinyify:        require('tinyify'),
-    babelify:       require('babelify'),
     eslint:         require('gulp-eslint'),
     uglify:         require('gulp-uglify'),
+    browserify:     require('browserify'),
+    watchify:       require('watchify'),
+    tsify:          require('tsify'),
+    babelify:       require('babelify'),
+    unassertify:    require('unassertify'),
+    envify:         require('envify/custom'),
+    uglifyify:      require('uglifyify'),
+    shakeify:       require('common-shakeify'),
+    packFlat:       require('browser-pack-flat/plugin'),
+    minifyStream:   require('minify-stream'),
 
     // Unit Test
     jestRun:        require("jest").run,

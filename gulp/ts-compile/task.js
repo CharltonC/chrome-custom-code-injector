@@ -2,8 +2,7 @@ const { gulp, $path, $, util } = require('../common');
 const { tasks, defOption, watchifyOption } = require('./config');
 
 module.exports = (done) => {
-    const isProd = $.yargs.prod;
-    const isWatch = !isProd || $.yargs.watchify;
+    const isWatch = !$.isProd || $.yargs.watchify;
     let time;
 
     return util.loopTasks(done, tasks, ({inputFiles, outputFile}) => {
@@ -15,7 +14,7 @@ module.exports = (done) => {
         const brsfInst = $.browserify({
             basedir: defOption.basePath,
             entries: inputFiles,
-            debug: !isProd,          // true: generate sourcemap
+            debug: !$.isProd,          // true: generate sourcemap
             cache: {},
             packageCache: {}
         })
@@ -26,6 +25,7 @@ module.exports = (done) => {
             return brsfInst
                 .transform($.babelify, defOption.babel)            // Transform to Next Gen JS, i.e. new feats (incl. jsx to js)
                 .bundle()
+                .pipe( $.if($.isProd, $.minifyStream(defOption.minifyStream)) )     // prod uglify/concat
                 .pipe( $.plumber() )
                 .pipe( $.vinylStream(outputFile) )
                 .pipe( $.vinylBuffer() )
@@ -38,15 +38,20 @@ module.exports = (done) => {
         //// Plugin Config
         // Do NOT use it for development as it causes error with sourcemap
         // - details: when `{global: true}` is passed for "uglifyify" during `.transform()` (i.e. removing dead code, not compress/mangle)
-        if (isProd) {
-            brsfInst.plugin($.tinyify, defOption.tinyify);
+        if ($.isProd) {
+            brsfInst
+                .transform( $.unassertify, defOption.brwsrfyTrnsfm)
+                .transform( $.envify(defOption.envify), defOption.brwsrfyTrnsfm)
+                .transform( $.uglifyify, defOption.brwsrfyTrnsfm)
+                .plugin( $.shakeify )
+                .plugin( $.packFlat );
         }
 
         // Watch the files & Speed up the build by caching files which didnt change
         // - for Development mode or Production mode by providing an extra `watchify` flag
         if (isWatch) {
             brsfInst
-                .plugin( $.watchify, watchifyOption )
+                .plugin( $.watchify, defOption.watchify )
                 .on('update', (filePath) => {
                     console.log(getBundleUpdateTxt(filePath));
                     return bundle();
