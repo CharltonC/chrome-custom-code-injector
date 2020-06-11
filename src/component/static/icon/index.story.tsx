@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TName } from './type';
+import { TIcon } from './type';
 import { inclStaticIcon } from '.';
 
 
@@ -36,19 +36,19 @@ const icons: string[] = [
 
 export const PlainModeWithoutHoverState = () => (
     <ul>
-        { icons.map((name: TName) => <li key={`plain-${name}`}>{inclStaticIcon(name)}</li>)}
+        { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon)}</li>)}
     </ul>
 );
 
 export const LightMode = () => (
     <ul style={{ backgroundColor: '#5AB3AD' }}>
         {/* `id` is the html attr. not specified however still passed here */}
-        { icons.map((name: TName) => <li key={`plain-${name}`}>{inclStaticIcon(name, false)}</li>)}
+        { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, false)}</li>)}
     </ul>
 );
 
 export const DarkMode = () => (
     <ul>
-        { icons.map((name: TName) => <li key={`plain-${name}`}>{inclStaticIcon(name, true)}</li>)}
+        { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, true)}</li>)}
     </ul>
 );

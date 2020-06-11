@@ -1,9 +1,6 @@
-export enum EMode {
-    light = 'light',
-    dark = 'dark'
-}
+export type TTheme = 'light' | 'dark' | 'plain';
 
-export type TName =
+export type TIcon =
     'setting' |
     'valid' |
     'close' |
