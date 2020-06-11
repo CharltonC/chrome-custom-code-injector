@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     stories: [
         // base story used just for importing assets e.g. css
-        './base.story.js',
+        './*.tsx',
 
         // all compoennt stories
         '../src/component/**/**/*.story.tsx'
