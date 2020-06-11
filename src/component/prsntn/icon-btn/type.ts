@@ -1,7 +1,7 @@
 import * as NIcon from '../../static/icon/type';
 
 export interface IIcon {
-    name: NIcon.TName;
+    name: NIcon.TIcon;
     darkMode?: boolean;
 }
 
