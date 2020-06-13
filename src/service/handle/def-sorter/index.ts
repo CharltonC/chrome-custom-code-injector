@@ -1,6 +1,6 @@
 import { TLsItem, TStrSortOrder } from './type';
 
-export class DefSorter {
+export class SortHandle {
     readonly noOrder: TStrSortOrder = 0;
     readonly baOrder: TStrSortOrder = 1;
     readonly abOrder: TStrSortOrder = -1;
