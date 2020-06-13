@@ -1,5 +1,5 @@
 import { TLsItem } from './type';
-import { SortHandle } from './';
+import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {
     let sortHandle: SortHandle;
