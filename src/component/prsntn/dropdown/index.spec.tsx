@@ -2,7 +2,7 @@ import { TestUtil } from '../../../test-util/';
 import { IProps, IState } from './type';
 import { _Dropdown, Dropdown } from './';
 
-describe('Component - TODO: Component Name', () => {
+describe('Component - Dropdown', () => {
     const mockBareProps: IProps = {id: 'id', list: []};
     const mockDefProps: IProps = {id: 'id', list: ['a', 'b']};
     let getInitialStateSpy: jest.SpyInstance;
