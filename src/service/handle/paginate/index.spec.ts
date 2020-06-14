@@ -25,13 +25,13 @@ describe('Class - Paginate Handle', () => {
         const mockNoPerPage: number = 4;
         const mockIncrement: number[] = [2, 4];
 
-        describe('paginate state for lte 1 item or total items is lte to total 10 per page (default)', () => {
+        describe('paginate state for insufficient items for 1 page', () => {
             it('should return no paginate state when the list has lte 1 item', () => {
                 expect(handle.getPgnState({list: []})).toBeFalsy();
                 expect(handle.getPgnState({list: ['a']})).toBeFalsy();
             });
 
-            it('should return no paginate state when total number of items is lte to total 10 per page ', () => {
+            it('should return no paginate state when total number of items is lte total 10 per page ', () => {
                 expect(handle.getPgnState(mockBasePgnOption)).toBeFalsy();
                 expect(handle.getPgnState({...mockBasePgnOption, increment: mockList.length})).toBeFalsy();
             });
@@ -159,15 +159,15 @@ describe('Class - Paginate Handle', () => {
         const page2: number = 1;
         const page3: number = 2;
 
-        describe('check provided last page and current page', () => {
-            it('should return false if provided page type does not match', () => {
+        describe('check requested page is valid', () => {
+            it('should return false if requested page type does not match', () => {
                 const mockInvalidTypeQuery: IPageQuery = {lastPage: page3, type: '', targetPage: 0};
 
                 expect(handle.hsPage(mockInvalidTypeQuery)).toBe(false);
                 expect(isGteZeroSpy).toHaveBeenCalledTimes(2);
             });
 
-            it('should return false if provided last page is not gte 0 regardless of type and target page', () => {
+            it('should return false if requested last page is not gte 0 regardless of type and target page', () => {
                 const mockInvalidLastPageQuery = {lastPage: page3, targetPage: 0} as IPageQuery;
                 isGteZeroSpy.mockReturnValue(false);
 
@@ -251,7 +251,7 @@ describe('Class - Paginate Handle', () => {
                 expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: page1})).toBe(false);
             });
 
-            it('should return false if the page index is gt than last page index', () => {
+            it('should return false if the page index is gt last page index', () => {
                 expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: 4})).toBe(false);
             });
         });
