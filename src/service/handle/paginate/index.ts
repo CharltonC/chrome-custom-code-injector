@@ -44,7 +44,7 @@ export class PgnHandle {
         let prevPage: number;
         let nextPage: number;
 
-        const hsUserReqCurrPage: boolean = pageIdx >=0 && pageIdx < lastPage;
+        const hsUserReqCurrPage: boolean = pageIdx >=0 && pageIdx <= lastPage;
         const currPage: number = hsUserReqCurrPage ? pageIdx : 0;                                           // fallback to 1st page if user request page doesnt exist
         prevPage = currPage - 1;
         nextPage = currPage + 1;
