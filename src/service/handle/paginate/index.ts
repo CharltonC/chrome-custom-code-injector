@@ -44,7 +44,7 @@ export class PgnHandle {
         let prevPage: number;
         let nextPage: number;
 
-        const hsUserReqCurrPage: boolean = this.hsPage({type: 'page', lastPage, targetPage: pageIdx});
+        const hsUserReqCurrPage: boolean = pageIdx >=0 && pageIdx < lastPage;
         const currPage: number = hsUserReqCurrPage ? pageIdx : 0;                                           // fallback to 1st page if user request page doesnt exist
         prevPage = currPage - 1;
         nextPage = currPage + 1;
@@ -60,8 +60,8 @@ export class PgnHandle {
         const next: number = hsNext ? nextPage : null;
         const last: number = hsLast ? lastPage : null;
         const currSlice: IPageSlice = this.getPageSliceIdx(list, noPerPage, currPage);
-        const error = { ...isIncrementConfigValid, pageIdx: hsUserReqCurrPage};
-        return { first, prev, next, last, currPage, ...currSlice, noPerPage, noOfPages, error };
+        const valid = {...isIncrementConfigValid, pageIdx: hsUserReqCurrPage};
+        return { first, prev, next, last, currPage, ...currSlice, noPerPage, noOfPages, valid };
     }
 
     getNoPerPage(incrm: number | number[], incrmIdx: number) {
@@ -85,7 +85,7 @@ export class PgnHandle {
         let startIdx: number = pageIdx * noPerPage;
         let endIdx: number = startIdx + noPerPage;
         startIdx = this.isDefined(list[startIdx]) ? startIdx : undefined;   // `undefined` is used as `null` cant be used as empty value in ES6
-        endIdx = this.isDefined(list[endIdx]) ? startIdx : undefined;
+        endIdx = this.isDefined(list[endIdx]) ? endIdx : undefined;
         return { startIdx, endIdx };
     }
 

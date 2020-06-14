@@ -18,5 +18,5 @@ export interface IState extends IPageSlice {
     next: number;
     last: number;
     currPage: number;
-    error?: Record<string, boolean>;
+    valid?: Record<string, boolean>;
 }
