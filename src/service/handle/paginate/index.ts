@@ -36,7 +36,6 @@ export class PgnHandle {
 
         // Skip if we have less than 2 pages
         let { noPerPage } = this.getNoPerPage(increment, incrementIdx, defIncrm as number);
-        // noPerPage = noPerPage >= 1 ? noPerPage : this.getNoPerPage(defOption.increment, defOption.incrementIdx);
         const noOfPages: number = this.getNoOfPages(lsLen, noPerPage);
         if (noOfPages <= 1) return;
 
