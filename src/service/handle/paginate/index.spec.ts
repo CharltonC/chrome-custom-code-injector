@@ -1,11 +1,17 @@
-import { IState, IPageQuery } from './type';
-import { PgnHandle } from './';
+import { IPageQuery } from './type';
+import { PgnHandle, PgnOption } from './';
 
 describe('Class - Paginate Handle', () => {
     let handle: PgnHandle;
+    let isGteZeroSpy: jest.SpyInstance;
+    // let getNoPerPageSpy: jest.SpyInstance;
+    // let hsPageSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new PgnHandle();
+        isGteZeroSpy = jest.spyOn(handle, 'isGteZero');
+        // getNoPerPageSpy = jest.spyOn(handle, 'getNoPerPage');
+        // hsPageSpy = jest.spyOn(handle, 'hsPage');
     });
 
     afterEach(() => {
@@ -13,16 +19,145 @@ describe('Class - Paginate Handle', () => {
         jest.restoreAllMocks();
     });
 
+    describe('Method: getPgnState - Get Pagination state based on list and user option', () => {
+        const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
+        const mockBasePgnOption: PgnOption = { list: mockList };
+        const mockNoPerPage: number = 4;
+        const mockIncrement: number[] = [2, 4];
+
+        describe('paginate state for lte 1 item or total items is lte to total 10 per page (default)', () => {
+            it('should return no paginate state when the list has lte 1 item', () => {
+                expect(handle.getPgnState({list: []})).toBeFalsy();
+                expect(handle.getPgnState({list: ['a']})).toBeFalsy();
+            });
+
+            it('should return no paginate state when total number of items is lte to total 10 per page ', () => {
+                expect(handle.getPgnState(mockBasePgnOption)).toBeFalsy();
+                expect(handle.getPgnState({...mockBasePgnOption, increment: mockList.length})).toBeFalsy();
+            });
+        });
+
+        describe('paginate state for single increment number', () => {
+            const mockIncrePgnOption = {...mockBasePgnOption, increment: mockNoPerPage};
+
+            it('should return paginate state for default starting page index 0', () => {
+                expect(handle.getPgnState(mockIncrePgnOption)).toEqual({
+                    currPage: 0,
+                    startIdx: 0,
+                    endIdx: 4,
+                    first: null,
+                    prev: null,
+                    next: 1,
+                    last: 1,
+                    noOfPages: 2,
+                    noPerPage: 4
+                });
+            });
+
+            it('should return paginate state for invalid starting page index (def to zero)', () => {
+                const mockPageIdx: number = 99;
+
+                expect(handle.getPgnState({...mockIncrePgnOption, pageIdx: mockPageIdx})).toEqual({
+                    currPage: 0,
+                    startIdx: 0,
+                    endIdx: 4,
+                    first: null,
+                    prev: null,
+                    next: 1,
+                    last: 1,
+                    noOfPages: 2,
+                    noPerPage: 4
+                });
+            });
+
+            it('should return paginate state for valid starting page index', () => {
+                const mockPageIdx: number = 1;
+
+                expect(handle.getPgnState({...mockIncrePgnOption, pageIdx: mockPageIdx})).toEqual({
+                    currPage: mockPageIdx,
+                    startIdx: 4,
+                    endIdx: undefined,
+                    first: 0,
+                    prev: 0,
+                    next: null,
+                    last: null,
+                    noOfPages: 2,
+                    noPerPage: 4
+                });
+            });
+        });
+
+        describe('paginate state for single increment array of numbers', () => {
+            const mockIncrePgnOption = {...mockBasePgnOption, increment: mockIncrement};
+
+            it('should return paginate state with default 1st increment option', () => {
+                const expectedNoPerPage: number = mockIncrement[0];
+
+                expect(handle.getPgnState(mockIncrePgnOption)).toEqual({
+                    currPage: 0,
+                    startIdx: 0,
+                    endIdx: 2,
+                    first: null,
+                    prev: null,
+                    next: 1,
+                    last: 2,
+                    noOfPages: 3,
+                    noPerPage: expectedNoPerPage
+                });
+
+                expect(handle.getPgnState({...mockIncrePgnOption, pageIdx: 1})).toEqual({
+                    currPage: 1,
+                    startIdx: 2,
+                    endIdx: 4,
+                    first: 0,
+                    prev: 0,
+                    next: 2,
+                    last: 2,
+                    noOfPages: 3,
+                    noPerPage: expectedNoPerPage
+                });
+            });
+
+            it('should return paginate state with valid increment option', () => {
+                const mockIncrementIdx: number = 1;
+                const expectedNoPerPage: number = mockIncrement[mockIncrementIdx];
+
+                expect(handle.getPgnState({...mockIncrePgnOption, incrementIdx: mockIncrementIdx})).toEqual({
+                    currPage: 0,
+                    startIdx: 0,
+                    endIdx: 4,
+                    first: null,
+                    prev: null,
+                    next: 1,
+                    last: 1,
+                    noOfPages: 2,
+                    noPerPage: expectedNoPerPage
+                });
+
+                expect(handle.getPgnState({...mockIncrePgnOption, incrementIdx: mockIncrementIdx, pageIdx: 1})).toEqual({
+                    currPage: 1,
+                    startIdx: 4,
+                    endIdx: undefined,
+                    first: 0,
+                    prev: 0,
+                    next: null,
+                    last: null,
+                    noOfPages: 2,
+                    noPerPage: expectedNoPerPage
+                });
+            });
+
+            it('should return not paginate state for invalid increment option (default to 10 per page)', () => {
+                expect(handle.getPgnState({...mockIncrePgnOption, incrementIdx: 99})).toBeFalsy();
+            });
+        });
+    });
+
     describe('Method: hsPage - Check if a requested page is valid or exist', () => {
         // Aassume 3 pages
         const page1: number = 0;
         const page2: number = 1;
         const page3: number = 2;
-        let isGteZeroSpy: jest.SpyInstance;
-
-        beforeEach(() => {
-            isGteZeroSpy = jest.spyOn(handle, 'isGteZero');
-        });
 
         describe('check provided last page and current page', () => {
             it('should return false if provided page type does not match', () => {
