@@ -1,22 +1,22 @@
-export interface ISlice {
+export interface IPageQuery {
+    type: string;
+    currPage?: number;
+    lastPage: number;
+    targetPage: number;
+}
+
+export interface IPageSlice {
     startIdx: number;
     endIdx: number;
 }
 
-export interface IPerPageConfig {
-    // TODO: validate these props & add to validity result
-    increment?: number | number[];
-    incrementIdx?: number;
-}
-
-export interface IState {
+export interface IState extends IPageSlice {
     noPerPage: number;
     noOfPages: number;
-    firstPage: number;
-    prevPage: number;
-    nextPage: number;
-    lastPage: number;
+    first: number;
+    prev: number;
+    next: number;
+    last: number;
     currPage: number;
-    currSlice: ISlice;
     error?: Record<string, boolean>;
 }
