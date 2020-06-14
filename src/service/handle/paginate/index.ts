@@ -1,68 +1,60 @@
-import { IState, ISliceIdx, ISliceScope, ISliceValidity, IPerPageConfig } from './type';
-
-
+import { IState, ISlice, IPerPageConfig } from './type';
 
 /**
  * Whenever one of these updates, we can use `getPgnState` to get the current paginate state
  */
-class PgnOption {
+export class PgnOption {
     list: any[] = [];
     pageIdx?: number = 0;
     perPage?: IPerPageConfig = {
-        incrm: 10,
-        currIncrmIdx: 0
+        increment: 10,
+        incrementIdx: 0
     };
 }
 
-
-class PgnHandle {
+export class PgnHandle {
     getPgnState(pgnOption: PgnOption): IState {
-        let isAvail: boolean = false;
         const { list, pageIdx, perPage } = Object.assign(new PgnOption(), pgnOption);
-        const { incrm, currIncrmIdx } = perPage;
+        const { increment, incrementIdx } = perPage;
 
+        // Skip if we only have 1 list item
         const lsLen: number = list.length;
-        if (lsLen <= 1) return;                // Only <=1 list items
+        if (lsLen <= 1) return;
 
-        const noPerPage: number = this.getNoPerPage(incrm, currIncrmIdx);
+        // Skip if we have less than 2 pages
+        const {noPerPage, isValid: isIncrementConfigValid }  = this.getNoPerPage(increment, incrementIdx);
         const noOfPages: number = this.getNoOfPages(lsLen, noPerPage);
-        if (noOfPages === 1) return;           // Only 1 page
+        if (noOfPages <= 1) return;
 
-        const lastIdx: number = lsLen - 1;
+        // Process as we have >=2 pages & Compose the paginate state
+        let lastPage: number = noOfPages - 1;
+        const hsUserReqCurrPage: boolean = this.hsPage(pageIdx, lastPage, 0);
+        const currPage: number = hsUserReqCurrPage ? pageIdx : 0;                               // fallback to 1st page if user request page doesnt exist
+        const hsPrev: boolean = this.hsPage('prev', lastPage, currPage);
+        const hsNext: boolean = this.hsPage('next', lastPage, currPage);
+        const hsFirst: boolean = this.hsPage('first', lastPage, currPage);
+        const hsLast: boolean = hsUserReqCurrPage && this.hsPage('last', lastPage, currPage);   // we check again against if user request page exists
+        const currSlice: ISlice = this.getPageSliceIdx(list, noPerPage, currPage);
 
-        const currSliceArg: ISliceScope = {list, noPerPage, lastIdx};
-        const currSliceIdx: ISliceIdx = this.getPageSliceIdx(currSliceArg, pageIdx);
-        const currPage: number = currSliceIdx ? pageIdx : 0;
-        const curr: ISliceIdx = currSliceIdx ? currSliceIdx : this.getPageSliceIdx(currSliceArg, 0);
+        const firstPage: number = hsFirst ? 0 : null;
+        const prevPage: number = hsPrev ? currPage - 1 : null;
+        const nextPage: number = hsNext ? currPage + 1 : null;
+        lastPage = hsLast ? lastPage : null;
+        const error = { ...isIncrementConfigValid, pageIdx: hsUserReqCurrPage};
 
-        // TODO: Move condition to validation
-        // TODO: firstPage, first
-        const lastPage: number = noOfPages - 1;
-        const last: ISliceIdx = (lastPage >= 0 && lastPage > currPage) ? this.getPageSliceIdx(currSliceArg, lastPage) : null;
-        const prevPage: number = currPage - 1;
-        const prev: ISliceIdx = (prevPage >= 0 && prevPage < currPage) ? this.getPageSliceIdx(currSliceArg, prevPage) : null;
-        const nextPage: number = currPage + 1;
-        const next: ISliceIdx = (nextPage <= lastPage && nextPage > currPage) ? this.getPageSliceIdx(currSliceArg, nextPage) : null;
-
-        return {
-            slice: { curr, prev, next, last },
-            currPage,
-            noPerPage,
-            noOfPages,
-        };
+        return { firstPage, prevPage, nextPage, lastPage, currPage, currSlice, noPerPage, noOfPages, error };
     }
 
-    getValidity(sliceIdx: ISliceIdx, noOfPage: number): ISliceValidity {
+    getNoPerPage(incrm: number | number[], incrmIdx: number) {
+        const isIncrementArrayValid: boolean = Array.isArray(incrm) && !!incrm.length;
+        const isValid: boolean = isIncrementArrayValid && this.isDefined(incrm[incrmIdx]);
         return {
-            pageIdx: !!sliceIdx,
-            noOfPage: noOfPage > 0,
+            noPerPage: isValid ? incrm[incrmIdx] : incrm as number,
+            isValid: {
+                incrementArray: isIncrementArrayValid,
+                incrementIdx: isValid
+            }
         };
-    }
-
-    getNoPerPage(incrm: number | number[], currIncrmIdx: number): number {
-        return (typeof incrm !== 'number' && !!incrm[currIncrmIdx]) ?
-            incrm[currIncrmIdx] :
-            incrm as number;
     }
 
     getNoOfPages(lsLen: number, noPerPage: number): number {
@@ -70,18 +62,53 @@ class PgnHandle {
         return Math.ceil(noOfPage);
     }
 
-    //// Start/End indexes for getting a Slice Copy later on
-    parseSliceIdx(list: any[], startIndex: number, endIndex: number): ISliceIdx {
-        const startIdx: number = list[startIndex] ? startIndex : undefined;
-        const endIdx: number = list[endIndex] ? endIndex : undefined;     // `undefined` is used as `null` cant be used as empty value in ES6
-        // TODO: Move to common validation
-        const isInvalid: boolean = typeof startIdx === 'undefined' && typeof endIdx === 'undefined'
-        return isInvalid ? null : { startIdx, endIdx };
+    //// Start/End indexes for getting a Slice Copy to render later on
+    getPageSliceIdx(list: any[], noPerPage: number, pageIdx: number): ISlice {
+        let startIdx: number = pageIdx * noPerPage;
+        let endIdx: number = startIdx + noPerPage;
+        startIdx = this.isDefined(list[startIdx]) ? startIdx : undefined;   // `undefined` is used as `null` cant be used as empty value in ES6
+        endIdx = this.isDefined(list[endIdx]) ? startIdx : undefined;
+        return { startIdx, endIdx };
     }
 
-    getPageSliceIdx({list, noPerPage, lastIdx}: ISliceScope, pageIdx: number): ISliceIdx {
-        const startIdx: number = pageIdx * noPerPage;
-        const endIdx: number = startIdx + noPerPage;
-        return this.parseSliceIdx(list, startIdx, endIdx);
+    hsPage(pageType: string | number, lastPage: number, currPage: number = 0): boolean {
+        let targetPage: number;
+
+        if (!this.isGteZero([lastPage, currPage])) return false;
+
+        switch(pageType) {
+            case 'prev':
+                // we dont need `targetPage < currPage` since we already minus 1
+                targetPage = currPage - 1;
+                return targetPage >= 0;
+
+            case 'next':
+                // we dont need `targetPage > currPage` since we already add 1
+                targetPage = currPage + 1;
+                return targetPage <= lastPage;
+
+            case 'first':
+                targetPage = 0;
+                return currPage !== 0 && targetPage < currPage;
+
+            case 'last':
+                return lastPage > currPage;
+
+            default:
+                // i.e. any prev or next
+                return this.isGteZero(pageType) && pageType !== currPage && pageType <= lastPage;
+        }
     }
+
+    //// Helper Function
+    private isDefined(val: any): boolean {
+        return typeof val !== 'undefined';
+    }
+
+    private isGteZero(vals: any | any[]): boolean {
+        return Array.isArray(vals) ?
+            vals.every((val: any) => (Number.isInteger(val) && val >= 0) ) :
+            Number.isInteger(vals) && vals >= 0;
+    }
+
 }
