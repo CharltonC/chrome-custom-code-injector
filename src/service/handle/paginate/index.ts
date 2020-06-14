@@ -27,6 +27,7 @@ export class PgnHandle {
      *      const listFor1stPage = list.slice(startIdx, endIdx);
      */
     getPgnState(pgnOption: PgnOption): IState {
+        const { increment: defIncrm }: PgnOption = new PgnOption();
         const { list, pageIdx, increment, incrementIdx } = Object.assign(new PgnOption(), pgnOption);
 
         // Skip if we only have 1 list item
@@ -34,7 +35,8 @@ export class PgnHandle {
         if (lsLen <= 1) return;
 
         // Skip if we have less than 2 pages
-        const {noPerPage, isValid: isIncrementConfigValid }  = this.getNoPerPage(increment, incrementIdx);
+        let { noPerPage } = this.getNoPerPage(increment, incrementIdx, defIncrm as number);
+        // noPerPage = noPerPage >= 1 ? noPerPage : this.getNoPerPage(defOption.increment, defOption.incrementIdx);
         const noOfPages: number = this.getNoOfPages(lsLen, noPerPage);
         if (noOfPages <= 1) return;
 
@@ -60,20 +62,16 @@ export class PgnHandle {
         const next: number = hsNext ? nextPage : null;
         const last: number = hsLast ? lastPage : null;
         const currSlice: IPageSlice = this.getPageSliceIdx(list, noPerPage, currPage);
-        const valid = {...isIncrementConfigValid, pageIdx: hsUserReqCurrPage};
-        return { first, prev, next, last, currPage, ...currSlice, noPerPage, noOfPages, valid };
+        // const valid = {...isIncrementConfigValid, pageIdx: hsUserReqCurrPage};
+        return { first, prev, next, last, currPage, ...currSlice, noPerPage, noOfPages };
     }
 
-    getNoPerPage(incrm: number | number[], incrmIdx: number) {
-        const isIncrementArrayValid: boolean = Array.isArray(incrm) && !!incrm.length;
-        const isValid: boolean = isIncrementArrayValid && this.isDefined(incrm[incrmIdx]);
-        return {
-            noPerPage: isValid ? incrm[incrmIdx] : incrm as number,
-            isValid: {
-                incrementArray: isIncrementArrayValid,
-                incrementIdx: isValid
-            }
-        };
+    getNoPerPage(incrm: number | number[], incrmIdx: number, defIncrmVal: number) {
+        const noPerPage: number = Array.isArray(incrm) ?
+            (!!incrm.length && this.isDefined(incrm[incrmIdx]) ? incrm[incrmIdx] : defIncrmVal) :
+            incrm;
+
+        return {noPerPage};
     }
 
     getNoOfPages(lsLen: number, noPerPage: number): number {
