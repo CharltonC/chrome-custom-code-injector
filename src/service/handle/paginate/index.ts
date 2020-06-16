@@ -1,122 +1,132 @@
-import { IState, IPageSlice, IPageQuery } from './type';
+import { IPageState, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx } from './type';
 
 /**
  * Whenever one of these updates, we can use `getPgnState` to get the current paginate state
  */
 export class PgnOption {
     list: any[] = [];
-    pageIdx?: number = 0;
-    increment?: number | number[] = 10;
+    page?: number = 0;
+    increment?: number[] = [10];
     incrementIdx?: number = 0;
 }
 
+/**
+ * Usage:
+ *      const list = ['a', 'b', 'c', 'd'];
+ *      const pgnHandle = new PgnHandle();
+ *
+ *      const example = pgnHandle.getPgnState({
+ *           list,
+ *           page: 1,                       // optional starting page index
+ *           increment: [100, 200, 300],    // used for <select>'s <option> (default 10 per page, i.e. [10])
+ *           incrementIdx: 0,               // i.e. 100 per age
+ *      });
+ *
+ *      const { startIdx, endIdx } = example;
+ *      const listFor1stPage = list.slice(startIdx, endIdx);
+ */
 export class PgnHandle {
-    /**
-     * Usage:
-     *      const list = ['a', 'b', 'c', 'd'];
-     *      const pgnHandle = new PgnHandle();
-     *
-     *      const example = pgnHandle.getPgnState({
-     *           list,
-     *           pageIdx: 1,                 // optional starting page index
-     *           increment: [100, 200, 300], // used for <select>'s <option> (default 10 per page)
-     *           incrementIdx: 0,            // i.e. 100 per age
-     *      });
-     *
-     *      const { startIdx, endIdx } = example;
-     *      const listFor1stPage = list.slice(startIdx, endIdx);
-     */
-    getPgnState(pgnOption: PgnOption): IState {
-        const { increment: defIncrm }: PgnOption = new PgnOption();
-        const { list, pageIdx, increment, incrementIdx } = Object.assign(new PgnOption(), pgnOption);
+    getPgnState(pgnOption: PgnOption): IPageState {
+        // Merge def. option with User's option
+        const defPgnOption: PgnOption = new PgnOption();
+        const {increment: [defIncrmVal]} = defPgnOption;
+        const { list, page, increment, incrementIdx } = Object.assign(defPgnOption, pgnOption);
 
-        // Skip if we only have 1 list item
+        // Skip if following conditions:
+        // - if we only have 1 list item
         const lsLen: number = list.length;
         if (lsLen <= 1) return;
 
-        // Skip if we have less than 2 pages
-        let { noPerPage } = this.getNoPerPage(increment, incrementIdx, defIncrm as number);
-        const noOfPages: number = this.getNoOfPages(lsLen, noPerPage);
-        if (noOfPages <= 1) return;
+        // - if we have less than 2 pages
+        let perPage: number = this.getNoPerPage(increment, incrementIdx, defIncrmVal);
+        const totalPage: number = this.getTotalPage(lsLen, perPage);
+        if (totalPage <= 1) return;
 
-        // Process as we have >=2 pages
-        const firstPage: number = 0;
-        const lastPage: number = noOfPages - 1;
-        let prevPage: number;
-        let nextPage: number;
+        // Proceed as we have >=2 pages
+        const curr: number = this.getCurrPage(page, totalPage - 1);
+        const currSlice: IPageSlice = this.getPageSliceIdx(list, perPage, curr);
+        let relPage: IRelPage = this.getRelPage(totalPage, curr);
+        const relPageCtx: IRelPageCtx = this.getRelPageCtx({curr, last: relPage.last}, relPage);
+        relPage = this.parseRelPage(relPage, relPageCtx);
 
-        const hsUserReqCurrPage: boolean = pageIdx >=0 && pageIdx <= lastPage;
-        const currPage: number = hsUserReqCurrPage ? pageIdx : 0;                                           // fallback to 1st page if user request page doesnt exist
-        prevPage = currPage - 1;
-        nextPage = currPage + 1;
-        const pageContext = { currPage, lastPage };
-
-        // Check & Return the contextual pagination state based on the current page
-        const hsFirst: boolean = this.hsPage({...pageContext, type: 'first', targetPage: firstPage});
-        const hsPrev: boolean = this.hsPage({...pageContext, type: 'prev', targetPage: prevPage});
-        const hsNext: boolean = this.hsPage({...pageContext, type: 'next', targetPage: nextPage});
-        const hsLast: boolean = this.hsPage({...pageContext, type: 'last', targetPage: lastPage});             // we check again against if user request page exists
-        const first: number = hsFirst ? 0 : null;
-        const prev: number = hsPrev ? prevPage : null;
-        const next: number = hsNext ? nextPage : null;
-        const last: number = hsLast ? lastPage : null;
-        const currSlice: IPageSlice = this.getPageSliceIdx(list, noPerPage, currPage);
-        // const valid = {...isIncrementConfigValid, pageIdx: hsUserReqCurrPage};
-        return { first, prev, next, last, currPage, ...currSlice, noPerPage, noOfPages };
+        return { curr, ...relPage, ...currSlice, perPage, totalPage };
     }
 
-    getNoPerPage(incrm: number | number[], incrmIdx: number, defIncrmVal: number) {
-        const noPerPage: number = Array.isArray(incrm) ?
-            (!!incrm.length && this.isDefined(incrm[incrmIdx]) ? incrm[incrmIdx] : defIncrmVal) :
-            incrm;
-
-        return {noPerPage};
+    getNoPerPage(incrm: number[], incrmIdx: number, fallbackVal: number): number {
+        const isValidIncrm: boolean = !!incrm.length;
+        const isValidIncrmIdx: boolean = isValidIncrm && this.isDefined(incrm[incrmIdx]);
+        const perPage: number = isValidIncrmIdx ? incrm[incrmIdx] : fallbackVal;
+        return perPage;
     }
 
-    getNoOfPages(lsLen: number, noPerPage: number): number {
-        const noOfPage: number = (lsLen > noPerPage) ? lsLen/noPerPage : 1;
+    getTotalPage(lsLen: number, perPage: number): number {
+        const noOfPage: number = (lsLen > perPage) ? lsLen/perPage : 1;
         return Math.ceil(noOfPage);
     }
 
-    getPageSliceIdx(list: any[], noPerPage: number, pageIdx: number): IPageSlice {
-        let startIdx: number = pageIdx * noPerPage;
-        let endIdx: number = startIdx + noPerPage;
+    getCurrPage(page: number, lastPage: number): number {
+        return (page >= 0 && page <= lastPage )? page : 0;
+    }
+
+    getRelPage(totalPage: number, currPage: number): IRelPage {
+        return {
+            first: 0,
+            prev: currPage - 1,
+            next: currPage + 1,
+            last: totalPage - 1
+        };
+    }
+
+    getRelPageCtx(pageRange: IPageRange, relPage: IRelPage): IRelPageCtx {
+        const relPageKeys = Object.getOwnPropertyNames(relPage) as (keyof IRelPage)[];
+        return relPageKeys.reduce((relPageCtx, type: string) => {
+            const pageQuery: IPageNavQuery = {type, target: relPage[type]};
+            relPageCtx[type] = this.canNavToPage(pageRange, pageQuery);
+            return relPageCtx;
+        }, {}) as IRelPageCtx;
+    }
+
+    parseRelPage(relPage: IRelPage, relPageCtx: IRelPageCtx): IRelPage {
+        const relPageKeys = Object.getOwnPropertyNames(relPage) as (keyof IRelPage)[];
+        relPageKeys.forEach((pageType: keyof IRelPage) => {
+            const page: number = relPage[pageType];
+            relPage[pageType] = relPageCtx[pageType] ? page : null;
+        });
+        return relPage;
+    }
+
+    getPageSliceIdx(list: any[], perPage: number, page: number): IPageSlice {
+        let startIdx: number = page * perPage;     // inclusive index
+        let endIdx: number = startIdx + perPage;      // exclusive index
         startIdx = this.isDefined(list[startIdx]) ? startIdx : undefined;   // `undefined` is used as `null` cant be used as empty value in ES6
         endIdx = this.isDefined(list[endIdx]) ? endIdx : undefined;
         return { startIdx, endIdx };
     }
 
-    hsPage({type, currPage, lastPage, targetPage}: IPageQuery): boolean {
-        if (!this.isGteZero(lastPage)) return false;
-        currPage = this.isGteZero(currPage) ? currPage : 0;
+    canNavToPage({curr, last}: IPageRange, {type, target}: IPageNavQuery): boolean {
+        if (!this.isGteZero([curr, last])) return false;
 
         switch(type) {
             case 'prev':
-                // we dont need `targetPage < currPage` since we already know `targetPage = currPage - 1;`
-                return targetPage >= 0;
-
+                // we dont need `target < curr` since we already know `target = curr - 1;`
+                return target >= 0;
             case 'next':
-                // we dont need `targetPage > currPage` since we already know `targetPage = currPage + 1;`
-                return targetPage <= lastPage;
-
+                // we dont need `target > curr` since we already know `target = curr + 1;`
+                return target <= last;
             case 'first':
-                // we dont need `targetPage > currPage` since we already know `targetPage = 0`
-                return currPage !== 0 && targetPage < currPage;
-
+                // we dont need `target > curr` since we already know `target = 0`
+                return curr !== 0 && target < curr;
             case 'last':
-                return targetPage > currPage;
-
+                return target > curr;
             case 'page':
                 // i.e. any prev or next
-                return this.isGteZero(targetPage) && targetPage !== currPage && targetPage <= lastPage;
-
+                return this.isGteZero(target) && target !== curr && target <= last;
             default:
                 return false;
         }
     }
 
-    //// Helper Function
-    isDefined(val: any): boolean {
+    isDefined(val?: any): boolean {
         return typeof val !== 'undefined';
     }
 
@@ -125,5 +135,4 @@ export class PgnHandle {
             vals.every((val: any) => (Number.isInteger(val) && val >= 0) ) :
             Number.isInteger(vals) && vals >= 0;
     }
-
 }

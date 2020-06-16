@@ -1,8 +1,6 @@
-export interface IPageQuery {
-    type: string;
-    currPage?: number;
-    lastPage: number;
-    targetPage: number;
+export interface IPageRange {
+    curr: number;
+    last: number;
 }
 
 export interface IPageSlice {
@@ -10,13 +8,26 @@ export interface IPageSlice {
     endIdx: number;
 }
 
-export interface IState extends IPageSlice {
-    noPerPage: number;
-    noOfPages: number;
+export interface IPageNavQuery {
+    type: string;
+    target?: number;
+}
+
+export type IRelPage = {
     first: number;
     prev: number;
     next: number;
     last: number;
-    currPage: number;
-    valid?: Record<string, boolean>;
+}
+
+type TRelPageCtx = {
+    [K in keyof IRelPage]: boolean;
+}
+
+export interface IRelPageCtx extends TRelPageCtx {}
+
+export interface IPageState extends IPageSlice, IRelPage {
+    perPage: number;
+    totalPage: number;
+    curr: number;
 }

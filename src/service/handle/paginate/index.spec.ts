@@ -1,17 +1,31 @@
-import { IPageQuery } from './type';
+import { IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice } from './type';
 import { PgnHandle, PgnOption } from './';
 
 describe('Class - Paginate Handle', () => {
     let handle: PgnHandle;
     let isGteZeroSpy: jest.SpyInstance;
-    // let getNoPerPageSpy: jest.SpyInstance;
-    // let hsPageSpy: jest.SpyInstance;
+    let isDefinedSpy: jest.SpyInstance;
+    let getNoPerPageSpy: jest.SpyInstance;
+    let getTotalPageSpy: jest.SpyInstance;
+    let canNavToPageSpy: jest.SpyInstance;
+    let getCurrPageSpy: jest.SpyInstance;
+    let getPageSliceIdxSpy: jest.SpyInstance;
+    let getRelPageSpy: jest.SpyInstance;
+    let getRelPageCtxSpy: jest.SpyInstance;
+    let parseRelPageSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new PgnHandle();
         isGteZeroSpy = jest.spyOn(handle, 'isGteZero');
-        // getNoPerPageSpy = jest.spyOn(handle, 'getNoPerPage');
-        // hsPageSpy = jest.spyOn(handle, 'hsPage');
+        isDefinedSpy = jest.spyOn(handle, 'isDefined');
+        getNoPerPageSpy = jest.spyOn(handle, 'getNoPerPage');
+        getTotalPageSpy = jest.spyOn(handle, 'getTotalPage');
+        canNavToPageSpy = jest.spyOn(handle, 'canNavToPage');
+        getCurrPageSpy = jest.spyOn(handle, 'getCurrPage');
+        getPageSliceIdxSpy = jest.spyOn(handle, 'getPageSliceIdx');
+        getRelPageSpy = jest.spyOn(handle, 'getRelPage');
+        getRelPageCtxSpy = jest.spyOn(handle, 'getRelPageCtx');
+        parseRelPageSpy = jest.spyOn(handle, 'parseRelPage');
     });
 
     afterEach(() => {
@@ -20,240 +34,317 @@ describe('Class - Paginate Handle', () => {
     });
 
     describe('Method: getPgnState - Get Pagination state based on list and user option', () => {
+        const defOption: PgnOption = new PgnOption();
         const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
-        const mockBasePgnOption: PgnOption = { list: mockList };
-        const mockNoPerPage: number = 4;
-        const mockIncrement: number[] = [2, 4];
 
-        describe('paginate state for insufficient items for 1 page', () => {
-            it('should return no paginate state when the list has lte 1 item', () => {
-                expect(handle.getPgnState({list: []})).toBeFalsy();
+        describe('test with spied/mocked methods', () => {
+            const mockPgnOption: PgnOption = { list: mockList };
+            const mockNoPerPage: number = 20;
+
+            beforeEach(() => {
+                getNoPerPageSpy.mockReturnValue(mockNoPerPage);
+            });
+
+            it('should return no paginate state when list only has 1 or less items', () => {
                 expect(handle.getPgnState({list: ['a']})).toBeFalsy();
             });
 
-            it('should return no paginate state when total number of items is lte total 10 per page ', () => {
-                expect(handle.getPgnState(mockBasePgnOption)).toBeFalsy();
-                expect(handle.getPgnState({...mockBasePgnOption, increment: mockList.length})).toBeFalsy();
+            it('should return no paginate state when total page is lte 1', () => {
+                const { increment, incrementIdx } = defOption;
+
+                getTotalPageSpy.mockReturnValue(1);
+                expect(handle.getPgnState(mockPgnOption)).toBeFalsy();
+                expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
+                expect(getTotalPageSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
+            });
+
+            it('should return paginate state when total list has more than 1 items and total page is more than 1', () => {
+                const { page, increment, incrementIdx } = defOption;
+
+                const mockCurrPage: number = 0;
+                const mockTotalPage: number = 20;
+                const mockSliceIdx: IPageSlice = {startIdx: 0, endIdx: 1};
+                const mockRelPage: IRelPage = {first: 1, prev: 1, next: 1, last: 1};
+                const mockRelPageCtx: IRelPageCtx = {first: true, prev: true, next: true, last: true};
+                const mockParsedRelPage: IRelPage = {first: 2, prev: 2, next: 2, last: 2};
+
+                getTotalPageSpy.mockReturnValue(mockTotalPage);
+                getCurrPageSpy.mockReturnValue(mockCurrPage);
+                getPageSliceIdxSpy.mockReturnValue(mockSliceIdx);
+                getRelPageSpy.mockReturnValue(mockRelPage);
+                getRelPageCtxSpy.mockReturnValue(mockRelPageCtx);
+                parseRelPageSpy.mockReturnValue(mockParsedRelPage);
+
+                expect(handle.getPgnState(mockPgnOption)).toEqual({
+                    ...mockSliceIdx,
+                    ...mockParsedRelPage,
+                    curr: mockCurrPage,
+                    perPage: mockNoPerPage,
+                    totalPage: mockTotalPage
+                });
+                expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
+                expect(getTotalPageSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
+                expect(getCurrPageSpy).toHaveBeenCalledWith(page, mockTotalPage-1);
+                expect(getPageSliceIdxSpy).toHaveBeenCalledWith(mockList, mockNoPerPage, page);
+                expect(getRelPageSpy).toHaveBeenCalledWith(mockTotalPage, page);
+                expect(getRelPageCtxSpy).toHaveBeenCalledWith({curr: page, last: mockRelPage.last}, mockRelPage);
+                expect(parseRelPageSpy).toHaveBeenCalledWith(mockRelPage, mockRelPageCtx);
             });
         });
 
-        describe('paginate state for single increment number', () => {
-            const mockIncrePgnOption = {...mockBasePgnOption, increment: mockNoPerPage};
+        describe('test with unspied/unmocked methods', () => {
+            const mockPerPage: number = 4;
+            const mockPgnOption: PgnOption = { list: mockList, increment: [mockPerPage] };
 
-            it('should return paginate state for default starting page index 0', () => {
-                expect(handle.getPgnState(mockIncrePgnOption)).toEqual({
-                    currPage: 0,
+            it('should return paginate state by default', () => {
+                expect(handle.getPgnState(mockPgnOption)).toEqual({
+                    curr: 0,
                     startIdx: 0,
                     endIdx: 4,
                     first: null,
                     prev: null,
                     next: 1,
                     last: 1,
-                    noOfPages: 2,
-                    noPerPage: 4
+                    totalPage: 2,
+                    perPage: mockPerPage
                 });
             });
 
-            it('should return paginate state for invalid starting page index (def to zero)', () => {
-                const mockPageIdx: number = 99;
-
-                expect(handle.getPgnState({...mockIncrePgnOption, pageIdx: mockPageIdx})).toEqual({
-                    currPage: 0,
-                    startIdx: 0,
-                    endIdx: 4,
-                    first: null,
-                    prev: null,
-                    next: 1,
-                    last: 1,
-                    noOfPages: 2,
-                    noPerPage: 4
-                });
-            });
-
-            it('should return paginate state for valid starting page index', () => {
-                const mockPageIdx: number = 1;
-
-                expect(handle.getPgnState({...mockIncrePgnOption, pageIdx: mockPageIdx})).toEqual({
-                    currPage: mockPageIdx,
+            it('should return paginate state when provided current page index', () => {
+                const mockCurrPage: number = 1;
+                expect(handle.getPgnState({...mockPgnOption, page: mockCurrPage})).toEqual({
+                    curr: mockCurrPage,
                     startIdx: 4,
                     endIdx: undefined,
                     first: 0,
                     prev: 0,
                     next: null,
                     last: null,
-                    noOfPages: 2,
-                    noPerPage: 4
+                    totalPage: 2,
+                    perPage: mockPerPage
                 });
-            });
-        });
-
-        describe('paginate state for single increment array of numbers', () => {
-            const mockIncrePgnOption = {...mockBasePgnOption, increment: mockIncrement};
-
-            it('should return paginate state with default 1st increment option', () => {
-                const expectedNoPerPage: number = mockIncrement[0];
-
-                expect(handle.getPgnState(mockIncrePgnOption)).toEqual({
-                    currPage: 0,
-                    startIdx: 0,
-                    endIdx: 2,
-                    first: null,
-                    prev: null,
-                    next: 1,
-                    last: 2,
-                    noOfPages: 3,
-                    noPerPage: expectedNoPerPage
-                });
-
-                expect(handle.getPgnState({...mockIncrePgnOption, pageIdx: 1})).toEqual({
-                    currPage: 1,
-                    startIdx: 2,
-                    endIdx: 4,
-                    first: 0,
-                    prev: 0,
-                    next: 2,
-                    last: 2,
-                    noOfPages: 3,
-                    noPerPage: expectedNoPerPage
-                });
-            });
-
-            it('should return paginate state with valid increment option', () => {
-                const mockIncrementIdx: number = 1;
-                const expectedNoPerPage: number = mockIncrement[mockIncrementIdx];
-
-                expect(handle.getPgnState({...mockIncrePgnOption, incrementIdx: mockIncrementIdx})).toEqual({
-                    currPage: 0,
-                    startIdx: 0,
-                    endIdx: 4,
-                    first: null,
-                    prev: null,
-                    next: 1,
-                    last: 1,
-                    noOfPages: 2,
-                    noPerPage: expectedNoPerPage
-                });
-
-                expect(handle.getPgnState({...mockIncrePgnOption, incrementIdx: mockIncrementIdx, pageIdx: 1})).toEqual({
-                    currPage: 1,
-                    startIdx: 4,
-                    endIdx: undefined,
-                    first: 0,
-                    prev: 0,
-                    next: null,
-                    last: null,
-                    noOfPages: 2,
-                    noPerPage: expectedNoPerPage
-                });
-            });
-
-            it('should return not paginate state for invalid increment option (default to 10 per page)', () => {
-                expect(handle.getPgnState({...mockIncrePgnOption, incrementIdx: 99})).toBeFalsy();
             });
         });
     });
 
-    describe('Method: hsPage - Check if a requested page is valid or exist', () => {
-        // Aassume 3 pages
-        const page1: number = 0;
-        const page2: number = 1;
-        const page3: number = 2;
+    describe('Method: getNoPerPage - Get the total per page', () => {
+        const mockIncrm: number[] = [1,2,3];
+        const fallbackVal: number = 1;
+        const mockIncrmIdx: number = 0;
 
-        describe('check requested page is valid', () => {
-            it('should return false if requested page type does not match', () => {
-                const mockInvalidTypeQuery: IPageQuery = {lastPage: page3, type: '', targetPage: 0};
+        it('should return the provided increment value if the provided increment is valid', () => {
+            expect(handle.getNoPerPage(mockIncrm, mockIncrmIdx, fallbackVal)).toEqual(mockIncrm[mockIncrmIdx]);
+        });
 
-                expect(handle.hsPage(mockInvalidTypeQuery)).toBe(false);
-                expect(isGteZeroSpy).toHaveBeenCalledTimes(2);
+        it('should return the fallback increment value if the provided increment is invalid', () => {
+            expect(handle.getNoPerPage([], mockIncrmIdx, fallbackVal)).toEqual(fallbackVal);
+        });
+
+        it('should return the fallback increment value if the provided increment index is invalid', () => {
+            expect(handle.getNoPerPage(mockIncrm, 10, fallbackVal)).toEqual(fallbackVal);
+        });
+    });
+
+    describe('Method: getTotalPage - Get total no. of pages available based on total per page', () => {
+        const mockNoPerPage: number = 2;
+
+        it('should return a rounded total no. of pages if total list items is greater than total per page', () => {
+            const mockListLen: number = 3;
+            expect(handle.getTotalPage(mockListLen, mockNoPerPage)).toBe(2);
+        });
+
+        it('should return 1 if total list items is lte total per page', () => {
+            const mockListLen: number = 1;
+            expect(handle.getTotalPage(mockListLen, mockNoPerPage)).toBe(1);
+        });
+    });
+
+    describe('Method: getCurrPage - Get a validated/parsed value for a page index', () => {
+        it('should return the parsed current page if its within allowed range', () => {
+            expect(handle.getCurrPage(1, 2)).toBe(1);
+        });
+
+        it('should return default value 0 if the current page isnt within allowed range', () => {
+            expect(handle.getCurrPage(-1, 2)).toBe(0);
+            expect(handle.getCurrPage(3, 2)).toBe(0);
+        });
+    });
+
+    describe('Method: getRelPage - Get the index for relevant pages based on the current page and total number of page', () => {
+        const mockTotalPage: number = 2;
+        const mockCurrPage: number = 0;
+
+        it('should return the index for relevant pages', () => {
+            expect(handle.getRelPage(mockTotalPage, mockCurrPage)).toEqual({
+                first: 0,
+                prev: -1,
+                next: 1,
+                last: 1
             });
+        });
+    });
 
-            it('should return false if requested last page is not gte 0 regardless of type and target page', () => {
-                const mockInvalidLastPageQuery = {lastPage: page3, targetPage: 0} as IPageQuery;
+    describe('Method: getRealPageCtx - Check if relevant pages are valid based on their context', () => {
+        const mockPageRang: IPageRange = {curr: 0, last: 0};
+        const mockRelPage: IRelPage = { first: 1, prev: 1, next: 1, last: 1 };
+
+        it('should return relevant page with false value if it is valid (i.e. navigatable to that page)', () => {
+            canNavToPageSpy.mockReturnValue(true);
+
+            expect(handle.getRelPageCtx(mockPageRang, mockRelPage)).toEqual({
+                first: true, prev: true, next: true, last: true
+            });
+        });
+
+        it('should return relevant page with false value if it is invalid (i.e. unnavigatable to that page)', () => {
+            canNavToPageSpy.mockReturnValue(false);
+
+            expect(handle.getRelPageCtx(mockPageRang, mockRelPage)).toEqual({
+                first: false, prev: false, next: false, last: false
+            });
+        });
+    });
+
+    describe('Method: parseRelPage - Parse the value for the relevant pages if they are invalid', () => {
+        const mockRelPage: IRelPage = { first: 1, prev: 1, next: 1, last: 1 };
+        const mockRelPageCtx: IRelPageCtx = { first: true, prev: true, next: true, last: false };
+
+        it('should pasrse the and replaced the invalid value of relevant pages to be undefined', () => {
+            expect(handle.parseRelPage(mockRelPage, mockRelPageCtx)).toEqual({...mockRelPage, last: null});
+        });
+    });
+
+    describe('Method: getPageSliceIdx - Get the corresponding slice index for `slice` in the list array based on a provided page index', () => {
+        const mockList: any[] = [];
+        const mockPerPage: number = 2;
+        const mockPage: number = 1;
+        let slice: IPageSlice
+
+        it('should return the if index exist in the list array', () => {
+            isDefinedSpy.mockReturnValue(true);
+            slice = handle.getPageSliceIdx(mockList, mockPerPage, mockPage);
+
+            expect(slice).toEqual({startIdx: 2, endIdx: 4});
+        });
+
+        it('should return the if index doesnt exist in the list array', () => {
+            isDefinedSpy.mockReturnValue(false);
+            slice = handle.getPageSliceIdx(mockList, mockPerPage, mockPage);
+
+            expect(slice).toEqual({startIdx: undefined, endIdx: undefined});
+        });
+    });
+
+    describe('Method: canNavToPage - Check if a requested page can be navigated to', () => {
+        // Aassume 3 pages
+        const PAGE1: number = 0;
+        const PAGE2: number = 1;
+        const PAGE3: number = 2;
+        const mockCurrPage1: IPageRange = {last: PAGE3, curr: PAGE1 };
+        const mockCurrPage2: IPageRange = {last: PAGE3, curr: PAGE2 };
+        const mockCurrPage3: IPageRange = {last: PAGE3, curr: PAGE3 };
+
+        beforeEach(() => {
+            isGteZeroSpy.mockReturnValue(true);
+        });
+
+        describe('check if page is valid', () => {
+            it('should return false if current page or last page is less than 0', () => {
                 isGteZeroSpy.mockReturnValue(false);
 
-                expect(handle.hsPage({...mockInvalidLastPageQuery, type: 'prev'})).toBe(false);
-                expect(handle.hsPage({...mockInvalidLastPageQuery, type: 'next'})).toBe(false);
-                expect(handle.hsPage({...mockInvalidLastPageQuery, type: 'first'})).toBe(false);
-                expect(handle.hsPage({...mockInvalidLastPageQuery, type: 'last'})).toBe(false);
-                expect(handle.hsPage({...mockInvalidLastPageQuery, type: 'page'})).toBe(false);
+                expect(handle.canNavToPage(mockCurrPage1, {type: ''})).toBe(false);
+                expect(isGteZeroSpy).toHaveBeenCalledWith([PAGE1, PAGE3]);
+                expect(isGteZeroSpy).toHaveBeenCalledTimes(1);
+            });
+
+            it('should return false if requested page type does not match', () => {
+                expect(handle.canNavToPage(mockCurrPage1, {type: ''})).toBe(false);
+                expect(isGteZeroSpy).toHaveBeenCalledTimes(1);
+                expect(isDefinedSpy).not.toHaveBeenCalled();
             });
         });
 
         describe('check if there is previous page', () => {
-            const mock3PageBaseQuery = {lastPage: page3, type: 'prev'} as IPageQuery;
-            const getPrevPage = (currPage: number): number => currPage - 1;
-
             it('should return true if previous page index is gte 0 and lt current page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page2, targetPage: getPrevPage(page2)})).toBe(true);
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page3, targetPage: getPrevPage(page3)})).toBe(true);
+                expect(handle.canNavToPage(mockCurrPage2, {type: 'prev', target: PAGE3-1})).toBe(true);
             });
 
             it('should return false if previous page index is lt 0 or gte to current page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: getPrevPage(page1)})).toBe(false);
+                expect(handle.canNavToPage(mockCurrPage1, {type: 'prev', target: PAGE1-1})).toBe(false);
             });
         });
 
-        describe('check if there is next page', () => {
-            const mock3PageBaseQuery = {lastPage: page3, type: 'next'} as IPageQuery;
-            const getNextPage = (currPage: number): number => currPage + 1;
-
+         describe('check if there is next page', () => {
             it('should return true if next page index gt current page index and lte last page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: getNextPage(page1)})).toBe(true);
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page2, targetPage: getNextPage(page2)})).toBe(true);
+                expect(handle.canNavToPage(mockCurrPage1, {type: 'next', target: PAGE1+1})).toBe(true);
             });
 
             it('should return false if next page index lte last page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page3, targetPage: getNextPage(page3)})).toBe(false);
+                expect(handle.canNavToPage(mockCurrPage3, {type: 'next', target: PAGE3+1})).toBe(false);
             });
         });
 
         describe('check if there is first page', () => {
-            const mock3PageBaseQuery = {lastPage: page3, type: 'first'} as IPageQuery;
+            const mockTargetFirstPage: IPageNavQuery = {type: 'first', target: 0};
 
             it('should return true if current page index is not 0 and first page index is lt current page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page2, targetPage: 0})).toBe(true);
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page3, targetPage: 0})).toBe(true);
+                expect(handle.canNavToPage(mockCurrPage2, mockTargetFirstPage)).toBe(true);
             });
 
             it('should return false if current page index is 0 or first page index is gte than current page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: 0})).toBe(false);
+                expect(handle.canNavToPage(mockCurrPage1, mockTargetFirstPage)).toBe(false);
             });
         });
 
         describe('check if there is last page', () => {
-            const mock3PageBaseQuery = {lastPage: page3, type: 'last'} as IPageQuery;
+            const mockTargetLastPage: IPageNavQuery = {type: 'last', target: PAGE3};
 
             it('should return true if last page index is gt current page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: page3})).toBe(true);
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page2, targetPage: page3})).toBe(true);
+                expect(handle.canNavToPage(mockCurrPage1, mockTargetLastPage)).toBe(true);
             });
 
             it('should return false if last page index is lte current page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page3, targetPage: page3})).toBe(false);
+                expect(handle.canNavToPage(mockCurrPage3, mockTargetLastPage)).toBe(false);
             });
         });
 
         describe('check if there is a specific page index', () => {
-            const mock3PageBaseQuery = {lastPage: page3, type: 'page'} as IPageQuery;
-
-            beforeEach(() => {
-                isGteZeroSpy.mockReturnValue(true);
-            });
-
             it('should return true if the page index is a number gte 0, not same as current page index and lte last page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: page2})).toBe(true);
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: page3})).toBe(true);
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page2, targetPage: page1})).toBe(true);
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page2, targetPage: page3})).toBe(true);
+                expect(handle.canNavToPage(mockCurrPage1, {type: 'page',target: PAGE2})).toBe(true);
+                expect(handle.canNavToPage(mockCurrPage2, {type: 'page',target: PAGE1})).toBe(true);
             });
 
             it('should return false if the page index is same as current page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: page1})).toBe(false);
+                expect(handle.canNavToPage(mockCurrPage1, {type: 'page',target: PAGE1})).toBe(false);
             });
 
             it('should return false if the page index is gt last page index', () => {
-                expect(handle.hsPage({...mock3PageBaseQuery, currPage: page1, targetPage: 4})).toBe(false);
+                expect(handle.canNavToPage(mockCurrPage1, {type: 'page',target: 4})).toBe(false);
             });
+        });
+    });
+
+    describe('Method: isDefined - Check if a value is define', () => {
+        it('should return true if value is defined', () => {
+            expect(handle.isDefined('')).toBe(true);
+        });
+
+        it('should return false if value isnt defined', () => {
+            expect(handle.isDefined()).toBe(false);
+        });
+    });
+
+    describe('Method: isGteZero - Check if a value or an array of value is an interger and also greater or equal to 0', () => {
+        it('should return true if it or all of the values are an interger and gte 0', () => {
+            expect(handle.isGteZero(1)).toBe(true);
+            expect(handle.isGteZero([1, 2])).toBe(true);
+        });
+
+        it('should return false if it or one of the values isnt an interger or gte 0', () => {
+            expect(handle.isGteZero(-1)).toBe(false);
+            expect(handle.isGteZero(1.1)).toBe(false);
+            expect(handle.isGteZero([0, -1])).toBe(false);
+            expect(handle.isGteZero([0, 1.1])).toBe(false);
         });
     });
 });
