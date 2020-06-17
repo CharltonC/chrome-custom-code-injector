@@ -2,6 +2,7 @@ import { IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice, IPageCtx 
 import { PgnHandle, PgnOption } from './';
 
 describe('Class - Paginate Handle', () => {
+    const defOption: PgnOption = new PgnOption();
     let handle: PgnHandle;
     let isGteZeroSpy: jest.SpyInstance;
     let isDefinedSpy: jest.SpyInstance;
@@ -33,8 +34,18 @@ describe('Class - Paginate Handle', () => {
         jest.restoreAllMocks();
     });
 
+    describe('Default Pagination Option', () => {
+        it('should have default values', () => {
+            expect(defOption).toEqual({
+                list: [],
+                page: 0,
+                increment: [10],
+                incrementIdx: 0
+            });
+        });
+    });
+
     describe('Method: getPgnState - Get Pagination state based on list and user option', () => {
-        const defOption: PgnOption = new PgnOption();
         const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
 
         describe('test with spied/mocked methods', () => {
