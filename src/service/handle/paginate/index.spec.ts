@@ -1,4 +1,4 @@
-import { IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice } from './type';
+import { IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice, IPageCtx } from './type';
 import { PgnHandle, PgnOption } from './';
 
 describe('Class - Paginate Handle', () => {
@@ -62,6 +62,8 @@ describe('Class - Paginate Handle', () => {
                 const { page, increment, incrementIdx } = defOption;
 
                 const mockCurrPage: number = 0;
+                const mockCurrPageNo: number = 1;
+                const mockCurrPageCtx: IPageCtx = {curr: mockCurrPage, pageNo: mockCurrPageNo};
                 const mockTotalPage: number = 20;
                 const mockSliceIdx: IPageSlice = {startIdx: 0, endIdx: 1};
                 const mockRelPage: IRelPage = {first: 1, prev: 1, next: 1, last: 1};
@@ -69,7 +71,7 @@ describe('Class - Paginate Handle', () => {
                 const mockParsedRelPage: IRelPage = {first: 2, prev: 2, next: 2, last: 2};
 
                 getTotalPageSpy.mockReturnValue(mockTotalPage);
-                getCurrPageSpy.mockReturnValue(mockCurrPage);
+                getCurrPageSpy.mockReturnValue(mockCurrPageCtx);
                 getPageSliceIdxSpy.mockReturnValue(mockSliceIdx);
                 getRelPageSpy.mockReturnValue(mockRelPage);
                 getRelPageCtxSpy.mockReturnValue(mockRelPageCtx);
@@ -79,6 +81,7 @@ describe('Class - Paginate Handle', () => {
                     ...mockSliceIdx,
                     ...mockParsedRelPage,
                     curr: mockCurrPage,
+                    pageNo: mockCurrPageNo,
                     perPage: mockNoPerPage,
                     totalPage: mockTotalPage
                 });
@@ -105,6 +108,7 @@ describe('Class - Paginate Handle', () => {
                     prev: null,
                     next: 1,
                     last: 1,
+                    pageNo: 1,
                     totalPage: 2,
                     perPage: mockPerPage
                 });
@@ -120,6 +124,7 @@ describe('Class - Paginate Handle', () => {
                     prev: 0,
                     next: null,
                     last: null,
+                    pageNo: 2,
                     totalPage: 2,
                     perPage: mockPerPage
                 });
@@ -159,14 +164,14 @@ describe('Class - Paginate Handle', () => {
         });
     });
 
-    describe('Method: getCurrPage - Get a validated/parsed value for a page index', () => {
+    describe('Method: getCurrPage - Get a validated/parsed value for current page index and current page number', () => {
         it('should return the parsed current page if its within allowed range', () => {
-            expect(handle.getCurrPage(1, 2)).toBe(1);
+            expect(handle.getCurrPage(1, 2)).toEqual({curr: 1, pageNo: 2});
         });
 
         it('should return default value 0 if the current page isnt within allowed range', () => {
-            expect(handle.getCurrPage(-1, 2)).toBe(0);
-            expect(handle.getCurrPage(3, 2)).toBe(0);
+            expect(handle.getCurrPage(-1, 2)).toEqual({curr: 0, pageNo: 1});
+            expect(handle.getCurrPage(3, 2)).toEqual({curr: 0, pageNo: 1});
         });
     });
 
@@ -220,14 +225,14 @@ describe('Class - Paginate Handle', () => {
         const mockPage: number = 1;
         let slice: IPageSlice
 
-        it('should return the if index exist in the list array', () => {
+        it('should return the index if it exists in the list array', () => {
             isDefinedSpy.mockReturnValue(true);
             slice = handle.getPageSliceIdx(mockList, mockPerPage, mockPage);
 
             expect(slice).toEqual({startIdx: 2, endIdx: 4});
         });
 
-        it('should return the if index doesnt exist in the list array', () => {
+        it('should return the index if it doesnt exist in the list array', () => {
             isDefinedSpy.mockReturnValue(false);
             slice = handle.getPageSliceIdx(mockList, mockPerPage, mockPage);
 

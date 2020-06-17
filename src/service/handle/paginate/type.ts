@@ -13,6 +13,11 @@ export interface IPageNavQuery {
     target?: number;
 }
 
+export interface IPageCtx {
+    curr: number;
+    pageNo: number;
+}
+
 export type IRelPage = {
     first: number;
     prev: number;
@@ -26,8 +31,7 @@ type TRelPageCtx = {
 
 export interface IRelPageCtx extends TRelPageCtx {}
 
-export interface IPageState extends IPageSlice, IRelPage {
+export interface IPageState extends IPageCtx, IPageSlice, IRelPage {
     perPage: number;
     totalPage: number;
-    curr: number;
 }

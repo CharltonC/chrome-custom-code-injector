@@ -1,4 +1,4 @@
-import { IPageState, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx } from './type';
+import { IPageState, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx } from './type';
 
 /**
  * Whenever one of these updates, we can use `getPgnState` to get the current paginate state
@@ -43,13 +43,13 @@ export class PgnHandle {
         if (totalPage <= 1) return;
 
         // Proceed as we have >=2 pages
-        const curr: number = this.getCurrPage(page, totalPage - 1);
+        const { curr, pageNo }: IPageCtx = this.getCurrPage(page, totalPage - 1);
         const currSlice: IPageSlice = this.getPageSliceIdx(list, perPage, curr);
         let relPage: IRelPage = this.getRelPage(totalPage, curr);
         const relPageCtx: IRelPageCtx = this.getRelPageCtx({curr, last: relPage.last}, relPage);
         relPage = this.parseRelPage(relPage, relPageCtx);
 
-        return { curr, ...relPage, ...currSlice, perPage, totalPage };
+        return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage };
     }
 
     getNoPerPage(incrm: number[], incrmIdx: number, fallbackVal: number): number {
@@ -64,8 +64,10 @@ export class PgnHandle {
         return Math.ceil(noOfPage);
     }
 
-    getCurrPage(page: number, lastPage: number): number {
-        return (page >= 0 && page <= lastPage )? page : 0;
+    getCurrPage(page: number, lastPage: number): IPageCtx {
+        const curr: number = (page >= 0 && page <= lastPage )? page : 0;
+        const pageNo: number = curr + 1;
+        return { curr, pageNo };
     }
 
     getRelPage(totalPage: number, currPage: number): IRelPage {
