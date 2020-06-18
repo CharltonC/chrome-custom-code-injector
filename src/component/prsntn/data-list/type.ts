@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 
 export type TCmpCls = React.FC<any> | React.ComponentClass<any>;
 
-export type TRow = [string, TCmpCls];
+export type TRow = [TCmpCls, string?];
 
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];

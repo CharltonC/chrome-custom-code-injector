@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { inclStaticIcon } from '../../static/icon';
 import { DataList } from '.';
 
 export default {
@@ -17,17 +18,30 @@ const nestedUlStyle = {
 };
 
 export const DefaultComponent = () => {
+    const dnArwIconElem = inclStaticIcon('arrow-dn', true);
+    const upArwIconElem = inclStaticIcon('arrow-up', true);
+
     const sampleData = [
         {
             id: 'A1',
-            list: [
+            isCollapsed: false,
+            nestRowLvl1Key: [
                 {
                     id: 'A1-B1',
-                    list: [
+                    isCollapsed: false,
+                    nestRowLvl2Key: [
                         {
                             id: 'A1-B1-C1',
-                            list: [
-                                {id: 'A1-B1-C1-D1'},
+                            isCollapsed: false,
+                            nestRowLvl3Key: [
+                                {
+                                    id: 'A1-B1-C1-D1',
+                                    isCollapsed: false,
+                                    nestRowLvl4Key: [
+                                        {id: 'A1-B1-C1-D1-E1'},
+                                        {id: 'A1-B1-C1-D1-E1'},
+                                    ]
+                                },
                                 {id: 'A1-B1-C2-D2'},
                                 {id: 'A1-B1-C1-D3'},
                                 {id: 'A1-B1-C2-D4'}
@@ -38,7 +52,7 @@ export const DefaultComponent = () => {
                 },
                 {
                     id: 'A1-B2',
-                    list: [
+                    nestRowLvl2Key: [
                         {id: 'A1-B2-C1'},
                         {id: 'A1-B2-C2'}
                     ]
@@ -47,17 +61,17 @@ export const DefaultComponent = () => {
         },
         {
             id: 'A2',
-            list: [
+            nestRowLvl1Key: [
                 {
                     id: 'A2-B1',
-                    list: [
+                    nestRowLvl2Key: [
                         {id: 'A2-B1-C1'},
                         {id: 'A2-B1-C2'}
                     ]
                 },
                 {
                     id: 'A2-B2',
-                    list: [
+                    nestRowLvl2Key: [
                         {id: 'A2-B2-C1'},
                         {id: 'A2-B2-C2'}
                     ]
@@ -66,44 +80,35 @@ export const DefaultComponent = () => {
         }
     ];
 
-    const SampleLvl1Cmp = ({item, idx, nestedRows}) => (
-        <li>
-            Level 1 item {idx}
-            { nestedRows && <ul className="lvl-2" style={nestedUlStyle}>{nestedRows}</ul>}
-        </li>
-    );
+    const [ data, setData ] = useState(sampleData);
 
-    const SampleLvl2Cmp = ({item, idx, nestedRows}) => (
-        <li>
-            Level 2 item {idx}
-            { nestedRows && <ul className="lvl-3" style={nestedUlStyle}>{nestedRows}</ul>}
-        </li>
-    );
+    const ListItemCmp = ({item, idx, nestLvlIdx, nestedRows, ctx, getUpadedCollapsedData}) => {
+        const { isCollapsed } = item;
+        const showCollapseBtn = nestedRows && typeof isCollapsed !== 'undefined';
+        const showNestedRows = nestedRows && (isCollapsed === false || typeof isCollapsed === 'undefined');
 
-    const SampleLvl3Cmp = ({item, idx, nestedRows}) => (
-        <li>
-            Level 3 item {idx}
-            { nestedRows && <ul className="lvl-4" style={nestedUlStyle}>{nestedRows}</ul>}
-        </li>
-    );
-
-    const SampleLvl4Cmp = ({item, idx, nestedRows}) => (
-        <li>
-            Level 4 item {idx}
-            { nestedRows && <ul className="lvl-4" style={nestedUlStyle}>{nestedRows}</ul>}
-        </li>
-    );
+        return (<li>
+            Level {nestLvlIdx}-{idx} ({item.id})
+            { showCollapseBtn && ( <button type="button" onClick={() => {
+                const newData = getUpadedCollapsedData(data, ctx, 'isCollapsed');
+                setData(newData);
+            }}>{item.isCollapsed ? dnArwIconElem : upArwIconElem}</button>) }
+            { showNestedRows && <ul style={nestedUlStyle}>{nestedRows}</ul>}
+        </li>);
+    };
 
     return (
         <div style={defStyle} >
             <DataList
-                data={sampleData}
+                data={data}
                 row={[
-                    ['list',  SampleLvl1Cmp],
-                    ['list', SampleLvl2Cmp],
-                    ['list', SampleLvl3Cmp],
-                    ['list', SampleLvl4Cmp]
+                    [ListItemCmp, 'nestRowLvl1Key'],
+                    [ListItemCmp, 'nestRowLvl2Key'],
+                    [ListItemCmp, 'nestRowLvl3Key'],
+                    [ListItemCmp, 'nestRowLvl4Key'],
+                    [ListItemCmp]
                 ]}
+                /* collapseKey={'isCollapsed'} */
                 />
         </div>
     )
