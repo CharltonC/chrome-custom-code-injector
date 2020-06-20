@@ -1,4 +1,4 @@
-import { IClpsRowConfig, IClpsState, TClpsShowTarget } from './type';
+import { IClpsRowConfig, TClpsShowTarget, IRowStateReq, INestedRowStateReq, IRowCtx, IRowState } from './type';
 
 export class ClpsConfig {
     data: any[] = [];
@@ -48,40 +48,41 @@ export class ClpsHandle {
     }
 
     // TODO
-    getRowState(data: any[], rowConfig: any[], rowLvl: number, prefixCtx: string, showTargetCtx: TClpsShowTarget): any[] {
+    getRowsState<TRtnType>({data, rowConfig, rowLvl, prefixCtx, showTargetCtx}: IRowStateReq): IRowState[] | TRtnType[] {
         // Skip if data has no rows OR config doesnt exist
         const config = rowConfig[rowLvl];
         if (!!data.length || !config) return;
 
         const [ rowKey, rtnCbFn ] = config;
-        return data.map((item, idx) => {
+        return data.map((row, idx) => {
             // Item Base State
-            const { id, ctx, nestedRowCtx } = this.getRowItemBaseState({prefixCtx, rowKey, idx, rowLvl});
+            const { rowCtx, nestedRowCtx } = this.getRowBaseState(rowKey, idx, prefixCtx);
 
-            // Nested Rows (if any) + Set open state (based on 'ALL' | 'NONE' | specific ctx)
-            const nestedRows: any[] = this.getNestedRowState(item, rowConfig, rowLvl, nestedRowCtx, showTargetCtx);
-            const isOpen: boolean = nestedRows ? this.isNestedRowOpen(ctx, showTargetCtx) : null;
+            // Nested Rows (if any) + Set open state
+            const nestedRows: any[] = this.getNestedRowsState({row, rowConfig, rowLvl, prefixCtx: nestedRowCtx, showTargetCtx});
+            const isOpen: boolean = nestedRows ? this.isNestedRowOpen(rowCtx, showTargetCtx) : null;
 
             // Return the state
-            const props = {item, idx, id, ctx, isOpen, nestedRowCtx, nestedRows};
-            return rtnCbFn ? rtnCbFn(props) : props;
+            const rowState: IRowState = { idx, isOpen, row, rowCtx, nestedRowCtx, nestedRows };
+            return rtnCbFn ? rtnCbFn(rowState) : rowState;
         });
     }
 
-    getRowItemBaseState({rowKey, idx, rowLvl, prefixCtx}) {
+    getRowBaseState(rowKey: string, idx: number, prefixCtx: string): IRowCtx {
         rowKey = rowKey ? rowKey : '';
-        const id: string = `ls-${rowLvl}-${idx}`;
-        const ctx: string = rowKey ? [rowKey, idx].join(';') : `${rowKey}`;
-        const nestedRowCtx: string = prefixCtx ? [prefixCtx, ctx].join('/') : ctx;
-        return { id, ctx, nestedRowCtx };
+        const rowCtx: string = rowKey ? [rowKey, idx].join(':') : `${rowKey}`;
+        const nestedRowCtx: string = prefixCtx ? [prefixCtx, rowCtx].join('/') : rowCtx;
+        return { rowCtx, nestedRowCtx };
     }
 
-    getNestedRowState(item: Record<string, any>, rowConfig: any[], rowLvl: number, prefixCtx: string, showTarget: TClpsShowTarget): any[] {
-        const nestedRowLvl: number = rowLvl+1;
-        const nestedRowConfig = rowConfig[nestedRowLvl];
+    getNestedRowsState({row, rowConfig, rowLvl, ...config}: INestedRowStateReq): any[] {
+        rowLvl = rowLvl + 1;
+        const nestedRowConfig = rowConfig[rowLvl];
         const [ nestedRowKey ] = nestedRowConfig;
         if (nestedRowKey) return;
-        return this.getRowState(item[nestedRowKey], rowConfig, nestedRowLvl, prefixCtx, showTarget);
+
+        const data: any[] = row[nestedRowKey];
+        return this.getRowsState({...config, data, rowConfig, rowLvl});
     }
 
     getClpsItemInData<T>(data: T[], clpsItemCtx: string): T {
