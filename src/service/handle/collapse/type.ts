@@ -31,6 +31,5 @@ export interface IRowState extends IRowCtx {
     isOpen: boolean;
     row: any;
     rowCtx: string;
-    nestedRowCtx: string;
     nestedRows: any[];
 }

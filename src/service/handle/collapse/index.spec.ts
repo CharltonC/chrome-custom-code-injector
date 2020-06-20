@@ -3,14 +3,14 @@ import { ClpsHandle } from './';
 
 describe('Service - Collapse Handle', () => {
     let handle: ClpsHandle;
-
+    const { isNestedRowOpen, getRowCtx } = ClpsHandle.prototype;
 
     beforeEach(() => {
         handle = new ClpsHandle();
     });
 
     describe('Method - isNestedRowOpen: Check if a row should open/collapse its nested rows', () => {
-        const { isNestedRowOpen } = ClpsHandle.prototype;
+
 
         describe('when show target context is an array of contexts', () => {
             const mockShowTargetCtx: TClpsShowTarget = [ 'a', 'a/b' ];
@@ -33,7 +33,23 @@ describe('Service - Collapse Handle', () => {
                 expect(isNestedRowOpen('', 'NONE')).toBe(false);
             });
         });
+    });
 
+    describe('Method - getNestedRowsState: Get State for Nested Rows', () => {
+
+    });
+
+    describe('Methd - getRowCtx: Get Context for current Row', () => {
+        const mockRowKey: string = 'key';
+        const mockRowIdx: number = 0;
+        const mockPrefixCtx: string = 'prefix';
+
+        it('should return row context', () => {
+            expect(getRowCtx(mockRowIdx, null, null)).toBe(`${mockRowIdx}`);
+            expect(getRowCtx(mockRowIdx, null, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowIdx}`);
+            expect(getRowCtx(mockRowIdx, mockRowKey, null)).toBe(`${mockRowKey}:${mockRowIdx}`);
+            expect(getRowCtx(mockRowIdx, mockRowKey, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowKey}:${mockRowIdx}`);
+        });
     });
 
 });

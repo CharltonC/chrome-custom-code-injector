@@ -53,14 +53,14 @@ export class ClpsHandle {
         const [ rowKey, rtnCbFn ] = config;
         return data.map((row, idx) => {
             // Row Context
-            const { rowCtx, nestedRowCtx } = this.getRowCtx(rowKey, idx, prefixCtx);
+            const rowCtx = this.getRowCtx(idx, rowKey, prefixCtx);
 
             // Nested Rows (if any) + Set open state
-            const nestedRows: any[] = this.getNestedRowsState({row, rowConfig, rowLvl, prefixCtx: nestedRowCtx, showTargetCtx});
+            const nestedRows: any[] = this.getNestedRowsState({row, rowConfig, rowLvl, prefixCtx: rowCtx, showTargetCtx});
             const isOpen: boolean = nestedRows ? this.isNestedRowOpen(rowCtx, showTargetCtx) : null;
 
             // Return the row state
-            const rowState: IRowState = { idx, isOpen, row, rowCtx, nestedRowCtx, nestedRows };
+            const rowState: IRowState = { idx, isOpen, row, rowCtx, nestedRows };
             return rtnCbFn ? rtnCbFn(rowState) : rowState;
         });
     }
@@ -75,13 +75,11 @@ export class ClpsHandle {
         return this.getRowsState({...config, data, rowConfig, rowLvl});
     }
 
-    getRowCtx(rowKey: string, idx: number, prefixCtx: string): IRowCtx {
-        rowKey = rowKey ? rowKey : '';
-        const rowCtx: string = rowKey ? [rowKey, idx].join(':') : `${rowKey}`;
-        const nestedRowCtx: string = prefixCtx ? [prefixCtx, rowCtx].join('/') : rowCtx;
-        return { rowCtx, nestedRowCtx };
+    getRowCtx(idx: number, rowKey: string, prefixCtx: string): string {
+        const suffixCtx: string = rowKey ? [rowKey, idx].join(':') : `${idx}`;
+        const rowCtx: string = prefixCtx ? [prefixCtx, suffixCtx].join('/') : suffixCtx;
+        return rowCtx;
     }
-
 
     getClpsItemInData<T>(data: T[], clpsItemCtx: string): T {
         if (!data.length) return null;
