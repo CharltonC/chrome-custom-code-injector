@@ -40,7 +40,7 @@ export class ClpsHandle {
      */
     isNestedRowOpen(rowCtx: string, showTargetCtx: TClpsShowTarget): boolean {
         return Array.isArray(showTargetCtx) ?
-            showTargetCtx.some((showTarget: string) => rowCtx.indexOf(showTarget, 0) === 0) :
+            showTargetCtx.some((showTarget: string) => showTarget.indexOf(rowCtx, 0) === 0) :
             (showTargetCtx === 'ALL' ? true : false);
     }
 
