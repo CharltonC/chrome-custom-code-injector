@@ -41,9 +41,9 @@ export class ClpsHandle {
      *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
      * }
      */
-    isNestedRowOpen(ctx: string, showTargetCtx: TClpsShowTarget): boolean {
+    isNestedRowOpen(rowCtx: string, showTargetCtx: TClpsShowTarget): boolean {
         return Array.isArray(showTargetCtx) ?
-            showTargetCtx.some((showTarget: string) => showTarget.indexOf(ctx, 0) === 0) :
+            showTargetCtx.some((showTarget: string) => rowCtx.indexOf(showTarget, 0) === 0) :
             (showTargetCtx === 'ALL' ? true : false);
     }
 
