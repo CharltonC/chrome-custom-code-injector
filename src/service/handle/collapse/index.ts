@@ -7,19 +7,16 @@ export class ClpsConfig {
 }
 
 export class ClpsHandle {
-    getClpsState(clpsConfig: ClpsConfig) {
-        const { data, rows, showTarget }: ClpsConfig = this.getMergedConfig(clpsConfig);
+    defClpsConfig = new ClpsConfig();
+
+    getClpsState(clpsConfig?: ClpsConfig) {
+        const { data, rows, showTarget }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
         const isClpsConfigValid: boolean = this.isClpsConfigValid(data, rows);
         if (!isClpsConfigValid) return;
 
         // TODO: Process diff. showTarget type
 
 
-    }
-
-    getMergedConfig(clpsConfig: ClpsConfig): ClpsConfig {
-        const defConfig = new ClpsConfig();
-        return Object.assign({}, defConfig);
     }
 
     isClpsConfigValid<T>(data: T[], clpsRowsConfig: IClpsRowConfig[]): boolean {
