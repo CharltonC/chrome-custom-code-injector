@@ -21,12 +21,7 @@ export interface INestedRowStateReq extends IRowStateBaseReq {
     row: Record<string, any>
 }
 
-export interface IRowCtx {
-    rowCtx: string;
-    nestedRowCtx: string;
-}
-
-export interface IRowState extends IRowCtx {
+export interface IRowState {
     idx: number;
     isOpen: boolean;
     row: any;
