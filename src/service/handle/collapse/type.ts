@@ -1,30 +1,32 @@
 // other indexes except 0 are optional, e.g. [ 'nestedRowKey', ComponentClass ]
-export interface IClpsRowConfig extends Array<any> {
-    0: string;
-    1: (...args: any[]) => any;
-}
-
 export type TClpsShowTarget = 'ALL' | 'NONE' | string[];
 
-interface IRowStateBaseReq {
-    rowConfig: IClpsRowConfig[];
+export type TData = any[] | Record<string, any>;
+
+export type TFn = (...args: any[]) => any;
+
+export interface IUserRowConfig extends Array<any> {
+    0?: string | TFn;
+    1?: TFn;
+}
+
+export interface IRowConfig {
+    rowKey?: string;
+    transformFn?: TFn;
+}
+
+export interface IItemsReq {
+    data: TData;
+    rowConfigs: IUserRowConfig[];
     rowLvl: number;
-    prefixCtx: string;
+    prevItemCtx?: string;
     showTargetCtx: TClpsShowTarget;
 }
 
-export interface IRowStateReq extends IRowStateBaseReq{
-    data: any[];
-}
-
-export interface INestedRowStateReq extends IRowStateBaseReq {
-    row: Record<string, any>
-}
-
-export interface IRowState {
+export interface IItems {
     idx: number;
-    isOpen: boolean;
-    row: any;
-    rowCtx: string;
-    nestedRows: any[];
+    item: any;
+    itemCtx: string;
+    nestedItems: any[];
+    isNestedOpen: boolean;
 }
