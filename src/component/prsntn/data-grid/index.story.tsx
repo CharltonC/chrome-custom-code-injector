@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { inclStaticIcon } from '../../static/icon';
-import { DataList } from '.';
+import { DataGrid } from '.';
 
 export default {
-    title: 'DataList',
-    component: DataList,
+    title: 'Data Grid',
+    component: DataGrid,
 };
 
 const defStyle = {};
@@ -99,7 +99,7 @@ export const DefaultComponent = () => {
 
     return (
         <div style={defStyle} >
-            <DataList
+            <DataGrid
                 data={data}
                 row={[
                     [ListItemCmp, 'nestRowLvl1Key'],

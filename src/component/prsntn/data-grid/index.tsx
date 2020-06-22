@@ -2,7 +2,7 @@ import React, { Component, memo, ReactElement } from "react";
 import { IProps, TRow } from './type';
 
 
-export class _DataList extends Component<IProps, any> {
+export class _DataGrid extends Component<IProps, any> {
     constructor(props) {
         super(props);
     }
@@ -57,4 +57,4 @@ export class _DataList extends Component<IProps, any> {
     }
 }
 
-export const DataList = memo(_DataList);
+export const DataGrid = memo(_DataGrid);
