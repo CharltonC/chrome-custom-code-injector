@@ -86,14 +86,23 @@ export const DefaultComponent = () => {
         const { isCollapsed } = item;
         const showCollapseBtn = nestedRows && typeof isCollapsed !== 'undefined';
         const showNestedRows = nestedRows && (isCollapsed === false || typeof isCollapsed === 'undefined');
+        const onCollapseChange = () => {
+            const newData = getUpadedCollapsedData(data, ctx, 'isCollapsed');
+            setData(newData);
+        };
 
         return (<li>
             Level {nestLvlIdx}-{idx} ({item.id})
-            { showCollapseBtn && ( <button type="button" onClick={() => {
-                const newData = getUpadedCollapsedData(data, ctx, 'isCollapsed');
-                setData(newData);
-            }}>{item.isCollapsed ? dnArwIconElem : upArwIconElem}</button>) }
-            { showNestedRows && <ul style={nestedUlStyle}>{nestedRows}</ul>}
+            {
+                showCollapseBtn &&
+                <button type="button" onClick={onCollapseChange}>
+                    {item.isCollapsed ? dnArwIconElem : upArwIconElem}
+                </button>
+            }
+            {
+                showNestedRows &&
+                <ul style={nestedUlStyle}>{nestedRows}</ul>
+            }
         </li>);
     };
 

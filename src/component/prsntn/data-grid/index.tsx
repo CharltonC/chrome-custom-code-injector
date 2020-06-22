@@ -17,7 +17,6 @@ export class _DataGrid extends Component<IProps, any> {
             if (!hsKey && hsIdx) return d[itemIdx];
             return d;
         }, data);
-        console.log(item2bModified);
 
         const isCollapsed: boolean = item2bModified[collapseKey];
         item2bModified[collapseKey] = !isCollapsed;
