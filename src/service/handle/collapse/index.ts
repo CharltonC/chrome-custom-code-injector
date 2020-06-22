@@ -7,7 +7,10 @@ export class ClpsConfig {
 }
 
 export class ClpsHandle {
-    defClpsConfig = new ClpsConfig();
+    // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
+    readonly ctxPattern: RegExp = /^(\d+)(\/([a-z]+:?)\d*)*/i;
+    readonly ctxCapPattern: RegExp = /(([a-z]+):?)?(\d*)/i;
+    readonly defClpsConfig = new ClpsConfig();
 
     getClpsState(clpsConfig?: ClpsConfig) {
         const { data, rowConfigs, showTargetCtx }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
@@ -120,23 +123,30 @@ export class ClpsHandle {
     }
 
     getClpsItemInData<T>(data: T[], itemCtx: string): T {
-        if (!data.length) return null;
+        if (!data.length || !itemCtx) return;
         const dataCopy: T[] = data.slice(0);
 
-        const contexts: string[] = itemCtx.split('/');
-        if (contexts.length <= 1) return null;
+        if (!this.ctxPattern.test(itemCtx)) return;
 
-        const clpsItem: T | T[] = contexts.reduce((_data: T[], ctx: string) => {
-            // 1st value is the entire match, 2nd value is 1st inner bracket captures the `\w:`
-            const [, , key, _idx ] = ctx.match(/((\w+):)?(\d+)/);
-            const hsKey: boolean = !!key;
+        const ctxs: string[] = itemCtx.split('/');
+        const matchItem: T | T[] = ctxs.reduce((_data: T[], ctx: string) => {
+            // 1st value is the entire match; 2nd value is 1st inner bracket captures the `[a-zA-z]:` (no `g` flag here in order to capture)
+            const [, , key, _idx ] = ctx.match(this.ctxCapPattern);
             const idx: number = parseFloat(_idx);
-            const hsIdx: boolean = !!_idx && this.isGteZeroInt(idx);
-            return (hsKey && hsIdx) ? _data[key][idx] : (hsIdx ? _data[idx] : _data);
+            const hsIdx: boolean = this.isGteZeroInt(idx);
+            const hsKey: boolean = !!key;
+            try {
+                const result = (hsKey && hsIdx) ?
+                    _data[key][idx] :
+                    (hsIdx ? _data[idx] : _data[key]);
+                return result;
+            } catch (err) {
+                return dataCopy;
+            }
         }, dataCopy);
 
         // If we ends up with the data itself, Means we can't find any matched item
-        return (clpsItem !== dataCopy) ? clpsItem as T : null;
+        return (matchItem !== dataCopy) ? matchItem as T : null;
     }
 
     isGteZeroInt(val: number): boolean {

@@ -10,6 +10,7 @@ describe('Service - Collapse Handle', () => {
     let getRowCtxSpy: jest.SpyInstance;
     let getNestedMappedItemsSpy: jest.SpyInstance;
     let isNestedOpenSpy: jest.SpyInstance;
+    let getClpsItemInDataSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new ClpsHandle();
@@ -19,6 +20,7 @@ describe('Service - Collapse Handle', () => {
         validateMappingSpy = jest.spyOn(handle, 'validateMapping');
         getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
         isNestedOpenSpy = jest.spyOn(handle, 'isNestedOpen');
+        getClpsItemInDataSpy = jest.spyOn(handle, 'getClpsItemInData')
     });
 
     describe('Method - getMappedItems: Get mapped items based on the row configs provided', () => {
@@ -229,8 +231,35 @@ describe('Service - Collapse Handle', () => {
         });
     });
 
-    describe('Method - getClpsItemInData: Find in an data array in which an item`s collapse state has changed', () => {
-        // TODO
+    describe('Method - getClpsItemInData: Find an item based on its context in an data array', () => {
+        const mockData: any[] = [{key: ['a', 'b']}];
+
+        describe('invalid data or item context pattern', () => {
+            it('should return falsy value when data has no items or when item context is empty', () => {
+                expect(handle.getClpsItemInData([], '0/key:0')).toBeFalsy();
+                expect(handle.getClpsItemInData(mockData, '')).toBeFalsy();
+            });
+
+            it('should return falsy value when the item context pattern does not match', () => {
+                expect(handle.getClpsItemInData(mockData, '/')).toBeFalsy();
+                expect(handle.getClpsItemInData(mockData, '..')).toBeFalsy();
+            });
+        });
+
+        describe('valid data and item context pattern', () => {
+            it('should return falsy value when data has no matched item and an error was found during the process', () => {
+                expect(handle.getClpsItemInData(mockData, '1')).toBeFalsy();
+                expect(handle.getClpsItemInData(mockData, '0/key:0/key:0')).toBeFalsy();
+                expect(handle.getClpsItemInData(mockData, '0/key:2')).toBeFalsy();
+            });
+
+            it('should return the item when data has matched item', () => {
+                expect(handle.getClpsItemInData(mockData, '0')).toBe(mockData[0]);
+                expect(handle.getClpsItemInData(mockData, '0/key')).toEqual(mockData[0].key);
+                expect(handle.getClpsItemInData(mockData, '0/key:0')).toBe('a');
+                expect(handle.getClpsItemInData(mockData, '0/key:1')).toBe('b');
+            });
+        });
     });
 
     describe('Method - isGteZeroInt: Check if a number is an integer greater than and equal to 0', () => {
