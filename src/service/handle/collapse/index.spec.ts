@@ -126,7 +126,7 @@ describe('Service - Collapse Handle', () => {
         describe('when show target context is an array of contexts', () => {
             const mockShowTargetCtx: TClpsShowTarget = [ 'a', 'a/b' ];
 
-            it('should return false if row context is found in the show target context', () => {
+            it('should return false if row context is not found in the show target context', () => {
                 expect(isNestedOpen('a/b/c', mockShowTargetCtx)).toBe(false);
             });
 
