@@ -122,7 +122,7 @@ export class ClpsHandle {
         return rowCtx;
     }
 
-    getClpsItemInData<T>(data: T[], itemCtx: string): T {
+    findItemInData<T>(data: T[], itemCtx: string): T {
         if (!data.length || !itemCtx) return;
         const dataCopy: T[] = data.slice(0);
 
