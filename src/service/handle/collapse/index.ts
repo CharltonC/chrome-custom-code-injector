@@ -12,7 +12,7 @@ export class ClpsHandle {
     readonly ctxCapPattern: RegExp = /(([a-z]+):?)?(\d*)/i;
     readonly defClpsConfig = new ClpsConfig();
 
-    getClpsState(clpsConfig?: ClpsConfig) {
+    getClpsState(clpsConfig?: ClpsConfig): any[] {
         const { data, rowConfigs, showTargetCtx }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
 
         // Skip if data has no rows OR config doesnt exist

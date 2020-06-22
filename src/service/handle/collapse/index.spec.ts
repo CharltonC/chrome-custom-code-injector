@@ -1,5 +1,5 @@
 import { TClpsShowTarget, IUserRowConfig, IRowConfig, IItemsReq } from './type';
-import { ClpsHandle } from './';
+import { ClpsHandle, ClpsConfig } from './';
 
 describe('Service - Collapse Handle', () => {
     const { isNestedOpen, getRowCtx, validateMapping, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
@@ -10,7 +10,6 @@ describe('Service - Collapse Handle', () => {
     let getRowCtxSpy: jest.SpyInstance;
     let getNestedMappedItemsSpy: jest.SpyInstance;
     let isNestedOpenSpy: jest.SpyInstance;
-    let findItemInDataSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new ClpsHandle();
@@ -20,7 +19,44 @@ describe('Service - Collapse Handle', () => {
         validateMappingSpy = jest.spyOn(handle, 'validateMapping');
         getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
         isNestedOpenSpy = jest.spyOn(handle, 'isNestedOpen');
-        findItemInDataSpy = jest.spyOn(handle, 'findItemInData');
+    });
+
+    describe('Default Collapse User Option', () => {
+        it('should have default values', () => {
+            expect(new ClpsConfig()).toEqual({
+                data: [],
+                rowConfigs: [],
+                showTargetCtx: 'ALL'
+            });
+        });
+    });
+
+    describe('Method - getClpsState: Get Collapse state based on User`s Collapse config/option', () => {
+        const mockMappedItems: any[] = [];
+
+        beforeEach(() => {
+            getMappedItemsSpy.mockReturnValue(mockMappedItems);
+        });
+
+        it('should return falsy value if the config is invalid', () => {
+            validateMappingSpy.mockReturnValue(false);
+
+            expect(handle.getClpsState()).toBeFalsy();
+            expect(validateMappingSpy).toHaveBeenCalledWith([]);
+            expect(getMappedItemsSpy).not.toHaveBeenCalled();
+        });
+
+        it('should return mapped items if the config is valid', () => {
+            validateMappingSpy.mockReturnValue(true);
+
+            expect(handle.getClpsState()).toBe(mockMappedItems);
+            expect(validateMappingSpy).toHaveBeenCalledWith([]);
+            expect(getMappedItemsSpy).toHaveBeenCalledWith({
+                ...handle.defClpsConfig,
+                rowLvl: 0,
+                prevItemCtx: ''
+            });
+        });
     });
 
     describe('Method - getMappedItems: Get mapped items based on the row configs provided', () => {
