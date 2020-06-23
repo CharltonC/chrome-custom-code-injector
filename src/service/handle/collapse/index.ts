@@ -8,8 +8,8 @@ export class ClpsConfig {
 
 export class ClpsHandle {
     // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
-    readonly ctxPattern: RegExp = /^(\d+)(\/([a-z]+:?)\d*)*/i;
-    readonly ctxCapPattern: RegExp = /(([a-z]+):?)?(\d*)/i;
+    readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
+    readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
     readonly defClpsConfig = new ClpsConfig();
 
     getClpsState(clpsConfig?: ClpsConfig): any[] {
