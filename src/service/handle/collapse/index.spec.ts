@@ -2,10 +2,10 @@ import { TClpsShowTarget, IUserRowConfig, IRowConfig, IItemsReq } from './type';
 import { ClpsHandle, ClpsConfig } from './';
 
 describe('Service - Collapse Handle', () => {
-    const { isNestedOpen, getRowCtx, validateMapping, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
+    const { isNestedOpen, getRowCtx, getValidatedData, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
     let handle: ClpsHandle;
     let getMappedItemsSpy: jest.SpyInstance;
-    let validateMappingSpy: jest.SpyInstance;
+    let getValidatedDataSpy: jest.SpyInstance;
     let parseRowConfigSpy: jest.SpyInstance;
     let getRowCtxSpy: jest.SpyInstance;
     let getNestedMappedItemsSpy: jest.SpyInstance;
@@ -16,7 +16,7 @@ describe('Service - Collapse Handle', () => {
         getMappedItemsSpy = jest.spyOn(handle, 'getMappedItems');
         parseRowConfigSpy = jest.spyOn(handle, 'parseRowConfig');
         getRowCtxSpy = jest.spyOn(handle, 'getRowCtx');
-        validateMappingSpy = jest.spyOn(handle, 'validateMapping');
+        getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
         getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
         isNestedOpenSpy = jest.spyOn(handle, 'isNestedOpen');
     });
@@ -39,18 +39,18 @@ describe('Service - Collapse Handle', () => {
         });
 
         it('should return falsy value if the config is invalid', () => {
-            validateMappingSpy.mockReturnValue(false);
+            getValidatedDataSpy.mockReturnValue(null);
 
             expect(handle.getClpsState()).toBeFalsy();
-            expect(validateMappingSpy).toHaveBeenCalledWith([]);
+            expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
             expect(getMappedItemsSpy).not.toHaveBeenCalled();
         });
 
         it('should return mapped items if the config is valid', () => {
-            validateMappingSpy.mockReturnValue(true);
+            getValidatedDataSpy.mockReturnValue([]);
 
             expect(handle.getClpsState()).toBe(mockMappedItems);
-            expect(validateMappingSpy).toHaveBeenCalledWith([]);
+            expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
             expect(getMappedItemsSpy).toHaveBeenCalledWith({
                 ...handle.defClpsConfig,
                 rowLvl: 0,
@@ -159,7 +159,7 @@ describe('Service - Collapse Handle', () => {
         });
     });
 
-    describe('Method - validateMapping: Validate data and row config to determine if it can be proceed or not', () => {
+    describe('Method - getValidatedData: Validate data and row config to determine if it can be proceed or not', () => {
         const mockRowKey: string = 'lorem';
         const mockTransformFn: jest.Mock = jest.fn();
         const mockConfig: IUserRowConfig = [ mockRowKey, mockTransformFn ];
@@ -168,12 +168,12 @@ describe('Service - Collapse Handle', () => {
             const mockEmptyDataAry: any[] = [];
             const mockDataAry: any[] = [1,2];
 
-            it('should return false if data has no items', () => {
-                expect(validateMapping(mockEmptyDataAry)).toBe(false);
+            it('should return null if data has no items', () => {
+                expect(getValidatedData(mockEmptyDataAry)).toBe(null);
             });
 
-            it('should return true if data has items', () => {
-                expect(validateMapping(mockDataAry)).toBe(true);
+            it('should return the data itself if data has items', () => {
+                expect(getValidatedData(mockDataAry)).toBe(mockDataAry);
             });
         });
 
@@ -181,20 +181,20 @@ describe('Service - Collapse Handle', () => {
             const mockNestedData: any[] = [1,2];
             const mockDataObj: Record<string, any> = {[mockRowKey]: mockNestedData};
 
-            it('should return false if config doesnt exist, or `rowkey` in config doesnt exist, or `rowKey` is empty', () => {
-                expect(validateMapping(mockDataObj, null)).toBe(false);
-                expect(validateMapping(mockDataObj, [] as any)).toBe(false);
-                expect(validateMapping(mockDataObj, [ '' ])).toBe(false);
+            it('should return null if config doesnt exist, or `rowkey` in config doesnt exist, or `rowKey` is empty', () => {
+                expect(getValidatedData(mockDataObj, null)).toBe(null);
+                expect(getValidatedData(mockDataObj, [] as any)).toBe(null);
+                expect(getValidatedData(mockDataObj, [ '' ])).toBe(null);
             });
 
-            it('should return false if data`s property value is not an array or an empty array', () => {
-                expect(validateMapping({}, mockConfig)).toBe(false);
-                expect(validateMapping({[mockRowKey]: ''}, mockConfig)).toBe(false);
-                expect(validateMapping({[mockRowKey]: []}, mockConfig)).toBe(false);
+            it('should return null if data`s property value is not an array or an empty array', () => {
+                expect(getValidatedData({}, mockConfig)).toBe(null);
+                expect(getValidatedData({[mockRowKey]: ''}, mockConfig)).toBe(null);
+                expect(getValidatedData({[mockRowKey]: []}, mockConfig)).toBe(null);
             });
 
-            it('should return true if `rowkey` exist in config and data`s property value is not an empty array', () => {
-                expect(validateMapping(mockDataObj, mockConfig)).toBe(true);
+            it('should return the nested data if `rowkey` exist in config and data`s property value is not an empty array', () => {
+                expect(getValidatedData(mockDataObj, mockConfig)).toBe(mockNestedData);
             });
         });
 
@@ -202,9 +202,11 @@ describe('Service - Collapse Handle', () => {
 
     describe('Method - getNestedMappedItems: Get Nested Mapped Items', () => {
         const mockMappedItems: any[] = [];
+        const mockNestedData: any[] = [1,2];
+        const mockNestedKey: string = 'prop';
         const mockItemsReq: IItemsReq = {
-            data: [],
-            rowConfigs: [],
+            data: {[mockNestedKey]: mockNestedData},
+            rowConfigs: [[mockNestedKey]],
             rowLvl: 0,
             prevItemCtx: '',
             showTargetCtx: []
@@ -215,22 +217,24 @@ describe('Service - Collapse Handle', () => {
         });
 
         it('should return mapped items when mapping is valid', () => {
-            validateMappingSpy.mockReturnValue(true);
+            getValidatedDataSpy.mockReturnValue(mockNestedData);
 
             expect(handle.getNestedMappedItems(mockItemsReq)).toBe(mockMappedItems);
-            expect(validateMappingSpy).toHaveBeenCalledWith(
+            expect(getValidatedDataSpy).toHaveBeenCalledWith(
                 mockItemsReq.data,
                 mockItemsReq.rowConfigs[0]
             );
-            expect(getMappedItemsSpy).toHaveBeenCalledWith(mockItemsReq);
-
+            expect(getMappedItemsSpy).toHaveBeenCalledWith({
+                ...mockItemsReq,
+                data: mockNestedData
+            });
         });
 
         it('should return null when mapping is not valid', () => {
-            validateMappingSpy.mockReturnValue(false);
+            getValidatedDataSpy.mockReturnValue(null);
 
             expect(handle.getNestedMappedItems(mockItemsReq)).toBe(null);
-            expect(validateMappingSpy).toHaveBeenCalledWith(
+            expect(getValidatedDataSpy).toHaveBeenCalledWith(
                 mockItemsReq.data,
                 mockItemsReq.rowConfigs[0]
             );

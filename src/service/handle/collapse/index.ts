@@ -16,8 +16,8 @@ export class ClpsHandle {
         const { data, rowConfigs, showTargetCtx }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
 
         // Skip if data has no rows OR config doesnt exist
-        const isValidConfig: boolean = this.validateMapping(data);
-        if (!isValidConfig) return;
+        const _data: any[] = this.getValidatedData(data);
+        if (!_data) return;
 
         return this.getMappedItems({data, rowConfigs, rowLvl: 0, prevItemCtx: '', showTargetCtx});
     }
@@ -60,8 +60,8 @@ export class ClpsHandle {
 
     getNestedMappedItems(itemsReq: IItemsReq): IItems[] {
         const { data, rowConfigs, rowLvl } = itemsReq;
-        const isValidConfig: boolean = this.validateMapping(data, rowConfigs[rowLvl]);
-        return isValidConfig ? this.getMappedItems(itemsReq) : null;
+        const nestedData: any[] = this.getValidatedData(data, rowConfigs[rowLvl]);
+        return nestedData ? this.getMappedItems({...itemsReq, data: nestedData}) : null;
     }
 
     /**
@@ -102,18 +102,18 @@ export class ClpsHandle {
     }
 
     // Check if row config, row key, and data exists & has at least 1 item
-    validateMapping(target: TData, config?: IUserRowConfig): boolean {
+    getValidatedData(target: TData, config?: IUserRowConfig): any[] {
         // If it is an array, config is optional
-        if (Array.isArray(target)) return !!target.length;
+        if (Array.isArray(target)) return !!target.length ? target : null;
 
         // If it is nested data
-        if (!config) return false;
+        if (!config) return null;
 
         const [ rowKey ] = config;
-        if (!rowKey) return false;
+        if (!rowKey) return null;
 
         const nestedData: any[] = target[rowKey as string];
-        return Array.isArray(nestedData) && !!nestedData.length;
+        return (Array.isArray(nestedData) && !!nestedData.length) ? nestedData : null;
     }
 
     getRowCtx(idx: number, rowKey: string, prefixCtx: string): string {
