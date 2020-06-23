@@ -21,13 +21,33 @@ describe('Service - Collapse Handle', () => {
         isNestedOpenSpy = jest.spyOn(handle, 'isNestedOpen');
     });
 
-    describe('Default Collapse User Option', () => {
+    describe('Property - defClpsConfig: Default Collapse User Option', () => {
         it('should have default values', () => {
-            expect(new ClpsConfig()).toEqual({
+            expect(handle.defClpsConfig).toEqual({
                 data: [],
                 rowConfigs: [],
                 showTargetCtx: 'ALL'
             });
+        });
+    });
+
+    describe('Property - Builtin Regex', () => {
+        it('should test against item context', () => {
+            const { ctxPattern } = handle;
+
+            expect(ctxPattern.test('')).toBe(false);
+            expect(ctxPattern.test('0')).toBe(true);
+            expect(ctxPattern.test('0/key:1')).toBe(true);
+            expect(ctxPattern.test('0/key:1/key')).toBe(true);
+        });
+
+        it('should test against the capture groups in item context', () => {
+            const { ctxCapPattern } = handle;
+            const [ fullCap, keyGrpCap, keyCap, indexCap ] = 'key:1'.match(ctxCapPattern);
+            expect(fullCap).toBe('key:1');
+            expect(keyGrpCap).toBe('key:');
+            expect(keyCap).toBe('key');
+            expect(indexCap).toBe('1');
         });
     });
 
