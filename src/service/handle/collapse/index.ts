@@ -129,15 +129,13 @@ export class ClpsHandle {
 
         const ctxs: string[] = itemCtx.split('/');
         const matchItem: T | T[] = ctxs.reduce((_data: T[], ctx: string) => {
-            // 1st value is the entire match; 2nd value is 1st inner bracket captures the `[a-zA-z]:` (no `g` flag here in order to capture)
+            // 1st value is the entire match; 2nd value is 1st inner bracket captures the `\w+:` (no `g` flag here in order to capture correctly)
             const [, , key, _idx ] = ctx.match(this.ctxCapPattern);
             const idx: number = parseFloat(_idx);
             const hsIdx: boolean = this.isGteZeroInt(idx);
             const hsKey: boolean = !!key;
             try {
-                const result = (hsKey && hsIdx) ?
-                    _data[key][idx] :
-                    (hsIdx ? _data[idx] : _data[key]);
+                const result = (hsKey && hsIdx) ? _data[key][idx] :_data[key];
                 return result;
             } catch (err) {
                 return data;
