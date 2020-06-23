@@ -8,14 +8,8 @@ export default {
 };
 
 const defStyle = {};
-const headerStyle = {
-    fontSize: '18px',
-    fontStyle: 'bold'
-};
-const nestedUlStyle = {
-    padding: 15,
-    listStyle: 'disc'
-};
+const headerStyle = { fontSize: '18px', fontStyle: 'bold' };
+const nestedUlStyle = { padding: 15, listStyle: 'disc' };
 
 export const DefaultComponent = () => {
     const dnArwIconElem = inclStaticIcon('arrow-dn', true);
@@ -39,7 +33,7 @@ export const DefaultComponent = () => {
                                     isCollapsed: false,
                                     nestRowLvl4Key: [
                                         {id: 'A1-B1-C1-D1-E1'},
-                                        {id: 'A1-B1-C1-D1-E1'},
+                                        {id: 'A1-B1-C1-D1-E2'},
                                     ]
                                 },
                                 {id: 'A1-B1-C2-D2'},
@@ -82,26 +76,23 @@ export const DefaultComponent = () => {
 
     const [ data, setData ] = useState(sampleData);
 
-    const ListItemCmp = ({item, idx, nestLvlIdx, nestedRows, ctx, getUpadedCollapsedData}) => {
-        const { isCollapsed } = item;
-        const showCollapseBtn = nestedRows && typeof isCollapsed !== 'undefined';
-        const showNestedRows = nestedRows && (isCollapsed === false || typeof isCollapsed === 'undefined');
+    const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems, isNestedOpen, findItemInData}) => {
         const onCollapseChange = () => {
-            const newData = getUpadedCollapsedData(data, ctx, 'isCollapsed');
-            setData(newData);
+            item.isCollapsed = !item.isCollapsed;
+            setData(data.slice(0));
         };
 
         return (<li>
-            Level {nestLvlIdx}-{idx} ({item.id})
+            {`Level ${itemLvl+1} - Item ${idx+1}`}
             {
-                showCollapseBtn &&
+                nestedItems &&
                 <button type="button" onClick={onCollapseChange}>
                     {item.isCollapsed ? dnArwIconElem : upArwIconElem}
                 </button>
             }
             {
-                showNestedRows &&
-                <ul style={nestedUlStyle}>{nestedRows}</ul>
+                nestedItems && !item.isCollapsed &&
+                <ul style={nestedUlStyle}>{nestedItems}</ul>
             }
         </li>);
     };
@@ -110,14 +101,13 @@ export const DefaultComponent = () => {
         <div style={defStyle} >
             <DataGrid
                 data={data}
-                row={[
-                    [ListItemCmp, 'nestRowLvl1Key'],
-                    [ListItemCmp, 'nestRowLvl2Key'],
-                    [ListItemCmp, 'nestRowLvl3Key'],
-                    [ListItemCmp, 'nestRowLvl4Key'],
-                    [ListItemCmp]
+                rows={[
+                    [ListItemCmp],
+                    ['nestRowLvl1Key', ListItemCmp],
+                    ['nestRowLvl2Key', ListItemCmp],
+                    ['nestRowLvl3Key', ListItemCmp],
+                    ['nestRowLvl4Key', ListItemCmp]
                 ]}
-                /* collapseKey={'isCollapsed'} */
                 />
         </div>
     )
