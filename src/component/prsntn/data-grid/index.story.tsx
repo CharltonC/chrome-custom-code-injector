@@ -141,12 +141,13 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     ['lvl3key', ListItemCmp],
                     ['lvl4key', ListItemCmp]
                 ]}
+                showCollapse={'0/lvl1key:0'}                     // show one only at a time
                 // showCollapse={'NONE'}                           // hide all
-                // showCollapse={'ALL'}                            // show all
-                showCollapse={[                                     // show specific level (incl. its parent)
-                    '0/lvl1key:0/lvl2key:0/',            // show 1st item's level 2 nested list (incl. its parent)
-                    '1/lvl1key:1/',                      // show 2nd item's level 1 nested list (incl. its parent)
-                ]}
+                // showCollapse={'ALL'}                            // show all (def)
+                // showCollapse={[                                     // show specific level (incl. its parent)
+                //     '0/lvl1key:0/lvl2key:0/',            // show 1st item's level 2 nested list (incl. its parent)
+                //     '1/lvl1key:1/',                      // show 2nd item's level 1 nested list (incl. its parent)
+                // ]}
                 />
         </div>
     );

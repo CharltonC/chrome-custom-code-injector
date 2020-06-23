@@ -12,7 +12,8 @@ export class _DataGrid extends Component<IProps, any> {
 
         // TODO: only set collapse if rows.length >1
         this.state = {
-            collapse: {}
+            collapse: {
+            }
         };
     }
 
@@ -25,13 +26,56 @@ export class _DataGrid extends Component<IProps, any> {
         });
     }
 
-    createTransformFn(Cmp: TCmpCls): TFn {
-        const { state } = this;
+    createIntCollapseProps(showCollapse, state, mappedProps) {
         const { collapse } = state;
-        const { showCollapse } = this.props;
+        const { itemCtx, nestedItems } = mappedProps;
 
-        return (props) => {
-            const { itemCtx, nestedItems } = props;
+        if (!showCollapse || !nestedItems) return {};
+
+        const isShowOneOnly: boolean = (typeof showCollapse === 'string' && showCollapse !== 'ALL' && showCollapse !== 'NONE');
+        let isCollapsed: boolean = true;
+
+        if (isShowOneOnly) {
+            const keys = Object.getOwnPropertyNames(collapse);
+
+            // 1st Initial call
+            if (!keys.length) {
+                isCollapsed = !this.clpsHandle.isNestedOpen(itemCtx, [showCollapse]);
+
+            // 2nd call & onwards
+            } else {
+                const [key] = keys;
+                const isLastClpsItemCollapsed: boolean = collapse[key];
+                if (!isLastClpsItemCollapsed) {
+                    isCollapsed = !this.clpsHandle.isNestedOpen(itemCtx, keys);
+                }
+            }
+
+        } else {
+            isCollapsed = collapse[itemCtx];
+        }
+
+        const onClpsChange = () => {
+            const clpsState = isShowOneOnly ? {[itemCtx]: !isCollapsed} : {
+                ...collapse,
+                [itemCtx]: !isCollapsed
+            };
+            this.setState({
+                ...state,
+                collapse: clpsState
+            });
+        };
+        return { isCollapsed, onClpsChange };
+    }
+
+    createTransformFn(Cmp: TCmpCls): TFn {
+        return (mappedProps) => {
+            const { state } = this;
+            const { collapse } = state;
+            const { showCollapse } = this.props;
+            const { itemCtx, nestedItems } = mappedProps;
+
+            // TODO: if one collapse effect one other (on a diff. hiearchy)
 
             /**
              * Case 1 - For user provided key
@@ -43,7 +87,7 @@ export class _DataGrid extends Component<IProps, any> {
                 //     item[key] = !item[key];
                 //     return data.slice(0);
                 // };
-                return <Cmp key={itemCtx} {...props} />;
+                return <Cmp key={itemCtx} {...mappedProps} />;
 
             /**
              * Case 2 - For internal generated collapse state
@@ -51,30 +95,26 @@ export class _DataGrid extends Component<IProps, any> {
              * Set based on user pref (i.e. "ALL", "NONE", ctx)
              */
             } else {
+                // TODO: make this non-dependent on the state & do crud on state
+                // Check if the state has been initially set, set it if not
                 // Set Initial Collapse State based on user option if needed
-                if (nestedItems && typeof collapse[itemCtx] === 'undefined') {
-                    // TODO: also check if there is `nestedItems`
-                    collapse[itemCtx] = !this.clpsHandle.isNestedOpen(itemCtx, showCollapse);
+                const isShowOneOnly: boolean = (typeof showCollapse === 'string' && showCollapse !== 'ALL' && showCollapse !== 'NONE');
+                if (nestedItems) {
+                    if (isShowOneOnly) {
+                        if (!Object.getOwnPropertyNames(collapse).length && itemCtx === showCollapse) {
+                            collapse[itemCtx] = false;
+                        }
+                    } else if (typeof collapse[itemCtx] === 'undefined') {
+                        collapse[itemCtx] = !this.clpsHandle.isNestedOpen(itemCtx, showCollapse);
+                    }
                 }
 
-                // Callback for Collapse state change
-                const onClpsChange = () => {
-                    if (!nestedItems) return;
-                    // TODO: Check if there is nestedItems
-                    this.setState({
-                        ...state,
-                        collapse: {
-                            ...collapse,
-                            [itemCtx]: !collapse[itemCtx]
-                        }
-                    });
-                };
+                const collapseProps = this.createIntCollapseProps(showCollapse, state, mappedProps);
 
                 return <Cmp
                     key={itemCtx}
-                    {...props}
-                    isCollapsed={this.state.collapse[itemCtx]}
-                    onClpsChange={onClpsChange}
+                    {...mappedProps}
+                    {...collapseProps}
                     />
             }
         };
