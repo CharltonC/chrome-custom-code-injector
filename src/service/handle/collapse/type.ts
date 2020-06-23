@@ -26,6 +26,7 @@ export interface IItemsReq {
 export interface IItems {
     idx: number;
     item: any;
+    itemLvl: number;
     itemCtx: string;
     nestedItems: any[];
     isNestedOpen: boolean;

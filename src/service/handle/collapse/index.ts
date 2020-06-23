@@ -53,7 +53,7 @@ export class ClpsHandle {
             const isNestedOpen: boolean = nestedItems ? this.isNestedOpen(itemCtx, showTargetCtx) : false;
 
             // Return item
-            const mappedItem: IItems = { idx, item, itemCtx, nestedItems, isNestedOpen };
+            const mappedItem: IItems = { idx, item, itemCtx, itemLvl: rowLvl, nestedItems, isNestedOpen };
             return transformFn ? transformFn(mappedItem) : mappedItem;
         });
     }

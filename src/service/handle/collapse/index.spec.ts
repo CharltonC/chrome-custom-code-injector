@@ -120,6 +120,7 @@ describe('Service - Collapse Handle', () => {
                 idx: 0,
                 item: mockData[0],
                 itemCtx: mockItemCtx,
+                itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
                 isNestedOpen: mockIsOpen
             });
@@ -134,6 +135,7 @@ describe('Service - Collapse Handle', () => {
                 idx: 0,
                 item: mockData[0],
                 itemCtx: mockItemCtx,
+                itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
                 isNestedOpen: mockIsOpen
             }]);
