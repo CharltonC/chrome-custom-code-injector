@@ -8,78 +8,78 @@ export default {
 };
 
 const defStyle = {};
-const headerStyle = { fontSize: '18px', fontStyle: 'bold' };
+const headerStyle = { fontSize: '18px', fontStyle: 'bold', color: 'gray' };
 const nestedUlStyle = { padding: 15, listStyle: 'disc' };
 
-export const DefaultComponent = () => {
-    const dnArwIconElem = inclStaticIcon('arrow-dn', true);
-    const upArwIconElem = inclStaticIcon('arrow-up', true);
+const dnArwIconElem = inclStaticIcon('arrow-dn', true);
+const upArwIconElem = inclStaticIcon('arrow-up', true);
 
-    const sampleData = [
-        {
-            id: 'A1',
-            isCollapsed: false,
-            nestRowLvl1Key: [
-                {
-                    id: 'A1-B1',
-                    isCollapsed: false,
-                    nestRowLvl2Key: [
-                        {
-                            id: 'A1-B1-C1',
-                            isCollapsed: false,
-                            nestRowLvl3Key: [
-                                {
-                                    id: 'A1-B1-C1-D1',
-                                    isCollapsed: false,
-                                    nestRowLvl4Key: [
-                                        {id: 'A1-B1-C1-D1-E1'},
-                                        {id: 'A1-B1-C1-D1-E2'},
-                                    ]
-                                },
-                                {id: 'A1-B1-C2-D2'},
-                                {id: 'A1-B1-C1-D3'},
-                                {id: 'A1-B1-C2-D4'}
-                            ]
-                        },
-                        {id: 'A1-B1-C2'}
-                    ]
-                },
-                {
-                    id: 'A1-B2',
-                    nestRowLvl2Key: [
-                        {id: 'A1-B2-C1'},
-                        {id: 'A1-B2-C2'}
-                    ]
-                }
-            ]
-        },
-        {
-            id: 'A2',
-            nestRowLvl1Key: [
-                {
-                    id: 'A2-B1',
-                    nestRowLvl2Key: [
-                        {id: 'A2-B1-C1'},
-                        {id: 'A2-B1-C2'}
-                    ]
-                },
-                {
-                    id: 'A2-B2',
-                    nestRowLvl2Key: [
-                        {id: 'A2-B2-C1'},
-                        {id: 'A2-B2-C2'}
-                    ]
-                }
-            ]
-        }
-    ];
+const sampleData = [
+    {
+        id: 'A1',
+        isCollapsed: false,
+        nestRowLvl1Key: [
+            {
+                id: 'A1-B1',
+                isCollapsed: false,
+                nestRowLvl2Key: [
+                    {
+                        id: 'A1-B1-C1',
+                        isCollapsed: false,
+                        nestRowLvl3Key: [
+                            {
+                                id: 'A1-B1-C1-D1',
+                                isCollapsed: false,
+                                nestRowLvl4Key: [
+                                    {id: 'A1-B1-C1-D1-E1'},
+                                    {id: 'A1-B1-C1-D1-E2'},
+                                ]
+                            },
+                            {id: 'A1-B1-C2-D2'},
+                            {id: 'A1-B1-C1-D3'},
+                            {id: 'A1-B1-C2-D4'}
+                        ]
+                    },
+                    {id: 'A1-B1-C2'}
+                ]
+            },
+            {
+                id: 'A1-B2',
+                nestRowLvl2Key: [
+                    {id: 'A1-B2-C1'},
+                    {id: 'A1-B2-C2'}
+                ]
+            }
+        ]
+    },
+    {
+        id: 'A2',
+        nestRowLvl1Key: [
+            {
+                id: 'A2-B1',
+                nestRowLvl2Key: [
+                    {id: 'A2-B1-C1'},
+                    {id: 'A2-B1-C2'}
+                ]
+            },
+            {
+                id: 'A2-B2',
+                nestRowLvl2Key: [
+                    {id: 'A2-B2-C1'},
+                    {id: 'A2-B2-C2'}
+                ]
+            }
+        ]
+    }
+];
 
+export const ViaACollapsibleKey = () => {
     const [ data, setData ] = useState(sampleData);
 
-    const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems, isNestedOpen, findItemInData}) => {
+    const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems}) => {
         const onCollapseChange = () => {
             item.isCollapsed = !item.isCollapsed;
-            setData(data.slice(0));
+            setData(data.slice(0));     // force render when data value changes
         };
 
         return (<li>
@@ -99,6 +99,7 @@ export const DefaultComponent = () => {
 
     return (
         <div style={defStyle} >
+            <h1 style={headerStyle}>via a collapsible key `isCollapsed` in the passed data array</h1>
             <DataGrid
                 data={data}
                 rows={[
