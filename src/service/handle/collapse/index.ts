@@ -124,7 +124,6 @@ export class ClpsHandle {
 
     findItemInData<T>(data: T[], itemCtx: string): T {
         if (!data.length || !itemCtx) return;
-        const dataCopy: T[] = data.slice(0);
 
         if (!this.ctxPattern.test(itemCtx)) return;
 
@@ -141,12 +140,12 @@ export class ClpsHandle {
                     (hsIdx ? _data[idx] : _data[key]);
                 return result;
             } catch (err) {
-                return dataCopy;
+                return data;
             }
-        }, dataCopy);
+        }, data);
 
         // If we ends up with the data itself, Means we can't find any matched item
-        return (matchItem !== dataCopy) ? matchItem as T : null;
+        return (matchItem !== data) ? matchItem as T : null;
     }
 
     isGteZeroInt(val: number): boolean {
