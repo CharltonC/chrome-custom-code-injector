@@ -13,7 +13,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
     rows: IRow[];
     header?: TCmpCls;
-    showCollapse?: any;
+    nestingOption?: any;
 }
 
 export interface IState {

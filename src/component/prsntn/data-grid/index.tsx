@@ -1,7 +1,7 @@
 import React, { Component, memo, ReactElement } from "react";
 import { ClpsHandle } from '../../../service/handle/collapse';
 
-import { IProps, IRow, TCmpCls, TFn } from './type';
+import { IProps, IRow, TCmpCls, TFn, IState } from './type';
 
 
 export class _DataGrid extends Component<IProps, any> {
@@ -12,122 +12,102 @@ export class _DataGrid extends Component<IProps, any> {
 
         // TODO: only set collapse if rows.length >1
         this.state = {
-            collapse: {
-            }
+            nestState: {}
         };
     }
 
-    createMappedConfig(rowConfigs: IRow[]) {
+    UNSAFE_componentWillReceiveProps({data}) {
+        const { data: currData, rows } = this.props;
+
+        // When there are nested rows and when data changes, reset the nesting state
+        if (rows.length <= 1 || data === currData) return;
+        this.setState({
+            ...this.state,
+            nestState: {}
+        });
+    }
+
+    render() {
+        const { data, rows, nestingOption } = this.props;
+        const {  showInitial } = nestingOption;
+        const rowConfigs = this.getMappedConfig(rows);
+        return (
+            <ul>
+                {this.clpsHandle.getClpsState({data, rowConfigs, showTargetCtx: showInitial})}
+            </ul>
+        );
+    }
+
+    getMappedConfig(rowConfigs: IRow[]) {
         return rowConfigs.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
-            const transformFn = this.createTransformFn(row[transformFnIdx]);
+            const transformFn = this.getCmpTransformFn(row[transformFnIdx]);
             return is1stRowConfig ? [transformFn] : [row[0], transformFn];
         });
     }
 
-    createIntCollapseProps(showCollapse, state, mappedProps) {
-        const { collapse } = state;
-        const { itemCtx, nestedItems } = mappedProps;
+    getCmpTransformFn(Cmp: TCmpCls): TFn {
+        return (mappedProps) => {
+            const { nestState } = this.state;
+            const { nestingOption } = this.props;
+            const { itemCtx, nestedItems } = mappedProps;
+            const hsClpsProps: boolean = nestedItems && nestingOption;
+            // TODO: clpsProps type
+            const clpsProps = hsClpsProps ? this.getClpsProps(mappedProps, nestState, nestingOption.showOnePerLvl) : {};
+            return <Cmp key={itemCtx} {...mappedProps} {...clpsProps} />;
+        };
+    }
 
-        if (!showCollapse || !nestedItems) return {};
+    getClpsProps(mappedProps, nestState: IState, showOnePerLvl: boolean) {
+        // TODO: Renamed `isNestedOpen` to `isDefNestedOpen`
+        const { itemCtx, itemKey, itemLvl, parentCtx, isNestedOpen: isDefNestedOpen } = mappedProps;
+        const isInClpsState: boolean = typeof nestState[itemCtx] !== 'undefined';
 
-        const isShowOneOnly: boolean = (typeof showCollapse === 'string' && showCollapse !== 'ALL' && showCollapse !== 'NONE');
-        let isCollapsed: boolean = true;
+        // Only Set the state for each Item during Initialization, if not use the existing one
+        // TODO: separate method & move out of getClpsProps
+        if (!isInClpsState) {
+            nestState[itemCtx] = isDefNestedOpen;
+        }
+        const isNestedOpen: boolean = isInClpsState ? nestState[itemCtx] : isDefNestedOpen;
 
-        if (isShowOneOnly) {
-            const keys = Object.getOwnPropertyNames(collapse);
-
-            // 1st Initial call
-            if (!keys.length) {
-                isCollapsed = !this.clpsHandle.isNestedOpen(itemCtx, [showCollapse]);
-
-            // 2nd call & onwards
-            } else {
-                const [key] = keys;
-                const isLastClpsItemCollapsed: boolean = collapse[key];
-                if (!isLastClpsItemCollapsed) {
-                    isCollapsed = !this.clpsHandle.isNestedOpen(itemCtx, keys);
-                }
+        // TODO: Separate method
+        // Set the Collapse Fn
+        const onCollapseChanged = () => {
+            // TODO: Separate Method for getting impactedItemState
+            // find the items that are at the same level and if they are open (true), set them to false
+            let impactedItemsState = {};
+            if (showOnePerLvl) {
+                const itemCtxs: string[] = Object.getOwnPropertyNames(nestState);
+                const isRootLvlItem: boolean = itemLvl === 0;
+                const relCtx: string = isRootLvlItem ? '' : `${parentCtx}/${itemKey}:`;
+                const relCtxPattern: RegExp = new RegExp(relCtx + '\\d+$');
+                const impactedItemCtxs: string[] = itemCtxs.filter(ctx => {
+                    return isRootLvlItem ?
+                        Number.isInteger(Number(ctx)) :
+                        relCtxPattern.test(ctx);
+                });
+                impactedItemsState = impactedItemCtxs.reduce((impactedState, ctx) => {
+                    const isImpactedItemOpen: boolean = nestState[ctx];
+                    return isImpactedItemOpen ? {
+                        ...impactedState,
+                        [ctx]: false
+                    } : impactedState;
+                }, {});
             }
 
-        } else {
-            isCollapsed = collapse[itemCtx];
-        }
-
-        const onClpsChange = () => {
-            const clpsState = isShowOneOnly ? {[itemCtx]: !isCollapsed} : {
-                ...collapse,
-                [itemCtx]: !isCollapsed
-            };
+            // Updates/Rerender
             this.setState({
-                ...state,
-                collapse: clpsState
+                ...this.state,
+                nestState: {
+                    ...nestState,
+                    ...impactedItemsState,
+                    [itemCtx]: !isNestedOpen,
+                }
             });
         };
-        return { isCollapsed, onClpsChange };
-    }
 
-    createTransformFn(Cmp: TCmpCls): TFn {
-        return (mappedProps) => {
-            const { state } = this;
-            const { collapse } = state;
-            const { showCollapse } = this.props;
-            const { itemCtx, nestedItems } = mappedProps;
-
-            // TODO: if one collapse effect one other (on a diff. hiearchy)
-
-            /**
-             * Case 1 - For user provided key
-             *
-            */
-            if (typeof showCollapse === 'undefined') {
-                // TODO:
-                // onClpsChange = () => {
-                //     item[key] = !item[key];
-                //     return data.slice(0);
-                // };
-                return <Cmp key={itemCtx} {...mappedProps} />;
-
-            /**
-             * Case 2 - For internal generated collapse state
-             *
-             * Set based on user pref (i.e. "ALL", "NONE", ctx)
-             */
-            } else {
-                // TODO: make this non-dependent on the state & do crud on state
-                // Check if the state has been initially set, set it if not
-                // Set Initial Collapse State based on user option if needed
-                const isShowOneOnly: boolean = (typeof showCollapse === 'string' && showCollapse !== 'ALL' && showCollapse !== 'NONE');
-                if (nestedItems) {
-                    if (isShowOneOnly) {
-                        if (!Object.getOwnPropertyNames(collapse).length && itemCtx === showCollapse) {
-                            collapse[itemCtx] = false;
-                        }
-                    } else if (typeof collapse[itemCtx] === 'undefined') {
-                        collapse[itemCtx] = !this.clpsHandle.isNestedOpen(itemCtx, showCollapse);
-                    }
-                }
-
-                const collapseProps = this.createIntCollapseProps(showCollapse, state, mappedProps);
-
-                return <Cmp
-                    key={itemCtx}
-                    {...mappedProps}
-                    {...collapseProps}
-                    />
-            }
-        };
-    }
-
-    render() {
-        const { data, rows } = this.props;
-        const rowConfigs = this.createMappedConfig(rows);
-        return (
-            <ul>
-                {this.clpsHandle.getClpsState({data, rowConfigs})}
-            </ul>
-        );
+        return { isNestedOpen, onCollapseChanged: onCollapseChanged.bind(this) };
     }
 }
 

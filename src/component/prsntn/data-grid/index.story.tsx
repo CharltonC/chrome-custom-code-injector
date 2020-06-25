@@ -73,58 +73,58 @@ const sampleData = [
     }
 ];
 
-export const ViaACollapsibleKey = () => {
-    const [ data, setData ] = useState(sampleData);
+// export const ViaACollapsibleKey = () => {
+//     const [ data, setData ] = useState(sampleData);
 
-    const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems}) => {
-        const onCollapseChange = () => {
-            item.isCollapsed = !item.isCollapsed;
-            setData(data.slice(0));     // force render when data value changes
-        };
+//     const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems}) => {
+//         const onCollapseChange = () => {
+//             item.isCollapsed = !item.isCollapsed;
+//             setData(data.slice(0));     // force render when data value changes
+//         };
 
-        return (<li>
-            { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
-            {
-                nestedItems &&
-                <button type="button" onClick={onCollapseChange}>
-                    {item.isCollapsed ? dnArwIconElem : upArwIconElem}
-                </button>
-            }
-            {
-                nestedItems && !item.isCollapsed &&
-                <ul style={nestedUlStyle}>{nestedItems}</ul>
-            }
-        </li>);
-    };
+//         return (<li>
+//             { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
+//             {
+//                 nestedItems &&
+//                 <button type="button" onClick={onCollapseChange}>
+//                     {item.isCollapsed ? dnArwIconElem : upArwIconElem}
+//                 </button>
+//             }
+//             {
+//                 nestedItems && !item.isCollapsed &&
+//                 <ul style={nestedUlStyle}>{nestedItems}</ul>
+//             }
+//         </li>);
+//     };
 
-    return (
-        <div style={defStyle} >
-            <DataGrid
-                data={data}
-                rows={[
-                    [ListItemCmp],
-                    ['lvl1key', ListItemCmp],
-                    ['lvl2key', ListItemCmp],
-                    ['lvl3key', ListItemCmp],
-                    ['lvl4key', ListItemCmp]
-                ]}
-                />
-        </div>
-    );
-};
+//     return (
+//         <div style={defStyle} >
+//             <DataGrid
+//                 data={data}
+//                 rows={[
+//                     [ListItemCmp],
+//                     ['lvl1key', ListItemCmp],
+//                     ['lvl2key', ListItemCmp],
+//                     ['lvl3key', ListItemCmp],
+//                     ['lvl4key', ListItemCmp]
+//                 ]}
+//                 />
+//         </div>
+//     );
+// };
 
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems, isCollapsed, onClpsChange}) => {
+    const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
         return (<li>
             { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
             {
                 nestedItems &&
-                <button type="button" onClick={onClpsChange}>
-                    {isCollapsed ? dnArwIconElem : upArwIconElem}
+                <button type="button" onClick={onCollapseChanged}>
+                    {isNestedOpen ? upArwIconElem : dnArwIconElem }
                 </button>
             }
             {
-                nestedItems && !isCollapsed &&
+                nestedItems && isNestedOpen &&
                 <ul style={nestedUlStyle}>{nestedItems}</ul>
             }
         </li>);
@@ -141,7 +141,11 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     ['lvl3key', ListItemCmp],
                     ['lvl4key', ListItemCmp]
                 ]}
-                showCollapse={'0/lvl1key:0'}                     // show one only at a time
+                nestingOption={{
+                    showInitial: 'NONE',
+                    showOnePerLvl: true
+                }}
+                 // show one only at a time
                 // showCollapse={'NONE'}                           // hide all
                 // showCollapse={'ALL'}                            // show all (def)
                 // showCollapse={[                                     // show specific level (incl. its parent)
