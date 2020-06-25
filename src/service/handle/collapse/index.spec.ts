@@ -2,7 +2,7 @@ import { TClpsShowTarget, IUserRowConfig, IRowConfig, IItemsReq } from './type';
 import { ClpsHandle, ClpsConfig } from './';
 
 describe('Service - Collapse Handle', () => {
-    const { isNestedOpen, getRowCtx, getValidatedData, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
+    const { isNestedOpen, getRowCtx, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
     let handle: ClpsHandle;
     let getMappedItemsSpy: jest.SpyInstance;
     let getValidatedDataSpy: jest.SpyInstance;
@@ -10,6 +10,7 @@ describe('Service - Collapse Handle', () => {
     let getRowCtxSpy: jest.SpyInstance;
     let getNestedMappedItemsSpy: jest.SpyInstance;
     let isNestedOpenSpy: jest.SpyInstance;
+    let errSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new ClpsHandle();
@@ -19,6 +20,7 @@ describe('Service - Collapse Handle', () => {
         getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
         getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
         isNestedOpenSpy = jest.spyOn(handle, 'isNestedOpen');
+        errSpy = jest.spyOn(global, 'Error');
     });
 
     describe('Property - defClpsConfig: Default Collapse User Option', () => {
@@ -191,11 +193,11 @@ describe('Service - Collapse Handle', () => {
             const mockDataAry: any[] = [1,2];
 
             it('should return null if data has no items', () => {
-                expect(getValidatedData(mockEmptyDataAry)).toBe(null);
+                expect(handle.getValidatedData(mockEmptyDataAry)).toBe(null);
             });
 
             it('should return the data itself if data has items', () => {
-                expect(getValidatedData(mockDataAry)).toBe(mockDataAry);
+                expect(handle.getValidatedData(mockDataAry)).toBe(mockDataAry);
             });
         });
 
@@ -204,19 +206,43 @@ describe('Service - Collapse Handle', () => {
             const mockDataObj: Record<string, any> = {[mockRowKey]: mockNestedData};
 
             it('should return null if config doesnt exist, or `rowkey` in config doesnt exist, or `rowKey` is empty', () => {
-                expect(getValidatedData(mockDataObj, null)).toBe(null);
-                expect(getValidatedData(mockDataObj, [] as any)).toBe(null);
-                expect(getValidatedData(mockDataObj, [ '' ])).toBe(null);
+                const { ROW_CONFIG_MISSING, ROW_KEY_MISSING } = handle.errMsg;
+
+                expect(() => {
+                    handle.getValidatedData(mockDataObj, null);
+                }).toThrowError(ROW_CONFIG_MISSING);
+
+                expect(() => {
+                    handle.getValidatedData(mockDataObj, [] as any);
+                }).toThrowError(ROW_KEY_MISSING);
+
+                expect(() => {
+                    handle.getValidatedData(mockDataObj, [ '' ]);
+                }).toThrowError(ROW_KEY_MISSING);
             });
 
-            it('should return null if data`s property value is not an array or an empty array', () => {
-                expect(getValidatedData({}, mockConfig)).toBe(null);
-                expect(getValidatedData({[mockRowKey]: ''}, mockConfig)).toBe(null);
-                expect(getValidatedData({[mockRowKey]: []}, mockConfig)).toBe(null);
+            it('should return null if row key is not a string, or if data`s property doesnt exist, or if its value is not an array', () => {
+                const { ROW_KEY_TYPE, PROP_NOT_FOUND, PROP_DATA_TYPE } = handle.errMsg;
+
+                expect(() => {
+                    handle.getValidatedData({}, [ ()=>{} ])
+                }).toThrowError(ROW_KEY_TYPE);
+
+                expect(() => {
+                    handle.getValidatedData({}, ['a/b'])
+                }).toThrowError(PROP_NOT_FOUND);
+
+                expect(() => {
+                    handle.getValidatedData({[mockRowKey]: ''}, mockConfig)
+                }).toThrowError(PROP_DATA_TYPE);
+            });
+
+            it('should return null if data`s property value is an empty array', () => {
+                expect(handle.getValidatedData({[mockRowKey]: []}, mockConfig)).toBe(null);
             });
 
             it('should return the nested data if `rowkey` exist in config and data`s property value is not an empty array', () => {
-                expect(getValidatedData(mockDataObj, mockConfig)).toBe(mockNestedData);
+                expect(handle.getValidatedData(mockDataObj, mockConfig)).toBe(mockNestedData);
             });
         });
 
