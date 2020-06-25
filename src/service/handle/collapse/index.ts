@@ -1,4 +1,4 @@
-import { IUserRowConfig, IRowConfig, TClpsShowTarget, TData, TFn, IItemsReq, IItems } from './type';
+import { IUserRowConfig, IRowConfig, IErrMsg, TClpsShowTarget, TData, TFn, IItemsReq, IItems } from './type';
 
 export class ClpsConfig {
     data: any[] = [];
@@ -11,6 +11,13 @@ export class ClpsHandle {
     readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
     readonly defClpsConfig = new ClpsConfig();
+    readonly errMsg: IErrMsg = {
+        ROW_CONFIG_MISSING: 'Row Config is missing',
+        ROW_KEY_MISSING: 'Key in Row Config is missing',
+        ROW_KEY_TYPE: 'Key in Row Config must be a string',
+        PROP_NOT_FOUND: 'No property matching the Row Key in object',
+        PROP_DATA_TYPE: 'Data must be an array',
+    };
 
     getClpsState(clpsConfig?: ClpsConfig): any[] {
         const { data, rowConfigs, showTargetCtx }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
@@ -103,17 +110,32 @@ export class ClpsHandle {
 
     // Check if row config, row key, and data exists & has at least 1 item
     getValidatedData(target: TData, config?: IUserRowConfig): any[] {
-        // If it is an array, config is optional
+        //// When Target is an array, config is optional
         if (Array.isArray(target)) return !!target.length ? target : null;
 
-        // If it is nested data
-        if (!config) return null;
+        //// When Target is an object whose property is an array
+        // If config doesnt exist
+        const { ROW_CONFIG_MISSING, ROW_KEY_MISSING, ROW_KEY_TYPE, PROP_NOT_FOUND, PROP_DATA_TYPE } = this.errMsg;
+        if (!config) throw new Error(ROW_CONFIG_MISSING);
 
+        // If row key doesnt exist or not a string
         const [ rowKey ] = config;
-        if (!rowKey) return null;
+        if (!rowKey) throw new Error(ROW_KEY_MISSING);
+        if (typeof rowKey !== 'string') throw new Error(ROW_KEY_TYPE);
 
-        const nestedData: any[] = target[rowKey as string];
-        return (Array.isArray(nestedData) && !!nestedData.length) ? nestedData : null;
+        // If nested property not found based on the row key
+        let nestedData: any[] = (rowKey as string)
+            .split('/')
+            .reduce((_target, key: string) => {
+                const hsKey: boolean = key in target;
+                if (!hsKey) throw new Error(PROP_NOT_FOUND);
+                return target[key];
+            }, target);
+
+        // If found nested property is not array
+        if (!Array.isArray(nestedData)) throw new Error(PROP_DATA_TYPE);
+
+        return !!nestedData.length ? nestedData : null;
     }
 
     getRowCtx(idx: number, rowKey: string, prefixCtx: string): string {
