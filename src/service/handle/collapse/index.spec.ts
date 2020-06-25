@@ -207,7 +207,7 @@ describe('Service - Collapse Handle', () => {
             const mockNestedData: any[] = [1,2];
             const mockDataObj: Record<string, any> = {[mockRowKey]: mockNestedData};
 
-            it('should return null if config doesnt exist, or `rowkey` in config doesnt exist, or `rowKey` is empty', () => {
+            it('should throw error if `rowkey` in config doesnt exist, or `rowKey` is empty', () => {
                 const { ROW_KEY_MISSING } = handle.errMsg;
 
                 expect(() => {
@@ -219,7 +219,7 @@ describe('Service - Collapse Handle', () => {
                 }).toThrowError(ROW_KEY_MISSING);
             });
 
-            it('should return null if row key is not a string, or if data`s property doesnt exist, or if its value is not an array', () => {
+            it('should throw error if row key is not a string, or if data`s property exist but not an array', () => {
                 const { ROW_KEY_TYPE, PROP_DATA_TYPE } = handle.errMsg;
 
                 expect(() => {
@@ -227,8 +227,12 @@ describe('Service - Collapse Handle', () => {
                 }).toThrowError(ROW_KEY_TYPE);
 
                 expect(() => {
-                    handle.getValidatedData({[mockRowKey]: ''}, mockConfig)
+                    handle.getValidatedData({[mockRowKey]: 'abc'}, mockConfig)
                 }).toThrowError(PROP_DATA_TYPE);
+            });
+
+            it('should return null if config doesnt exist', () => {
+                expect(handle.getValidatedData(mockDataObj, null)).toBe(null);
             });
 
             it('should return null if data`s property value is an empty array', () => {
