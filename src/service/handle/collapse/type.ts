@@ -19,7 +19,7 @@ export interface IItemsReq {
     data: TData;
     rowConfigs: IUserRowConfig[];
     rowLvl: number;
-    prevItemCtx?: string;
+    parentCtx?: string;
     showTargetCtx: TClpsShowTarget;
 }
 
@@ -27,15 +27,15 @@ export interface IItems {
     idx: number;
     item: any;
     itemLvl: number;
+    itemKey: string;
     itemCtx: string;
+    parentCtx: string;
     nestedItems: any[];
     isNestedOpen: boolean;
 }
 
 export interface IErrMsg {
-    ROW_CONFIG_MISSING: string;
     ROW_KEY_MISSING: string;
     ROW_KEY_TYPE: string;
-    PROP_NOT_FOUND: string;
     PROP_DATA_TYPE: string;
 }

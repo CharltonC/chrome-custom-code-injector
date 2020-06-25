@@ -12,10 +12,8 @@ export class ClpsHandle {
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
     readonly defClpsConfig = new ClpsConfig();
     readonly errMsg: IErrMsg = {
-        ROW_CONFIG_MISSING: 'Row Config is missing',
         ROW_KEY_MISSING: 'Key in Row Config is missing',
         ROW_KEY_TYPE: 'Key in Row Config must be a string',
-        PROP_NOT_FOUND: 'No property matching the Row Key in object',
         PROP_DATA_TYPE: 'Data must be an array',
     };
 
@@ -26,7 +24,7 @@ export class ClpsHandle {
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getMappedItems({data, rowConfigs, rowLvl: 0, prevItemCtx: '', showTargetCtx});
+        return this.getMappedItems({data, rowConfigs, rowLvl: 0, parentCtx: '', showTargetCtx});
     }
 
     /**
@@ -43,24 +41,26 @@ export class ClpsHandle {
      * })
      */
     getMappedItems<TRtnType>(itemsReq: IItemsReq): IItems[] | TRtnType[] {
-        const { data, rowConfigs, rowLvl, prevItemCtx, showTargetCtx }: IItemsReq = itemsReq;
+        const { data, rowConfigs, rowLvl, parentCtx, showTargetCtx }: IItemsReq = itemsReq;
         const { rowKey, transformFn }: IRowConfig = this.parseRowConfig(rowConfigs[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
             // This Item
-            const itemCtx: string = this.getRowCtx(idx, rowKey, prevItemCtx);
+            const itemCtx: string = this.getRowCtx(idx, rowKey, parentCtx);
 
             // Nested Items
             const nestedItems: IItems[] = this.getNestedMappedItems({
                 ...itemsReq,
                 data: item,
                 rowLvl: rowLvl+1,
-                prevItemCtx: itemCtx
+                parentCtx: itemCtx
             });
+
+            // TODO: make this isDefNestedOpen
             const isNestedOpen: boolean = nestedItems ? this.isNestedOpen(itemCtx, showTargetCtx) : false;
 
             // Return item
-            const mappedItem: IItems = { idx, item, itemCtx, itemLvl: rowLvl, nestedItems, isNestedOpen };
+            const mappedItem: IItems = { idx, item, itemCtx, parentCtx: parentCtx, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isNestedOpen };
             return transformFn ? transformFn(mappedItem) : mappedItem;
         });
     }
@@ -115,27 +115,23 @@ export class ClpsHandle {
 
         //// When Target is an object whose property is an array
         // If config doesnt exist
-        const { ROW_CONFIG_MISSING, ROW_KEY_MISSING, ROW_KEY_TYPE, PROP_NOT_FOUND, PROP_DATA_TYPE } = this.errMsg;
-        if (!config) throw new Error(ROW_CONFIG_MISSING);
+        const { ROW_KEY_MISSING, ROW_KEY_TYPE, PROP_DATA_TYPE } = this.errMsg;
+        if (!config) return null;
 
         // If row key doesnt exist or not a string
         const [ rowKey ] = config;
         if (!rowKey) throw new Error(ROW_KEY_MISSING);
         if (typeof rowKey !== 'string') throw new Error(ROW_KEY_TYPE);
 
-        // If nested property not found based on the row key
-        let nestedData: any[] = (rowKey as string)
+        let val: any[] = (rowKey as string)
             .split('/')
-            .reduce((_target, key: string) => {
-                const hsKey: boolean = key in target;
-                if (!hsKey) throw new Error(PROP_NOT_FOUND);
-                return target[key];
-            }, target);
+            .reduce((_target, key: string) => target[key], target);
 
-        // If found nested property is not array
-        if (!Array.isArray(nestedData)) throw new Error(PROP_DATA_TYPE);
+        // If nested property found based on the row key is not an array
+        const isAry: boolean = Array.isArray(val);
+        if (val && !isAry) throw new Error(PROP_DATA_TYPE);
 
-        return !!nestedData.length ? nestedData : null;
+        return isAry && !!val.length ? val : null;
     }
 
     getRowCtx(idx: number, rowKey: string, prefixCtx: string): string {

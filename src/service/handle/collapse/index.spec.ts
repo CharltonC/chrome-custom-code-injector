@@ -1,5 +1,5 @@
 import { TClpsShowTarget, IUserRowConfig, IRowConfig, IItemsReq } from './type';
-import { ClpsHandle, ClpsConfig } from './';
+import { ClpsHandle } from './';
 
 describe('Service - Collapse Handle', () => {
     const { isNestedOpen, getRowCtx, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
@@ -10,7 +10,6 @@ describe('Service - Collapse Handle', () => {
     let getRowCtxSpy: jest.SpyInstance;
     let getNestedMappedItemsSpy: jest.SpyInstance;
     let isNestedOpenSpy: jest.SpyInstance;
-    let errSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new ClpsHandle();
@@ -20,7 +19,6 @@ describe('Service - Collapse Handle', () => {
         getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
         getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
         isNestedOpenSpy = jest.spyOn(handle, 'isNestedOpen');
-        errSpy = jest.spyOn(global, 'Error');
     });
 
     describe('Property - defClpsConfig: Default Collapse User Option', () => {
@@ -76,7 +74,7 @@ describe('Service - Collapse Handle', () => {
             expect(getMappedItemsSpy).toHaveBeenCalledWith({
                 ...handle.defClpsConfig,
                 rowLvl: 0,
-                prevItemCtx: ''
+                parentCtx: ''
             });
         });
     });
@@ -89,7 +87,7 @@ describe('Service - Collapse Handle', () => {
             data: mockData,
             rowConfigs: [],
             rowLvl: 0,
-            prevItemCtx: '',
+            parentCtx: '',
             showTargetCtx: []
         };
 
@@ -111,18 +109,20 @@ describe('Service - Collapse Handle', () => {
             expect(handle.getMappedItems(mockItemsReq)).toEqual([mockTransformResult]);
             expect(isNestedOpenSpy).not.toHaveBeenCalled();
             expect(parseRowConfigSpy).toHaveBeenCalledWith(mockItemsReq.rowConfigs[0], mockItemsReq.rowLvl);
-            expect(getRowCtxSpy).toHaveBeenCalledWith(0, '', mockItemsReq.prevItemCtx);
+            expect(getRowCtxSpy).toHaveBeenCalledWith(0, '', mockItemsReq.parentCtx);
             expect(getNestedMappedItemsSpy).toHaveBeenCalledWith({
                 ...mockItemsReq,
                 data: mockData[0],
                 rowLvl: mockItemsReq.rowLvl + 1,
-                prevItemCtx: mockItemCtx
+                parentCtx: mockItemCtx
             });
             expect(mockTransformFn).toHaveBeenCalledWith({
                 idx: 0,
                 item: mockData[0],
-                itemCtx: mockItemCtx,
+                itemKey: '',
                 itemLvl: mockItemsReq.rowLvl,
+                itemCtx: mockItemCtx,
+                parentCtx: '',
                 nestedItems: mockNestedItems,
                 isNestedOpen: mockIsOpen
             });
@@ -136,7 +136,9 @@ describe('Service - Collapse Handle', () => {
             expect(handle.getMappedItems({...mockItemsReq})).toEqual([{
                 idx: 0,
                 item: mockData[0],
+                itemKey: '',
                 itemCtx: mockItemCtx,
+                parentCtx: '',
                 itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
                 isNestedOpen: mockIsOpen
@@ -206,11 +208,7 @@ describe('Service - Collapse Handle', () => {
             const mockDataObj: Record<string, any> = {[mockRowKey]: mockNestedData};
 
             it('should return null if config doesnt exist, or `rowkey` in config doesnt exist, or `rowKey` is empty', () => {
-                const { ROW_CONFIG_MISSING, ROW_KEY_MISSING } = handle.errMsg;
-
-                expect(() => {
-                    handle.getValidatedData(mockDataObj, null);
-                }).toThrowError(ROW_CONFIG_MISSING);
+                const { ROW_KEY_MISSING } = handle.errMsg;
 
                 expect(() => {
                     handle.getValidatedData(mockDataObj, [] as any);
@@ -222,15 +220,11 @@ describe('Service - Collapse Handle', () => {
             });
 
             it('should return null if row key is not a string, or if data`s property doesnt exist, or if its value is not an array', () => {
-                const { ROW_KEY_TYPE, PROP_NOT_FOUND, PROP_DATA_TYPE } = handle.errMsg;
+                const { ROW_KEY_TYPE, PROP_DATA_TYPE } = handle.errMsg;
 
                 expect(() => {
                     handle.getValidatedData({}, [ ()=>{} ])
                 }).toThrowError(ROW_KEY_TYPE);
-
-                expect(() => {
-                    handle.getValidatedData({}, ['a/b'])
-                }).toThrowError(PROP_NOT_FOUND);
 
                 expect(() => {
                     handle.getValidatedData({[mockRowKey]: ''}, mockConfig)
@@ -256,7 +250,7 @@ describe('Service - Collapse Handle', () => {
             data: {[mockNestedKey]: mockNestedData},
             rowConfigs: [[mockNestedKey]],
             rowLvl: 0,
-            prevItemCtx: '',
+            parentCtx: '',
             showTargetCtx: []
         };
 
