@@ -4,20 +4,20 @@ import { ClpsHandle } from './';
 describe('Service - Collapse Handle', () => {
     const { isDefNestedOpen, getItemPath, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
     let handle: ClpsHandle;
-    let getMappedItemsSpy: jest.SpyInstance;
+    let getMappedItemsCtxSpy: jest.SpyInstance;
     let getValidatedDataSpy: jest.SpyInstance;
     let parseRowConfigSpy: jest.SpyInstance;
     let getItemPathSpy: jest.SpyInstance;
-    let getNestedMappedItemsSpy: jest.SpyInstance;
+    let getMappedNestedItemsCtxSpy: jest.SpyInstance;
     let isDefNestedOpenSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new ClpsHandle();
-        getMappedItemsSpy = jest.spyOn(handle, 'getMappedItems');
+        getMappedItemsCtxSpy = jest.spyOn(handle, 'getMappedItemsCtx');
         parseRowConfigSpy = jest.spyOn(handle, 'parseRowConfig');
         getItemPathSpy = jest.spyOn(handle, 'getItemPath');
         getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
-        getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
+        getMappedNestedItemsCtxSpy = jest.spyOn(handle, 'getMappedNestedItemsCtx');
         isDefNestedOpenSpy = jest.spyOn(handle, 'isDefNestedOpen');
     });
 
@@ -55,7 +55,7 @@ describe('Service - Collapse Handle', () => {
         const mockMappedItems: any[] = [];
 
         beforeEach(() => {
-            getMappedItemsSpy.mockReturnValue(mockMappedItems);
+            getMappedItemsCtxSpy.mockReturnValue(mockMappedItems);
         });
 
         it('should return falsy value if the config is invalid', () => {
@@ -63,7 +63,7 @@ describe('Service - Collapse Handle', () => {
 
             expect(handle.getClpsState()).toBeFalsy();
             expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
-            expect(getMappedItemsSpy).not.toHaveBeenCalled();
+            expect(getMappedItemsCtxSpy).not.toHaveBeenCalled();
         });
 
         it('should return mapped items if the config is valid', () => {
@@ -71,7 +71,7 @@ describe('Service - Collapse Handle', () => {
 
             expect(handle.getClpsState()).toBe(mockMappedItems);
             expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
-            expect(getMappedItemsSpy).toHaveBeenCalledWith({
+            expect(getMappedItemsCtxSpy).toHaveBeenCalledWith({
                 ...handle.defClpsConfig,
                 rowLvl: 0,
                 parentPath: ''
@@ -79,7 +79,7 @@ describe('Service - Collapse Handle', () => {
         });
     });
 
-    describe('Method - getMappedItems: Get mapped items based on the row configs provided', () => {
+    describe('Method - getMappedItemsCtx: Get mapped items based on the row configs provided', () => {
         const mockData: any[] = [ {text: 'a'}];
         const mockTransformFn: jest.Mock = jest.fn();
         const mockRows: IRowConfig = { rowKey: '', transformFn: mockTransformFn };
@@ -104,13 +104,13 @@ describe('Service - Collapse Handle', () => {
         it('should return mapped items when transform function is provided and there are nested items', () => {
             const mockNestedItems: any[] = null;
             parseRowConfigSpy.mockReturnValue(mockRows);
-            getNestedMappedItemsSpy.mockReturnValue(mockNestedItems);
+            getMappedNestedItemsCtxSpy.mockReturnValue(mockNestedItems);
 
-            expect(handle.getMappedItems(mockItemsReq)).toEqual([mockTransformResult]);
+            expect(handle.getMappedItemsCtx(mockItemsReq)).toEqual([mockTransformResult]);
             expect(isDefNestedOpenSpy).not.toHaveBeenCalled();
             expect(parseRowConfigSpy).toHaveBeenCalledWith(mockItemsReq.rows[0], mockItemsReq.rowLvl);
             expect(getItemPathSpy).toHaveBeenCalledWith(0, '', mockItemsReq.parentPath);
-            expect(getNestedMappedItemsSpy).toHaveBeenCalledWith({
+            expect(getMappedNestedItemsCtxSpy).toHaveBeenCalledWith({
                 ...mockItemsReq,
                 data: mockData[0],
                 rowLvl: mockItemsReq.rowLvl + 1,
@@ -131,9 +131,9 @@ describe('Service - Collapse Handle', () => {
         it('should return mapped items when transform function is not provided and there is no nested items', () => {
             const mockNestedItems: any[] = [];
             parseRowConfigSpy.mockReturnValue({...mockRows, transformFn: null});
-            getNestedMappedItemsSpy.mockReturnValue(mockNestedItems);
+            getMappedNestedItemsCtxSpy.mockReturnValue(mockNestedItems);
 
-            expect(handle.getMappedItems({...mockItemsReq})).toEqual([{
+            expect(handle.getMappedItemsCtx({...mockItemsReq})).toEqual([{
                 idx: 0,
                 item: mockData[0],
                 itemKey: '',
@@ -246,7 +246,7 @@ describe('Service - Collapse Handle', () => {
 
     });
 
-    describe('Method - getNestedMappedItems: Get Nested Mapped Items', () => {
+    describe('Method - getMappedNestedItemsCtx: Get Nested Mapped Items', () => {
         const mockMappedItems: any[] = [];
         const mockNestedData: any[] = [1,2];
         const mockNestedKey: string = 'prop';
@@ -259,18 +259,18 @@ describe('Service - Collapse Handle', () => {
         };
 
         beforeEach(() => {
-            getMappedItemsSpy.mockReturnValue(mockMappedItems);
+            getMappedItemsCtxSpy.mockReturnValue(mockMappedItems);
         });
 
         it('should return mapped items when mapping is valid', () => {
             getValidatedDataSpy.mockReturnValue(mockNestedData);
 
-            expect(handle.getNestedMappedItems(mockItemsReq)).toBe(mockMappedItems);
+            expect(handle.getMappedNestedItemsCtx(mockItemsReq)).toBe(mockMappedItems);
             expect(getValidatedDataSpy).toHaveBeenCalledWith(
                 mockItemsReq.data,
                 mockItemsReq.rows[0]
             );
-            expect(getMappedItemsSpy).toHaveBeenCalledWith({
+            expect(getMappedItemsCtxSpy).toHaveBeenCalledWith({
                 ...mockItemsReq,
                 data: mockNestedData
             });
@@ -279,12 +279,12 @@ describe('Service - Collapse Handle', () => {
         it('should return null when mapping is not valid', () => {
             getValidatedDataSpy.mockReturnValue(null);
 
-            expect(handle.getNestedMappedItems(mockItemsReq)).toBe(null);
+            expect(handle.getMappedNestedItemsCtx(mockItemsReq)).toBe(null);
             expect(getValidatedDataSpy).toHaveBeenCalledWith(
                 mockItemsReq.data,
                 mockItemsReq.rows[0]
             );
-            expect(getMappedItemsSpy).not.toHaveBeenCalled();
+            expect(getMappedItemsCtxSpy).not.toHaveBeenCalled();
         });
     });
 

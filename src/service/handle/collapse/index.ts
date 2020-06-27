@@ -24,13 +24,13 @@ export class ClpsHandle {
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getMappedItems({data, rows, rowLvl: 0, parentPath: '', visiblePath});
+        return this.getMappedItemsCtx({data, rows, rowLvl: 0, parentPath: '', visiblePath});
     }
 
     /**
      *
      * Usage in React:
-     * .getMappedItems({
+     * .getMappedItemsCtx({
      *      data: <dataArray>,
      *      rowLvl: 0,       // starting index for rows
      *      rowConfig: [    //
@@ -40,7 +40,7 @@ export class ClpsHandle {
      *      ]
      * })
      */
-    getMappedItems<TRtnType>(itemsReq: IItemsReq): IItems[] | TRtnType[] {
+    getMappedItemsCtx<TRtnType>(itemsReq: IItemsReq): IItems[] | TRtnType[] {
         const { data, rows, rowLvl, parentPath, visiblePath }: IItemsReq = itemsReq;
         const { rowKey, transformFn }: IRowConfig = this.parseRowConfig(rows[rowLvl], rowLvl);
 
@@ -49,14 +49,12 @@ export class ClpsHandle {
             const itemPath: string = this.getItemPath(idx, rowKey, parentPath);
 
             // Nested Items
-            const nestedItems: IItems[] = this.getNestedMappedItems({
+            const nestedItems: IItems[] = this.getMappedNestedItemsCtx({
                 ...itemsReq,
                 data: item,
                 rowLvl: rowLvl+1,
                 parentPath: itemPath
             });
-
-            // TODO: make this isDefNestedOpen
             const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemPath, visiblePath) : false;
 
             // Return item
@@ -65,10 +63,10 @@ export class ClpsHandle {
         });
     }
 
-    getNestedMappedItems(itemsReq: IItemsReq): IItems[] {
+    getMappedNestedItemsCtx(itemsReq: IItemsReq): IItems[] {
         const { data, rows, rowLvl } = itemsReq;
         const nestedData: any[] = this.getValidatedData(data, rows[rowLvl]);
-        return nestedData ? this.getMappedItems({...itemsReq, data: nestedData}) : null;
+        return nestedData ? this.getMappedItemsCtx({...itemsReq, data: nestedData}) : null;
     }
 
     /**
