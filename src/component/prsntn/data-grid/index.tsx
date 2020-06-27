@@ -1,4 +1,4 @@
-import React, { Component, memo, ReactElement } from "react";
+import React, { Component, memo } from "react";
 import { ClpsHandle } from '../../../service/handle/collapse';
 
 import { IProps, IRow, TCmpCls, TFn, IState } from './type';
@@ -60,8 +60,8 @@ export class _DataGrid extends Component<IProps, any> {
     }
 
     getClpsProps(mappedProps, nestState: IState, showOnePerLvl: boolean) {
-        // TODO: Renamed `isNestedOpen` to `isDefNestedOpen`
-        const { itemCtx, itemKey, itemLvl, parentCtx, isNestedOpen: isDefNestedOpen } = mappedProps;
+        // TODO: Renamed `isDefNestedOpen` to `isDefNestedOpen`
+        const { itemCtx, itemKey, itemLvl, parentCtx, isDefNestedOpen } = mappedProps;
         const isInClpsState: boolean = typeof nestState[itemCtx] !== 'undefined';
 
         // Only Set the state for each Item during Initialization, if not use the existing one
