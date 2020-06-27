@@ -28,18 +28,18 @@ export class _DataGrid extends Component<IProps, any> {
     }
 
     render() {
-        const { data, rows, nestingOption } = this.props;
+        const { data, rows: rowsConfig, nestingOption } = this.props;
         const {  showInitial } = nestingOption;
-        const rowConfigs = this.getMappedConfig(rows);
+        const rows = this.getMappedConfig(rowsConfig);
         return (
             <ul>
-                {this.clpsHandle.getClpsState({data, rowConfigs, visiblePath: showInitial})}
+                {this.clpsHandle.getClpsState({data, rows, visiblePath: showInitial})}
             </ul>
         );
     }
 
-    getMappedConfig(rowConfigs: IRow[]) {
-        return rowConfigs.map((row: IRow, idx: number) => {
+    getMappedConfig(rows: IRow[]) {
+        return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
             const transformFn = this.getCmpTransformFn(row[transformFnIdx]);

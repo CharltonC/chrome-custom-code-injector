@@ -2,7 +2,7 @@ import { IUserRowConfig, IRowConfig, IErrMsg, TClpsShowTarget, TData, TFn, IItem
 
 export class ClpsConfig {
     data: any[] = [];
-    rowConfigs: IUserRowConfig[] = [];
+    rows: IUserRowConfig[] = [];
     visiblePath?: TClpsShowTarget = 'ALL';       // setting this to be diff. value will trigger change in React
 }
 
@@ -18,13 +18,13 @@ export class ClpsHandle {
     };
 
     getClpsState(clpsConfig?: ClpsConfig): any[] {
-        const { data, rowConfigs, visiblePath }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
+        const { data, rows, visiblePath }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getMappedItems({data, rowConfigs, rowLvl: 0, parentPath: '', visiblePath});
+        return this.getMappedItems({data, rows, rowLvl: 0, parentPath: '', visiblePath});
     }
 
     /**
@@ -32,7 +32,7 @@ export class ClpsHandle {
      * Usage in React:
      * .getMappedItems({
      *      data: <dataArray>,
-     *      rowLvl: 0,       // starting index for rowConfigs
+     *      rowLvl: 0,       // starting index for rows
      *      rowConfig: [    //
      *          [ (mappedItem) => <newStuffToReturn>? ]
      *          ['nestedDataLvl1Key', (mappedItem) => <newStuffToReturn>? ]
@@ -41,8 +41,8 @@ export class ClpsHandle {
      * })
      */
     getMappedItems<TRtnType>(itemsReq: IItemsReq): IItems[] | TRtnType[] {
-        const { data, rowConfigs, rowLvl, parentPath, visiblePath }: IItemsReq = itemsReq;
-        const { rowKey, transformFn }: IRowConfig = this.parseRowConfig(rowConfigs[rowLvl], rowLvl);
+        const { data, rows, rowLvl, parentPath, visiblePath }: IItemsReq = itemsReq;
+        const { rowKey, transformFn }: IRowConfig = this.parseRowConfig(rows[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
             // This Item
@@ -66,8 +66,8 @@ export class ClpsHandle {
     }
 
     getNestedMappedItems(itemsReq: IItemsReq): IItems[] {
-        const { data, rowConfigs, rowLvl } = itemsReq;
-        const nestedData: any[] = this.getValidatedData(data, rowConfigs[rowLvl]);
+        const { data, rows, rowLvl } = itemsReq;
+        const nestedData: any[] = this.getValidatedData(data, rows[rowLvl]);
         return nestedData ? this.getMappedItems({...itemsReq, data: nestedData}) : null;
     }
 

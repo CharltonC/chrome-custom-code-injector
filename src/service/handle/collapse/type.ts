@@ -17,7 +17,7 @@ export interface IRowConfig {
 
 export interface IItemsReq {
     data: TData;
-    rowConfigs: IUserRowConfig[];
+    rows: IUserRowConfig[];
     rowLvl: number;
     parentPath?: string;
     visiblePath: TClpsShowTarget;
