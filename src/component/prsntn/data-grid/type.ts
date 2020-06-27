@@ -18,11 +18,17 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     rows: IRow[];
     type?: TGridType;
     header?: TCmpCls;
-    nestingOption?: any;
+
+    // TODO: renamed later
+    nesting?: any;
+    sort?: any;
+    paginate?: any;
 }
 
 export interface IState {
     nestState: TNestState;
+    sortState: { key: string; isAsc: boolean; };
+    pgnState: any;
 }
 
 export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {

@@ -16,58 +16,131 @@ const upArwIconElem = inclStaticIcon('arrow-up', true);
 
 const sampleData = [
     {
+
+        name: 'Zack',
+        age: '21',
         id: 'A1',
         isCollapsed: false,
         lvl1key: [
             {
+
+                name: 'John',
+                age: '21',
                 id: 'A1-B1',
                 isCollapsed: false,
                 lvl2key: [
                     {
+
+                        name: 'John',
+                        age: '21',
                         id: 'A1-B1-C1',
                         isCollapsed: false,
                         lvl3key: [
                             {
+
+                                name: 'John',
+                                age: '21',
                                 id: 'A1-B1-C1-D1',
                                 isCollapsed: false,
                                 lvl4key: [
-                                    {id: 'A1-B1-C1-D1-E1'},
-                                    {id: 'A1-B1-C1-D1-E2'},
+                                    {
+                                        name: 'John',
+                                        age: '21',
+                                        id: 'A1-B1-C1-D1-E1'},
+                                    {
+                                        name: 'John',
+                                        age: '21',
+                                        id: 'A1-B1-C1-D1-E2'},
                                 ]
                             },
-                            {id: 'A1-B1-C2-D2'},
-                            {id: 'A1-B1-C1-D3'},
-                            {id: 'A1-B1-C2-D4'}
+                            {
+                                name: 'John',
+                                age: '21',
+                                id: 'A1-B1-C2-D2'},
+                            {
+                                name: 'John',
+                                age: '21',
+                                id: 'A1-B1-C1-D3'},
+                            {
+                                name: 'John',
+                                age: '21',
+                                id: 'A1-B1-C2-D4'}
                         ]
                     },
-                    {id: 'A1-B1-C2'}
+                    {
+                        name: 'John',
+                        age: '21',
+                        id: 'A1-B1-C2'}
                 ]
             },
             {
+
+                name: 'John',
+                age: '21',
                 id: 'A1-B2',
                 lvl2key: [
-                    {id: 'A1-B2-C1'},
-                    {id: 'A1-B2-C2'}
+                    {
+                        name: 'John',
+                        age: '21',
+                        id: 'A1-B2-C1'},
+                    {
+                        name: 'John',
+                        age: '21',
+                        id: 'A1-B2-C2'}
                 ]
             }
         ]
     },
     {
+
+        name: 'Jane',
+        age: '21',
         id: 'A2',
         lvl1key: [
             {
+
+                name: 'John',
+                age: '21',
                 id: 'A2-B1',
                 lvl2key: [
-                    {id: 'A2-B1-C1'},
-                    {id: 'A2-B1-C2'}
+                    {
+                        name: 'John',
+                        age: '21',
+                        id: 'A2-B1-C1'},
+                    {
+                        name: 'John',
+                        age: '21',
+                        id: 'A2-B1-C2'}
                 ]
             },
             {
+
+                name: 'John',
+                age: '21',
                 id: 'A2-B2',
                 lvl2key: [
-                    {id: 'A2-B2-C1'},
-                    {id: 'A2-B2-C2'}
+                    {
+                        name: 'John',
+                        age: '21',
+                        id: 'A2-B2-C1'},
+                    {
+                        name: 'John',
+                        age: '21',
+                        id: 'A2-B2-C2'}
                 ]
+            }
+        ]
+    },
+    {
+        name: 'Michael',
+        age: '21',
+        id: 'A2',
+        lvl1key: [
+            {
+
+                name: 'John',
+                age: '21',
+                id: 'A1-B1',
             }
         ]
     }
@@ -117,6 +190,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
     const ListItemCmp = ({idx, item, itemPath, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
         return (<li>
             { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
+            { ' - ' + item.name }
             {
                 nestedItems &&
                 <button type="button" onClick={onCollapseChanged}>
@@ -131,25 +205,32 @@ export const ViaInternalGeneratedCollapsibleState = () => {
     };
 
     const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
-        return (<tr>
-            <td>
-            { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
-            {
-                nestedItems &&
-                <button type="button" onClick={onCollapseChanged}>
-                    {isNestedOpen ? upArwIconElem : dnArwIconElem }
-                </button>
-            }
+        return <>
+            <tr>
+                <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
+                <td>{item.name}</td>
+                <td>{item.age}</td>
+                <td>{item.id}</td>
+                {
+                    nestedItems &&
+                    <td><button type="button" onClick={onCollapseChanged}>
+                        {isNestedOpen ? upArwIconElem : dnArwIconElem }
+                    </button></td>
+                }
+            </tr>
             {
                 nestedItems && isNestedOpen &&
-                <table>
-                    <tbody>
-                        {nestedItems}
-                    </tbody>
-                </table>
+                <tr>
+                    <td colSpan={5}>
+                        <table>
+                            <tbody>
+                                {nestedItems}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
             }
-            </td>
-        </tr>);
+        </>;
     };
 
     return (
@@ -163,10 +244,18 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     ['lvl3key', ListItemCmp],
                     ['lvl4key', ListItemCmp]
                 ]}
-                type={'list'}
-                nestingOption={{
-                    showInitial: 'NONE',
-                    showOnePerLvl: true
+                // type={'table'}
+                nesting={{
+                    showInitial: 'ALL',
+                    // showOnePerLvl: true
+                }}
+                sort={{
+                    key: 'name',
+                    isAsc: true
+                }}
+                paginate={{
+                    page: 0,
+                    increment: [1,2,3],
                 }}
                  // show one only at a time
                 // showCollapse={'NONE'}                           // hide all
