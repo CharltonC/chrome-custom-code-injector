@@ -1,113 +1,127 @@
-import React, { Component, memo } from "react";
+import React, { Component, memo, ReactElement } from "react";
+
+import { IRawRowConfig, IItemCtx } from '../../../service/handle/collapse/type';
 import { ClpsHandle } from '../../../service/handle/collapse';
 
-import { IProps, IRow, TCmpCls, TFn, IState } from './type';
+import { IProps, IRow, TCmpCls, TFn, TNestState, IClpsProps, IState } from './type';
 
-
-export class _DataGrid extends Component<IProps, any> {
+export class _DataGrid extends Component<IProps, IState> {
     readonly clpsHandle = new ClpsHandle();
 
-    constructor(props) {
+    constructor(props: IProps) {
         super(props);
-
-        // TODO: only set collapse if rows.length >1
         this.state = {
             nestState: {}
         };
     }
 
-    UNSAFE_componentWillReceiveProps({data}) {
+    UNSAFE_componentWillReceiveProps({data}): void {
         const { data: currData, rows } = this.props;
 
         // When there are nested rows and when data changes, reset the nesting state
         if (rows.length <= 1 || data === currData) return;
-        this.setState({
-            ...this.state,
-            nestState: {}
-        });
+        this.setState({...this.state, nestState: {}});
     }
 
     render() {
-        const { data, rows: rowsConfig, nestingOption } = this.props;
-        const {  showInitial } = nestingOption;
-        const rows = this.getMappedConfig(rowsConfig);
+        const { data, rows: rowsConfig, nestingOption, type } = this.props;
+        const { showInitial: visiblePath } = nestingOption;
+        const rows: IRawRowConfig[] = this.getMappedConfig(rowsConfig);
+        const rowElems: ReactElement[] = this.clpsHandle.getClpsState({data, rows, visiblePath});
+        return (type === 'table') ? this.renderTable(rowElems) : this.renderList(rowElems);
+    }
+
+    renderList(items: ReactElement[]): ReactElement {
         return (
             <ul>
-                {this.clpsHandle.getClpsState({data, rows, visiblePath: showInitial})}
+                {items}
             </ul>
         );
     }
 
-    getMappedConfig(rows: IRow[]) {
+    renderTable(items: ReactElement[]): ReactElement {
+        return (
+            <table>
+                <tbody>
+                    {items}
+                </tbody>
+            </table>
+        );
+    }
+
+    getMappedConfig(rows: IRow[]): IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
             const transformFn = this.getCmpTransformFn(row[transformFnIdx]);
-            return is1stRowConfig ? [transformFn] : [row[0], transformFn];
+            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as IRawRowConfig;
         });
     }
 
     getCmpTransformFn(Cmp: TCmpCls): TFn {
-        return (mappedProps) => {
+        return (itemCtx: IItemCtx) => {
             const { nestState } = this.state;
             const { nestingOption } = this.props;
-            const { itemPath, nestedItems } = mappedProps;
+            const { itemPath, nestedItems } = itemCtx;
             const hsClpsProps: boolean = nestedItems && nestingOption;
-            // TODO: clpsProps type
-            const clpsProps = hsClpsProps ? this.getClpsProps(mappedProps, nestState, nestingOption.showOnePerLvl) : {};
-            return <Cmp key={itemPath} {...mappedProps} {...clpsProps} />;
+            const clpsProps: IClpsProps = hsClpsProps ? this.getItemClpsProps(itemCtx, nestState) : {};
+            return <Cmp key={itemPath} {...itemCtx} {...clpsProps} />;
         };
     }
 
-    getClpsProps(mappedProps, nestState: IState, showOnePerLvl: boolean) {
-        // TODO: Renamed `isDefNestedOpen` to `isDefNestedOpen`
-        const { itemPath, itemKey, itemLvl, parentPath, isDefNestedOpen } = mappedProps;
-        const isInClpsState: boolean = typeof nestState[itemPath] !== 'undefined';
+    //// Collapse Relevant
+    getItemClpsProps(itemCtx: IItemCtx, nestState: TNestState): IClpsProps {
+        const { itemPath, isDefNestedOpen } = itemCtx;
 
         // Only Set the state for each Item during Initialization, if not use the existing one
-        // TODO: separate method & move out of getClpsProps
-        if (!isInClpsState) {
-            nestState[itemPath] = isDefNestedOpen;
-        }
+        const isInClpsState: boolean = typeof nestState[itemPath] !== 'undefined';
+        if (!isInClpsState) this.setItemInitialClpsState(nestState, itemCtx);
+
         const isNestedOpen: boolean = isInClpsState ? nestState[itemPath] : isDefNestedOpen;
+        const onCollapseChanged = this.getItemOnClpsChangedFn(itemCtx, isNestedOpen);
 
-        // TODO: Separate method
-        // Set the Collapse Fn
-        const onCollapseChanged = () => {
-            // TODO: Separate Method for getting impactedItemState
-            // find the items that are at the same level and if they are open (true), set them to false
-            let impactedItemsState = {};
-            if (showOnePerLvl) {
-                const itemPaths: string[] = Object.getOwnPropertyNames(nestState);
-                const isRootLvlItem: boolean = itemLvl === 0;
-                const relCtx: string = isRootLvlItem ? '' : `${parentPath}/${itemKey}:`;
-                const relCtxPattern: RegExp = new RegExp(relCtx + '\\d+$');
-                const impactedItemPaths: string[] = itemPaths.filter(ctx => {
-                    return isRootLvlItem ?
-                        Number.isInteger(Number(ctx)) :
-                        relCtxPattern.test(ctx);
-                });
-                impactedItemsState = impactedItemPaths.reduce((impactedState, ctx) => {
-                    const isImpactedItemOpen: boolean = nestState[ctx];
-                    return isImpactedItemOpen ? {
-                        ...impactedState,
-                        [ctx]: false
-                    } : impactedState;
-                }, {});
-            }
+        return { isNestedOpen, onCollapseChanged };
+    }
 
-            // Updates/Rerender
+    setItemInitialClpsState(nestState: TNestState, {itemPath, isDefNestedOpen}: IItemCtx): void {
+        nestState[itemPath] = isDefNestedOpen;
+    }
+
+    getItemOnClpsChangedFn(itemCtx: IItemCtx, isNestedOpen: boolean): TFn {
+        const { nestState } = this.state;
+        const { showOnePerLvl } = this.props.nestingOption;
+
+        return (() => {
+            // Find the items that are at the same level and if they are open (true), close them (set them to false)
+            const impactedItemsState: TNestState = showOnePerLvl ? this.getImpactedItemsClpsState(nestState, itemCtx) : {};
+            const itemState: TNestState = {[itemCtx.itemPath]: !isNestedOpen};
             this.setState({
                 ...this.state,
                 nestState: {
                     ...nestState,
                     ...impactedItemsState,
-                    [itemPath]: !isNestedOpen,
+                    ...itemState
                 }
             });
-        };
+        }).bind(this);
+    }
 
-        return { isNestedOpen, onCollapseChanged: onCollapseChanged.bind(this) };
+    getImpactedItemsClpsState(nestState: TNestState, {itemLvl, itemKey, parentPath}: IItemCtx): TNestState {
+        const itemPaths: string[] = Object.getOwnPropertyNames(nestState);
+        const isRootLvlItem: boolean = itemLvl === 0;
+        const relCtx: string = isRootLvlItem ? '' : `${parentPath}/${itemKey}:`;
+        const relCtxPattern: RegExp = new RegExp(relCtx + '\\d+$');
+
+        const impactedItemPaths: string[] = itemPaths.filter((ctx: string) => {
+            return isRootLvlItem ?
+                Number.isInteger(Number(ctx)) :
+                relCtxPattern.test(ctx);
+        });
+
+        return impactedItemPaths.reduce((impactedState: TNestState, ctx: string) => {
+            const isImpactedItemOpen: boolean = nestState[ctx];
+            return isImpactedItemOpen ? {...impactedState, [ctx]: false} : impactedState;
+        }, {});
     }
 }
 

@@ -130,6 +130,28 @@ export const ViaInternalGeneratedCollapsibleState = () => {
         </li>);
     };
 
+    const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
+        return (<tr>
+            <td>
+            { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
+            {
+                nestedItems &&
+                <button type="button" onClick={onCollapseChanged}>
+                    {isNestedOpen ? upArwIconElem : dnArwIconElem }
+                </button>
+            }
+            {
+                nestedItems && isNestedOpen &&
+                <table>
+                    <tbody>
+                        {nestedItems}
+                    </tbody>
+                </table>
+            }
+            </td>
+        </tr>);
+    };
+
     return (
         <div style={defStyle}>
             <DataGrid
@@ -141,6 +163,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     ['lvl3key', ListItemCmp],
                     ['lvl4key', ListItemCmp]
                 ]}
+                type={'list'}
                 nestingOption={{
                     showInitial: 'NONE',
                     showOnePerLvl: true
