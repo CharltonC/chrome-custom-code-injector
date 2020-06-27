@@ -34,9 +34,9 @@ export class ClpsHandle {
      *      data: <dataArray>,
      *      rowLvl: 0,       // starting index for rows
      *      rowConfig: [    //
-     *          [ (mappedItem) => <newStuffToReturn>? ]
-     *          ['nestedDataLvl1Key', (mappedItem) => <newStuffToReturn>? ]
-     *          ['nestedDataLvl2Key', (mappedItem) => <newStuffToReturn>? ]
+     *          [ (itemCtx) => <newStuffToReturn>? ]
+     *          ['nestedDataLvl1Key', (itemCtx) => <newStuffToReturn>? ]
+     *          ['nestedDataLvl2Key', (itemCtx) => <newStuffToReturn>? ]
      *      ]
      * })
      */
@@ -58,8 +58,8 @@ export class ClpsHandle {
             const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemPath, visiblePath) : false;
 
             // Return item
-            const mappedItem: IItems = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
-            return transformFn ? transformFn(mappedItem) : mappedItem;
+            const itemCtx: IItems = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
+            return transformFn ? transformFn(itemCtx) : itemCtx;
         });
     }
 
@@ -84,9 +84,9 @@ export class ClpsHandle {
      *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
      * }
      */
-    isDefNestedOpen(rowCtx: string, visiblePath: TClpsShowTarget): boolean {
+    isDefNestedOpen(itemPath: string, visiblePath: TClpsShowTarget): boolean {
         return Array.isArray(visiblePath) ?
-            visiblePath.some((showTarget: string) => showTarget.indexOf(rowCtx, 0) === 0) :
+            visiblePath.some((path: string) => path.indexOf(itemPath, 0) === 0) :
             (visiblePath === 'ALL' ? true : false);
     }
 
