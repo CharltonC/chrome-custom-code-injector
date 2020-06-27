@@ -33,7 +33,7 @@ export class _DataGrid extends Component<IProps, any> {
         const rowConfigs = this.getMappedConfig(rows);
         return (
             <ul>
-                {this.clpsHandle.getClpsState({data, rowConfigs, showTargetCtx: showInitial})}
+                {this.clpsHandle.getClpsState({data, rowConfigs, visiblePath: showInitial})}
             </ul>
         );
     }

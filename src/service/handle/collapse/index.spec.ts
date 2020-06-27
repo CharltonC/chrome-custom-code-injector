@@ -26,7 +26,7 @@ describe('Service - Collapse Handle', () => {
             expect(handle.defClpsConfig).toEqual({
                 data: [],
                 rowConfigs: [],
-                showTargetCtx: 'ALL'
+                visiblePath: 'ALL'
             });
         });
     });
@@ -88,7 +88,7 @@ describe('Service - Collapse Handle', () => {
             rowConfigs: [],
             rowLvl: 0,
             parentPath: '',
-            showTargetCtx: []
+            visiblePath: []
         };
 
         const mockItemPath: string = 'itemPath';
@@ -143,21 +143,21 @@ describe('Service - Collapse Handle', () => {
                 nestedItems: mockNestedItems,
                 isDefNestedOpen: mockIsOpen
             }]);
-            expect(isDefNestedOpenSpy).toHaveBeenCalledWith(mockItemPath, mockItemsReq.showTargetCtx);
+            expect(isDefNestedOpenSpy).toHaveBeenCalledWith(mockItemPath, mockItemsReq.visiblePath);
             expect(mockTransformFn).not.toHaveBeenCalled();
         });
     });
 
     describe('Method - isDefNestedOpen: Check if a row should open/collapse its nested rows', () => {
         describe('when show target context is an array of contexts', () => {
-            const mockShowTargetCtx: TClpsShowTarget = [ 'a', 'a/b' ];
+            const mockVisiblePath: TClpsShowTarget = [ 'a', 'a/b' ];
 
             it('should return false if row context is not found in the show target context', () => {
-                expect(isDefNestedOpen('a/b/c', mockShowTargetCtx)).toBe(false);
+                expect(isDefNestedOpen('a/b/c', mockVisiblePath)).toBe(false);
             });
 
             it('should return true if row context is found in the show target context', () => {
-                expect(isDefNestedOpen('a/b', mockShowTargetCtx)).toBe(true);
+                expect(isDefNestedOpen('a/b', mockVisiblePath)).toBe(true);
             });
         });
 
@@ -255,7 +255,7 @@ describe('Service - Collapse Handle', () => {
             rowConfigs: [[mockNestedKey]],
             rowLvl: 0,
             parentPath: '',
-            showTargetCtx: []
+            visiblePath: []
         };
 
         beforeEach(() => {

@@ -3,7 +3,7 @@ import { IUserRowConfig, IRowConfig, IErrMsg, TClpsShowTarget, TData, TFn, IItem
 export class ClpsConfig {
     data: any[] = [];
     rowConfigs: IUserRowConfig[] = [];
-    showTargetCtx?: TClpsShowTarget = 'ALL';       // setting this to be diff. value will trigger change in React
+    visiblePath?: TClpsShowTarget = 'ALL';       // setting this to be diff. value will trigger change in React
 }
 
 export class ClpsHandle {
@@ -18,13 +18,13 @@ export class ClpsHandle {
     };
 
     getClpsState(clpsConfig?: ClpsConfig): any[] {
-        const { data, rowConfigs, showTargetCtx }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
+        const { data, rowConfigs, visiblePath }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getMappedItems({data, rowConfigs, rowLvl: 0, parentPath: '', showTargetCtx});
+        return this.getMappedItems({data, rowConfigs, rowLvl: 0, parentPath: '', visiblePath});
     }
 
     /**
@@ -41,7 +41,7 @@ export class ClpsHandle {
      * })
      */
     getMappedItems<TRtnType>(itemsReq: IItemsReq): IItems[] | TRtnType[] {
-        const { data, rowConfigs, rowLvl, parentPath, showTargetCtx }: IItemsReq = itemsReq;
+        const { data, rowConfigs, rowLvl, parentPath, visiblePath }: IItemsReq = itemsReq;
         const { rowKey, transformFn }: IRowConfig = this.parseRowConfig(rowConfigs[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
@@ -57,7 +57,7 @@ export class ClpsHandle {
             });
 
             // TODO: make this isDefNestedOpen
-            const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemPath, showTargetCtx) : false;
+            const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemPath, visiblePath) : false;
 
             // Return item
             const mappedItem: IItems = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
@@ -86,10 +86,10 @@ export class ClpsHandle {
      *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
      * }
      */
-    isDefNestedOpen(rowCtx: string, showTargetCtx: TClpsShowTarget): boolean {
-        return Array.isArray(showTargetCtx) ?
-            showTargetCtx.some((showTarget: string) => showTarget.indexOf(rowCtx, 0) === 0) :
-            (showTargetCtx === 'ALL' ? true : false);
+    isDefNestedOpen(rowCtx: string, visiblePath: TClpsShowTarget): boolean {
+        return Array.isArray(visiblePath) ?
+            visiblePath.some((showTarget: string) => showTarget.indexOf(rowCtx, 0) === 0) :
+            (visiblePath === 'ALL' ? true : false);
     }
 
     parseRowConfig(config: IUserRowConfig, rowLvl: number): IRowConfig {

@@ -20,7 +20,7 @@ export interface IItemsReq {
     rowConfigs: IUserRowConfig[];
     rowLvl: number;
     parentPath?: string;
-    showTargetCtx: TClpsShowTarget;
+    visiblePath: TClpsShowTarget;
 }
 
 export interface IItems {
