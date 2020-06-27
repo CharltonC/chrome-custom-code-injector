@@ -2,14 +2,14 @@ import { TClpsShowTarget, IUserRowConfig, IRowConfig, IItemsReq } from './type';
 import { ClpsHandle } from './';
 
 describe('Service - Collapse Handle', () => {
-    const { isNestedOpen, getRowCtx, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
+    const { isDefNestedOpen, getRowCtx, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
     let handle: ClpsHandle;
     let getMappedItemsSpy: jest.SpyInstance;
     let getValidatedDataSpy: jest.SpyInstance;
     let parseRowConfigSpy: jest.SpyInstance;
     let getRowCtxSpy: jest.SpyInstance;
     let getNestedMappedItemsSpy: jest.SpyInstance;
-    let isNestedOpenSpy: jest.SpyInstance;
+    let isDefNestedOpenSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new ClpsHandle();
@@ -18,7 +18,7 @@ describe('Service - Collapse Handle', () => {
         getRowCtxSpy = jest.spyOn(handle, 'getRowCtx');
         getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
         getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
-        isNestedOpenSpy = jest.spyOn(handle, 'isNestedOpen');
+        isDefNestedOpenSpy = jest.spyOn(handle, 'isDefNestedOpen');
     });
 
     describe('Property - defClpsConfig: Default Collapse User Option', () => {
@@ -98,7 +98,7 @@ describe('Service - Collapse Handle', () => {
         beforeEach(() => {
             mockTransformFn.mockReturnValue(mockTransformResult);
             getRowCtxSpy.mockReturnValue(mockItemCtx);
-            isNestedOpenSpy.mockReturnValue(mockIsOpen);
+            isDefNestedOpenSpy.mockReturnValue(mockIsOpen);
         });
 
         it('should return mapped items when transform function is provided and there are nested items', () => {
@@ -107,7 +107,7 @@ describe('Service - Collapse Handle', () => {
             getNestedMappedItemsSpy.mockReturnValue(mockNestedItems);
 
             expect(handle.getMappedItems(mockItemsReq)).toEqual([mockTransformResult]);
-            expect(isNestedOpenSpy).not.toHaveBeenCalled();
+            expect(isDefNestedOpenSpy).not.toHaveBeenCalled();
             expect(parseRowConfigSpy).toHaveBeenCalledWith(mockItemsReq.rowConfigs[0], mockItemsReq.rowLvl);
             expect(getRowCtxSpy).toHaveBeenCalledWith(0, '', mockItemsReq.parentCtx);
             expect(getNestedMappedItemsSpy).toHaveBeenCalledWith({
@@ -124,7 +124,7 @@ describe('Service - Collapse Handle', () => {
                 itemCtx: mockItemCtx,
                 parentCtx: '',
                 nestedItems: mockNestedItems,
-                isNestedOpen: mockIsOpen
+                isDefNestedOpen: mockIsOpen
             });
         });
 
@@ -141,33 +141,33 @@ describe('Service - Collapse Handle', () => {
                 parentCtx: '',
                 itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
-                isNestedOpen: mockIsOpen
+                isDefNestedOpen: mockIsOpen
             }]);
-            expect(isNestedOpenSpy).toHaveBeenCalledWith(mockItemCtx, mockItemsReq.showTargetCtx);
+            expect(isDefNestedOpenSpy).toHaveBeenCalledWith(mockItemCtx, mockItemsReq.showTargetCtx);
             expect(mockTransformFn).not.toHaveBeenCalled();
         });
     });
 
-    describe('Method - isNestedOpen: Check if a row should open/collapse its nested rows', () => {
+    describe('Method - isDefNestedOpen: Check if a row should open/collapse its nested rows', () => {
         describe('when show target context is an array of contexts', () => {
             const mockShowTargetCtx: TClpsShowTarget = [ 'a', 'a/b' ];
 
             it('should return false if row context is not found in the show target context', () => {
-                expect(isNestedOpen('a/b/c', mockShowTargetCtx)).toBe(false);
+                expect(isDefNestedOpen('a/b/c', mockShowTargetCtx)).toBe(false);
             });
 
             it('should return true if row context is found in the show target context', () => {
-                expect(isNestedOpen('a/b', mockShowTargetCtx)).toBe(true);
+                expect(isDefNestedOpen('a/b', mockShowTargetCtx)).toBe(true);
             });
         });
 
         describe('when show target context is `ALL` or `NONE`', () => {
             it('should return true if show target context is show all', () => {
-                expect(isNestedOpen('', 'ALL')).toBe(true);
+                expect(isDefNestedOpen('', 'ALL')).toBe(true);
             });
 
             it('should return false if show target context is show none', () => {
-                expect(isNestedOpen('', 'NONE')).toBe(false);
+                expect(isDefNestedOpen('', 'NONE')).toBe(false);
             });
         });
     });

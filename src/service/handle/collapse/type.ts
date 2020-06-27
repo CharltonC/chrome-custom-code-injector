@@ -31,7 +31,7 @@ export interface IItems {
     itemCtx: string;
     parentCtx: string;
     nestedItems: any[];
-    isNestedOpen: boolean;
+    isDefNestedOpen: boolean;
 }
 
 export interface IErrMsg {

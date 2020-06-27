@@ -57,10 +57,10 @@ export class ClpsHandle {
             });
 
             // TODO: make this isDefNestedOpen
-            const isNestedOpen: boolean = nestedItems ? this.isNestedOpen(itemCtx, showTargetCtx) : false;
+            const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemCtx, showTargetCtx) : false;
 
             // Return item
-            const mappedItem: IItems = { idx, item, itemCtx, parentCtx: parentCtx, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isNestedOpen };
+            const mappedItem: IItems = { idx, item, itemCtx, parentCtx: parentCtx, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
             return transformFn ? transformFn(mappedItem) : mappedItem;
         });
     }
@@ -75,7 +75,7 @@ export class ClpsHandle {
      * Assume the Context of Current Collapse Item is:
      * "0/lvl1NestedKey:0/lvl2NestedKey:0",
      *
-     * Then the Context of relevant parents items that should remain open (i.e. isNestedOpen: true) are:
+     * Then the Context of relevant parents items that should remain open (i.e. isDefNestedOpen: true) are:
      * - "0",
      * - "0/lvl1NestedKey:0"
      *
@@ -86,7 +86,7 @@ export class ClpsHandle {
      *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
      * }
      */
-    isNestedOpen(rowCtx: string, showTargetCtx: TClpsShowTarget): boolean {
+    isDefNestedOpen(rowCtx: string, showTargetCtx: TClpsShowTarget): boolean {
         return Array.isArray(showTargetCtx) ?
             showTargetCtx.some((showTarget: string) => showTarget.indexOf(rowCtx, 0) === 0) :
             (showTargetCtx === 'ALL' ? true : false);
