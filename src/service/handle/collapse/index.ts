@@ -1,9 +1,9 @@
-import { IUserRowConfig, IRowConfig, IErrMsg, TClpsShowTarget, TData, TFn, IItemsReq, IItems } from './type';
+import { IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx } from './type';
 
 export class ClpsConfig {
     data: any[] = [];
-    rows: IUserRowConfig[] = [];
-    visiblePath?: TClpsShowTarget = 'ALL';       // setting this to be diff. value will trigger change in React
+    rows: IRawRowConfig[] = [];
+    visiblePath?: TVisibleNestablePath = 'ALL';       // setting this to be diff. value will trigger change in React
 }
 
 export class ClpsHandle {
@@ -40,16 +40,16 @@ export class ClpsHandle {
      *      ]
      * })
      */
-    getMappedItemsCtx<TRtnType>(itemsReq: IItemsReq): IItems[] | TRtnType[] {
-        const { data, rows, rowLvl, parentPath, visiblePath }: IItemsReq = itemsReq;
-        const { rowKey, transformFn }: IRowConfig = this.parseRowConfig(rows[rowLvl], rowLvl);
+    getMappedItemsCtx<TRtnType>(itemsReq: IItemsCtxReq): IItemCtx[] | TRtnType[] {
+        const { data, rows, rowLvl, parentPath, visiblePath }: IItemsCtxReq = itemsReq;
+        const { rowKey, transformFn }: IParsedRowConfig = this.parseRowConfig(rows[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
             // This Item
             const itemPath: string = this.getItemPath(idx, rowKey, parentPath);
 
             // Nested Items
-            const nestedItems: IItems[] = this.getMappedNestedItemsCtx({
+            const nestedItems: IItemCtx[] = this.getMappedNestedItemsCtx({
                 ...itemsReq,
                 data: item,
                 rowLvl: rowLvl+1,
@@ -58,12 +58,12 @@ export class ClpsHandle {
             const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemPath, visiblePath) : false;
 
             // Return item
-            const itemCtx: IItems = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
+            const itemCtx: IItemCtx = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
             return transformFn ? transformFn(itemCtx) : itemCtx;
         });
     }
 
-    getMappedNestedItemsCtx(itemsReq: IItemsReq): IItems[] {
+    getMappedNestedItemsCtx(itemsReq: IItemsCtxReq): IItemCtx[] {
         const { data, rows, rowLvl } = itemsReq;
         const nestedData: any[] = this.getValidatedData(data, rows[rowLvl]);
         return nestedData ? this.getMappedItemsCtx({...itemsReq, data: nestedData}) : null;
@@ -84,13 +84,13 @@ export class ClpsHandle {
      *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
      * }
      */
-    isDefNestedOpen(itemPath: string, visiblePath: TClpsShowTarget): boolean {
+    isDefNestedOpen(itemPath: string, visiblePath: TVisibleNestablePath): boolean {
         return Array.isArray(visiblePath) ?
             visiblePath.some((path: string) => path.indexOf(itemPath, 0) === 0) :
             (visiblePath === 'ALL' ? true : false);
     }
 
-    parseRowConfig(config: IUserRowConfig, rowLvl: number): IRowConfig {
+    parseRowConfig(config: IRawRowConfig, rowLvl: number): IParsedRowConfig {
         let [ itemOne, itemTwo ] = config;
         itemOne = itemOne ? itemOne : null;
         itemTwo = itemTwo ? itemTwo : null;
@@ -107,7 +107,7 @@ export class ClpsHandle {
     }
 
     // Check if row config, row key, and data exists & has at least 1 item
-    getValidatedData(target: TData, config?: IUserRowConfig): any[] {
+    getValidatedData(target: TData, config?: IRawRowConfig): any[] {
         //// When Target is an array, config is optional
         if (Array.isArray(target)) return !!target.length ? target : null;
 

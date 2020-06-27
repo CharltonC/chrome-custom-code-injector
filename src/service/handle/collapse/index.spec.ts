@@ -1,4 +1,4 @@
-import { TClpsShowTarget, IUserRowConfig, IRowConfig, IItemsReq } from './type';
+import { TVisibleNestablePath, IRawRowConfig, IParsedRowConfig, IItemsCtxReq } from './type';
 import { ClpsHandle } from './';
 
 describe('Service - Collapse Handle', () => {
@@ -82,8 +82,8 @@ describe('Service - Collapse Handle', () => {
     describe('Method - getMappedItemsCtx: Get mapped items based on the row configs provided', () => {
         const mockData: any[] = [ {text: 'a'}];
         const mockTransformFn: jest.Mock = jest.fn();
-        const mockRows: IRowConfig = { rowKey: '', transformFn: mockTransformFn };
-        const mockItemsReq: IItemsReq = {
+        const mockRows: IParsedRowConfig = { rowKey: '', transformFn: mockTransformFn };
+        const mockItemsReq: IItemsCtxReq = {
             data: mockData,
             rows: [],
             rowLvl: 0,
@@ -150,7 +150,7 @@ describe('Service - Collapse Handle', () => {
 
     describe('Method - isDefNestedOpen: Check if a row should open/collapse its nested rows', () => {
         describe('when show target context is an array of contexts', () => {
-            const mockVisiblePath: TClpsShowTarget = [ 'a', 'a/b' ];
+            const mockVisiblePath: TVisibleNestablePath = [ 'a', 'a/b' ];
 
             it('should return false if row context is not found in the show target context', () => {
                 expect(isDefNestedOpen('a/b/c', mockVisiblePath)).toBe(false);
@@ -188,7 +188,7 @@ describe('Service - Collapse Handle', () => {
     describe('Method - getValidatedData: Validate data and row config to determine if it can be proceed or not', () => {
         const mockRowKey: string = 'lorem';
         const mockTransformFn: jest.Mock = jest.fn();
-        const mockConfig: IUserRowConfig = [ mockRowKey, mockTransformFn ];
+        const mockConfig: IRawRowConfig = [ mockRowKey, mockTransformFn ];
 
         describe('when data is an array', () => {
             const mockEmptyDataAry: any[] = [];
@@ -250,7 +250,7 @@ describe('Service - Collapse Handle', () => {
         const mockMappedItems: any[] = [];
         const mockNestedData: any[] = [1,2];
         const mockNestedKey: string = 'prop';
-        const mockItemsReq: IItemsReq = {
+        const mockItemsReq: IItemsCtxReq = {
             data: {[mockNestedKey]: mockNestedData},
             rows: [[mockNestedKey]],
             rowLvl: 0,

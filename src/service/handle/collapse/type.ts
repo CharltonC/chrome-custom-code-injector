@@ -1,29 +1,29 @@
 // other indexes except 0 are optional, e.g. [ 'nestedRowKey', ComponentClass ]
-export type TClpsShowTarget = 'ALL' | 'NONE' | string[];
+export type TVisibleNestablePath = 'ALL' | 'NONE' | string[];
 
 export type TData = any[] | Record<string, any>;
 
 export type TFn = (...args: any[]) => any;
 
-export interface IUserRowConfig extends Array<any> {
+export interface IRawRowConfig extends Array<any> {
     0?: string | TFn;
     1?: TFn;
 }
 
-export interface IRowConfig {
+export interface IParsedRowConfig {
     rowKey?: string;
     transformFn?: TFn;
 }
 
-export interface IItemsReq {
+export interface IItemsCtxReq {
     data: TData;
-    rows: IUserRowConfig[];
+    rows: IRawRowConfig[];
     rowLvl: number;
     parentPath?: string;
-    visiblePath: TClpsShowTarget;
+    visiblePath: TVisibleNestablePath;
 }
 
-export interface IItems {
+export interface IItemCtx {
     idx: number;
     item: any;
     itemLvl: number;
