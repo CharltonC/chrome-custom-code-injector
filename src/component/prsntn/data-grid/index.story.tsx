@@ -76,7 +76,7 @@ const sampleData = [
 // export const ViaACollapsibleKey = () => {
 //     const [ data, setData ] = useState(sampleData);
 
-//     const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems}) => {
+//     const ListItemCmp = ({idx, item, itemPath, itemLvl, nestedItems}) => {
 //         const onCollapseChange = () => {
 //             item.isCollapsed = !item.isCollapsed;
 //             setData(data.slice(0));     // force render when data value changes
@@ -114,7 +114,7 @@ const sampleData = [
 // };
 
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const ListItemCmp = ({idx, item, itemCtx, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
+    const ListItemCmp = ({idx, item, itemPath, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
         return (<li>
             { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
             {

@@ -2,12 +2,12 @@ import { TClpsShowTarget, IUserRowConfig, IRowConfig, IItemsReq } from './type';
 import { ClpsHandle } from './';
 
 describe('Service - Collapse Handle', () => {
-    const { isDefNestedOpen, getRowCtx, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
+    const { isDefNestedOpen, getItemPath, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
     let handle: ClpsHandle;
     let getMappedItemsSpy: jest.SpyInstance;
     let getValidatedDataSpy: jest.SpyInstance;
     let parseRowConfigSpy: jest.SpyInstance;
-    let getRowCtxSpy: jest.SpyInstance;
+    let getItemPathSpy: jest.SpyInstance;
     let getNestedMappedItemsSpy: jest.SpyInstance;
     let isDefNestedOpenSpy: jest.SpyInstance;
 
@@ -15,7 +15,7 @@ describe('Service - Collapse Handle', () => {
         handle = new ClpsHandle();
         getMappedItemsSpy = jest.spyOn(handle, 'getMappedItems');
         parseRowConfigSpy = jest.spyOn(handle, 'parseRowConfig');
-        getRowCtxSpy = jest.spyOn(handle, 'getRowCtx');
+        getItemPathSpy = jest.spyOn(handle, 'getItemPath');
         getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
         getNestedMappedItemsSpy = jest.spyOn(handle, 'getNestedMappedItems');
         isDefNestedOpenSpy = jest.spyOn(handle, 'isDefNestedOpen');
@@ -74,7 +74,7 @@ describe('Service - Collapse Handle', () => {
             expect(getMappedItemsSpy).toHaveBeenCalledWith({
                 ...handle.defClpsConfig,
                 rowLvl: 0,
-                parentCtx: ''
+                parentPath: ''
             });
         });
     });
@@ -87,17 +87,17 @@ describe('Service - Collapse Handle', () => {
             data: mockData,
             rowConfigs: [],
             rowLvl: 0,
-            parentCtx: '',
+            parentPath: '',
             showTargetCtx: []
         };
 
-        const mockItemCtx: string = 'itemCtx';
+        const mockItemPath: string = 'itemPath';
         const mockIsOpen: boolean = false;
         const mockTransformResult: any = {};
 
         beforeEach(() => {
             mockTransformFn.mockReturnValue(mockTransformResult);
-            getRowCtxSpy.mockReturnValue(mockItemCtx);
+            getItemPathSpy.mockReturnValue(mockItemPath);
             isDefNestedOpenSpy.mockReturnValue(mockIsOpen);
         });
 
@@ -109,20 +109,20 @@ describe('Service - Collapse Handle', () => {
             expect(handle.getMappedItems(mockItemsReq)).toEqual([mockTransformResult]);
             expect(isDefNestedOpenSpy).not.toHaveBeenCalled();
             expect(parseRowConfigSpy).toHaveBeenCalledWith(mockItemsReq.rowConfigs[0], mockItemsReq.rowLvl);
-            expect(getRowCtxSpy).toHaveBeenCalledWith(0, '', mockItemsReq.parentCtx);
+            expect(getItemPathSpy).toHaveBeenCalledWith(0, '', mockItemsReq.parentPath);
             expect(getNestedMappedItemsSpy).toHaveBeenCalledWith({
                 ...mockItemsReq,
                 data: mockData[0],
                 rowLvl: mockItemsReq.rowLvl + 1,
-                parentCtx: mockItemCtx
+                parentPath: mockItemPath
             });
             expect(mockTransformFn).toHaveBeenCalledWith({
                 idx: 0,
                 item: mockData[0],
                 itemKey: '',
                 itemLvl: mockItemsReq.rowLvl,
-                itemCtx: mockItemCtx,
-                parentCtx: '',
+                itemPath: mockItemPath,
+                parentPath: '',
                 nestedItems: mockNestedItems,
                 isDefNestedOpen: mockIsOpen
             });
@@ -137,13 +137,13 @@ describe('Service - Collapse Handle', () => {
                 idx: 0,
                 item: mockData[0],
                 itemKey: '',
-                itemCtx: mockItemCtx,
-                parentCtx: '',
+                itemPath: mockItemPath,
+                parentPath: '',
                 itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
                 isDefNestedOpen: mockIsOpen
             }]);
-            expect(isDefNestedOpenSpy).toHaveBeenCalledWith(mockItemCtx, mockItemsReq.showTargetCtx);
+            expect(isDefNestedOpenSpy).toHaveBeenCalledWith(mockItemPath, mockItemsReq.showTargetCtx);
             expect(mockTransformFn).not.toHaveBeenCalled();
         });
     });
@@ -172,16 +172,16 @@ describe('Service - Collapse Handle', () => {
         });
     });
 
-    describe('Method - getRowCtx: Get Context for current Row', () => {
+    describe('Method - getItemPath: Get Context for current Row', () => {
         const mockRowKey: string = 'key';
         const mockRowIdx: number = 0;
         const mockPrefixCtx: string = 'prefix';
 
         it('should return row context', () => {
-            expect(getRowCtx(mockRowIdx, null, null)).toBe(`${mockRowIdx}`);
-            expect(getRowCtx(mockRowIdx, null, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowIdx}`);
-            expect(getRowCtx(mockRowIdx, mockRowKey, null)).toBe(`${mockRowKey}:${mockRowIdx}`);
-            expect(getRowCtx(mockRowIdx, mockRowKey, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowKey}:${mockRowIdx}`);
+            expect(getItemPath(mockRowIdx, null, null)).toBe(`${mockRowIdx}`);
+            expect(getItemPath(mockRowIdx, null, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowIdx}`);
+            expect(getItemPath(mockRowIdx, mockRowKey, null)).toBe(`${mockRowKey}:${mockRowIdx}`);
+            expect(getItemPath(mockRowIdx, mockRowKey, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowKey}:${mockRowIdx}`);
         });
     });
 
@@ -254,7 +254,7 @@ describe('Service - Collapse Handle', () => {
             data: {[mockNestedKey]: mockNestedData},
             rowConfigs: [[mockNestedKey]],
             rowLvl: 0,
-            parentCtx: '',
+            parentPath: '',
             showTargetCtx: []
         };
 

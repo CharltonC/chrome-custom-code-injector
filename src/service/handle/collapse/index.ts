@@ -24,7 +24,7 @@ export class ClpsHandle {
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getMappedItems({data, rowConfigs, rowLvl: 0, parentCtx: '', showTargetCtx});
+        return this.getMappedItems({data, rowConfigs, rowLvl: 0, parentPath: '', showTargetCtx});
     }
 
     /**
@@ -41,26 +41,26 @@ export class ClpsHandle {
      * })
      */
     getMappedItems<TRtnType>(itemsReq: IItemsReq): IItems[] | TRtnType[] {
-        const { data, rowConfigs, rowLvl, parentCtx, showTargetCtx }: IItemsReq = itemsReq;
+        const { data, rowConfigs, rowLvl, parentPath, showTargetCtx }: IItemsReq = itemsReq;
         const { rowKey, transformFn }: IRowConfig = this.parseRowConfig(rowConfigs[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
             // This Item
-            const itemCtx: string = this.getRowCtx(idx, rowKey, parentCtx);
+            const itemPath: string = this.getItemPath(idx, rowKey, parentPath);
 
             // Nested Items
             const nestedItems: IItems[] = this.getNestedMappedItems({
                 ...itemsReq,
                 data: item,
                 rowLvl: rowLvl+1,
-                parentCtx: itemCtx
+                parentPath: itemPath
             });
 
             // TODO: make this isDefNestedOpen
-            const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemCtx, showTargetCtx) : false;
+            const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemPath, showTargetCtx) : false;
 
             // Return item
-            const mappedItem: IItems = { idx, item, itemCtx, parentCtx: parentCtx, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
+            const mappedItem: IItems = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
             return transformFn ? transformFn(mappedItem) : mappedItem;
         });
     }
@@ -134,18 +134,18 @@ export class ClpsHandle {
         return isAry && !!val.length ? val : null;
     }
 
-    getRowCtx(idx: number, rowKey: string, prefixCtx: string): string {
+    getItemPath(idx: number, rowKey: string, prefixCtx: string): string {
         const suffixCtx: string = rowKey ? [rowKey, idx].join(':') : `${idx}`;
         const rowCtx: string = prefixCtx ? [prefixCtx, suffixCtx].join('/') : suffixCtx;
         return rowCtx;
     }
 
-    findItemInData<T>(data: T[], itemCtx: string): T {
-        if (!data.length || !itemCtx) return;
+    findItemInData<T>(data: T[], itemPath: string): T {
+        if (!data.length || !itemPath) return;
 
-        if (!this.ctxPattern.test(itemCtx)) return;
+        if (!this.ctxPattern.test(itemPath)) return;
 
-        const ctxs: string[] = itemCtx.split('/');
+        const ctxs: string[] = itemPath.split('/');
         const matchItem: T | T[] = ctxs.reduce((_data: T[], ctx: string) => {
             // 1st value is the entire match; 2nd value is 1st inner bracket captures the `\w+:` (no `g` flag here in order to capture correctly)
             const [, , key, _idx ] = ctx.match(this.ctxCapPattern);

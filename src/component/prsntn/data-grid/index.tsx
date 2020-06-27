@@ -51,25 +51,25 @@ export class _DataGrid extends Component<IProps, any> {
         return (mappedProps) => {
             const { nestState } = this.state;
             const { nestingOption } = this.props;
-            const { itemCtx, nestedItems } = mappedProps;
+            const { itemPath, nestedItems } = mappedProps;
             const hsClpsProps: boolean = nestedItems && nestingOption;
             // TODO: clpsProps type
             const clpsProps = hsClpsProps ? this.getClpsProps(mappedProps, nestState, nestingOption.showOnePerLvl) : {};
-            return <Cmp key={itemCtx} {...mappedProps} {...clpsProps} />;
+            return <Cmp key={itemPath} {...mappedProps} {...clpsProps} />;
         };
     }
 
     getClpsProps(mappedProps, nestState: IState, showOnePerLvl: boolean) {
         // TODO: Renamed `isDefNestedOpen` to `isDefNestedOpen`
-        const { itemCtx, itemKey, itemLvl, parentCtx, isDefNestedOpen } = mappedProps;
-        const isInClpsState: boolean = typeof nestState[itemCtx] !== 'undefined';
+        const { itemPath, itemKey, itemLvl, parentPath, isDefNestedOpen } = mappedProps;
+        const isInClpsState: boolean = typeof nestState[itemPath] !== 'undefined';
 
         // Only Set the state for each Item during Initialization, if not use the existing one
         // TODO: separate method & move out of getClpsProps
         if (!isInClpsState) {
-            nestState[itemCtx] = isDefNestedOpen;
+            nestState[itemPath] = isDefNestedOpen;
         }
-        const isNestedOpen: boolean = isInClpsState ? nestState[itemCtx] : isDefNestedOpen;
+        const isNestedOpen: boolean = isInClpsState ? nestState[itemPath] : isDefNestedOpen;
 
         // TODO: Separate method
         // Set the Collapse Fn
@@ -78,16 +78,16 @@ export class _DataGrid extends Component<IProps, any> {
             // find the items that are at the same level and if they are open (true), set them to false
             let impactedItemsState = {};
             if (showOnePerLvl) {
-                const itemCtxs: string[] = Object.getOwnPropertyNames(nestState);
+                const itemPaths: string[] = Object.getOwnPropertyNames(nestState);
                 const isRootLvlItem: boolean = itemLvl === 0;
-                const relCtx: string = isRootLvlItem ? '' : `${parentCtx}/${itemKey}:`;
+                const relCtx: string = isRootLvlItem ? '' : `${parentPath}/${itemKey}:`;
                 const relCtxPattern: RegExp = new RegExp(relCtx + '\\d+$');
-                const impactedItemCtxs: string[] = itemCtxs.filter(ctx => {
+                const impactedItemPaths: string[] = itemPaths.filter(ctx => {
                     return isRootLvlItem ?
                         Number.isInteger(Number(ctx)) :
                         relCtxPattern.test(ctx);
                 });
-                impactedItemsState = impactedItemCtxs.reduce((impactedState, ctx) => {
+                impactedItemsState = impactedItemPaths.reduce((impactedState, ctx) => {
                     const isImpactedItemOpen: boolean = nestState[ctx];
                     return isImpactedItemOpen ? {
                         ...impactedState,
@@ -102,7 +102,7 @@ export class _DataGrid extends Component<IProps, any> {
                 nestState: {
                     ...nestState,
                     ...impactedItemsState,
-                    [itemCtx]: !isNestedOpen,
+                    [itemPath]: !isNestedOpen,
                 }
             });
         };

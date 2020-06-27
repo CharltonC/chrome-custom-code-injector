@@ -19,7 +19,7 @@ export interface IItemsReq {
     data: TData;
     rowConfigs: IUserRowConfig[];
     rowLvl: number;
-    parentCtx?: string;
+    parentPath?: string;
     showTargetCtx: TClpsShowTarget;
 }
 
@@ -28,8 +28,8 @@ export interface IItems {
     item: any;
     itemLvl: number;
     itemKey: string;
-    itemCtx: string;
-    parentCtx: string;
+    itemPath: string;
+    parentPath: string;
     nestedItems: any[];
     isDefNestedOpen: boolean;
 }
