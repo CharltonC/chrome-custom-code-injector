@@ -1,4 +1,4 @@
-import { IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice, IPageCtx } from './type';
+import { IPgnState, IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice, IPageCtx } from './type';
 import { PgnHandle, PgnOption } from './';
 
 describe('Class - Paginate Handle', () => {
@@ -14,6 +14,8 @@ describe('Class - Paginate Handle', () => {
     let getRelPageSpy: jest.SpyInstance;
     let getRelPageCtxSpy: jest.SpyInstance;
     let parseRelPageSpy: jest.SpyInstance;
+    let getRecordCtxSpy: jest.SpyInstance;
+    let getDefPgnStateSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new PgnHandle();
@@ -27,6 +29,8 @@ describe('Class - Paginate Handle', () => {
         getRelPageSpy = jest.spyOn(handle, 'getRelPage');
         getRelPageCtxSpy = jest.spyOn(handle, 'getRelPageCtx');
         parseRelPageSpy = jest.spyOn(handle, 'parseRelPage');
+        getRecordCtxSpy = jest.spyOn(handle, 'getRecordCtx');
+        getDefPgnStateSpy = jest.spyOn(handle, 'getDefPgnState');
     });
 
     afterEach(() => {
@@ -51,26 +55,32 @@ describe('Class - Paginate Handle', () => {
         describe('test with spied/mocked methods', () => {
             const mockPgnOption: PgnOption = { list: mockList };
             const mockNoPerPage: number = 20;
+            const mockEmptyPgnState = {};
+            const { increment, incrementIdx } = defOption;
 
             beforeEach(() => {
                 getNoPerPageSpy.mockReturnValue(mockNoPerPage);
-            });
-
-            it('should return no paginate state when list only has 1 or less items', () => {
-                expect(handle.getPgnState({list: ['a']})).toBeFalsy();
-            });
-
-            it('should return no paginate state when total page is lte 1', () => {
-                const { increment, incrementIdx } = defOption;
-
+                getDefPgnStateSpy.mockReturnValue(mockEmptyPgnState);
                 getTotalPageSpy.mockReturnValue(1);
-                expect(handle.getPgnState(mockPgnOption)).toBeFalsy();
+                getRecordCtxSpy.mockReturnValue(mockEmptyPgnState);
+            });
+
+            it('should return def paginate state when list only has 1 or less items', () => {
+                expect(handle.getPgnState({list: ['a']})).toEqual(mockEmptyPgnState);
+                expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
+                expect(getTotalPageSpy).toHaveBeenCalledWith(1, mockNoPerPage);
+                expect(getDefPgnStateSpy).toHaveBeenCalledWith(1, mockNoPerPage);
+            });
+
+            it('should return def paginate state when total page is lte 1', () => {
+                expect(handle.getPgnState(mockPgnOption)).toEqual(mockEmptyPgnState);
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
                 expect(getTotalPageSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
+                expect(getDefPgnStateSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
             });
 
             it('should return paginate state when total list has more than 1 items and total page is more than 1', () => {
-                const { page, increment, incrementIdx } = defOption;
+                const { page } = defOption;
 
                 const mockCurrPage: number = 0;
                 const mockCurrPageNo: number = 1;
@@ -121,7 +131,10 @@ describe('Class - Paginate Handle', () => {
                     last: 1,
                     pageNo: 1,
                     totalPage: 2,
-                    perPage: mockPerPage
+                    perPage: mockPerPage,
+                    startRecord: 1,
+                    endRecord: 4,
+                    totalRecord: mockList.length
                 });
             });
 
@@ -137,8 +150,63 @@ describe('Class - Paginate Handle', () => {
                     last: null,
                     pageNo: 2,
                     totalPage: 2,
-                    perPage: mockPerPage
+                    perPage: mockPerPage,
+                    startRecord: 5,
+                    endRecord: 6,
+                    totalRecord: mockList.length
                 });
+            });
+        });
+    });
+
+    describe('Method: getRecordCtx - Get Default Pagination state where there is only one page', () => {
+        beforeEach(() => {
+            getRecordCtxSpy.mockReturnValue({});
+        });
+
+        it('should return default state', () => {
+            const mockTotalRecord: number = 0;
+            const mockPerPage: number = 1;
+
+            expect(handle.getDefPgnState(mockTotalRecord, mockPerPage)).toEqual({
+                perPage: mockPerPage,
+                startIdx: 0,
+                pageNo: 1,
+                totalPage: 1
+            });
+        });
+    });
+
+    describe('Method: getRecordCtx - Get Record Context', () => {
+        it('should return the record context when total record is 0', () => {
+            const mockTotalRecord: number = 0;
+
+            expect(handle.getRecordCtx(mockTotalRecord, 1)).toEqual({
+                startRecord: mockTotalRecord,
+                endRecord: mockTotalRecord,
+                totalRecord: mockTotalRecord
+            });
+            expect(handle.getRecordCtx(mockTotalRecord, 1, 2)).toEqual({
+                startRecord: mockTotalRecord,
+                endRecord: mockTotalRecord,
+                totalRecord: mockTotalRecord
+            });
+        });
+
+        it('should return the record context when total record is not 0', () => {
+            const mockTotalRecord: number = 1;
+            const mockStartIdx: number = 0;
+            const mockEndIdx: number = 2;
+
+            expect(handle.getRecordCtx(mockTotalRecord, mockStartIdx)).toEqual({
+                startRecord: mockStartIdx+1,
+                endRecord: mockTotalRecord,
+                totalRecord: mockTotalRecord
+            });
+            expect(handle.getRecordCtx(mockTotalRecord, mockStartIdx, mockEndIdx)).toEqual({
+                startRecord: mockStartIdx+1,
+                endRecord: mockEndIdx,
+                totalRecord: mockTotalRecord
             });
         });
     });

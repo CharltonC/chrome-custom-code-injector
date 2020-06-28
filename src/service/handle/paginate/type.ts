@@ -31,7 +31,13 @@ type TRelPageCtx = {
 
 export interface IRelPageCtx extends TRelPageCtx {}
 
-export interface IPageState extends IPageCtx, IPageSlice, IRelPage {
+export interface IRecordCtx {
+    totalRecord: number;
+    startRecord: number;
+    endRecord: number;
+}
+
+export interface IPageState extends IPageCtx, IPageSlice, IRelPage, IRecordCtx {
     perPage: number;
     totalPage: number;
 }

@@ -1,4 +1,4 @@
-import { IPageState, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx } from './type';
+import { IPgnState, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
 
 /**
  * Whenever one of these updates, we can use `getPgnState` to get the current paginate state
@@ -26,30 +26,48 @@ export class PgnOption {
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
 export class PgnHandle {
-    getPgnState(pgnOption: PgnOption): IPageState {
+    getPgnState(pgnOption: PgnOption): Partial<IPgnState> {
         // Merge def. option with User's option
         const defPgnOption: PgnOption = new PgnOption();
         const {increment: [defIncrmVal]} = defPgnOption;
         const { list, page, increment, incrementIdx } = Object.assign(defPgnOption, pgnOption);
-
-        // Skip if following conditions:
-        // - if we only have 1 list item
-        const lsLen: number = list.length;
-        if (lsLen <= 1) return;
-
-        // - if we have less than 2 pages
         let perPage: number = this.getNoPerPage(increment, incrementIdx, defIncrmVal);
-        const totalPage: number = this.getTotalPage(lsLen, perPage);
-        if (totalPage <= 1) return;
+
+        // Skip if we only have 1 list item OR less than 2 pages
+        const totalRecord: number = list.length;
+        const totalPage: number = this.getTotalPage(totalRecord, perPage);
+        if (totalRecord <= 1 || totalPage <= 1) return this.getDefPgnState(totalRecord, perPage);
 
         // Proceed as we have >=2 pages
         const { curr, pageNo }: IPageCtx = this.getCurrPage(page, totalPage - 1);
         const currSlice: IPageSlice = this.getPageSliceIdx(list, perPage, curr);
+        const { startIdx, endIdx } = currSlice;
+        const recordCtx = this.getRecordCtx(totalRecord, startIdx, endIdx);
         let relPage: IRelPage = this.getRelPage(totalPage, curr);
         const relPageCtx: IRelPageCtx = this.getRelPageCtx({curr, last: relPage.last}, relPage);
         relPage = this.parseRelPage(relPage, relPageCtx);
+        return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage, ...recordCtx };
+    }
 
-        return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage };
+    getDefPgnState(totalRecord: number, perPage: number): Partial<IPgnState> {
+        const startIdx: number = 0;
+        const recordCtx: IRecordCtx = this.getRecordCtx(totalRecord, startIdx);
+        return {
+            ...recordCtx,
+            perPage,
+            startIdx,
+            pageNo: 1,
+            totalPage: 1
+        };
+    }
+
+    getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {
+        const hsRecord: boolean = totalRecord >= 1;
+        return {
+            startRecord: (hsRecord && Number.isInteger(startIdx)) ? startIdx+1 : 0,
+            endRecord: (hsRecord && Number.isInteger(endIdx)) ? endIdx : totalRecord,
+            totalRecord
+        };
     }
 
     getNoPerPage(incrm: number[], incrmIdx: number, fallbackVal: number): number {
