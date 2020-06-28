@@ -14,7 +14,7 @@ const nestedUlStyle = { padding: 15, listStyle: 'disc' };
 const dnArwIconElem = inclStaticIcon('arrow-dn', true);
 const upArwIconElem = inclStaticIcon('arrow-up', true);
 
-const sampleData = [
+const sampleData: any[] = [
     {
 
         name: 'Zack',
@@ -233,10 +233,23 @@ export const ViaInternalGeneratedCollapsibleState = () => {
         </>;
     };
 
+    const [data, setData] = useState(sampleData);
+
+    const addData = () => {
+        const newData = data.slice(0);
+        newData.push({
+            name: 'Zoe',
+            age: '21',
+            id: 'A2',
+        });
+        setData(newData);
+    };
+
     return (
         <div style={defStyle}>
+            <button type="button" onClick={addData}>add data</button>
             <DataGrid
-                data={sampleData}
+                data={data}
                 rows={[
                     [ListItemCmp],
                     ['lvl1key', ListItemCmp],
