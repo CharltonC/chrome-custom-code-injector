@@ -74,11 +74,20 @@ export class PgnHandle {
         };
     }
 
-    getNoPerPage(incrm: number[], incrmIdx: number, fallbackVal: number): number {
-        const isValidIncrm: boolean = !!incrm.length;
-        const isValidIncrmIdx: boolean = isValidIncrm && this.isDefined(incrm[incrmIdx]);
-        const perPage: number = isValidIncrmIdx ? incrm[incrmIdx] : fallbackVal;
+    getNoPerPage(incrms: number[], incrmIdx: number, fallbackVal: number): number {
+        const hsIncrms: boolean = !!incrms.length;
+        if (!hsIncrms) return fallbackVal;
+
+        const incrm: number = incrms[incrmIdx];
+        const isValidIncrm: boolean = Number.isInteger(incrm) && incrm > 0;
+        const perPage: number = isValidIncrm ? incrms[incrmIdx] : fallbackVal;
         return perPage;
+    }
+
+    parseNoPerPage(incrms: number[]): number[] {
+        return incrms.filter((incrm: number) => {
+            return Number.isInteger(incrm) && incrm > 0;
+        });
     }
 
     getTotalPage(lsLen: number, perPage: number): number {

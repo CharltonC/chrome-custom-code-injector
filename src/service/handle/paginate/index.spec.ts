@@ -226,12 +226,24 @@ describe('Class - Paginate Handle', () => {
             expect(handle.getNoPerPage(mockIncrm, mockIncrmIdx, fallbackVal)).toEqual(mockIncrm[mockIncrmIdx]);
         });
 
-        it('should return the fallback increment value if the provided increment is invalid', () => {
+        it('should return the fallback increment value if no increments are provided', () => {
             expect(handle.getNoPerPage([], mockIncrmIdx, fallbackVal)).toEqual(fallbackVal);
         });
 
-        it('should return the fallback increment value if the provided increment index is invalid', () => {
+        it('should return the fallback increment value if the provided increment is negative number', () => {
+            const mockIncrmVal: number = -1;
+            expect(handle.getNoPerPage([mockIncrmVal], 0, fallbackVal)).toEqual(fallbackVal);
+        });
+
+        it('should return the fallback increment value if the provided increment does not exist', () => {
             expect(handle.getNoPerPage(mockIncrm, 10, fallbackVal)).toEqual(fallbackVal);
+        });
+    });
+
+    describe('Method: parseNoPerPage - Parse the total per page', () => {
+        it('should parse the increment values by removing any negative increment value', () => {
+            expect(handle.parseNoPerPage([1,-1,3])).toEqual([1,3]);
+            expect(handle.parseNoPerPage([1,2])).toEqual([1,2]);
         });
     });
 
