@@ -102,6 +102,10 @@ export class _DataGrid extends Component<IProps, IState> {
     createPgnState(pgnOption: PgnOption, data: any[]): IPgnState {
         if (!pgnOption) return;
 
+        // Only display valid increments for <option> value
+        const { increment } = pgnOption;
+        pgnOption.increment = increment ? this.pgnHandle.parseNoPerPage(increment) : increment;
+
         const option: PgnOption = Object.assign(this.pgnHandle.getDefOption(), pgnOption);
 
         return {
