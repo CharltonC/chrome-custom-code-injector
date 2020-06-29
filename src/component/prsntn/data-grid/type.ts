@@ -72,3 +72,4 @@ export interface IClpsProps {
 //// Reexport
 export {PgnOption as PgnOption};
 export {pgnType as pgnType};
+export {clpsType as clpsType};

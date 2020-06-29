@@ -1,6 +1,5 @@
 import React, { Component, memo, ReactElement } from "react";
 
-import { IRawRowConfig, IItemCtx } from '../../../service/handle/collapse/type';
 import { ClpsHandle } from '../../../service/handle/collapse';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/paginate';
@@ -10,7 +9,7 @@ import {
     IRow, TCmpCls, TFn, TNestState, IClpsProps,
     ISortOption, IPgnOption,
     IState, ISortState, IPgnState,
-    pgnType, PgnOption
+    pgnType, PgnOption, clpsType
 } from './type';
 
 export class _DataGrid extends Component<IProps, IState> {
@@ -69,17 +68,17 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    getMappedConfig(rows: IRow[]): IRawRowConfig[] {
+    getMappedConfig(rows: IRow[]): clpsType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
             const transformFn = this.getCmpTransformFn(row[transformFnIdx]);
-            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as IRawRowConfig;
+            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as clpsType.IRawRowConfig;
         });
     }
 
     getCmpTransformFn(Cmp: TCmpCls): TFn {
-        return (itemCtx: IItemCtx) => {
+        return (itemCtx: clpsType.IItemCtx) => {
             const { nestState } = this.state;
             const { nesting } = this.props;
             const { itemPath, nestedItems } = itemCtx;
@@ -179,7 +178,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Collapse Related
-    getItemClpsProps(itemCtx: IItemCtx, nestState: TNestState): IClpsProps {
+    getItemClpsProps(itemCtx: clpsType.IItemCtx, nestState: TNestState): IClpsProps {
         const { itemPath, isDefNestedOpen } = itemCtx;
 
         // Only Set the state for each Item during Initialization, if not use the existing one
@@ -192,11 +191,11 @@ export class _DataGrid extends Component<IProps, IState> {
         return { isNestedOpen, onCollapseChanged };
     }
 
-    setItemInitialClpsState(nestState: TNestState, {itemPath, isDefNestedOpen}: IItemCtx): void {
+    setItemInitialClpsState(nestState: TNestState, {itemPath, isDefNestedOpen}: clpsType.IItemCtx): void {
         nestState[itemPath] = isDefNestedOpen;
     }
 
-    getItemOnClpsChangedFn(itemCtx: IItemCtx, isNestedOpen: boolean): TFn {
+    getItemOnClpsChangedFn(itemCtx: clpsType.IItemCtx, isNestedOpen: boolean): TFn {
         const { nestState } = this.state;
         const { showOnePerLvl } = this.props.nesting;
 
@@ -215,7 +214,7 @@ export class _DataGrid extends Component<IProps, IState> {
         }).bind(this);
     }
 
-    getImpactedItemsClpsState(nestState: TNestState, {itemLvl, itemKey, parentPath}: IItemCtx): TNestState {
+    getImpactedItemsClpsState(nestState: TNestState, {itemLvl, itemKey, parentPath}: clpsType.IItemCtx): TNestState {
         const itemPaths: string[] = Object.getOwnPropertyNames(nestState);
         const isRootLvlItem: boolean = itemLvl === 0;
         const relCtx: string = isRootLvlItem ? '' : `${parentPath}/${itemKey}:`;
