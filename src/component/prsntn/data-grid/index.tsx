@@ -5,7 +5,13 @@ import { ClpsHandle } from '../../../service/handle/collapse';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/paginate';
 
-import { IProps, IRow, TCmpCls, TFn, TNestState, IClpsProps, IState, ISortState, IPgnState, ISortOption, IPgnOption } from './type';
+import {
+    IProps,
+    IRow, TCmpCls, TFn, TNestState, IClpsProps,
+    ISortOption, IPgnOption,
+    IState, ISortState, IPgnState,
+    pgnType, PgnOption
+} from './type';
 
 export class _DataGrid extends Component<IProps, IState> {
     readonly clpsHandle = new ClpsHandle();
@@ -19,8 +25,8 @@ export class _DataGrid extends Component<IProps, IState> {
 
         this.state = {
             nestState: {},
-            sortState: this.getSortState(sort, data),
-            pgnState: this.getPgnState(paginate, data)
+            sortState: this.createSortState(sort, data),
+            pgnState: this.createPgnState(paginate, data)
         };
     }
 
@@ -30,15 +36,17 @@ export class _DataGrid extends Component<IProps, IState> {
 
         const hsDataChanged: boolean = this.isDataDiff(data, currData) || this.isPgnDiff(paginate, currPaginate);
         const hsSortChanged: boolean = this.isSortDiff(sort, currSort);
-        const pgnState = hsDataChanged ? {pgnState: this.getPgnState(paginate, data)} : {};
+        const pgnState = hsDataChanged ? {pgnState: this.createPgnState(paginate, data)} : {};
         const nestState = hsDataChanged ? {nestState: {}} : {};
+
+        // TODO: Check if nesting changes, if so clear the nesting state
 
         // TODO: Check if sort, pgn, nesting option exist
         if (hsDataChanged || hsSortChanged) this.setState({
             ...this.state,
             ...pgnState,
             ...nestState,
-            sortState: this.getSortState(sort, data)
+            sortState: this.createSortState(sort, data)
         });
     }
 
@@ -82,7 +90,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// State Initialization
-    getSortState(sortOption: ISortOption, data: any[]): ISortState {
+    createSortState(sortOption: ISortOption, data: any[]): ISortState {
         if (!sortOption) return;
 
         const { key, isAsc } = sortOption;
@@ -92,12 +100,14 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    getPgnState(pgnOption: IPgnOption, data: any[]): IPgnState {
+    createPgnState(pgnOption: PgnOption, data: any[]): IPgnState {
         if (!pgnOption) return;
 
+        const option: PgnOption = Object.assign(this.pgnHandle.getDefOption(), pgnOption);
+
         return {
-            option: {...pgnOption},
-            status: this.pgnHandle.getPgnState({...pgnOption, list: data})
+            option,
+            status: this.pgnHandle.getPgnState(data, option)
         };
     }
 
@@ -151,7 +161,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const {
             firstProps, prevProps, nextProps, lastProps, selectProps,
             pageNo, totalPage, startRecord, endRecord, totalRecord
-        } = this.getPgnProps(option as any, status);
+        } = this.getPgnProps(option, status);
         // TODO: fix type & create default option
 
         return <>
@@ -224,7 +234,8 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Pagination Related
-    getPgnProps({increment, incrementIdx}, pgnState) {
+    // TODO: return type
+    getPgnProps({increment, incrementIdx}: PgnOption, pgnState: pgnType.IPgnState) {
         const { first, prev, next, last, ...props } = pgnState;
         return {
             ...props,
@@ -236,6 +247,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
+    // TODO: return type
     getPgnBtnProps(val: number) {
         return {
             disabled: !Number.isInteger(val),
@@ -243,6 +255,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
+    // TODO: return type
     getPgnSelectProps(increment: number[], incrementIdx: number) {
         return {
             value: incrementIdx,
@@ -267,8 +280,9 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     setPgnState(partialPgnOption): void {
-        const pgnOption = {...this.state.pgnState.option, ...partialPgnOption};
-        const pgnState = this.getPgnState(pgnOption, this.state.sortState.data);
+        const { sortState, pgnState: currPgnState } = this.state;
+        const pgnOption: PgnOption = {...currPgnState.option, ...partialPgnOption};
+        const pgnState: IPgnState = this.createPgnState(pgnOption, sortState.data);
         this.setState({...this.state, pgnState});
     }
 }

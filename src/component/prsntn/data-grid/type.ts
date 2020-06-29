@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
-import * as pgnType from '../../../service/handle/paginate/type';
 import * as clpsType from '../../../service/handle/collapse/type';
+import * as pgnType from '../../../service/handle/paginate/type';
+import { PgnOption } from '../../../service/handle/paginate';
 
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
@@ -19,15 +20,11 @@ export type TCmpCls = React.FC<any> | React.ComponentClass<any>;
 
 export type TGridType = 'table' | 'list';
 
+export interface IPgnOption extends Partial<PgnOption> {}
+
 export interface ISortOption {
     key: string;
     isAsc?: boolean;
-}
-
-export interface IPgnOption {
-    page?: number;
-    increment?: number[];
-    incrementIdx?: number;
 }
 
 export interface INestOption {
@@ -52,11 +49,11 @@ export type TNestState = Record<string, boolean>;
 export interface ISortState {
     option: ISortOption;
     data: any[];
-};
+}
 
 export interface IPgnState {
-    option: IPgnOption;
-    status: Partial<pgnType.IPgnState>;
+    option: PgnOption;
+    status: pgnType.IPgnState;
 }
 
 export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {
@@ -71,3 +68,7 @@ export interface IClpsProps {
     isNestedOpen?: boolean;
     onCollapseChanged?: TFn;
 }
+
+//// Reexport
+export {PgnOption as PgnOption};
+export {pgnType as pgnType};
