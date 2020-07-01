@@ -10,7 +10,7 @@ export interface IThInfo {
 
 export interface IThInfoCache {
     slots: IThInfo[][];
-    grossColSum: number;
+    colSum: number;
 }
 
 export interface IThProps {

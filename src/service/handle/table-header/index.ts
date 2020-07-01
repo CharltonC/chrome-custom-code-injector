@@ -6,7 +6,7 @@ import {
 } from './type';
 
 export class ThHandle {
-    readonly defThInfoCache: IThInfoCache = { slots: [], grossColSum: 0 };
+    readonly defThInfoCache: IThInfoCache = { slots: [], colSum: 0 };
 
     getThProps(headers: IThOption[]): IThProps[][] {
         const thInfo = this.createThInfo(headers) as IThInfo[][];
@@ -15,7 +15,8 @@ export class ThHandle {
 
     createThInfo(headers: IThOption[], rowLvlIdx: number = 0, cache: IThInfoCache = this.defThInfoCache): IThInfo[][] | IThInfo[] {
         const rowInfo: IThInfo[] = headers.map(({ title, subHeader }: IThOption) => {
-            const currGrossColSum: number = cache.grossColSum;
+            // Get the curr. value so that we can later get diff. in total no. of columns
+            const currColSum: number = cache.colSum;
 
             // Get the Sub Row Info if there is sub headers & Update cache
             const subRowLvlIdx: number = rowLvlIdx + 1;
@@ -23,7 +24,7 @@ export class ThHandle {
             this.updateThInfoCache(cache, subRowLvlIdx, subRowInfo);
 
             // After Cache is updated
-            const ownColSum: number = subHeader ? (cache.grossColSum - currGrossColSum) : null;
+            const ownColSum: number = subHeader ? (cache.colSum - currColSum) : null;
             return { title, ownColSum };
         });
 
@@ -45,7 +46,7 @@ export class ThHandle {
             slots[rowLvlIdx] = currRowInfo ? currRowInfo.concat(rowInfo) : [].concat(rowInfo);
 
         } else if (!rowInfo) {
-            cache.grossColSum++;
+            cache.colSum++;
         }
     }
 
