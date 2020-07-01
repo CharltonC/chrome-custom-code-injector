@@ -261,19 +261,22 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 header={[
                     {
                         title: 'person',
-                        subheader: [
+                        subHeader: [
                             {title: 'first name'},
                             {title: 'last name'},
                             {title: 'age'},
-                        ]
-                    },
-                    {
-                        title: 'misc' ,
-                        subheader: [
                             {title: 'id'},
-                            { title: '' },
                         ]
                     },
+
+                    { title: '' },
+                    // {
+                    //     title: 'misc' ,
+                    //     subHeader: [
+                    //         {title: 'id'},
+                    //         { title: '' },
+                    //     ]
+                    // },
 
                 ]}
                 nesting={{

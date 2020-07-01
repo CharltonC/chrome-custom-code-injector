@@ -7,8 +7,9 @@ import { PgnHandle } from '../../../service/handle/paginate';
 import {
     IProps,
     IRow, TCmpCls, TFn, TNestState, IClpsProps,
-    ISortOption, IPgnOption,
+    ISortOption, IPgnOption, IHeaderOption,
     IState, ISortState, IPgnState,
+    ITbHeaderRowInfo, ITbHeaderRowInfoCache,
     pgnType, PgnOption, clpsType
 } from './type';
 
@@ -17,7 +18,7 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly sortHandle = new SortHandle();
     readonly pgnHandle = new PgnHandle();
 
-    headerRowsProps: any;
+    headerRowProps: any; // TODO
 
     constructor(props: IProps) {
         super(props);
@@ -30,8 +31,9 @@ export class _DataGrid extends Component<IProps, IState> {
             pgnState: this.createPgnState(paginate, data)
         };
 
-        const headerRows: any = this.getHeaderRows(this.props.header);
-        this.headerRowsProps = this.getHeaderRowsProps(headerRows);
+        // TODO: move it to state
+        const headerRowInfo: any = this.getHeaderRowInfo(this.props.header);
+        this.headerRowProps = this.getHeaderRowProps(headerRowInfo);
     }
 
     // Update the source of truth when passing new data or config from outside the components
@@ -158,9 +160,9 @@ export class _DataGrid extends Component<IProps, IState> {
 
     getDefTbWrapperElem(items: ReactElement[]): ReactElement {
         return <table>
-            <thead>{ this.headerRowsProps.map(row => (
+            <thead>{ this.headerRowProps.map(row => (
                 <tr>{ row.map(({title, ...tdProps}) =>
-                    <td {...tdProps}>{title}</td>
+                    <th {...tdProps}>{title}</th>
                 )}</tr>
             ))}</thead>
             <tbody>
@@ -297,52 +299,57 @@ export class _DataGrid extends Component<IProps, IState> {
         this.setState({ ...this.state, pgnState });
     }
 
-    // Usage: getHeaderRows(headers, [], 0, 0);
-    getHeaderRows(headers, rows=[], lvlIdx=0, totalColumn=0) {
-        const isTopLvl = lvlIdx === 0;
+    //// TODO: Header Handle
+    // Usage: getHeaderRowInfo(headers);
+    getHeaderRowInfo(headers: IHeaderOption[], rowLvlIdx: number = 0, cache: ITbHeaderRowInfoCache = {slots: [], grossColSum: 0}): ITbHeaderRowInfo[][] | ITbHeaderRowInfo[] {
+        const rowInfo: ITbHeaderRowInfo[] = headers.map(({ title, subHeader }: IHeaderOption) => {
+            const currGrossColSum: number = cache.grossColSum;
 
-        const result = headers.map(header => {
-            const { title, subheader } = header;
+            // Get the Sub Row Info if there is sub headers & Update cache
+            const subRowLvlIdx: number = rowLvlIdx + 1;
+            const subRowInfo = subHeader ? this.getHeaderRowInfo(subHeader, subRowLvlIdx, cache) as ITbHeaderRowInfo[] : null;
+            this.updateHeaderRowCache(cache, subRowLvlIdx, subRowInfo);
 
-            if (subheader) {
-                const nextLvlIdx = lvlIdx + 1;
-                const { result: subresult, totalColumn: updatedTotalColumn } = this.getHeaderRows(subheader, rows, nextLvlIdx, totalColumn);
-                const colTotal = updatedTotalColumn - totalColumn;
-
-                // update column count
-                totalColumn = updatedTotalColumn;
-
-                const nextHeaderRow = rows[nextLvlIdx];
-                rows[nextLvlIdx] = nextHeaderRow ? nextHeaderRow.concat(subresult) : [].concat(subresult);
-
-                return { title, colTotal };
-
-            } else {
-                // count as 1 column
-                totalColumn++;
-
-                return { title };
-            }
+            // After Cache is updated
+            const ownColSum: number = subHeader ? (cache.grossColSum - currGrossColSum) : null;
+            return { title, ownColSum };
         });
 
-        if (isTopLvl) {
-            rows[lvlIdx] = result;
-        }
+        const isTopLvl: boolean = rowLvlIdx === 0;
+        if(isTopLvl) this.updateHeaderRowCache(cache, rowLvlIdx, rowInfo);
 
-        return isTopLvl ? { rows, totalRow: rows.length, totalColumn } : { result, totalColumn };
+        return isTopLvl ? cache.slots : rowInfo;
     }
 
-    getHeaderRowsProps({ rows, totalRow }) {
-        return rows.map((row, lvl) => {
-            const isRootLvl = lvl === 0;
-            if (!isRootLvl) totalRow--;
+    updateHeaderRowCache(cache: ITbHeaderRowInfoCache, rowLvlIdx: number, rowInfo: ITbHeaderRowInfo[]): void {
+        const { slots } = cache;
+        const isTopLvl: boolean = rowLvlIdx === 0;
 
-            return row.map((th, idx) => {
-                const { title, colTotal } = th;
+        if (isTopLvl && rowInfo) {
+            slots[rowLvlIdx] = rowInfo;
+
+        } else if (!isTopLvl && rowInfo) {
+            const currRowInfo = slots[rowLvlIdx];
+            slots[rowLvlIdx] = currRowInfo ? currRowInfo.concat(rowInfo) : [].concat(rowInfo);
+
+        } else if (!rowInfo) {
+            cache.grossColSum++;
+        }
+    }
+
+    getHeaderRowProps(headerRowInfo: ITbHeaderRowInfo[][]) {
+        let rowSum: number = headerRowInfo.length;
+
+        return headerRowInfo.map((row: ITbHeaderRowInfo[], rowLvlIdx: number) => {
+            const is1stRowLvl: boolean = rowLvlIdx === 0;
+            if (!is1stRowLvl) rowSum--;
+
+            return row.map((th: ITbHeaderRowInfo) => {
+                const { title, ownColSum } = th;
                 return {
                     title,
-                    rowSpan: colTotal ? 1 : totalRow,
-                    colSpan: colTotal ? colTotal : 1
+                    rowSpan: ownColSum ? 1 : rowSum,
+                    colSpan: ownColSum ? ownColSum : 1
                 };
             });
         });

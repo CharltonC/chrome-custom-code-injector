@@ -8,7 +8,6 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
     rows: IRow[];
     type?: TGridType;
-
     header?: IHeaderOption[];
     nesting?: INestOption;
     sort?: ISortOption;
@@ -38,7 +37,7 @@ export interface IRow extends Array<any> {
 
 export interface IHeaderOption {
     title: string;
-    subheader?: IHeaderOption[]
+    subHeader?: IHeaderOption[]
 }
 
 //// State
@@ -63,6 +62,17 @@ export interface IPgnState {
 export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {
     item: {[k: string]: any};
     nestedRow?: ReactElement;
+}
+
+/// Method Params
+export interface ITbHeaderRowInfo {
+    title: string;
+    ownColSum?: number;
+}
+
+export interface ITbHeaderRowInfoCache {
+    slots: ITbHeaderRowInfo[][];
+    grossColSum: number;
 }
 
 //// Internal Component Props
