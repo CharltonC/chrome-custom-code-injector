@@ -5,12 +5,12 @@ export interface IThOption {
 
 export interface IThInfo {
     title: string;
-    ownColSum?: number;
+    ownColTotal?: number;
 }
 
 export interface IThInfoCache {
     slots: IThInfo[][];
-    colSum: number;
+    colTotal: number;
 }
 
 export interface IThProps {

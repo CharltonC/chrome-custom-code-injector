@@ -6,7 +6,7 @@ import {
 } from './type';
 
 export class ThHandle {
-    readonly defThInfoCache: IThInfoCache = { slots: [], colSum: 0 };
+    readonly defThInfoCache: IThInfoCache = { slots: [], colTotal: 0 };
 
     getThProps(headers: IThOption[]): IThProps[][] {
         const thInfo = this.createThInfo(headers) as IThInfo[][];
@@ -16,7 +16,7 @@ export class ThHandle {
     createThInfo(headers: IThOption[], rowLvlIdx: number = 0, cache: IThInfoCache = this.defThInfoCache): IThInfo[][] | IThInfo[] {
         const rowInfo: IThInfo[] = headers.map(({ title, subHeader }: IThOption) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
-            const currColSum: number = cache.colSum;
+            const currColSum: number = cache.colTotal;
 
             // Get the Sub Row Info if there is sub headers & Update cache
             const subRowLvlIdx: number = rowLvlIdx + 1;
@@ -24,8 +24,8 @@ export class ThHandle {
             this.updateThInfoCache(cache, subRowLvlIdx, subRowInfo);
 
             // After Cache is updated
-            const ownColSum: number = subHeader ? (cache.colSum - currColSum) : null;
-            return { title, ownColSum };
+            const ownColTotal: number = subHeader ? (cache.colTotal - currColSum) : null;
+            return { title, ownColTotal };
         });
 
         const isTopLvl: boolean = rowLvlIdx === 0;
@@ -46,7 +46,7 @@ export class ThHandle {
             slots[rowLvlIdx] = currRowInfo ? currRowInfo.concat(rowInfo) : [].concat(rowInfo);
 
         } else if (!rowInfo) {
-            cache.colSum++;
+            cache.colTotal++;
         }
     }
 
@@ -58,11 +58,11 @@ export class ThHandle {
             if (!is1stRowLvl) rowSum--;
 
             return row.map((th: IThInfo) => {
-                const { title, ownColSum } = th;
+                const { title, ownColTotal } = th;
                 return {
                     title,
-                    rowSpan: ownColSum ? 1 : rowSum,
-                    colSpan: ownColSum ? ownColSum : 1
+                    rowSpan: ownColTotal ? 1 : rowSum,
+                    colSpan: ownColTotal ? ownColTotal : 1
                 };
             });
         });
