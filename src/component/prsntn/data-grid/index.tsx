@@ -19,7 +19,7 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly pgnHandle = new PgnHandle();
     readonly thHandle = new ThHandle();
 
-    headerRowProps: thType.IThProps[][];
+    thProps: thType.IThProps[][];
 
     constructor(props: IProps) {
         super(props);
@@ -33,7 +33,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
 
         // TODO: move it to state
-        this.headerRowProps = this.thHandle.getThProps(this.props.header);
+        this.thProps = this.thHandle.getThProps(this.props.header);
     }
 
     // Update the source of truth when passing new data or config from outside the components
@@ -95,6 +95,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
+    // TODO: Move to handle
     //// State Initialization
     createSortState(sortOption: ISortOption, data: any[]): ISortState {
         if (!sortOption) return;
@@ -159,16 +160,22 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getDefTbWrapperElem(items: ReactElement[]): ReactElement {
-        return <table>
-            <thead>{ this.headerRowProps.map(row => (
-                <tr>{ row.map(({title, ...tdProps}) =>
-                    <th {...tdProps}>{title}</th>
-                )}</tr>
-            ))}</thead>
+        return (
+        <table>
+            <thead>
+                {this.thProps.map(thRow => (
+                <tr>
+                    { thRow.map(({title, ...thProps}) =>
+                    <th {...thProps}>{title}</th>
+                    )}
+                </tr>
+                ))}
+            </thead>
             <tbody>
                 {items}
             </tbody>
-        </table>;
+        </table>
+        );
     }
 
     getDefPgnElem(): ReactElement {
