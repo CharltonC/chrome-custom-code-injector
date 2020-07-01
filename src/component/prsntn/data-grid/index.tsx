@@ -3,22 +3,23 @@ import React, { Component, memo, ReactElement } from "react";
 import { ClpsHandle } from '../../../service/handle/collapse';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/paginate';
+import { ThHandle } from '../../../service/handle/table-header';
 
 import {
     IProps,
     IRow, TCmpCls, TFn, TNestState, IClpsProps,
-    ISortOption, IPgnOption, IHeaderOption,
+    ISortOption, IPgnOption,
     IState, ISortState, IPgnState,
-    ITbHeaderRowInfo, ITbHeaderRowInfoCache,
-    pgnType, PgnOption, clpsType
+    pgnType, PgnOption, clpsType, thType
 } from './type';
 
 export class _DataGrid extends Component<IProps, IState> {
     readonly clpsHandle = new ClpsHandle();
     readonly sortHandle = new SortHandle();
     readonly pgnHandle = new PgnHandle();
+    readonly thHandle = new ThHandle();
 
-    headerRowProps: any; // TODO
+    headerRowProps: thType.IThProps[][];
 
     constructor(props: IProps) {
         super(props);
@@ -32,8 +33,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
 
         // TODO: move it to state
-        const headerRowInfo: any = this.getHeaderRowInfo(this.props.header);
-        this.headerRowProps = this.getHeaderRowProps(headerRowInfo);
+        this.headerRowProps = this.thHandle.getThProps(this.props.header);
     }
 
     // Update the source of truth when passing new data or config from outside the components
@@ -297,62 +297,6 @@ export class _DataGrid extends Component<IProps, IState> {
         const pgnOption: PgnOption = { ...currPgnState.option, ...partialPgnOption };
         const pgnState: IPgnState = this.createPgnState(pgnOption, sortState.data);
         this.setState({ ...this.state, pgnState });
-    }
-
-    //// TODO: Header Handle
-    // Usage: getHeaderRowInfo(headers);
-    getHeaderRowInfo(headers: IHeaderOption[], rowLvlIdx: number = 0, cache: ITbHeaderRowInfoCache = {slots: [], grossColSum: 0}): ITbHeaderRowInfo[][] | ITbHeaderRowInfo[] {
-        const rowInfo: ITbHeaderRowInfo[] = headers.map(({ title, subHeader }: IHeaderOption) => {
-            const currGrossColSum: number = cache.grossColSum;
-
-            // Get the Sub Row Info if there is sub headers & Update cache
-            const subRowLvlIdx: number = rowLvlIdx + 1;
-            const subRowInfo = subHeader ? this.getHeaderRowInfo(subHeader, subRowLvlIdx, cache) as ITbHeaderRowInfo[] : null;
-            this.updateHeaderRowCache(cache, subRowLvlIdx, subRowInfo);
-
-            // After Cache is updated
-            const ownColSum: number = subHeader ? (cache.grossColSum - currGrossColSum) : null;
-            return { title, ownColSum };
-        });
-
-        const isTopLvl: boolean = rowLvlIdx === 0;
-        if(isTopLvl) this.updateHeaderRowCache(cache, rowLvlIdx, rowInfo);
-
-        return isTopLvl ? cache.slots : rowInfo;
-    }
-
-    updateHeaderRowCache(cache: ITbHeaderRowInfoCache, rowLvlIdx: number, rowInfo: ITbHeaderRowInfo[]): void {
-        const { slots } = cache;
-        const isTopLvl: boolean = rowLvlIdx === 0;
-
-        if (isTopLvl && rowInfo) {
-            slots[rowLvlIdx] = rowInfo;
-
-        } else if (!isTopLvl && rowInfo) {
-            const currRowInfo = slots[rowLvlIdx];
-            slots[rowLvlIdx] = currRowInfo ? currRowInfo.concat(rowInfo) : [].concat(rowInfo);
-
-        } else if (!rowInfo) {
-            cache.grossColSum++;
-        }
-    }
-
-    getHeaderRowProps(headerRowInfo: ITbHeaderRowInfo[][]) {
-        let rowSum: number = headerRowInfo.length;
-
-        return headerRowInfo.map((row: ITbHeaderRowInfo[], rowLvlIdx: number) => {
-            const is1stRowLvl: boolean = rowLvlIdx === 0;
-            if (!is1stRowLvl) rowSum--;
-
-            return row.map((th: ITbHeaderRowInfo) => {
-                const { title, ownColSum } = th;
-                return {
-                    title,
-                    rowSpan: ownColSum ? 1 : rowSum,
-                    colSpan: ownColSum ? ownColSum : 1
-                };
-            });
-        });
     }
 }
 

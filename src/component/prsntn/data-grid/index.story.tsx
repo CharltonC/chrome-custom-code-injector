@@ -264,11 +264,10 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                         subHeader: [
                             {title: 'first name'},
                             {title: 'last name'},
-                            {title: 'age'},
-                            {title: 'id'},
                         ]
                     },
-
+                    {title: 'age'},
+                    {title: 'id'},
                     { title: '' },
                     // {
                     //     title: 'misc' ,

@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import * as clpsType from '../../../service/handle/collapse/type';
 import * as pgnType from '../../../service/handle/paginate/type';
+import * as thType from '../../../service/handle/table-header/type';
 import { PgnOption } from '../../../service/handle/paginate';
 
 //// Props
@@ -8,7 +9,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
     rows: IRow[];
     type?: TGridType;
-    header?: IHeaderOption[];
+    header?: thType.IThOption[];
     nesting?: INestOption;
     sort?: ISortOption;
     paginate?: IPgnOption;
@@ -35,11 +36,6 @@ export interface IRow extends Array<any> {
     1?: TCmpCls;
 }
 
-export interface IHeaderOption {
-    title: string;
-    subHeader?: IHeaderOption[]
-}
-
 //// State
 export interface IState {
     nestState: TNestState;
@@ -64,17 +60,6 @@ export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {
     nestedRow?: ReactElement;
 }
 
-/// Method Params
-export interface ITbHeaderRowInfo {
-    title: string;
-    ownColSum?: number;
-}
-
-export interface ITbHeaderRowInfoCache {
-    slots: ITbHeaderRowInfo[][];
-    grossColSum: number;
-}
-
 //// Internal Component Props
 export type TFn = (...args: any[]) => any;
 
@@ -87,3 +72,4 @@ export interface IClpsProps {
 export {PgnOption as PgnOption};
 export {pgnType as pgnType};
 export {clpsType as clpsType};
+export {thType as thType};
