@@ -8,9 +8,8 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
     rows: IRow[];
     type?: TGridType;
-    header?: TCmpCls;
 
-    // TODO: renamed later
+    header?: IHeaderOption[];
     nesting?: INestOption;
     sort?: ISortOption;
     paginate?: IPgnOption;
@@ -35,6 +34,11 @@ export interface INestOption {
 export interface IRow extends Array<any> {
     0: string | TCmpCls;
     1?: TCmpCls;
+}
+
+export interface IHeaderOption {
+    title: string;
+    subheader?: IHeaderOption[]
 }
 
 //// State

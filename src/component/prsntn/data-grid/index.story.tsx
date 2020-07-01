@@ -211,17 +211,17 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 <td>{item.name}</td>
                 <td>{item.age}</td>
                 <td>{item.id}</td>
-                {
+                <td>{
                     nestedItems &&
-                    <td><button type="button" onClick={onCollapseChanged}>
+                    <button type="button" onClick={onCollapseChanged}>
                         {isNestedOpen ? upArwIconElem : dnArwIconElem }
-                    </button></td>
-                }
+                    </button>
+                }</td>
             </tr>
             {
                 nestedItems && isNestedOpen &&
                 <tr>
-                    <td colSpan={5}>
+                    <td colSpan={5} className="cell--table">
                         <table>
                             <tbody>
                                 {nestedItems}
@@ -251,13 +251,31 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             <DataGrid
                 data={data}
                 rows={[
-                    [ListItemCmp],
-                    ['lvl1key', ListItemCmp],
-                    ['lvl2key', ListItemCmp],
-                    ['lvl3key', ListItemCmp],
-                    ['lvl4key', ListItemCmp]
+                    [TrCmp],
+                    ['lvl1key', TrCmp],
+                    ['lvl2key', TrCmp],
+                    ['lvl3key', TrCmp],
+                    ['lvl4key', TrCmp]
                 ]}
-                // type={'table'}
+                type={'table'}
+                header={[
+                    {
+                        title: 'person',
+                        subheader: [
+                            {title: 'first name'},
+                            {title: 'last name'},
+                            {title: 'age'},
+                        ]
+                    },
+                    {
+                        title: 'misc' ,
+                        subheader: [
+                            {title: 'id'},
+                            { title: '' },
+                        ]
+                    },
+
+                ]}
                 nesting={{
                     showInitial: 'ALL',
                     // showOnePerLvl: true

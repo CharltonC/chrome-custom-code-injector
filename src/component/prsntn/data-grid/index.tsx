@@ -17,6 +17,8 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly sortHandle = new SortHandle();
     readonly pgnHandle = new PgnHandle();
 
+    headerRowsProps: any;
+
     constructor(props: IProps) {
         super(props);
 
@@ -27,16 +29,19 @@ export class _DataGrid extends Component<IProps, IState> {
             sortState: this.createSortState(sort, data),
             pgnState: this.createPgnState(paginate, data)
         };
+
+        const headerRows: any = this.getHeaderRows(this.props.header);
+        this.headerRowsProps = this.getHeaderRowsProps(headerRows);
     }
 
     // Update the source of truth when passing new data or config from outside the components
-    UNSAFE_componentWillReceiveProps({data, sort, paginate}: IProps): void {
+    UNSAFE_componentWillReceiveProps({ data, sort, paginate }: IProps): void {
         const { data: currData, sort: currSort, paginate: currPaginate } = this.props;
 
         const hsDataChanged: boolean = this.isDataDiff(data, currData) || this.isPgnDiff(paginate, currPaginate);
         const hsSortChanged: boolean = this.isSortDiff(sort, currSort);
-        const pgnState = hsDataChanged ? {pgnState: this.createPgnState(paginate, data)} : {};
-        const nestState = hsDataChanged ? {nestState: {}} : {};
+        const pgnState = hsDataChanged ? { pgnState: this.createPgnState(paginate, data) } : {};
+        const nestState = hsDataChanged ? { nestState: {} } : {};
 
         // TODO: Check if nesting changes, if so clear the nesting state
 
@@ -94,7 +99,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
         const { key, isAsc } = sortOption;
         return {
-            option: {...sortOption},
+            option: { ...sortOption },
             data: this.sortHandle.objList(data, key, isAsc)
         };
     }
@@ -153,6 +158,11 @@ export class _DataGrid extends Component<IProps, IState> {
 
     getDefTbWrapperElem(items: ReactElement[]): ReactElement {
         return <table>
+            <thead>{ this.headerRowsProps.map(row => (
+                <tr>{ row.map(({title, ...tdProps}) =>
+                    <td {...tdProps}>{title}</td>
+                )}</tr>
+            ))}</thead>
             <tbody>
                 {items}
             </tbody>
@@ -160,7 +170,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getDefPgnElem(): ReactElement {
-        const { option, status } =  this.state.pgnState;
+        const { option, status } = this.state.pgnState;
         const {
             firstProps, prevProps, nextProps, lastProps, selectProps,
             pageNo, totalPage, startRecord, endRecord, totalRecord
@@ -195,7 +205,7 @@ export class _DataGrid extends Component<IProps, IState> {
         return { isNestedOpen, onCollapseChanged };
     }
 
-    setItemInitialClpsState(nestState: TNestState, {itemPath, isDefNestedOpen}: clpsType.IItemCtx): void {
+    setItemInitialClpsState(nestState: TNestState, { itemPath, isDefNestedOpen }: clpsType.IItemCtx): void {
         nestState[itemPath] = isDefNestedOpen;
     }
 
@@ -206,7 +216,7 @@ export class _DataGrid extends Component<IProps, IState> {
         return (() => {
             // Find the items that are at the same level and if they are open (true), close them (set them to false)
             const impactedItemsState: TNestState = showOnePerLvl && !isNestedOpen ? this.getImpactedItemsClpsState(nestState, itemCtx) : {};
-            const itemState: TNestState = {[itemCtx.itemPath]: !isNestedOpen};
+            const itemState: TNestState = { [itemCtx.itemPath]: !isNestedOpen };
             this.setState({
                 ...this.state,
                 nestState: {
@@ -218,7 +228,7 @@ export class _DataGrid extends Component<IProps, IState> {
         }).bind(this);
     }
 
-    getImpactedItemsClpsState(nestState: TNestState, {itemLvl, itemKey, parentPath}: clpsType.IItemCtx): TNestState {
+    getImpactedItemsClpsState(nestState: TNestState, { itemLvl, itemKey, parentPath }: clpsType.IItemCtx): TNestState {
         const itemPaths: string[] = Object.getOwnPropertyNames(nestState);
         const isRootLvlItem: boolean = itemLvl === 0;
         const relCtx: string = isRootLvlItem ? '' : `${parentPath}/${itemKey}:`;
@@ -232,17 +242,17 @@ export class _DataGrid extends Component<IProps, IState> {
 
         return impactedItemPaths.reduce((impactedState: TNestState, ctx: string) => {
             const isImpactedItemOpen: boolean = nestState[ctx];
-            return isImpactedItemOpen ? {...impactedState, [ctx]: false} : impactedState;
+            return isImpactedItemOpen ? { ...impactedState, [ctx]: false } : impactedState;
         }, {});
     }
 
     //// Pagination Related
     // TODO: return type
-    getPgnProps({increment, incrementIdx}: PgnOption, pgnState: pgnType.IPgnState) {
+    getPgnProps({ increment, incrementIdx }: PgnOption, pgnState: pgnType.IPgnState) {
         const { first, prev, next, last, ...props } = pgnState;
         return {
             ...props,
-            firstProps:  this.getPgnBtnProps(first),
+            firstProps: this.getPgnBtnProps(first),
             prevProps: this.getPgnBtnProps(prev),
             nextProps: this.getPgnBtnProps(next),
             lastProps: this.getPgnBtnProps(last),
@@ -250,16 +260,14 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    // TODO: return type
-    getPgnBtnProps(val: number) {
+    getPgnBtnProps(val: number): React.ButtonHTMLAttributes<HTMLButtonElement> {
         return {
             disabled: !Number.isInteger(val),
             onClick: this.onPgnNav.bind(this, val)
         };
     }
 
-    // TODO: return type
-    getPgnSelectProps(increment: number[], incrementIdx: number) {
+    getPgnSelectProps(increment: number[], incrementIdx: number): React.SelectHTMLAttributes<HTMLSelectElement> {
         return {
             value: incrementIdx,
             onChange: this.onPgnIncrmChanged.bind(this),
@@ -271,7 +279,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    onPgnIncrmChanged({target}): void {
+    onPgnIncrmChanged({ target }): void {
         this.setPgnState({
             incrementIdx: target.value,
             page: 0
@@ -279,14 +287,65 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     onPgnNav(pageIdx: number): void {
-        this.setPgnState({page: pageIdx});
+        this.setPgnState({ page: pageIdx });
     }
 
     setPgnState(partialPgnOption): void {
         const { sortState, pgnState: currPgnState } = this.state;
-        const pgnOption: PgnOption = {...currPgnState.option, ...partialPgnOption};
+        const pgnOption: PgnOption = { ...currPgnState.option, ...partialPgnOption };
         const pgnState: IPgnState = this.createPgnState(pgnOption, sortState.data);
-        this.setState({...this.state, pgnState});
+        this.setState({ ...this.state, pgnState });
+    }
+
+    // Usage: getHeaderRows(headers, [], 0, 0);
+    getHeaderRows(headers, rows=[], lvlIdx=0, totalColumn=0) {
+        const isTopLvl = lvlIdx === 0;
+
+        const result = headers.map(header => {
+            const { title, subheader } = header;
+
+            if (subheader) {
+                const nextLvlIdx = lvlIdx + 1;
+                const { result: subresult, totalColumn: updatedTotalColumn } = this.getHeaderRows(subheader, rows, nextLvlIdx, totalColumn);
+                const colTotal = updatedTotalColumn - totalColumn;
+
+                // update column count
+                totalColumn = updatedTotalColumn;
+
+                const nextHeaderRow = rows[nextLvlIdx];
+                rows[nextLvlIdx] = nextHeaderRow ? nextHeaderRow.concat(subresult) : [].concat(subresult);
+
+                return { title, colTotal };
+
+            } else {
+                // count as 1 column
+                totalColumn++;
+
+                return { title };
+            }
+        });
+
+        if (isTopLvl) {
+            rows[lvlIdx] = result;
+        }
+
+        return isTopLvl ? { rows, totalRow: rows.length, totalColumn } : { result, totalColumn };
+    }
+
+    getHeaderRowsProps({ rows, totalRow }) {
+        return rows.map((row, lvl) => {
+            const isRootLvl = lvl === 0;
+            if (!isRootLvl) totalRow--;
+
+            return row.map((th, idx) => {
+                const { title, colTotal } = th;
+                return {
+                    title,
+                    rowSpan: colTotal ? 1 : totalRow,
+                    colSpan: colTotal ? colTotal : 1
+                };
+            });
+        });
     }
 }
 
