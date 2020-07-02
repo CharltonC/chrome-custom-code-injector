@@ -1,5 +1,6 @@
 export interface IThConfig {
     title: string;
+    sortKey?: string;
     subHeader?: IThConfig[]
 }
 

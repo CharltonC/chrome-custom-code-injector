@@ -13,8 +13,9 @@ export class ThHandle {
         return this.createThSpanCtx(colCtx);
     }
 
-    createThColCtx(thConfig: IThConfig[], rowLvlIdx: number = 0, cache: IThColCtxCache = this.defThInfoCache): IThColCtx[][] | IThColCtx[] {
-        const colCtx: IThColCtx[] = thConfig.map(({ title, subHeader }: IThConfig) => {
+    createThColCtx(thConfig: IThConfig[], rowLvlIdx: number = 0, cache?: IThColCtxCache): IThColCtx[][] | IThColCtx[] {
+        cache = cache ? cache : Object.assign({}, this.defThInfoCache);
+        const colCtx: IThColCtx[] = thConfig.map(({ title, sortKey, subHeader }: IThConfig) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal: number = cache.colTotal;
 
@@ -25,7 +26,7 @@ export class ThHandle {
 
             // After Cache is updated
             const ownColTotal: number = subHeader ? (cache.colTotal - currColTotal) : null;
-            return { title, ownColTotal };
+            return { title, sortKey, ownColTotal };
         });
 
         const isTopLvl: boolean = rowLvlIdx === 0;
@@ -57,10 +58,10 @@ export class ThHandle {
             const is1stRowLvl: boolean = rowLvlIdx === 0;
             if (!is1stRowLvl) rowTotal--;
 
-            return row.map((th: IThColCtx) => {
-                const { title, ownColTotal } = th;
+            return row.map((thColCtx: IThColCtx) => {
+                const { ownColTotal, ...thCtx } = thColCtx;
                 return {
-                    title,
+                    ...thCtx,
                     rowSpan: ownColTotal ? 1 : rowTotal,
                     colSpan: ownColTotal ? ownColTotal : 1
                 };
