@@ -9,7 +9,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
     rows: IRow[];
     type?: TGridType;
-    header?: thType.IThOption[];
+    header?: thType.IThConfig[];
     nesting?: INestOption;
     sort?: ISortOption;
     paginate?: IPgnOption;

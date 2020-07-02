@@ -19,7 +19,7 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly pgnHandle = new PgnHandle();
     readonly thHandle = new ThHandle();
 
-    thProps: thType.IThProps[][];
+    thProps: thType.IThCtx[][];
 
     constructor(props: IProps) {
         super(props);
@@ -33,7 +33,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
 
         // TODO: move it to state
-        this.thProps = this.thHandle.getThProps(this.props.header);
+        this.thProps = this.thHandle.createThCtx(this.props.header);
     }
 
     // Update the source of truth when passing new data or config from outside the components

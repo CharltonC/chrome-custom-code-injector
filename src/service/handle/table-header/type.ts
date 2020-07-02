@@ -1,19 +1,19 @@
-export interface IThOption {
+export interface IThConfig {
     title: string;
-    subHeader?: IThOption[]
+    subHeader?: IThConfig[]
 }
 
-export interface IThInfo {
+export interface IThColCtx {
     title: string;
     ownColTotal?: number;
 }
 
-export interface IThInfoCache {
-    slots: IThInfo[][];
+export interface IThColCtxCache {
+    slots: IThColCtx[][];
     colTotal: number;
 }
 
-export interface IThProps {
+export interface IThCtx {
     title: string;
     rowSpan: number;
     colSpan: number;
