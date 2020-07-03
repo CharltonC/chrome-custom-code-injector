@@ -68,7 +68,7 @@ describe('Table Header Handle', () => {
         });
     });
 
-    describe('Method - createThColCtx: Create rows (`tr`) of header (`th`) columns specific context', () => {
+    describe('Method - createThColCtx: Create rows (`tr`) of header (`th`) context for descendent columns', () => {
         const { createThColCtx } = ThHandle.prototype;
         const mockThConfig: IThConfig[] = [
             {title: 'a', subHeader: [
