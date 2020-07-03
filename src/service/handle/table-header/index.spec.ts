@@ -11,12 +11,14 @@ describe('Table Header Handle', () => {
     let createThColCtxSpy: jest.SpyInstance;
     let createThSpanCtxSpy: jest.SpyInstance;
     let setThColCtxCacheSpy: jest.SpyInstance;
+    let getDefThInfoCacheSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new ThHandle();
         createThColCtxSpy = jest.spyOn(handle, 'createThColCtx');
         createThSpanCtxSpy = jest.spyOn(handle, 'createThSpanCtx');
         setThColCtxCacheSpy = jest.spyOn(handle, 'setThColCtxCache');
+        getDefThInfoCacheSpy = jest.spyOn(handle, 'setThColCtxCache');
     });
 
     afterEach(() => {
@@ -24,9 +26,9 @@ describe('Table Header Handle', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Attribute - default cache value', () => {
-        it('should have default value', () => {
-            expect(handle.defThInfoCache).toEqual({
+    describe('Method - createDefThInfoCache: Create a new default cache', () => {
+        it('should return a default cache value', () => {
+            expect(handle.createDefThInfoCache()).toEqual({
                 slots: [],
                 colTotal: 0
             });
@@ -94,6 +96,7 @@ describe('Table Header Handle', () => {
             const { subHeader } = mockThConfig[0];
 
             expect(createThColCtxClone(mockThConfig)).toEqual(mockCache.slots);
+            expect(getDefThInfoCacheSpy).toHaveBeenCalled();
             expect(createThColCtxSpy).toHaveBeenCalledWith(subHeader, 1, mockCache);
             expect(createThColCtxSpy).toHaveBeenCalledTimes(1);
             expect(setThColCtxCacheSpy).toHaveBeenCalledTimes(3);

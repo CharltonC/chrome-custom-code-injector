@@ -6,15 +6,13 @@ import {
 } from './type';
 
 export class ThHandle {
-    readonly defThInfoCache: IThColCtxCache = { slots: [], colTotal: 0 };
-
     createThCtx(thConfig: IThConfig[]): IThCtx[][] {
         const colCtx = this.createThColCtx(thConfig) as IThColCtx[][];
         return this.createThSpanCtx(colCtx);
     }
 
     createThColCtx(thConfig: IThConfig[], rowLvlIdx: number = 0, cache?: IThColCtxCache): IThColCtx[][] | IThColCtx[] {
-        cache = cache ? cache : Object.assign({}, this.defThInfoCache);
+        cache = cache ? cache : this.createDefThInfoCache();
         const colCtx: IThColCtx[] = thConfig.map(({ title, sortKey, subHeader }: IThConfig) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal: number = cache.colTotal;
@@ -69,5 +67,9 @@ export class ThHandle {
                 };
             });
         });
+    }
+
+    createDefThInfoCache(): IThColCtxCache {
+        return { slots: [], colTotal: 0 };
     }
 }
