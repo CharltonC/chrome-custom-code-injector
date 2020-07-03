@@ -4,6 +4,7 @@ import { ClpsHandle } from '../../../service/handle/collapse';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/paginate';
 import { ThHandle } from '../../../service/handle/table-header';
+import { inclStaticIcon } from '../../static/icon';
 
 import {
     IProps,
@@ -19,31 +20,30 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly pgnHandle = new PgnHandle();
     readonly thHandle = new ThHandle();
 
-    thProps: thType.IThCtx[][];
-
     constructor(props: IProps) {
         super(props);
 
-        const { data, sort, paginate } = props;
+        const { data, sort, paginate, header } = props;
 
         this.state = {
             nestState: {},
             sortState: this.createSortState(sort, data),
-            pgnState: this.createPgnState(paginate, data)
+            pgnState: this.createPgnState(paginate, data),
+            thState: header ? this.thHandle.createThCtx(header) : null
         };
-
-        // TODO: move it to state
-        this.thProps = this.thHandle.createThCtx(this.props.header);
     }
 
     // Update the source of truth when passing new data or config from outside the components
-    UNSAFE_componentWillReceiveProps({ data, sort, paginate }: IProps): void {
-        const { data: currData, sort: currSort, paginate: currPaginate } = this.props;
+    UNSAFE_componentWillReceiveProps({ data, sort, paginate, header }: IProps): void {
+        const { data: currData, sort: currSort, paginate: currPaginate, header: currHeader } = this.props;
 
         const hsDataChanged: boolean = this.isDataDiff(data, currData) || this.isPgnDiff(paginate, currPaginate);
         const hsSortChanged: boolean = this.isSortDiff(sort, currSort);
+        const hsHeaderChanged: boolean = header && header !== currHeader;
+
         const pgnState = hsDataChanged ? { pgnState: this.createPgnState(paginate, data) } : {};
         const nestState = hsDataChanged ? { nestState: {} } : {};
+        const thState = (hsDataChanged || hsHeaderChanged) ? { thState: this.thHandle.createThCtx(header) } : {};
 
         // TODO: Check if nesting changes, if so clear the nesting state
 
@@ -52,6 +52,7 @@ export class _DataGrid extends Component<IProps, IState> {
             ...this.state,
             ...pgnState,
             ...nestState,
+            ...thState,
             sortState: this.createSortState(sort, data)
         });
     }
@@ -95,33 +96,6 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    // TODO: Move to handle
-    //// State Initialization
-    createSortState(sortOption: ISortOption, data: any[]): ISortState {
-        if (!sortOption) return;
-
-        const { key, isAsc } = sortOption;
-        return {
-            option: { ...sortOption },
-            data: this.sortHandle.objList(data, key, isAsc)
-        };
-    }
-
-    createPgnState(pgnOption: PgnOption, data: any[]): IPgnState {
-        if (!pgnOption) return;
-
-        // Only display valid increments for <option> value
-        const { increment } = pgnOption;
-        pgnOption.increment = increment ? this.pgnHandle.parseNoPerPage(increment) : increment;
-
-        const option: PgnOption = Object.assign(this.pgnHandle.getDefOption(), pgnOption);
-
-        return {
-            option,
-            status: this.pgnHandle.getPgnState(data, option)
-        };
-    }
-
     getProcessedData(rawData: any[], sortState: ISortState, pgnState: IPgnState): any[] {
         if (pgnState) {
             const { startIdx, endIdx } = pgnState.status;
@@ -159,26 +133,78 @@ export class _DataGrid extends Component<IProps, IState> {
         return <ul>{items}</ul>;
     }
 
-    getDefTbWrapperElem(items: ReactElement[]): ReactElement {
+    getDefTbWrapperElem(tbRows: ReactElement[]): ReactElement {
         return (
         <table>
-            <thead>
-                {this.thProps.map(thRow => (
-                <tr>
-                    { thRow.map(({title, ...thProps}) =>
-                    <th {...thProps}>{title}</th>
-                    )}
-                </tr>
-                ))}
-            </thead>
-            <tbody>
-                {items}
-            </tbody>
+            {this.getDefThElem(this.state.thState)}
+            <tbody>{tbRows}</tbody>
         </table>
         );
     }
 
+    getDefThElem(thState): ReactElement {
+        const { sortState } = this.state;
+        let key, isAsc, onSort;
+
+        // TODO: separate method
+        if (sortState) {
+            ({ key, isAsc } = sortState.option);
+
+            onSort = (sortKey: string, order: boolean) => {
+                const { key, isAsc  } = this.state.sortState.option;
+                const isSameTh: boolean = sortKey === key;
+                const isSameAsc: boolean = order === isAsc;
+
+                if (isSameTh && isSameAsc) return;
+
+                const option = {
+                    key: isSameTh ? key : sortKey,
+                    isAsc: order
+                };
+                this.setState({
+                    ...this.state,
+                    sortState: this.createSortState(option, this.props.data)
+                });
+            };
+        }
+
+        const upArwElem = inclStaticIcon('arrow-up');
+        const dnArwElem = inclStaticIcon('arrow-dn');
+        const atvSortStyle = {color: 'red'};
+
+        return thState && (
+        <thead>
+            {thState.map(row => (
+            <tr>
+                { row.map(({title, sortKey, ...thCtx}) =>
+                <th {...thCtx}>
+                    <span>{title}</span>
+                    {sortState && sortKey && (
+                        <>
+                        <span
+                            style={sortKey === key && isAsc ? atvSortStyle : {}}
+                            onClick={onSort.bind(this, sortKey, true)}
+                            >
+                            {upArwElem}
+                        </span>
+                        <span
+                            style={sortKey === key && !isAsc ? atvSortStyle : {}}
+                            onClick={onSort.bind(this, sortKey, false)}
+                            >
+                            {dnArwElem}
+                        </span>
+                        </>
+                    )}
+                </th>
+                )}
+            </tr>
+            ))}
+        </thead>
+        );
+    }
+
     getDefPgnElem(): ReactElement {
+
         const { option, status } = this.state.pgnState;
         const {
             firstProps, prevProps, nextProps, lastProps, selectProps,
@@ -201,6 +227,21 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Collapse Related
+    createPgnState(pgnOption: PgnOption, data: any[]): IPgnState {
+        if (!pgnOption) return;
+
+        // Only display valid increments for <option> value
+        const { increment } = pgnOption;
+        pgnOption.increment = increment ? this.pgnHandle.parseNoPerPage(increment) : increment;
+
+        const option: PgnOption = Object.assign(this.pgnHandle.getDefOption(), pgnOption);
+
+        return {
+            option,
+            status: this.pgnHandle.getPgnState(data, option)
+        };
+    }
+
     getItemClpsProps(itemCtx: clpsType.IItemCtx, nestState: TNestState): IClpsProps {
         const { itemPath, isDefNestedOpen } = itemCtx;
 
@@ -304,6 +345,17 @@ export class _DataGrid extends Component<IProps, IState> {
         const pgnOption: PgnOption = { ...currPgnState.option, ...partialPgnOption };
         const pgnState: IPgnState = this.createPgnState(pgnOption, sortState.data);
         this.setState({ ...this.state, pgnState });
+    }
+
+    //// Sorting Related
+    createSortState(sortOption: ISortOption, data: any[]): ISortState {
+        if (!sortOption) return;
+
+        const { key, isAsc } = sortOption;
+        return {
+            option: { ...sortOption },
+            data: this.sortHandle.objList(data, key, isAsc)
+        };
     }
 }
 

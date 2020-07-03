@@ -41,6 +41,7 @@ export interface IState {
     nestState: TNestState;
     sortState: ISortState;
     pgnState: IPgnState;
+    thState: thType.IThCtx[][]
 }
 
 export type TNestState = Record<string, boolean>;

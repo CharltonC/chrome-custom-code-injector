@@ -94,7 +94,7 @@ const sampleData: any[] = [
     {
 
         name: 'Jane',
-        age: '21',
+        age: '10',
         id: 'A2',
         lvl1key: [
             {
@@ -133,7 +133,7 @@ const sampleData: any[] = [
     },
     {
         name: 'Michael',
-        age: '21',
+        age: '16',
         id: 'A2',
         lvl1key: [
             {
@@ -261,13 +261,14 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 header={[
                     {
                         title: 'person',
+                        sortKey: 'name',
                         subHeader: [
                             {title: 'first name'},
                             {title: 'last name'},
                         ]
                     },
-                    {title: 'age'},
-                    {title: 'id'},
+                    {title: 'age', sortKey: 'age',},
+                    {title: 'id', sortKey: 'id'},
                     { title: '' },
                     // {
                     //     title: 'misc' ,
@@ -279,7 +280,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
 
                 ]}
                 nesting={{
-                    showInitial: 'ALL',
+                    showInitial: 'NONE',
                     // showOnePerLvl: true
                 }}
                 sort={{
