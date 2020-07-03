@@ -61,6 +61,10 @@ export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {
     nestedRow?: ReactElement;
 }
 
+export type TShallResetState = {
+    [K in (keyof IState)]: boolean;
+}
+
 //// Internal Component Props
 export type TFn = (...args: any[]) => any;
 

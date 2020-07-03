@@ -10,7 +10,7 @@ import {
     IProps,
     IRow, TCmpCls, TFn, TNestState, IClpsProps,
     ISortOption, IPgnOption,
-    IState, ISortState, IPgnState,
+    IState, ISortState, IPgnState, TShallResetState,
     pgnType, PgnOption, clpsType, thType
 } from './type';
 
@@ -20,41 +20,19 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly pgnHandle = new PgnHandle();
     readonly thHandle = new ThHandle();
 
+    //// Builtin API
     constructor(props: IProps) {
         super(props);
-
-        const { data, sort, paginate, header } = props;
-
-        this.state = {
-            nestState: {},
-            sortState: this.createSortState(sort, data),
-            pgnState: this.createPgnState(paginate, data),
-            thState: header ? this.thHandle.createThCtx(header) : null
-        };
+        const defState: IState = { nestState: null, sortState: null, pgnState: null, thState: null };
+        const initState: Partial<IState> = this.createState(props);
+        this.state = {...defState, ...initState};
     }
 
-    // Update the source of truth when passing new data or config from outside the components
-    UNSAFE_componentWillReceiveProps({ data, sort, paginate, header }: IProps): void {
-        const { data: currData, sort: currSort, paginate: currPaginate, header: currHeader } = this.props;
-
-        const hsDataChanged: boolean = this.isDataDiff(data, currData) || this.isPgnDiff(paginate, currPaginate);
-        const hsSortChanged: boolean = this.isSortDiff(sort, currSort);
-        const hsHeaderChanged: boolean = header && header !== currHeader;
-
-        const pgnState = hsDataChanged ? { pgnState: this.createPgnState(paginate, data) } : {};
-        const nestState = hsDataChanged ? { nestState: {} } : {};
-        const thState = (hsDataChanged || hsHeaderChanged) ? { thState: this.thHandle.createThCtx(header) } : {};
-
-        // TODO: Check if nesting changes, if so clear the nesting state
-
-        // TODO: Check if sort, pgn, nesting option exist
-        if (hsDataChanged || hsSortChanged) this.setState({
-            ...this.state,
-            ...pgnState,
-            ...nestState,
-            ...thState,
-            sortState: this.createSortState(sort, data)
-        });
+    UNSAFE_componentWillReceiveProps(props: IProps): void {
+        const shallReset: TShallResetState = this.shallResetState(props);
+        if (!shallReset) return;
+        const updateState = this.createState(props, shallReset);
+        this.setState({...this.state, ...updateState});
     }
 
     render() {
@@ -107,25 +85,76 @@ export class _DataGrid extends Component<IProps, IState> {
         }
     }
 
-    //// Props Changes Detection
-    isDataDiff(data: any[], currData: any[]): boolean {
-        return data !== currData || data.length !== currData.length;
+    //// Deal with Props changes
+    /**
+     * Determine what slice of state should be reset for avoiding unneeded calls of creating particular state slice
+     *
+     * PROPS        SELECTIVE STATE THAT REQUIRES TO BE CHANGED IF DIFF. PROPS
+     * ---------------------------------------------------------------------
+     * data         thState:        yes - modified sort header/asc may be diff. to initial one
+     *              sortState:      yes - diff. set or data to sort
+     *              pgnState:       yes - diff. set or data to paginate
+     *              nestState       yes - since visible data is diff.
+     *
+     * rows         thState:        no - its dep. on data but indep to the curr. sort state
+     *              sortState:      yes - diff. set or data to sort
+     *              pgnState:       yes - diff. set or data to paginate
+     *              nestState       yes - as the key will be different
+     *
+     * sort         thState         no - its dep. on data but indep to the curr. sort state
+     *              sortState       yes - itself
+     *              pgnState        yes - diff. set or data to paginate
+     *              nestState       yes - since visible data is diff.
+     *
+     * nesting      thState         no - its dep. on data but indep to the curr. sort state
+     *              sortState       no
+     *              pgnState        no
+     *              nestState       yes - itself
+     *
+     * paginate     thState         no - its dep. on data but indep to the curr. sort state
+     *              sortState       no
+     *              pgnState        yes - itself
+     *              nestState       yes - since visible data is diff.
+     *
+     * header       thState         yes - itself
+     *              sortState       no - thState is indep to the curr. sort state
+     *              pgnState        no
+     *              nestState       no
+     *
+     * type         thState         no
+     *              sortState       no
+     *              pgnState        no
+     *              nestState       no
+     */
+    shallResetState(props: IProps): TShallResetState {
+        const { data, rows, header, nesting, sort, paginate } = props;
+        const { sortState: currSort, pgnState: currPaginate } = this.state;
+        const { data: currData, rows: currRows, header: currHeader, nesting: currNesting } = this.props;
+
+        const isDiffData: boolean = data !== currData;
+        const isDiffRows: boolean = rows !== currRows;
+        const isDiffNesting: boolean = nesting !== currNesting;
+        const isDiffSort: boolean = sort !== currSort.option;
+        const isDiffPgn: boolean = paginate !== currPaginate.option;
+        const isDiffHeader: boolean = header !== currHeader;
+
+        const thState: boolean = isDiffData || isDiffHeader;
+        const nestState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn || isDiffNesting;
+        const sortState: boolean = isDiffData || isDiffRows || isDiffSort;
+        const pgnState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn;
+        const shallReset: boolean = (thState || nestState || sortState || pgnState);
+        return shallReset ? {thState, nestState, sortState, pgnState} : null;
     }
 
-    isPgnDiff(paginate: IPgnOption, currPaginate: IPgnOption): boolean {
-        return paginate && Object.getOwnPropertyNames(paginate).some((key: string) => {
-            const val = paginate[key];
-            const currVal = currPaginate[key];
-            return Array.isArray(val) ?
-                val.some((item, idx: number) => item !== currVal[idx]) :
-                val !== currVal;
-        });
-    }
+    createState(props: IProps, shallReset?: TShallResetState): Partial<IState> {
+        const { data, rows, sort, paginate, header } = props;
+        shallReset = shallReset ? shallReset : {thState: true, nestState: true, sortState: true, pgnState: true};
 
-    isSortDiff(sort: ISortOption, currSort: ISortOption): boolean {
-        return sort && Object.getOwnPropertyNames(sort).some((key: string) => {
-            return sort[key] !== currSort[key];
-        });
+        const nestState = (rows.length > 1 && shallReset.nestState) ? {nestState: {}} : {};
+        const sortState = (sort && shallReset.sortState) ? {sortState : this.createSortState(sort, data)}: {};
+        const pgnState = (paginate && shallReset.pgnState) ? {pgnState: this.createPgnState(paginate, data)} : {}
+        const thState = (header && shallReset.thState) ? {thState: this.thHandle.createThCtx(header)}: {};
+        return { ...nestState, ...sortState, ...pgnState, ...thState };
     }
 
     //// Builtin Default Component Template
@@ -228,8 +257,6 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Collapse Related
     createPgnState(pgnOption: PgnOption, data: any[]): IPgnState {
-        if (!pgnOption) return;
-
         // Only display valid increments for <option> value
         const { increment } = pgnOption;
         pgnOption.increment = increment ? this.pgnHandle.parseNoPerPage(increment) : increment;
@@ -349,8 +376,6 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Sorting Related
     createSortState(sortOption: ISortOption, data: any[]): ISortState {
-        if (!sortOption) return;
-
         const { key, isAsc } = sortOption;
         return {
             option: { ...sortOption },
