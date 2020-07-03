@@ -115,7 +115,7 @@ describe('Table Header Handle', () => {
         });
     });
 
-    describe('Method - createThSpanCtx: Create rows (`tr`) of header (`th`) row span and column span specific context', () => {
+    describe('Method - createThSpanCtx: Create rows (`tr`) of header (`th`) context for row span and column span', () => {
         const { createThSpanCtx }  = ThHandle.prototype;
         const mockColCtxs: IThColCtx[][] = [
             [
