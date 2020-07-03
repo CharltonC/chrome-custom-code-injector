@@ -21,8 +21,8 @@ export class ThHandle {
 
             // Get the Sub Row Info if there is sub headers & Update cache
             const subRowLvlIdx: number = rowLvlIdx + 1;
-            const subRowInfo = subHeader ? this.createThColCtx(subHeader, subRowLvlIdx, cache) as IThColCtx[] : null;
-            this.setThColCtxCache(cache, subRowLvlIdx, subRowInfo);
+            const subRowCtx = subHeader ? this.createThColCtx(subHeader, subRowLvlIdx, cache) as IThColCtx[] : null;
+            this.setThColCtxCache(cache, subRowLvlIdx, subRowCtx);
 
             // After Cache is updated
             const ownColTotal: number = subHeader ? (cache.colTotal - currColTotal) : null;
@@ -35,19 +35,21 @@ export class ThHandle {
         return isTopLvl ? cache.slots : colCtx;
     }
 
-    setThColCtxCache(cache: IThColCtxCache, rowLvlIdx: number, colCtx: IThColCtx[]): void {
+    setThColCtxCache(cache: IThColCtxCache, rowLvlIdx: number, colCtx?: IThColCtx[]): void {
         const { slots } = cache;
         const isTopLvl: boolean = rowLvlIdx === 0;
 
-        if (isTopLvl && colCtx) {
+        if (!colCtx) {
+            cache.colTotal++;
+
+        // If its root level and col context is provided
+        } else if (isTopLvl) {
             slots[rowLvlIdx] = colCtx;
 
-        } else if (!isTopLvl && colCtx) {
+        // If its not root level and col context is provided
+        } else {
             const currRowInfo = slots[rowLvlIdx];
-            slots[rowLvlIdx] = currRowInfo ? currRowInfo.concat(colCtx) : [].concat(colCtx);
-
-        } else if (!colCtx) {
-            cache.colTotal++;
+            slots[rowLvlIdx] = currRowInfo ? currRowInfo.concat(colCtx) : colCtx;
         }
     }
 
