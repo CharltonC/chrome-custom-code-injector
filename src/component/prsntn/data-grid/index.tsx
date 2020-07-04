@@ -146,6 +146,7 @@ export class _DataGrid extends Component<IProps, IState> {
         return shallReset ? {thState, nestState, sortState, pgnState} : null;
     }
 
+    //// State & State Slices
     createState(props: IProps, shallReset?: TShallResetState): Partial<IState> {
         const { data, rows, sort, paginate, header } = props;
         shallReset = shallReset ? shallReset : {thState: true, nestState: true, sortState: true, pgnState: true};
@@ -157,7 +158,29 @@ export class _DataGrid extends Component<IProps, IState> {
         return { ...nestState, ...sortState, ...pgnState, ...thState };
     }
 
-    //// Builtin Default Component Template
+    createPgnState(pgnOption: PgnOption, data: any[]): IPgnState {
+        // Only display valid increments for <option> value
+        const { increment } = pgnOption;
+        pgnOption.increment = increment ? this.pgnHandle.parseNoPerPage(increment) : increment;
+
+        const option: PgnOption = Object.assign(this.pgnHandle.getDefOption(), pgnOption);
+
+        return {
+            option,
+            status: this.pgnHandle.getPgnState(data, option)
+        };
+    }
+
+    createSortState(sortOption: ISortOption, data: any[]): ISortState {
+        const { key, isAsc } = sortOption;
+        return {
+            option: { ...sortOption },
+            // TODO: renamed method
+            data: this.sortHandle.objList(data, key, isAsc)
+        };
+    }
+
+    //// Default Component Template
     getDefListWrapperElem(items: ReactElement[]): ReactElement {
         return <ul>{items}</ul>;
     }
@@ -233,19 +256,15 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getDefPgnElem(): ReactElement {
-
         const { option, status } = this.state.pgnState;
-        const {
-            firstProps, prevProps, nextProps, lastProps, selectProps,
-            pageNo, totalPage, startRecord, endRecord, totalRecord
-        } = this.getPgnProps(option, status);
-        // TODO: fix type & create default option
+        const { pageNo, totalPage, startRecord, endRecord, totalRecord } = status;
+        const { firstProps, prevProps, nextProps, lastProps, selectProps } = this.getPgnFmElemProps(option, status);
 
         return <>
             <p>Current Page : {pageNo}</p>
             <p>Total Pages: {totalPage}</p>
-            <p>Showing: <select name="" id="" {...selectProps}></select> records/page</p>
             <p>Showing records from: {startRecord} to {endRecord} of total {totalRecord} records</p>
+            <p>Showing: <select name="" id="" {...selectProps}></select> records/page</p>
             <p>
                 <input type="button" value="first" {...firstProps} />
                 <input type="button" value="prev" {...prevProps} />
@@ -256,19 +275,6 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Collapse Related
-    createPgnState(pgnOption: PgnOption, data: any[]): IPgnState {
-        // Only display valid increments for <option> value
-        const { increment } = pgnOption;
-        pgnOption.increment = increment ? this.pgnHandle.parseNoPerPage(increment) : increment;
-
-        const option: PgnOption = Object.assign(this.pgnHandle.getDefOption(), pgnOption);
-
-        return {
-            option,
-            status: this.pgnHandle.getPgnState(data, option)
-        };
-    }
-
     getItemClpsProps(itemCtx: clpsType.IItemCtx, nestState: TNestState): IClpsProps {
         const { itemPath, isDefNestedOpen } = itemCtx;
 
@@ -325,10 +331,11 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Pagination Related
     // TODO: return type
-    getPgnProps({ increment, incrementIdx }: PgnOption, pgnState: pgnType.IPgnState) {
-        const { first, prev, next, last, ...props } = pgnState;
+    getPgnFmElemProps({ increment, incrementIdx }: PgnOption, pgnState: pgnType.IPgnState) {
+        const { first, prev, next, last } = pgnState;
+
+        // TODO: loop for `getPgnBtnProps`
         return {
-            ...props,
             firstProps: this.getPgnBtnProps(first),
             prevProps: this.getPgnBtnProps(prev),
             nextProps: this.getPgnBtnProps(next),
@@ -340,47 +347,32 @@ export class _DataGrid extends Component<IProps, IState> {
     getPgnBtnProps(val: number): React.ButtonHTMLAttributes<HTMLButtonElement> {
         return {
             disabled: !Number.isInteger(val),
-            onClick: this.onPgnNav.bind(this, val)
+            onClick: (() => {
+                this.onPgnChanged({ page: val });
+            }).bind(this)
         };
     }
 
     getPgnSelectProps(increment: number[], incrementIdx: number): React.SelectHTMLAttributes<HTMLSelectElement> {
         return {
             value: incrementIdx,
-            onChange: this.onPgnIncrmChanged.bind(this),
             children: increment.map((perPage: number, idx: number) => (
+                // TODO: Move this to Def Component Class
                 <option key={`perpage-${idx}`} value={idx}>
                     {perPage}
                 </option>
-            ))
+            )),
+            onChange: (({ target }) => {
+                this.onPgnChanged({incrementIdx: target.value, page: 0});
+            }).bind(this)
         };
     }
 
-    onPgnIncrmChanged({ target }): void {
-        this.setPgnState({
-            incrementIdx: target.value,
-            page: 0
-        });
-    }
-
-    onPgnNav(pageIdx: number): void {
-        this.setPgnState({ page: pageIdx });
-    }
-
-    setPgnState(partialPgnOption): void {
+    onPgnChanged(partialPgnOption): void {
         const { sortState, pgnState: currPgnState } = this.state;
         const pgnOption: PgnOption = { ...currPgnState.option, ...partialPgnOption };
         const pgnState: IPgnState = this.createPgnState(pgnOption, sortState.data);
         this.setState({ ...this.state, pgnState });
-    }
-
-    //// Sorting Related
-    createSortState(sortOption: ISortOption, data: any[]): ISortState {
-        const { key, isAsc } = sortOption;
-        return {
-            option: { ...sortOption },
-            data: this.sortHandle.objList(data, key, isAsc)
-        };
     }
 }
 

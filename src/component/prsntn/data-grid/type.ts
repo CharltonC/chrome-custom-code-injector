@@ -62,7 +62,7 @@ export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export type TShallResetState = {
-    [K in (keyof IState)]: boolean;
+    [K in keyof IState]: boolean;
 }
 
 //// Internal Component Props
