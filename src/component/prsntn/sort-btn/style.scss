@@ -1,0 +1,30 @@
+.kz-sort-btn {
+    display: inline-block;
+
+    &:before,
+    &:after {
+        content: '';
+        display: block;
+    }
+
+    &::before {
+        @include arrow('up', 5px, $light-gray-200);
+    }
+
+    &:after {
+        margin-top: 3px;
+        @include arrow('dn', 5px, $light-gray-200);
+    }
+
+    &--asc {
+        &:before {
+            @include arrow('up', 5px, $dark-gray-100);
+        }
+    }
+
+    &--dsc {
+        &:after {
+            @include arrow('dn', 5px, $dark-gray-100);
+        }
+    }
+}
