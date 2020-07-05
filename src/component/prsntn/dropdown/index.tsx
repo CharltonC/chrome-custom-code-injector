@@ -32,30 +32,32 @@ export class _Dropdown extends Component<IProps, IState> {
 
     onSelect(evt: React.ChangeEvent<HTMLSelectElement>): void {
         const { onSelect } = this.props;
-        const selectIdx: number = parseInt(evt.target.value);
-        if (onSelect) onSelect(evt, selectIdx);
+        // this is the actual index of the list item or `<option>`
+        const selectValueAttrVal: string = evt.target.value;
+        if (onSelect) onSelect(evt, selectValueAttrVal);
     }
 
     render() {
-        const { id, list, border, selectIdx } = this.props;
+        const { id, list, listTxtTransform, border, selectIdx, onSelect, ...props } = this.props;
         const { hsList, hsSelectIdx } = this.state;
 
         const baseCls: string = 'dropdown';
         const wrapperCls: string = border ? `${baseCls} ${baseCls}--border` : `${baseCls} ${baseCls}--plain`;
-        const selectValueProps = hsSelectIdx ? { value: selectIdx } : {};
+        const selecteProps = hsSelectIdx ? { ...props, value: selectIdx } : props;
 
         return hsList ?
             <div className={wrapperCls}>
-                <select id={id}
-                    {...selectValueProps}
+                <select
+                    {...selecteProps}
+                    id={id}
                     onChange={this.onSelect}
-                    >
-                    { list.map((text: string | number, idx: number) =>
+                    >{ list.map((text: string | number, idx: number) =>
+                        /* we use the list index as a generic value as we cant gurantee that the text is not empty or is diff. */
                         <option
                             key={`${id}-${idx}`}
                             value={idx}
                             >
-                            {text}
+                            {listTxtTransform ? listTxtTransform(text) : text}
                         </option>
                     )}
                 </select>

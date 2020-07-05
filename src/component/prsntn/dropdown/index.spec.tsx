@@ -173,6 +173,15 @@ describe('Component - Dropdown', () => {
             expect($wrapper).toBeFalsy();
         });
 
+        it('should tranform the text in list item if transform function is provided', () => {
+            const listTxtTransform = (text) => `lorem-${text}`;
+            TestUtil.renderPlain($elem, Dropdown, {...mockDefProps, listTxtTransform});
+            syncChildElem();
+
+            expect($options[0].textContent).toBe('lorem-a');
+            expect($options[1].textContent).toBe('lorem-b');
+        });
+
         it('should set the 1st option as selected when list is provided without select index', () => {
             TestUtil.renderPlain($elem, Dropdown, mockDefProps);
             syncChildElem();
@@ -208,6 +217,13 @@ describe('Component - Dropdown', () => {
             expect(onSelectSpy).toHaveBeenCalled();
             expect($options[0].selected).toBe(false);
             expect($options[1].selected).toBe(true);
+        });
+
+        it('should transfer unspecified props to `select` element', () => {
+            TestUtil.renderPlain($elem, Dropdown, {...mockDefProps, disabled: true});
+            syncChildElem();
+
+            expect($select.disabled).toBe(true);
         });
     });
 });

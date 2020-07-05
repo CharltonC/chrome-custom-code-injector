@@ -1,8 +1,9 @@
 export interface IProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     id: string;
-    list: (string | number)[];
     border?: boolean;
-    selectIdx?: number;
+    list: (string | number)[];
+    listTxtTransform?: (...args: any[]) => string;   // transform the list item text
+    selectIdx?: number;                              // index in `list`
     onSelect?: (...args: any[]) => void;
 }
 
