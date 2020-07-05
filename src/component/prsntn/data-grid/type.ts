@@ -1,7 +1,10 @@
 import { ReactElement } from "react";
-import * as clpsType from '../../../service/handle/collapse/type';
-import * as pgnType from '../../../service/handle/paginate/type';
-import * as thType from '../../../service/handle/table-header/type';
+
+import * as clpsHandleType from '../../../service/handle/collapse/type';
+import * as pgnHandleType from '../../../service/handle/paginate/type';
+import * as thHandleType from '../../../service/handle/table-header/type';
+import * as sortBtnType from '../sort-btn/type';
+import * as dropdownType from '../dropdown/type';
 import { PgnOption } from '../../../service/handle/paginate';
 
 //// Props
@@ -9,7 +12,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
     rows: IRow[];
     type?: TGridType;
-    header?: thType.IThConfig[];
+    header?: thHandleType.IThConfig[];
     nesting?: INestOption;
     sort?: ISortOption;
     paginate?: IPgnOption;
@@ -27,7 +30,7 @@ export interface ISortOption {
 }
 
 export interface INestOption {
-    showInitial?: clpsType.TVisibleNestablePath;
+    showInitial?: clpsHandleType.TVisibleNestablePath;
     showOnePerLvl?: boolean;
 }
 
@@ -41,7 +44,7 @@ export interface IState {
     nestState: TNestState;
     sortState: ISortState;
     pgnState: IPgnState;
-    thState: thType.IThCtx[][]
+    thState: thHandleType.IThCtx[][]
 }
 
 export type TNestState = Record<string, boolean>;
@@ -49,11 +52,6 @@ export type TNestState = Record<string, boolean>;
 export interface ISortState {
     option: ISortOption;
     data: any[];
-}
-
-export interface IPgnState {
-    option: PgnOption;
-    status: pgnType.IPgnState;
 }
 
 export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {
@@ -65,16 +63,49 @@ export type TShallResetState = {
     [K in keyof IState]: boolean;
 }
 
-//// Internal Component Props
-export type TFn = (...args: any[]) => any;
 
+//// Expand/Collapse
 export interface IClpsProps {
     isNestedOpen?: boolean;
     onCollapseChanged?: TFn;
 }
 
-//// Reexport
+
+//// Pagination
+export interface IPgnState {
+    option: PgnOption;
+    status: pgnHandleType.IPgnStatus;
+}
+
+export interface IPgnProps {
+    firstBtnProps: TBtnProps;
+    prevBtnProps: TBtnProps;
+    nextBtnProps: TBtnProps;
+    lastBtnProps: TBtnProps;
+    perPageSelectProps: dropdownType.IProps;
+    pageSelectProps: dropdownType.IProps;
+}
+
+export interface IPgnPropsCtx {
+    data: any[];
+    option: PgnOption;
+    callback?: TPgnCallback;
+}
+
+export type TPgnCallback = (pgnState: IPgnState) => any;
+
+export {pgnHandleType as pgnHandleType};
 export {PgnOption as PgnOption};
-export {pgnType as pgnType};
-export {clpsType as clpsType};
-export {thType as thType};
+export {dropdownType as dropdownType}
+
+
+//// Generic
+export type TFn = (...args: any[]) => any;
+export type TBtnProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
+export type TSelectEvt = React.ChangeEvent<HTMLSelectElement>;
+
+
+//// Reexport
+export {clpsHandleType as clpsHandleType};
+export {thHandleType as thHandleType};
+export {sortBtnType as sortBtnType}
