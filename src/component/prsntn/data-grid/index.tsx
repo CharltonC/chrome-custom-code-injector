@@ -10,7 +10,8 @@ import {
     IProps, ISortOption,
     IRow, TCmpCls, TFn, IClpsProps,
     IState, ISortState, IPgnState, TShallResetState,
-    clpsHandleType, thHandleType, sortBtnType
+    IPgnProps,
+    clpsHandleType, thHandleType, sortBtnType,
 } from './type';
 
 
@@ -49,6 +50,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
         // Pagination
         let pgnElem: ReactElement = pgnState ? this.createPgnElem() : null;
+
         return <>
             {pgnElem}
             {gridElem}
@@ -228,11 +230,11 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     createPgnElem(): ReactElement {
-        const { sortState, pgnState } = this.state;
-        const { option, status } = pgnState;
-        const data = sortState ? sortState.data : this.props.data;
-        const callback = ( (state) => this.setState({...this.state, pgnState: state}) ).bind(this);
-        const pgnProps = this.paginateHelper.createProps(data, option, status, callback);
+        const { sortState, pgnState: currPgnState } = this.state;
+        const { option, status } = currPgnState;
+        const data: any[] = sortState ? sortState.data : this.props.data;
+        const callback: TFn = ( (pgnState: IPgnState) => this.setState({...this.state, pgnState}) ).bind(this);
+        const pgnProps: IPgnProps = this.paginateHelper.createProps(data, option, status, callback);
         return this.paginateHelper.createDefComponent(status, pgnProps);
     }
 }
