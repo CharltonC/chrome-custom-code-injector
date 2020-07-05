@@ -1,5 +1,4 @@
 export interface IProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-    id: string;
     border?: boolean;
     list: (string | number)[];
     listTxtTransform?: (...args: any[]) => string;   // transform the list item text
