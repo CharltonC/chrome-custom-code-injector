@@ -3,13 +3,12 @@ import React, { Component, memo, ReactElement } from "react";
 import { ClpsHandle } from '../../../service/handle/collapse';
 import { SortHandle } from '../../../service/handle/sort';
 import { ThHandle } from '../../../service/handle/table-header';
-import { PaginateHelper } from './helper';
+import { PaginateHelper, ExpandHelper } from './helper';
 import { SortBtn } from '../sort-btn';
 
 import {
-    IProps,
-    IRow, TCmpCls, TFn, TNestState, IClpsProps,
-    ISortOption,
+    IProps, ISortOption,
+    IRow, TCmpCls, TFn, IClpsProps,
     IState, ISortState, IPgnState, TShallResetState,
     clpsHandleType, thHandleType, sortBtnType
 } from './type';
@@ -20,6 +19,7 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly sortHandle = new SortHandle();
     readonly thHandle = new ThHandle();
     readonly paginateHelper: PaginateHelper = new PaginateHelper();
+    readonly expandHelper: ExpandHelper = new ExpandHelper();
 
     //// Builtin API
     constructor(props: IProps) {
@@ -60,18 +60,26 @@ export class _DataGrid extends Component<IProps, IState> {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
-            const transformFn = this.getCmpTransformFn(row[transformFnIdx]);
+            const transformFn = this.createCmpTransformFn(row[transformFnIdx]);
             return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as clpsHandleType.IRawRowConfig;
         });
     }
 
-    getCmpTransformFn(Cmp: TCmpCls): TFn {
+    createCmpTransformFn(Cmp: TCmpCls): TFn {
+        const { nestState } = this.state;
+        const { nesting } = this.props;
+        const { showOnePerLvl } = nesting;      // TODO: def. value
+
+        // TODO: if no nesting
+        const callback = nesting ? ( (state) => this.setState({...this.state, nestState: state}) ).bind(this) : null;
+        const commonCtx = nesting ? {nestState, showOnePerLvl, callback} : null;
+
         return (itemCtx: clpsHandleType.IItemCtx) => {
-            const { nestState } = this.state;
-            const { nesting } = this.props;
             const { itemPath, nestedItems } = itemCtx;
-            const hsClpsProps: boolean = !!nestedItems && !!nesting;
-            const clpsProps: IClpsProps = hsClpsProps ? this.getItemClpsProps(itemCtx, nestState) : {};
+
+            // TODO: Move to getRowProps?
+            const hsClpsProps: boolean = !!nesting && !!nestedItems;
+            const clpsProps: IClpsProps = hsClpsProps ? this.expandHelper.createRowProps(commonCtx, itemCtx) : {};
             return <Cmp key={itemPath} {...itemCtx} {...clpsProps} />;
         };
     }
@@ -226,61 +234,6 @@ export class _DataGrid extends Component<IProps, IState> {
         const callback = ( (state) => this.setState({...this.state, pgnState: state}) ).bind(this);
         const pgnProps = this.paginateHelper.createProps(data, option, status, callback);
         return this.paginateHelper.createDefComponent(status, pgnProps);
-    }
-
-    //// Collapse Related
-    getItemClpsProps(itemCtx: clpsHandleType.IItemCtx, nestState: TNestState): IClpsProps {
-        const { itemPath, isDefNestedOpen } = itemCtx;
-
-        // Only Set the state for each Item during Initialization, if not use the existing one
-        const isInClpsState: boolean = typeof nestState[itemPath] !== 'undefined';
-        if (!isInClpsState) this.setItemInitialClpsState(nestState, itemCtx);
-
-        const isNestedOpen: boolean = isInClpsState ? nestState[itemPath] : isDefNestedOpen;
-        const onCollapseChanged = this.getItemOnClpsChangedFn(itemCtx, isNestedOpen);
-
-        return { isNestedOpen, onCollapseChanged };
-    }
-
-    setItemInitialClpsState(nestState: TNestState, { itemPath, isDefNestedOpen }: clpsHandleType.IItemCtx): void {
-        nestState[itemPath] = isDefNestedOpen;
-    }
-
-    getItemOnClpsChangedFn(itemCtx: clpsHandleType.IItemCtx, isNestedOpen: boolean): TFn {
-        const { nestState } = this.state;
-        const { showOnePerLvl } = this.props.nesting;
-
-        return (() => {
-            // Find the items that are at the same level and if they are open (true), close them (set them to false)
-            const impactedItemsState: TNestState = showOnePerLvl && !isNestedOpen ? this.getImpactedItemsClpsState(nestState, itemCtx) : {};
-            const itemState: TNestState = { [itemCtx.itemPath]: !isNestedOpen };
-            this.setState({
-                ...this.state,
-                nestState: {
-                    ...nestState,
-                    ...impactedItemsState,
-                    ...itemState
-                }
-            });
-        }).bind(this);
-    }
-
-    getImpactedItemsClpsState(nestState: TNestState, { itemLvl, itemKey, parentPath }: clpsHandleType.IItemCtx): TNestState {
-        const itemPaths: string[] = Object.getOwnPropertyNames(nestState);
-        const isRootLvlItem: boolean = itemLvl === 0;
-        const relCtx: string = isRootLvlItem ? '' : `${parentPath}/${itemKey}:`;
-        const relCtxPattern: RegExp = new RegExp(relCtx + '\\d+$');
-
-        const impactedItemPaths: string[] = itemPaths.filter((ctx: string) => {
-            return isRootLvlItem ?
-                Number.isInteger(Number(ctx)) :
-                relCtxPattern.test(ctx);
-        });
-
-        return impactedItemPaths.reduce((impactedState: TNestState, ctx: string) => {
-            const isImpactedItemOpen: boolean = nestState[ctx];
-            return isImpactedItemOpen ? { ...impactedState, [ctx]: false } : impactedState;
-        }, {});
     }
 }
 
