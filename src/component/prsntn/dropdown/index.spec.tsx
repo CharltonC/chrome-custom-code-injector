@@ -102,6 +102,12 @@ describe('Component - Dropdown', () => {
                 expect(hsList).toBe(true);
                 expect(hsSelectIdx).toBe(true);
             });
+
+            it('should return state when select index is 0 and the matching item in list is 0', () => {
+                const { hsList, hsSelectIdx }:  IState = getInitialState({...mockBareProps, list: [0, 1], selectIdx: 0});
+                expect(hsList).toBe(true);
+                expect(hsSelectIdx).toBe(true);
+            });
         });
 
         describe('Method - onSelect', () => {

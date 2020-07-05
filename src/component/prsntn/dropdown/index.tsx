@@ -26,7 +26,7 @@ export class _Dropdown extends Component<IProps, IState> {
     getInitialState({list, selectIdx}: Partial<IProps>): IState {
         return {
             hsList: !!list.length,
-            hsSelectIdx: typeof selectIdx !== 'undefined' && !!list[selectIdx]
+            hsSelectIdx: Number.isInteger(selectIdx) && typeof list[selectIdx] !== 'undefined'
         };
     }
 
