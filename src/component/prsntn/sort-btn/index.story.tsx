@@ -6,7 +6,7 @@ export default {
     component: _SortBtn,
 };
 
-export const WithSortOrder = () => {
+export const WithSortState = () => {
     const [ isAsc, setSortOrder ] = useState(true);
     const onClick = () => setSortOrder(!isAsc);
     return (
@@ -17,8 +17,13 @@ export const WithSortOrder = () => {
     )
 };
 
-export const WithoutSortOrder = () => {
+export const WithoutSortState = () => {
+    const [ isAsc, setSortOrder ] = useState(null);
+    const onClick = () => setSortOrder(!isAsc);
     return (
-        <SortBtn />
-    )
-};
+        <SortBtn
+            isAsc={isAsc}
+            onClick={onClick}
+            />
+        )
+    };

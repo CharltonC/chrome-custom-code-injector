@@ -1,6 +1,10 @@
 .kz-sort-btn {
     display: inline-block;
 
+    &:focus {
+        outline: none;
+    }
+
     &:before,
     &:after {
         content: '';
