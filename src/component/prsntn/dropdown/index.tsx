@@ -39,22 +39,26 @@ export class _Dropdown extends Component<IProps, IState> {
     }
 
     render() {
-        const { id, list, border, selectIdx, disabled } = this.props;
+        const { id, list, border, selectIdx } = this.props;
         const { hsList, hsSelectIdx } = this.state;
 
         const baseCls: string = 'dropdown';
         const wrapperCls: string = border ? `${baseCls} ${baseCls}--border` : `${baseCls} ${baseCls}--plain`;
-        const selectValueProp = hsSelectIdx ? { value: selectIdx } : {};
+        const selectValueProps = hsSelectIdx ? { value: selectIdx } : {};
 
         return hsList ?
             <div className={wrapperCls}>
                 <select id={id}
-                    {...selectValueProp}
-                    disabled={disabled}
+                    {...selectValueProps}
                     onChange={this.onSelect}
                     >
-                    { list.map((text: string, idx: number) =>
-                        <option key={`${id}-${idx}`} value={idx}>{text}</option>
+                    { list.map((text: string | number, idx: number) =>
+                        <option
+                            key={`${id}-${idx}`}
+                            value={idx}
+                            >
+                            {text}
+                        </option>
                     )}
                 </select>
                 { dnArrowElem }

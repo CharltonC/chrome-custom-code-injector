@@ -1,6 +1,5 @@
-export interface IProps extends React.HTMLAttributes<HTMLSelectElement> {
+export interface IProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     id: string;
-    disabled?: boolean;
     list: (string | number)[];
     border?: boolean;
     selectIdx?: number;
