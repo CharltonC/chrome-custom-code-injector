@@ -33,7 +33,7 @@ export class PgnHandle {
 
         // Skip if we only have 1 list item OR less than 2 pages
         const totalRecord: number = list.length;
-        const defState: IPgnStatus = this.getDefPgnState(totalRecord, perPage);
+        const defState: IPgnStatus = this.getDefPgnStatus(totalRecord, perPage);
         if (totalRecord <= 1) return defState;
         const totalPage: number = this.getTotalPage(totalRecord, perPage);
         if (totalPage <= 1) return defState;
@@ -53,7 +53,7 @@ export class PgnHandle {
         return new PgnOption();
     }
 
-    getDefPgnState(totalRecord: number, perPage: number): IPgnStatus {
+    getDefPgnStatus(totalRecord: number, perPage: number): IPgnStatus {
         const startIdx: number = 0;
         const recordCtx: IRecordCtx = this.getRecordCtx(totalRecord, startIdx);
         return {
