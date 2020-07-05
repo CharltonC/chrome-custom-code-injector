@@ -1,7 +1,7 @@
-import { IPgnState, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
+import { IPgnStatus, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
 
 /**
- * Whenever one of these updates, we can use `getPgnState` to get the current paginate state
+ * Whenever one of these updates, we can use `getPgnStatus` to get the current paginate state
  */
 export class PgnOption {
     page?: number = 0;
@@ -14,7 +14,7 @@ export class PgnOption {
  *      const list = ['a', 'b', 'c', 'd'];
  *      const pgnHandle = new PgnHandle();
  *
- *      const example = pgnHandle.getPgnState(list, {
+ *      const example = pgnHandle.getPgnStatus(list, {
  *           page: 1,                       // optional starting page index
  *           increment: [100, 200, 300],    // used for <select>'s <option> (default 10 per page, i.e. [10])
  *           incrementIdx: 0,               // i.e. 100 per age
@@ -24,7 +24,7 @@ export class PgnOption {
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
 export class PgnHandle {
-    getPgnState(list: any[], pgnOption: PgnOption): IPgnState {
+    getPgnStatus(list: any[], pgnOption: PgnOption): IPgnStatus {
         // Merge def. option with User's option
         const defOption: PgnOption = this.getDefOption();
         const {increment: [defIncrmVal]} = defOption;
@@ -33,7 +33,7 @@ export class PgnHandle {
 
         // Skip if we only have 1 list item OR less than 2 pages
         const totalRecord: number = list.length;
-        const defState: IPgnState = this.getDefPgnState(totalRecord, perPage);
+        const defState: IPgnStatus = this.getDefPgnState(totalRecord, perPage);
         if (totalRecord <= 1) return defState;
         const totalPage: number = this.getTotalPage(totalRecord, perPage);
         if (totalPage <= 1) return defState;
@@ -53,7 +53,7 @@ export class PgnHandle {
         return new PgnOption();
     }
 
-    getDefPgnState(totalRecord: number, perPage: number): IPgnState {
+    getDefPgnState(totalRecord: number, perPage: number): IPgnStatus {
         const startIdx: number = 0;
         const recordCtx: IRecordCtx = this.getRecordCtx(totalRecord, startIdx);
         return {
@@ -62,7 +62,7 @@ export class PgnHandle {
             totalPage: 1,
             startIdx,
             pageNo: 1
-        } as IPgnState;
+        } as IPgnStatus;
     }
 
     getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {

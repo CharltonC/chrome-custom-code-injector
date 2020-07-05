@@ -37,7 +37,7 @@ export interface IRecordCtx {
     endRecord: number;
 }
 
-export interface IPgnState extends IPageCtx, IPageSlice, IRelPage, IRecordCtx {
+export interface IPgnStatus extends IPageCtx, IPageSlice, IRelPage, IRecordCtx {
     perPage: number;
     totalPage: number;
 }
