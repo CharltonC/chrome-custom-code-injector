@@ -42,7 +42,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { showInitial: visiblePath } = nesting;
 
         // Rows
-        const data: any[] = this.getProcessedData(rawData, sortState, pgnState);
+        const data: any[] = this.getRowData(rawData, sortState, pgnState);
         const rows: clpsHandleType.IRawRowConfig[] = this.getMappedConfig(rawRows);
         const rowsElem: ReactElement[] = this.clpsHandle.getClpsState({data, rows, visiblePath});
         const gridElem: ReactElement = (type === 'table') ? this.createTbElem(rowsElem) : this.createListElem(rowsElem);
@@ -76,7 +76,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    getProcessedData(rawData: any[], sortState: ISortState, pgnState: IPgnState): any[] {
+    getRowData(rawData: any[], sortState: ISortState, pgnState: IPgnState): any[] {
         if (pgnState) {
             const { startIdx, endIdx } = pgnState.status;
             const data = sortState ? sortState.data : rawData;
