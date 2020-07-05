@@ -56,5 +56,12 @@ describe('Component - TODO: Component Name', () => {
 
         expect(mockCallback).toHaveBeenCalled();
     });
+
+    it('should transfer unspecified props to button element', () => {
+        TestUtil.renderPlain($elem, SortBtn, {disabled: true});
+        syncChildElem();
+
+        expect($elem.querySelector('button').disabled).toBe(true);
+    });
 });
 

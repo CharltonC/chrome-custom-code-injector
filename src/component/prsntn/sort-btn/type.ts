@@ -1,4 +1,4 @@
-export interface IProps extends React.HTMLAttributes<HTMLElement> {
+export interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isAsc?: boolean;
     onClick?: (...args: any[]) => any;
 }
