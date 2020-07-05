@@ -33,13 +33,12 @@ describe('Component - Dropdown', () => {
             });
         });
 
-        describe('Lifecycle - shouldComponentUpdate', () => {
+        describe('Lifecycle - UNSAFE_componentWillReceiveProps', () => {
             const mockPropsWithInitialSelectIdx: IProps = {...mockDefProps, selectIdx: 0};
             const mockPropsWithSameSelectIdx = {selectIdx: 0} as IProps;
             const mockPropsWithDiffSelectIdx = {selectIdx: 1} as IProps;
             let cmpWithSelectIdx: _Dropdown;
             let cmpWithoutSelectIdx: _Dropdown;
-            let shallUpdate: boolean;
 
             beforeEach(() => {
                 // Override/Clear all the spies set in the parent so that Component Methods called dont get recorded before they are instantiated
@@ -53,9 +52,8 @@ describe('Component - Dropdown', () => {
             });
 
             it('should not set state and not proceed with update when select index is not provided in the first place', () => {
-                shallUpdate = cmpWithoutSelectIdx.shouldComponentUpdate(mockPropsWithDiffSelectIdx);
+                cmpWithoutSelectIdx.UNSAFE_componentWillReceiveProps(mockPropsWithDiffSelectIdx);
 
-                expect(shallUpdate).toBe(false);
                 expect(getInitialStateSpy).not.toHaveBeenCalled();
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
@@ -63,18 +61,16 @@ describe('Component - Dropdown', () => {
             it('should set state and proceed with update if new select index is different to old one when select index is provided in the first place', () => {
                 const { list } = mockPropsWithInitialSelectIdx;
                 const { selectIdx } = mockPropsWithDiffSelectIdx;
-                shallUpdate = cmpWithSelectIdx.shouldComponentUpdate(mockPropsWithDiffSelectIdx);
+                cmpWithSelectIdx.UNSAFE_componentWillReceiveProps(mockPropsWithDiffSelectIdx);
 
-                expect(shallUpdate).toBe(true);
                 expect(getInitialStateSpy).toHaveBeenCalledTimes(1);
                 expect(getInitialStateSpy).toHaveBeenCalledWith({list, selectIdx});
                 expect(setStateSpy).toHaveBeenCalledWith(mockRtnState);
             });
 
             it('should not set state and not proceed with update if new select index is same as old one when select index is provided in the first place', () => {
-                shallUpdate = cmpWithSelectIdx.shouldComponentUpdate(mockPropsWithSameSelectIdx);
+                cmpWithSelectIdx.UNSAFE_componentWillReceiveProps(mockPropsWithSameSelectIdx);
 
-                expect(shallUpdate).toBe(false);
                 expect(getInitialStateSpy).not.toHaveBeenCalled();
                 expect(setStateSpy).not.toHaveBeenCalled();
             });

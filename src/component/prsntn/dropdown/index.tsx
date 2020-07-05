@@ -12,17 +12,15 @@ export class _Dropdown extends Component<IProps, IState> {
         this.onSelect = this.onSelect.bind(this);
     }
 
-    /**
-     * Only deal with `selectIdx` changes
-     * - everything else is designed to be fixed/constant
-     */
-    shouldComponentUpdate({selectIdx}: IProps): boolean {
+    UNSAFE_componentWillReceiveProps({selectIdx}: IProps): void {
         const { list, selectIdx: oldSelectIdx } = this.props;
-        if (typeof oldSelectIdx === 'undefined' || (selectIdx === oldSelectIdx)) return false;
+        const shallGetInitialState = typeof oldSelectIdx !== 'undefined' && selectIdx !== oldSelectIdx;
 
-        const state: IState = this.getInitialState({list, selectIdx});
-        this.setState(state);
-        return true;
+        // Deal with `selectIdx` changes
+        if (shallGetInitialState) {
+            const state: IState = this.getInitialState({list, selectIdx});
+            this.setState(state);
+        }
     }
 
     getInitialState({list, selectIdx}: Partial<IProps>): IState {
