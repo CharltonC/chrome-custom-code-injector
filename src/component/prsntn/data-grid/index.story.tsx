@@ -204,7 +204,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
         </li>);
     };
 
-    const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
+    const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, nestedTb, isNestedOpen, onCollapseChanged}) => {
         return <>
             <tr>
                 <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
@@ -221,12 +221,8 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             {
                 nestedItems && isNestedOpen &&
                 <tr>
-                    <td colSpan={5} className="cell--table">
-                        <table>
-                            <tbody>
-                                {nestedItems}
-                            </tbody>
-                        </table>
+                    <td colSpan={5}>
+                        {nestedTb}
                     </td>
                 </tr>
             }

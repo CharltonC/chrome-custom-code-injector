@@ -1,22 +1,32 @@
 import React, { ReactElement } from "react";
+
 import { PgnHandle } from '../../../service/handle/paginate';
 import { ClpsHandle } from "../../../service/handle/collapse";
+import { SortHandle } from "../../../service/handle/sort";
 
 import { Dropdown } from '../dropdown';
 import { inclStaticIcon } from '../../static/icon';
 import {
     TFn, TBtnProps, TSelectEvt,
+
+    // Pagination
     IPgnState, IPgnProps, IPgnPropsCtx, TPgnCallback,
     pgnHandleType, PgnOption, dropdownType,
 
+    // Expand
     // TODO: rename
-    clpsHandleType, TNestState, IClpsProps
+    clpsHandleType, TNestState, IClpsProps,
+
+    ISortState,
+    ISortOption,
+    sortBtnType,
+
+    // Sort
 } from './type';
 
 
-export class PaginateHelper {
+export class PaginateHelper extends PgnHandle {
     readonly CLS_PREFIX: string = 'kz-paginate';
-    readonly pgnHandle = new PgnHandle();
     readonly ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
     readonly rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
 
@@ -47,15 +57,16 @@ export class PaginateHelper {
     createState(data: any[], modOption: PgnOption): IPgnState {
         // Only display valid increments for <option> value
         const { increment } = modOption;
-        modOption.increment = increment ? this.pgnHandle.parseNoPerPage(increment) : increment;
+        modOption.increment = increment ? this.parseNoPerPage(increment) : increment;
 
-        const option: PgnOption = Object.assign(this.pgnHandle.getDefOption(), modOption);
-        const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, option);
+        const option: PgnOption = Object.assign(this.getDefOption(), modOption);
+        const status: pgnHandleType.IPgnStatus = this.getPgnStatus(data, option);
         return { option, status };
     }
 
     // typical callback example: `((pgnState: IPgnState) => this.setState(...this.state, {pgnState})).bind(this)`
-    createProps(data: any[], option: PgnOption, status: pgnHandleType.IPgnStatus, callback?: TPgnCallback): IPgnProps {
+    createProps(data: any[], pgnState: IPgnState, callback?: TPgnCallback): IPgnProps {
+        const { option, status } = pgnState;
         const { first, prev, next, last } = status;
         const propsCtx = { data, option, callback };
 
@@ -133,9 +144,7 @@ export class PaginateHelper {
     }
 }
 
-export class ExpandHelper {
-    readonly clpsHandle: ClpsHandle = new ClpsHandle();
-
+export class ExpandHelper extends ClpsHandle {
     createRowProps({nestState, showOnePerLvl, callback}, itemCtx: clpsHandleType.IItemCtx, ): IClpsProps {
         const { itemPath, isDefNestedOpen } = itemCtx;
 
@@ -182,5 +191,37 @@ export class ExpandHelper {
             const isImpactedItemOpen: boolean = nestState[ctx];
             return isImpactedItemOpen ? { ...impactedState, [ctx]: false } : impactedState;
         }, {});
+    }
+}
+
+export class SortHelper extends SortHandle {
+    createState(data: any[], sortOption: ISortOption): ISortState {
+        const { key, isAsc } = sortOption;
+        return {
+            option: { ...sortOption },
+            // TODO: renamed method
+            data: this.objList(data, key, isAsc)
+        };
+    }
+
+    createBtnProps({data, option, callback}, sortKey: string): sortBtnType.IProps {
+        const { key, isAsc: isCurrAsc } = option;
+
+        const isAsc: boolean = key === sortKey ? isCurrAsc : null;
+
+        const onClick = () => {
+            const isSameTh: boolean = sortKey === key;
+            const modOption = {
+                key: isSameTh ? key : sortKey,
+                isAsc: isSameTh ? !isAsc : true
+            };
+
+            // Callback example: `( (sortState) => this.setState({...this.state, sortState}) ).bind(this)`
+            if (!callback) return;
+            const sortState = this.createState(data, modOption);
+            callback(sortState);
+        };
+
+        return { isAsc, onClick: onClick.bind(this) };
     }
 }
