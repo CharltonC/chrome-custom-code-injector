@@ -1,0 +1,116 @@
+.kz-datagrid {
+    text-align: left;
+
+    &--root {
+        > thead {
+            background: #DADDE4;
+            text-transform: uppercase;
+            font: 14px $roboto-bld;
+
+            tr {
+                height: 50px;
+            }
+
+            th {
+                padding: 20px;
+                color: #505050;
+
+                > * {
+                    vertical-align: middle;
+                }
+            }
+        }
+
+        > tbody {
+            > tr {
+                border-top: 1px solid #E6E6E6;
+
+                &:nth-child(even) {
+                    background: #FAFAFA;
+                }
+            }
+
+            // Expand button (temp)
+            button {
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+                border: 1px solid #8E8E8E;
+                border-radius: 5px;
+                color: #8E8E8E;
+            }
+        }
+    }
+
+    &--root {
+        background: transparent;
+    }
+
+
+    @include nested-table-bg('&--nest-', 4, #F2F2F2, 3px);
+
+    .kz-sort-btn {
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+
+    // temp
+    th, td {
+        width: 150px;
+    }
+
+    // temp
+    td {
+        &:not([colspan]) {
+            padding: 20px;
+        }
+        font: 14px Helvetica;
+        color: #8E8E8E;
+    }
+
+
+}
+
+.kz-paginate {
+    // temp
+    margin-bottom: 10px;
+
+    font: 14px $roboto-reg;
+    color: #888888;
+
+    button {
+        width: 36px;
+        height: 36px;
+        vertical-align: middle;
+
+        // temp
+        margin-left: 10px;
+
+        &:not(:disabled) {
+            background: #5AB3AD;
+            color: white;
+        }
+
+        &:disabled {
+            border: 1px solid #DADDE4;
+        }
+    }
+
+    &__btn-first,
+    &__btn-last {
+        position: relative;
+
+        .icon {
+            position: absolute;
+            transform: translate(-50%, -50%);
+
+            &:first-child {
+                margin-left: -2px;
+            }
+
+            &:last-child {
+                margin-left: 3px;
+            }
+        }
+    }
+}
