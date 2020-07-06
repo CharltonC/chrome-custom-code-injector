@@ -16,6 +16,7 @@ export interface IThColCtxCache {
 
 export interface IThCtx {
     title: string;
-    rowSpan: number;
-    colSpan: number;
+    sortKey?: string;
+    rowSpan?: number;
+    colSpan?: number;
 }
