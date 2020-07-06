@@ -19,6 +19,7 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly paginateHelper: PaginateHelper = new PaginateHelper();
     readonly expandHelper: ExpandHelper = new ExpandHelper();
     readonly sortHelper: SortHelper = new SortHelper();
+    rows: clpsHandleType.IRawRowConfig[];
 
     //// Builtin API
     constructor(props: IProps) {
@@ -26,6 +27,9 @@ export class _DataGrid extends Component<IProps, IState> {
         const defState: IState = { nestState: null, sortState: null, pgnState: null, thState: null };
         const initState: Partial<IState> = this.createState(props);
         this.state = {...defState, ...initState};
+
+        const { rows } = this.props;
+        this.rows = this.getMappedConfig(rows);
     }
 
     UNSAFE_componentWillReceiveProps(props: IProps): void {
@@ -36,15 +40,21 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     render() {
-        const { data: rawData, rows: rawRows, nesting, type } = this.props;
-        const { sortState, pgnState } = this.state;
-        const { showInitial: visiblePath } = nesting;
+        // const { data: rawData, rows: rawRows, nesting, type } = this.props;
+        // const { sortState, pgnState } = this.state;
+        // const { showInitial: visiblePath } = nesting;
 
         // Rows
+        // const data: any[] = this.getRowData(rawData, sortState, pgnState);
+        // const rows: clpsHandleType.IRawRowConfig[] = this.getMappedConfig(rawRows);
+        // const rowsElem: ReactElement[] = this.expandHelper.getClpsState({data, rows, visiblePath});
+        // const gridElem: ReactElement = (type === 'table') ? this.createTbElem(rowsElem) : this.createListElem(rowsElem);
+        const { data: rawData, nesting } = this.props;
+        const { sortState, pgnState } = this.state;
+        const { showInitial: visiblePath } = nesting;
         const data: any[] = this.getRowData(rawData, sortState, pgnState);
-        const rows: clpsHandleType.IRawRowConfig[] = this.getMappedConfig(rawRows);
-        const rowsElem: ReactElement[] = this.expandHelper.getClpsState({data, rows, visiblePath});
-        const gridElem: ReactElement = (type === 'table') ? this.createTbElem(rowsElem) : this.createListElem(rowsElem);
+        const rowsElem = this.expandHelper.getClpsState({data, rows: this.rows, visiblePath});
+        const gridElem: ReactElement = this.createTbElem(rowsElem);
 
         // Pagination
         let pgnElem: ReactElement = pgnState ? this.createPgnElem() : null;
@@ -75,7 +85,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const commoRowCtx = nesting ? {nestState, showOnePerLvl, callback} : null;
 
         return (itemCtx: clpsHandleType.IItemCtx) => {
-            const { itemPath, itemLvl, nestedItems: rawNestedItems } = itemCtx;
+            const { itemPath, idx, itemLvl, nestedItems: rawNestedItems } = itemCtx;
 
             // TODO: Move to getRowProps?
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
@@ -84,19 +94,31 @@ export class _DataGrid extends Component<IProps, IState> {
             // TODO: if itemCtx has `nestedItems`, then wrap it with either `ul` OR `tr/td/table/tbody`
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
 
-            return <Cmp key={itemPath} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
+            const isRootLvl = itemLvl === 0;
+            const cmp = <Cmp key={itemPath} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
+
+            if (isRootLvl) {
+                const { startIdx, endIdx } = this.state.pgnState.status;
+                const isInPgnRange = idx >= startIdx && (!Number.isInteger(endIdx) || idx < endIdx);
+                return isInPgnRange ? cmp : null;
+
+            } else {
+                return cmp;
+            }
+            // return <Cmp key={itemPath} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
         };
     }
 
     getRowData(rawData: any[], sortState: ISortState, pgnState: IPgnState): any[] {
-        if (pgnState) {
-            const { startIdx, endIdx } = pgnState.status;
-            const data = sortState ? sortState.data : rawData;
-            return data.slice(startIdx, endIdx);
+        // if (pgnState) {
+        //     const { startIdx, endIdx } = pgnState.status;
+        //     const data = sortState ? sortState.data : rawData;
+        //     return data.slice(startIdx, endIdx);
 
-        } else if (sortState) {
-            return sortState.data;
-        }
+        // } else if (sortState) {
+        //     return sortState.data;
+        // }
+        return sortState.data;
     }
 
     //// Deal with Props changes
