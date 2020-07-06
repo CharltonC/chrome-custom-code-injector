@@ -227,7 +227,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { sortState, pgnState: currPgnState } = this.state;
         const { status } = currPgnState;
         const data: any[] = sortState ? sortState.data : this.props.data;
-        const callback: TFn = ( (pgnState: IPgnState) => this.setState({...this.state, pgnState}) ).bind(this);
+        const callback: TFn = ( (pgnState: IPgnState) => this.setState({...this.state, pgnState, nestState: {}}) ).bind(this);
         const pgnProps: IPgnProps = this.paginateHelper.createProps(data, currPgnState, callback);
         return this.paginateHelper.createDefComponent(status, pgnProps);
     }
