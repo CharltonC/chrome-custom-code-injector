@@ -214,7 +214,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 <td>{
                     nestedItems &&
                     <button type="button" onClick={onCollapseChanged}>
-                        {isNestedOpen ? upArwIconElem : dnArwIconElem }
+                        {isNestedOpen ? '-' : '+' }
                     </button>
                 }</td>
             </tr>
@@ -255,24 +255,11 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 ]}
                 type={'table'}
                 header={[
-                    {
-                        title: 'person',
-                        sortKey: 'name',
-                        subHeader: [
-                            {title: 'first name'},
-                            {title: 'last name'},
-                        ]
-                    },
-                    {title: 'age', sortKey: 'age',},
+                    {title: 'level'},
+                    {title: 'last name', sortKey: 'name'},
+                    {title: 'age', sortKey: 'age'},
                     {title: 'id', sortKey: 'id'},
-                    { title: '' },
-                    // {
-                    //     title: 'misc' ,
-                    //     subHeader: [
-                    //         {title: 'id'},
-                    //         { title: '' },
-                    //     ]
-                    // },
+                    {title: ''},
 
                 ]}
                 nesting={{
@@ -285,7 +272,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 }}
                 paginate={{
                     page: 0,
-                    increment: [1,2,3],
+                    increment: [10, 1],
                 }}
                  // show one only at a time
                 // showCollapse={'NONE'}                           // hide all
