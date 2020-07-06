@@ -187,7 +187,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const thElem: ReactElement = (!isNested && this.state.thState) ? this.createTbHeaderElem() : null;
         const TB_CLS: string = 'kz-datagrid';
         const tbProps = {
-            className: `${TB_CLS} ${TB_CLS}--table` + (isNested ? ` ${TB_CLS}--lvl-${tbLvl+1}` : '')
+            className: `${TB_CLS} ${TB_CLS}--table ${TB_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
         };
         return (
             <table {...tbProps}>
@@ -208,7 +208,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const commonCtx = {
             data: props.data,
             option: currSortState.option,
-            callback: ((sortState: ISortState) => this.setState({...state, sortState })).bind(this)
+            callback: ((sortState: ISortState) => this.setState({...state, sortState, nestState: {}})).bind(this)
         };
 
         return (
