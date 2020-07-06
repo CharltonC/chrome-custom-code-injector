@@ -85,7 +85,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const commoRowCtx = nesting ? {nestState, showOnePerLvl, callback} : null;
 
         return (itemCtx: clpsHandleType.IItemCtx) => {
-            const { itemPath, idx, itemLvl, nestedItems: rawNestedItems } = itemCtx;
+            const { itemPath, item, idx, itemLvl, nestedItems: rawNestedItems } = itemCtx;
 
             // TODO: Move to getRowProps?
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
@@ -95,7 +95,7 @@ export class _DataGrid extends Component<IProps, IState> {
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
 
             const isRootLvl = itemLvl === 0;
-            const cmp = <Cmp key={itemPath} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
+            const cmp = <Cmp key={`${item.id}-${item.name}`} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
 
             if (isRootLvl) {
                 const { startIdx, endIdx } = this.state.pgnState.status;
@@ -196,14 +196,6 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Default Component Template
-    createListElem(rows: ReactElement[]): ReactElement {
-        return (
-            <ul className="kz-datagrid kz-datagrid--list">
-                {rows}
-            </ul>
-        );
-    }
-
     createTbElem(rows: ReactElement[], tbLvl?: number): ReactElement {
         const isNested: boolean = Number.isInteger(tbLvl);
         const thElem: ReactElement = (!isNested && this.state.thState) ? this.createTbHeaderElem() : null;
@@ -223,14 +215,19 @@ export class _DataGrid extends Component<IProps, IState> {
 
     // TODO: Move to `thHelper`?
     createTbHeaderElem(): ReactElement {
-        const { props, state } = this;
+        const { state } = this;
         const { thState, sortState: currSortState } = state;
 
         // TODO: Check if sort option exist in rows
         const commonCtx = {
-            data: props.data,
+            data: currSortState.data,
             option: currSortState.option,
-            callback: ((sortState: ISortState) => this.setState({...state, sortState, nestState: {}})).bind(this)
+            callback: ((sortState: ISortState) => {
+                this.setState({...state, sortState: {
+                    ...currSortState,
+                    option: sortState.option
+                }, nestState: {}});
+            }).bind(this)
         };
 
         return (

@@ -187,24 +187,13 @@ const sampleData: any[] = [
 // };
 
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const ListItemCmp = ({idx, item, itemPath, itemLvl, nestedItems, isNestedOpen, onCollapseChanged}) => {
-        return (<li>
-            { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
-            { ' - ' + item.name }
-            {
-                nestedItems &&
-                <button type="button" onClick={onCollapseChanged}>
-                    {isNestedOpen ? upArwIconElem : dnArwIconElem }
-                </button>
-            }
-            {
-                nestedItems && isNestedOpen &&
-                <ul style={nestedUlStyle}>{nestedItems}</ul>
-            }
-        </li>);
-    };
-
     const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, nestedTb, isNestedOpen, onCollapseChanged}) => {
+
+        const [isExpd, setExpd ] = useState(false);
+        const onExpdChange = () => {
+            setExpd(!isExpd);
+        };
+
         return <>
             <tr>
                 <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
@@ -213,13 +202,13 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 <td>{item.id}</td>
                 <td>{
                     nestedItems &&
-                    <button type="button" onClick={onCollapseChanged}>
-                        {isNestedOpen ? '-' : '+' }
+                    <button type="button" onClick={onExpdChange}>
+                        {isExpd ? '-' : '+' }
                     </button>
                 }</td>
             </tr>
             {
-                nestedItems && isNestedOpen &&
+                nestedItems && isExpd &&
                 <tr>
                     <td colSpan={5}>
                         {nestedTb}
