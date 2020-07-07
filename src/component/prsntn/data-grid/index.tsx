@@ -48,6 +48,37 @@ class ExpandableWrapper extends Component<any, any> {
     }
 }
 
+// TODO: Table
+class Table extends Component<any> {
+    render() {
+        const { tbLvl, thRowCtx, tbody, sortBtnRender } = this.props;
+        const isNested: boolean = Number.isInteger(tbLvl);
+
+        // Table Header Sort Button
+        const hsTbHeader: boolean = !isNested && !!thRowCtx;
+
+        // Table Class
+        const BASE_CLS: string = 'kz-datagrid';
+        const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--table ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
+
+        return (
+            <table className={TB_CLS}>{ hsTbHeader &&
+                <thead>{ thRowCtx.map((thCtxs: thHandleType.IThCtx[], trIdx: number) => (
+                    <tr key={trIdx}>{ thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx, thIdx: number) => (
+                        <th key={thIdx} {...thProps}>
+                            <span>{title}</span>
+                            {sortKey && sortBtnRender(sortKey)}
+                        </th>))}
+                    </tr>))}
+                </thead>}
+                <tbody>
+                    {tbody}
+                </tbody>
+            </table>
+        );
+    }
+}
+
 export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
@@ -79,12 +110,19 @@ export class _DataGrid extends Component<IProps, IState> {
         const { showInitial: visiblePath } = nesting;
 
         const data: any[] = this.getRowData(rawData, sortState, pgnState);
-        const rowsElem = this.clpsHandle.getClpsState({data, rows: this.rowConfig, visiblePath});
-        const gridElem: ReactElement = this.createTbElem(rowsElem);
+        const rowsElem = this.clpsHandle.getClpsState({
+            data,
+            rows: this.rowConfig,
+            visiblePath
+        });
 
         return <>
             {pgnState && <Pagination {...this.createPgnProps()} />}
-            {gridElem}
+            <Table
+                tbody={rowsElem}
+                thRowCtx={this.state.thState}
+                sortBtnRender={(sortKey) => <SortBtn {...this.createSortBtnProps(sortState.option, sortKey)} />}
+                />
         </>;
     }
 
@@ -99,19 +137,16 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     createCmpTransformFn(Cmp: TCmpCls): TFn {
-        const { nesting } = this.props;
-
         return (itemCtx: clpsHandleType.IItemCtx) => {
-            const { item, itemLvl, isExpdByDef, nestedItems: rawNestedItems } = itemCtx;
-            const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
-            const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
+            const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
+
             const rowProps = {
                 ...itemCtx,
                 key: `${item.id}-${item.name}`,
-                nestedTb
+                nestedTb: nestedItems ? <Table tbody={nestedItems} tbLvl={itemLvl} /> : null
             };
 
-            return nestedTb ?
+            return nestedItems ?
                 <ExpandableWrapper
                     isExpdByDef={isExpdByDef}
                     Cmp={Cmp}
@@ -203,35 +238,6 @@ export class _DataGrid extends Component<IProps, IState> {
         const pgnState = (paginate && shallReset.pgnState) ? {pgnState: this.createPgnState(data, paginate)} : {}
         const thState = (header && shallReset.thState) ? {thState: this.thHandle.createThCtx(header)}: {};
         return { ...nestState, ...sortState, ...pgnState, ...thState };
-    }
-
-    //// Default Component Template
-    createTbElem(rows: ReactElement[], tbLvl?: number): ReactElement {
-        const isNested: boolean = Number.isInteger(tbLvl);
-
-        // Table Header Sort Button
-        const { thState, sortState } = this.state;
-        const hsTbHeader: boolean = !isNested && !!thState;
-
-        // Table Class
-        const BASE_CLS: string = 'kz-datagrid';
-        const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--table ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
-
-        return (
-            <table className={TB_CLS}>{ hsTbHeader &&
-                <thead>{ thState.map((thCtxs: thHandleType.IThCtx[], trIdx: number) => (
-                    <tr key={trIdx}>{ thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx, thIdx: number) => (
-                        <th key={thIdx} {...thProps}>
-                            <span>{title}</span>{ sortKey &&
-                            <SortBtn {...this.createSortBtnProps(sortState.option, sortKey)} />}
-                        </th>))}
-                    </tr>))}
-                </thead>}
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-        );
     }
 
     //// Sorting
