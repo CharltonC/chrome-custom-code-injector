@@ -85,7 +85,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const commoRowCtx = nesting ? {nestState, showOnePerLvl, callback} : null;
 
         return (itemCtx: clpsHandleType.IItemCtx) => {
-            const { itemPath, item, idx, itemLvl, nestedItems: rawNestedItems } = itemCtx;
+            const { item, idx, itemLvl, nestedItems: rawNestedItems } = itemCtx;
 
             // TODO: Move to getRowProps?
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
@@ -94,31 +94,21 @@ export class _DataGrid extends Component<IProps, IState> {
             // TODO: if itemCtx has `nestedItems`, then wrap it with either `ul` OR `tr/td/table/tbody`
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
 
-            const isRootLvl = itemLvl === 0;
+            // Beware: Expand state persistency has nothing to do with list clone
             const cmp = <Cmp key={`${item.id}-${item.name}`} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
-
-            if (isRootLvl) {
-                const { startIdx, endIdx } = this.state.pgnState.status;
-                const isInPgnRange = idx >= startIdx && (!Number.isInteger(endIdx) || idx < endIdx);
-                return isInPgnRange ? cmp : null;
-
-            } else {
-                return cmp;
-            }
-            // return <Cmp key={itemPath} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
+            return cmp;
         };
     }
 
     getRowData(rawData: any[], sortState: ISortState, pgnState: IPgnState): any[] {
-        // if (pgnState) {
-        //     const { startIdx, endIdx } = pgnState.status;
-        //     const data = sortState ? sortState.data : rawData;
-        //     return data.slice(startIdx, endIdx);
+        if (pgnState) {
+            const { startIdx, endIdx } = pgnState.status;
+            const data = sortState ? sortState.data : rawData;
+            return data.slice(startIdx, endIdx);
 
-        // } else if (sortState) {
-        //     return sortState.data;
-        // }
-        return sortState.data;
+        } else if (sortState) {
+            return sortState.data;
+        }
     }
 
     //// Deal with Props changes
@@ -189,7 +179,7 @@ export class _DataGrid extends Component<IProps, IState> {
         shallReset = shallReset ? shallReset : {thState: true, nestState: true, sortState: true, pgnState: true};
 
         const nestState = (rows.length > 1 && shallReset.nestState) ? {nestState: {}} : {};
-        const sortState = (sort && shallReset.sortState) ? {sortState : this.sortHelper.createState(data, sort)}: {};
+        const sortState = (sort && shallReset.sortState) ? {sortState : this.sortHelper.createState(data.slice(0), sort)}: {};
         const pgnState = (paginate && shallReset.pgnState) ? {pgnState: this.paginateHelper.createState(data, paginate)} : {}
         const thState = (header && shallReset.thState) ? {thState: this.thHandle.createThCtx(header)}: {};
         return { ...nestState, ...sortState, ...pgnState, ...thState };
