@@ -19,7 +19,7 @@ import {
 
     // Reexport types
     pgnHandleType, clpsHandleType, thHandleType,
-    paginationType, sortBtnType, IPgnOption,
+    paginationType, sortBtnType,
 } from './type';
 
 // TODO: Move, typing
@@ -106,17 +106,19 @@ export class _DataGrid extends Component<IProps, IState> {
             const { item, itemLvl, nestedItems: rawNestedItems } = itemCtx;
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
-            const rowProps = {...itemCtx, nestedTb };
+            const rowProps = {
+                ...itemCtx,
+                key: `${item.id}-${item.name}`,
+                nestedTb
+            };
 
             return nestedTb ?
                 <NestableRowWrapper
-                    key={`${item.id}-${item.name}`}
                     isInitialExpd={itemCtx.isDefNestedOpen}
                     RowCmp={Cmp}
                     {...rowProps}
                 /> :
                 <Cmp
-                    key={`${item.id}-${item.name}`}
                     {...rowProps}
                     />;
         };
@@ -214,16 +216,11 @@ export class _DataGrid extends Component<IProps, IState> {
         // Table Header Sort Button
         const { thState, sortState } = this.state;
         const hsTbHeader: boolean = !isNested && !!thState;
-        const sortBtnCtx = hsTbHeader ? {
-            ...sortState.option,
-            callback: this.onSortClick.bind(this)
-        } : null;
 
         // Table Class
         const BASE_CLS: string = 'kz-datagrid';
         const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--table ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
 
-        /* TODO: Table Compoent? */
         return (
             <table className={TB_CLS}>{hsTbHeader &&
                 /* TODO: Table Header Compoent? */
@@ -231,7 +228,7 @@ export class _DataGrid extends Component<IProps, IState> {
                     <tr>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx) => (
                         <th {...thProps}>
                             <span>{title}</span>{sortKey &&
-                            <SortBtn {...this.createSortBtnProps(sortBtnCtx, sortKey)} />}
+                            <SortBtn {...this.createSortBtnProps(sortState.option, sortKey)} />}
                         </th>))}
                     </tr>))}
                 </thead>}
@@ -251,29 +248,18 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    createSortBtnProps({ isAsc, key, callback }: any, sortKey: string): sortBtnType.IProps {
-        const onClick = () => {
-            const isSameTh: boolean = sortKey === key;
-            if (!callback) return;
-            callback({
-                key: isSameTh ? key : sortKey,
-                isAsc: isSameTh ? !isAsc : true
-            });
-        };
-
+    createSortBtnProps({isAsc, key}: any, sortKey: string): sortBtnType.IProps {
         return {
             isAsc: key === sortKey ? isAsc : null,
-            onClick: onClick.bind(this)
+            onClick: ((modOption) => {
+                const { state } = this;
+                const { sortState: currSortState } = state;
+                const { data, option } = currSortState;
+                const opiton = { ...option, ...modOption}
+                const sortState = this.createSortState(data, opiton);
+                this.setState({...state,  sortState});
+            }).bind(this)
         };
-    }
-
-    onSortClick(modOption) {
-        const { state } = this;
-        const { sortState: currSortState } = state;
-        const { data, option } = currSortState;
-        const opiton = { ...option, ...modOption}
-        const sortState = this.createSortState(data, opiton);
-        this.setState({...state,  sortState});
     }
 
     //// Pagination
@@ -313,17 +299,15 @@ export class _DataGrid extends Component<IProps, IState> {
             ...statusProps,
             ...optionProps,
             ...pageSelectProps,
-            onPgnChanged: this.onPgnChanged.bind(this)
+            onPgnChanged: ((modOption: Required<PgnOption>) => {
+                const { data } = this.state.sortState;
+                const { option: currOption } = this.state.pgnState;
+                const option = {...currOption, ...modOption} as Required<PgnOption>;
+                const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, option);
+                const pgnState: IPgnState = { option, status };
+                this.setState({...this.state, pgnState});
+            }).bind(this)
         };
-    }
-
-    onPgnChanged(modOption: Required<PgnOption>): void {
-        const { data } = this.state.sortState;
-        const { option: currOption } = this.state.pgnState;
-        const option = {...currOption, ...modOption} as Required<PgnOption>;
-        const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, option);
-        const pgnState: IPgnState = { option, status };
-        this.setState({...this.state, pgnState});
     }
 }
 
