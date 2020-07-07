@@ -3,6 +3,7 @@ import React, { Component, memo, ReactElement } from "react";
 import { ThHandle } from '../../../service/handle/table-header';
 import { PaginateHelper, ExpandHelper, SortHelper } from './helper';
 import { SortBtn } from '../sort-btn';
+import { Pagination } from '../pagination';
 
 // TODO: clean
 import {
@@ -41,7 +42,7 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly paginateHelper: PaginateHelper = new PaginateHelper();
     readonly expandHelper: ExpandHelper = new ExpandHelper();
     readonly sortHelper: SortHelper = new SortHelper();
-    rows: clpsHandleType.IRawRowConfig[];
+    rowConfig: clpsHandleType.IRawRowConfig[];
 
     //// Builtin API
     constructor(props: IProps) {
@@ -51,7 +52,7 @@ export class _DataGrid extends Component<IProps, IState> {
         this.state = {...defState, ...initState};
 
         const { rows } = this.props;
-        this.rows = this.getMappedConfig(rows);
+        this.rowConfig = this.getMappedConfig(rows);
     }
 
     UNSAFE_componentWillReceiveProps(props: IProps): void {
@@ -75,7 +76,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { sortState, pgnState } = this.state;
         const { showInitial: visiblePath } = nesting;
         const data: any[] = this.getRowData(rawData, sortState, pgnState);
-        const rowsElem = this.expandHelper.getClpsState({data, rows: this.rows, visiblePath});
+        const rowsElem = this.expandHelper.getClpsState({data, rows: this.rowConfig, visiblePath});
         const gridElem: ReactElement = this.createTbElem(rowsElem);
 
         // Pagination
@@ -117,7 +118,6 @@ export class _DataGrid extends Component<IProps, IState> {
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
 
             // Beware: Expand state persistency has nothing to do with list clone
-            // const cmp = ;
             const rowProps = {
                 ...itemCtx,
                 nestedTb,
@@ -270,12 +270,36 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     createPgnElem(): ReactElement {
-        const { sortState, pgnState: currPgnState } = this.state;
-        const { status } = currPgnState;
-        const data: any[] = sortState ? sortState.data : this.props.data;
-        const callback: TFn = ( (pgnState: IPgnState) => this.setState({...this.state, pgnState}) ).bind(this);
-        const pgnProps: IPgnProps = this.paginateHelper.createProps(data, currPgnState, callback);
-        return this.paginateHelper.createDefComponent(status, pgnProps);
+        const {
+            option: optionProps,
+            status: currStatus
+        } = this.state.pgnState;
+
+        const {
+            totalPage, perPage, curr, pageNo, startIdx, endIdx,
+            ...statusProps
+        } = currStatus;
+
+        let pageList: number[] = [];
+        let pageSelectIdx: number = 0;
+        for (let p: number = 1; p <= totalPage; p++) {
+            const pageIdx = p - 1;
+            pageList.push(pageIdx);
+            pageSelectIdx = p === pageNo ? pageIdx : pageSelectIdx;
+        }
+        const pageSelectProps = {pageList, pageSelectIdx};
+
+        return <Pagination
+            {...statusProps}
+            {...optionProps}
+            {...pageSelectProps}
+            onPgnChanged={((modPgnOption) => {
+                const option = {...optionProps, ...modPgnOption};
+                const status = this.paginateHelper.getPgnStatus(this.state.sortState.data, option);
+                const pgnState = { option, status };
+                this.setState({...this.state, pgnState});
+            }).bind(this)}
+        />;
     }
 }
 

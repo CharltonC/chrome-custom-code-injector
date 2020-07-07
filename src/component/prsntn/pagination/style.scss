@@ -1,0 +1,40 @@
+.kz-paginate {
+    font: 14px $roboto-reg;
+    color: #888888;
+
+    button {
+        width: 36px;
+        height: 36px;
+        vertical-align: middle;
+
+        // temp
+        margin-left: 10px;
+
+        &:not(:disabled) {
+            background: #5AB3AD;
+            color: white;
+        }
+
+        &:disabled {
+            border: 1px solid #DADDE4;
+        }
+    }
+
+    &__btn-first,
+    &__btn-last {
+        position: relative;
+
+        .icon {
+            position: absolute;
+            transform: translate(-50%, -50%);
+
+            &:first-child {
+                margin-left: -2px;
+            }
+
+            &:last-child {
+                margin-left: 3px;
+            }
+        }
+    }
+}
