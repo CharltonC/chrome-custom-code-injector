@@ -2,17 +2,24 @@ import React, { Component, memo, ReactElement } from "react";
 
 import { ThHandle } from '../../../service/handle/table-header/';
 import { PgnHandle, PgnOption } from '../../../service/handle/paginate/';
-import { ExpandHelper, SortHelper } from './helper';
+import { SortHandle } from '../../../service/handle/sort/';
+import { ExpandHelper } from './helper';
+
 import { SortBtn } from '../sort-btn';
 import { Pagination } from '../pagination';
 
 // TODO: clean
 import {
-    IProps,
+    // Props
+    IProps, ISortOption,
     IRow, TCmpCls, TFn, IClpsProps,
+
+    // State
     IState, ISortState, IPgnState, TShallResetState,
+
+    // Reexport types
     pgnHandleType, clpsHandleType, thHandleType,
-    paginationType,
+    paginationType, sortBtnType,
 } from './type';
 
 
@@ -41,8 +48,8 @@ class NestableRowWrapper extends Component<any, any> {
 export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
+    readonly sortHandle: SortHandle = new SortHandle();
     readonly expandHelper: ExpandHelper = new ExpandHelper();
-    readonly sortHelper: SortHelper = new SortHelper();
     rowConfig: clpsHandleType.IRawRowConfig[];
 
     //// Builtin API
@@ -76,6 +83,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { data: rawData, nesting } = this.props;
         const { sortState, pgnState } = this.state;
         const { showInitial: visiblePath } = nesting;
+
         const data: any[] = this.getRowData(rawData, sortState, pgnState);
         const rowsElem = this.expandHelper.getClpsState({data, rows: this.rowConfig, visiblePath});
         const gridElem: ReactElement = this.createTbElem(rowsElem);
@@ -106,7 +114,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const commoRowCtx = nesting ? {nestState, showOnePerLvl, callback} : null;
 
         return (itemCtx: clpsHandleType.IItemCtx) => {
-            const { item, idx, itemLvl, nestedItems: rawNestedItems } = itemCtx;
+            const { item, itemLvl, nestedItems: rawNestedItems } = itemCtx;
 
             // TODO: Move to getRowProps?
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
@@ -214,7 +222,7 @@ export class _DataGrid extends Component<IProps, IState> {
         shallReset = shallReset ? shallReset : {thState: true, nestState: true, sortState: true, pgnState: true};
 
         const nestState = (rows.length > 1 && shallReset.nestState) ? {nestState: {}} : {};
-        const sortState = (sort && shallReset.sortState) ? {sortState : this.sortHelper.createState(data.slice(0), sort)}: {};
+        const sortState = (sort && shallReset.sortState) ? {sortState : this.createSortState(data.slice(0), sort)}: {};
         const pgnState = (paginate && shallReset.pgnState) ? {pgnState: this.createPgnState(data, paginate)} : {}
         const thState = (header && shallReset.thState) ? {thState: this.thHandle.createThCtx(header)}: {};
         return { ...nestState, ...sortState, ...pgnState, ...thState };
@@ -238,21 +246,14 @@ export class _DataGrid extends Component<IProps, IState> {
         );
     }
 
-    // TODO: Move to `thHelper`?
+    //// Table Header
     createTbHeaderElem(): ReactElement {
-        const { state } = this;
-        const { thState, sortState: currSortState } = state;
+        const { thState, sortState } = this.state;
 
         // TODO: Check if sort option exist in rows
         const commonCtx = {
-            data: currSortState.data,
-            option: currSortState.option,
-            callback: ((sortState: ISortState) => {
-                this.setState({...state, sortState: {
-                    ...currSortState,
-                    option: sortState.option
-                }});
-            }).bind(this)
+            ...sortState.option,
+            callback: this.onSortClick.bind(this)
         };
 
         return (
@@ -260,11 +261,45 @@ export class _DataGrid extends Component<IProps, IState> {
                 <tr>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx) => (
                     <th {...thProps}>
                         <span>{title}</span>{sortKey &&
-                        <SortBtn {...this.sortHelper.createBtnProps(commonCtx, sortKey)} />}
+                        <SortBtn {...this.createSortBtnProps(commonCtx, sortKey)} />}
                     </th>))}
                 </tr>))}
             </thead>
         );
+    }
+
+    //// Sorting
+    createSortState(data: any[], sortOption: ISortOption): ISortState {
+        const { key, isAsc } = sortOption;
+        return {
+            option: { ...sortOption },
+            data: this.sortHandle.sortByObjKey(data, key, isAsc)
+        };
+    }
+
+    createSortBtnProps({ isAsc, key, callback }: any, sortKey: string): sortBtnType.IProps {
+        const onClick = () => {
+            const isSameTh: boolean = sortKey === key;
+            if (!callback) return;
+            callback({
+                key: isSameTh ? key : sortKey,
+                isAsc: isSameTh ? !isAsc : true
+            });
+        };
+
+        return {
+            isAsc: key === sortKey ? isAsc : null,
+            onClick: onClick.bind(this)
+        };
+    }
+
+    onSortClick(modOption) {
+        const { state } = this;
+        const { sortState: currSortState } = state;
+        const { data, option } = currSortState;
+        const opiton = { ...option, ...modOption}
+        const sortState = this.createSortState(data, opiton);
+        this.setState({...state,  sortState});
     }
 
     //// Pagination
