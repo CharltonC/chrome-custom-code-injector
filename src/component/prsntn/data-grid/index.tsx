@@ -19,7 +19,7 @@ import {
 
     // Reexport types
     pgnHandleType, clpsHandleType, thHandleType,
-    paginationType, sortBtnType,
+    paginationType, sortBtnType, IPgnOption,
 } from './type';
 
 // TODO: Move, typing
@@ -319,8 +319,9 @@ export class _DataGrid extends Component<IProps, IState> {
 
     onPgnChanged(modOption: Required<PgnOption>): void {
         const { data } = this.state.sortState;
-        const { option } = this.state.pgnState;
-        const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, {...option, ...modOption});
+        const { option: currOption } = this.state.pgnState;
+        const option = {...currOption, ...modOption} as Required<PgnOption>;
+        const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, option);
         const pgnState: IPgnState = { option, status };
         this.setState({...this.state, pgnState});
     }
