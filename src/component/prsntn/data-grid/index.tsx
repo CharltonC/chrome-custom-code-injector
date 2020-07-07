@@ -79,11 +79,8 @@ export class _DataGrid extends Component<IProps, IState> {
         const rowsElem = this.expandHelper.getClpsState({data, rows: this.rowConfig, visiblePath});
         const gridElem: ReactElement = this.createTbElem(rowsElem);
 
-        // Pagination
-        let pgnElem: ReactElement = pgnState ? this.createPgnElem() : null;
-
         return <>
-            {pgnElem}
+            {pgnState && <Pagination {...this.createPgnProps()} />}
             {gridElem}
         </>;
     }
@@ -269,7 +266,8 @@ export class _DataGrid extends Component<IProps, IState> {
         );
     }
 
-    createPgnElem(): ReactElement {
+    //// Pagination
+    createPgnProps() {
         const {
             option: optionProps,
             status: currStatus
@@ -289,12 +287,12 @@ export class _DataGrid extends Component<IProps, IState> {
         }
         const pageSelectProps = {pageList, pageSelectIdx};
 
-        return <Pagination
-            {...statusProps}
-            {...optionProps}
-            {...pageSelectProps}
-            onPgnChanged={this.onPgnChanged.bind(this)}
-        />;
+        return {
+            ...statusProps,
+            ...optionProps,
+            ...pageSelectProps,
+            onPgnChanged: this.onPgnChanged.bind(this)
+        };
     }
 
     onPgnChanged(modOption) {
