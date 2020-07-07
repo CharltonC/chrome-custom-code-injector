@@ -109,3 +109,4 @@ export type TSelectEvt = React.ChangeEvent<HTMLSelectElement>;
 export {clpsHandleType as clpsHandleType};
 export {thHandleType as thHandleType};
 export {sortBtnType as sortBtnType}
+export * as paginationType from '../pagination/type';

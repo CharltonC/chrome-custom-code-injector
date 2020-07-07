@@ -12,6 +12,7 @@ import {
     IRow, TCmpCls, TFn, IClpsProps,
     IState, ISortState, IPgnState, TShallResetState,
     pgnHandleType, clpsHandleType, thHandleType,
+    paginationType,
 } from './type';
 
 
@@ -280,7 +281,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     // TODO: type
-    createPgnProps() {
+    createPgnProps(): paginationType.IProps {
         const {
             option: optionProps,
             status: currStatus
