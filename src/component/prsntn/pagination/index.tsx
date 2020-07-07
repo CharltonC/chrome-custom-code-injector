@@ -30,67 +30,86 @@ export class _Pagination extends Component<IProps> {
             onPgnChanged
         } = this.props;
 
+        const pageSelectProps = this.createPageSelectProps(pageList, pageSelectIdx, onPgnChanged);
+        const perPageSelectProps = this.createPerPageSelectProps(increment, incrementIdx, onPgnChanged);
+        const firstBtnProps = this.createBtnProps('first', first, onPgnChanged);
+        const prevBtnProps = this.createBtnProps('prev', prev, onPgnChanged);
+        const nextBtnProps = this.createBtnProps('next', next, onPgnChanged);
+        const lastBtnProps = this.createBtnProps('last', last, onPgnChanged);
+
         return (
             <div className={CLS_PREFIX}>
                 <p>Showing {startRecord} - {endRecord} of {totalRecord}</p>
-                <Dropdown
-                    className={`${CLS_PREFIX}__select-page`}
-                    border={true}
-                    disabled={pageList.length <= 1}
-                    selectIdx={pageSelectIdx}
-                    list={pageList}
-                    listTxtTransform={(pageIdx: number) => `Page ${pageIdx+1}`}
-                    onSelect={({target}: TSelectEvt) => onPgnChanged({page: pageList[parseInt(target.value, 10)]})
-                    }
-                    />
-                <Dropdown
-                    className={`${CLS_PREFIX}__select-perpage`}
-                    border={true}
-                    value={incrementIdx}
-                    list={increment}
-                    listTxtTransform={(perPage: number) => `${perPage} Per Page`}
-                    onSelect={({target}: TSelectEvt) => onPgnChanged({
-                        incrementIdx: parseInt(target.value, 10),
-                        page: 0
-                    })}
-                    />
-                <button
-                    type="button"
-                    className={`${CLS_PREFIX}__btn-first`}
-                    disabled={!Number.isInteger(first)}
-                    onClick={() => onPgnChanged({page: first})}
-                    >
-                    {[ltArrowElem, ltArrowElem]}
-                </button>
-                <button
-                    type="button"
-                    className={`${CLS_PREFIX}__btn-prev`}
-                    disabled={!Number.isInteger(prev)}
-                    onClick={() => onPgnChanged({page: prev})}
-                    >
-                    {ltArrowElem}
-                </button>
-                <button
-                    type="button"
-                    className={`${CLS_PREFIX}__btn-next`}
-                    disabled={!Number.isInteger(next)}
-                    onClick={() => onPgnChanged({page: next})}
-                    >
-                    {rtArrowElem}
-                </button>
-                <button
-                    type="button"
-                    className={`${CLS_PREFIX}__btn-last`}
-                    disabled={!Number.isInteger(last)}
-                    onClick={() => onPgnChanged({page: last})}
-                    >
-                    {[rtArrowElem, rtArrowElem]}
-                </button>
+                <Dropdown {...pageSelectProps} />
+                <Dropdown {...perPageSelectProps} />
+                <button {...firstBtnProps} />
+                <button {...prevBtnProps} />
+                <button {...nextBtnProps} />
+                <button {...lastBtnProps} />
             </div>
         );
     }
 
+    createBtnProps(name: string, pageIdx: number, onPgnChanged) {
+        const CLS_SUFFIX: string = `btn-${name}`;
 
+        let children: ReactElement | ReactElement[];
+        switch(name) {
+            case 'first':
+                children = [ltArrowElem, ltArrowElem];
+                break;
+            case 'prev':
+                children = ltArrowElem;
+                break;
+            case 'next':
+                children = rtArrowElem;
+                break;
+            case 'last':
+                children = [rtArrowElem, rtArrowElem];
+                break;
+        }
+
+        return {
+            key: CLS_SUFFIX,
+            type: 'button',
+            className: `${this.CLS_PREFIX}__${CLS_SUFFIX}`,
+            disabled: !Number.isInteger(pageIdx),
+            children,
+            onClick: () => onPgnChanged({page: pageIdx})
+        } as any;
+    }
+
+    createPageSelectProps(pageList: number[], pageSelectIdx: number, onPgnChanged) {
+        const CLS_SUFFIX: string = 'select-page';
+
+        return {
+            key: CLS_SUFFIX,
+            className: `${this.CLS_PREFIX}__${CLS_SUFFIX}`,
+            border: true,
+            disabled: pageList.length <= 1,
+            selectIdx: pageSelectIdx,
+            list: pageList,
+            listTxtTransform: (pageIdx: number) => `Page ${pageIdx+1}`,
+            onSelect: ({target}: TSelectEvt) => onPgnChanged({page: pageList[parseInt(target.value, 10)]}),
+        };
+    }
+
+    createPerPageSelectProps(increment: number[], incrementIdx: number, onPgnChanged) {
+        const CLS_SUFFIX: string = 'select-perpage';
+
+        return {
+            key: CLS_SUFFIX,
+            className: `${this.CLS_PREFIX}__${CLS_SUFFIX}`,
+            border: true,
+            value: incrementIdx,
+            list: increment,
+            listTxtTransform: (perPage: number) => `${perPage} Per Page`,
+            onSelect: ({target}: TSelectEvt) => onPgnChanged({
+                incrementIdx: parseInt(target.value, 10),
+                page: 0
+            })
+        };
+    }
 }
 
 export const Pagination = memo(_Pagination);
