@@ -31,7 +31,7 @@ export interface IItemCtx {
     itemPath: string;
     parentPath: string;
     nestedItems: any[];
-    isDefNestedOpen: boolean;
+    isExpdByDef: boolean;
 }
 
 export interface IErrMsg {

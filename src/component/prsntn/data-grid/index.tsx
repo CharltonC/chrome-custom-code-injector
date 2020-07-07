@@ -103,7 +103,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { nesting } = this.props;
 
         return (itemCtx: clpsHandleType.IItemCtx) => {
-            const { item, itemLvl, nestedItems: rawNestedItems } = itemCtx;
+            const { item, itemLvl, isExpdByDef, nestedItems: rawNestedItems } = itemCtx;
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
             const rowProps = {
@@ -114,13 +114,11 @@ export class _DataGrid extends Component<IProps, IState> {
 
             return nestedTb ?
                 <NestableRowWrapper
-                    isInitialExpd={itemCtx.isDefNestedOpen}
+                    isInitialExpd={isExpdByDef}
                     RowCmp={Cmp}
                     {...rowProps}
                 /> :
-                <Cmp
-                    {...rowProps}
-                    />;
+                <Cmp {...rowProps} />;
         };
     }
 

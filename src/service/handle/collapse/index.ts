@@ -55,10 +55,10 @@ export class ClpsHandle {
                 rowLvl: rowLvl+1,
                 parentPath: itemPath
             });
-            const isDefNestedOpen: boolean = nestedItems ? this.isDefNestedOpen(itemPath, visiblePath) : false;
+            const isExpdByDef: boolean = nestedItems ? this.isExpdByDef(itemPath, visiblePath) : false;
 
             // Return item
-            const itemCtx: IItemCtx = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isDefNestedOpen };
+            const itemCtx: IItemCtx = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
             return transformFn ? transformFn(itemCtx) : itemCtx;
         });
     }
@@ -73,7 +73,7 @@ export class ClpsHandle {
      * Assume the Context of Current Collapse Item is:
      * "0/lvl1NestedKey:0/lvl2NestedKey:0",
      *
-     * Then the Context of relevant parents items that should remain open (i.e. isDefNestedOpen: true) are:
+     * Then the Context of relevant parents items that should remain open (i.e. isExpdByDef: true) are:
      * - "0",
      * - "0/lvl1NestedKey:0"
      *
@@ -84,7 +84,7 @@ export class ClpsHandle {
      *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
      * }
      */
-    isDefNestedOpen(itemPath: string, visiblePath: TVisibleNestablePath): boolean {
+    isExpdByDef(itemPath: string, visiblePath: TVisibleNestablePath): boolean {
         return Array.isArray(visiblePath) ?
             visiblePath.some((path: string) => path.indexOf(itemPath, 0) === 0) :
             (visiblePath === 'ALL' ? true : false);

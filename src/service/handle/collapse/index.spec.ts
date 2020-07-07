@@ -2,7 +2,7 @@ import { TVisibleNestablePath, IRawRowConfig, IParsedRowConfig, IItemsCtxReq } f
 import { ClpsHandle } from './';
 
 describe('Service - Collapse Handle', () => {
-    const { isDefNestedOpen, getItemPath, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
+    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
     let handle: ClpsHandle;
     let getMappedItemsCtxSpy: jest.SpyInstance;
     let getValidatedDataSpy: jest.SpyInstance;
@@ -18,7 +18,7 @@ describe('Service - Collapse Handle', () => {
         getItemPathSpy = jest.spyOn(handle, 'getItemPath');
         getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
         getMappedNestedItemsCtxSpy = jest.spyOn(handle, 'getMappedNestedItemsCtx');
-        isDefNestedOpenSpy = jest.spyOn(handle, 'isDefNestedOpen');
+        isDefNestedOpenSpy = jest.spyOn(handle, 'isExpdByDef');
     });
 
     describe('Property - defClpsConfig: Default Collapse User Option', () => {
@@ -124,7 +124,7 @@ describe('Service - Collapse Handle', () => {
                 itemPath: mockItemPath,
                 parentPath: '',
                 nestedItems: mockNestedItems,
-                isDefNestedOpen: mockIsOpen
+                isExpdByDef: mockIsOpen
             });
         });
 
@@ -141,33 +141,33 @@ describe('Service - Collapse Handle', () => {
                 parentPath: '',
                 itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
-                isDefNestedOpen: mockIsOpen
+                isExpdByDef: mockIsOpen
             }]);
             expect(isDefNestedOpenSpy).toHaveBeenCalledWith(mockItemPath, mockItemsReq.visiblePath);
             expect(mockTransformFn).not.toHaveBeenCalled();
         });
     });
 
-    describe('Method - isDefNestedOpen: Check if a row should open/collapse its nested rows', () => {
+    describe('Method - isExpdByDef: Check if a row should open/collapse its nested rows', () => {
         describe('when show target context is an array of contexts', () => {
             const mockVisiblePath: TVisibleNestablePath = [ 'a', 'a/b' ];
 
             it('should return false if row context is not found in the show target context', () => {
-                expect(isDefNestedOpen('a/b/c', mockVisiblePath)).toBe(false);
+                expect(isExpdByDef('a/b/c', mockVisiblePath)).toBe(false);
             });
 
             it('should return true if row context is found in the show target context', () => {
-                expect(isDefNestedOpen('a/b', mockVisiblePath)).toBe(true);
+                expect(isExpdByDef('a/b', mockVisiblePath)).toBe(true);
             });
         });
 
         describe('when show target context is `ALL` or `NONE`', () => {
             it('should return true if show target context is show all', () => {
-                expect(isDefNestedOpen('', 'ALL')).toBe(true);
+                expect(isExpdByDef('', 'ALL')).toBe(true);
             });
 
             it('should return false if show target context is show none', () => {
-                expect(isDefNestedOpen('', 'NONE')).toBe(false);
+                expect(isExpdByDef('', 'NONE')).toBe(false);
             });
         });
     });
