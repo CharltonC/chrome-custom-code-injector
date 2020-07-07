@@ -14,6 +14,28 @@ import {
 } from './type';
 
 
+class NestableRowWrapper extends Component<any, any> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isExpd: props.isInitialExpd
+        };
+    }
+
+    onExpdChanged() {
+        const isExpd: boolean = !this.state.isExpd;
+        this.setState({isExpd});
+    }
+
+    render() {
+        const { RowCmp, isInitialExpd, ...rowProps } = this.props;
+        const { isExpd } = this.state;
+        const props = { ...rowProps, isExpd, onExpdChanged: this.onExpdChanged.bind(this) };
+        return <RowCmp {...props} />;
+    }
+}
+
+
 export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
     readonly paginateHelper: PaginateHelper = new PaginateHelper();
@@ -95,8 +117,23 @@ export class _DataGrid extends Component<IProps, IState> {
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
 
             // Beware: Expand state persistency has nothing to do with list clone
-            const cmp = <Cmp key={`${item.id}-${item.name}`} {...itemCtx} {...{nestedTb}} {...clpsProps} />;
-            return cmp;
+            // const cmp = ;
+            const rowProps = {
+                ...itemCtx,
+                nestedTb,
+                clpsProps
+            };
+            return nestedTb ?
+                <NestableRowWrapper
+                    key={`${item.id}-${item.name}`}
+                    isInitialExpd={itemCtx.isDefNestedOpen}
+                    RowCmp={Cmp}
+                    {...rowProps}
+                /> :
+                <Cmp
+                    key={`${item.id}-${item.name}`}
+                    {...rowProps}
+                    />;
         };
     }
 
@@ -216,7 +253,7 @@ export class _DataGrid extends Component<IProps, IState> {
                 this.setState({...state, sortState: {
                     ...currSortState,
                     option: sortState.option
-                }, nestState: {}});
+                }});
             }).bind(this)
         };
 
@@ -236,7 +273,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { sortState, pgnState: currPgnState } = this.state;
         const { status } = currPgnState;
         const data: any[] = sortState ? sortState.data : this.props.data;
-        const callback: TFn = ( (pgnState: IPgnState) => this.setState({...this.state, pgnState, nestState: {}}) ).bind(this);
+        const callback: TFn = ( (pgnState: IPgnState) => this.setState({...this.state, pgnState}) ).bind(this);
         const pgnProps: IPgnProps = this.paginateHelper.createProps(data, currPgnState, callback);
         return this.paginateHelper.createDefComponent(status, pgnProps);
     }

@@ -146,53 +146,8 @@ const sampleData: any[] = [
     }
 ];
 
-// export const ViaACollapsibleKey = () => {
-//     const [ data, setData ] = useState(sampleData);
-
-//     const ListItemCmp = ({idx, item, itemPath, itemLvl, nestedItems}) => {
-//         const onCollapseChange = () => {
-//             item.isCollapsed = !item.isCollapsed;
-//             setData(data.slice(0));     // force render when data value changes
-//         };
-
-//         return (<li>
-//             { (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}
-//             {
-//                 nestedItems &&
-//                 <button type="button" onClick={onCollapseChange}>
-//                     {item.isCollapsed ? dnArwIconElem : upArwIconElem}
-//                 </button>
-//             }
-//             {
-//                 nestedItems && !item.isCollapsed &&
-//                 <ul style={nestedUlStyle}>{nestedItems}</ul>
-//             }
-//         </li>);
-//     };
-
-//     return (
-//         <div style={defStyle} >
-//             <DataGrid
-//                 data={data}
-//                 rows={[
-//                     [ListItemCmp],
-//                     ['lvl1key', ListItemCmp],
-//                     ['lvl2key', ListItemCmp],
-//                     ['lvl3key', ListItemCmp],
-//                     ['lvl4key', ListItemCmp]
-//                 ]}
-//                 />
-//         </div>
-//     );
-// };
-
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, nestedTb, isNestedOpen, onCollapseChanged}) => {
-
-        const [isExpd, setExpd ] = useState(false);
-        const onExpdChange = () => {
-            setExpd(!isExpd);
-        };
+    const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, nestedTb, isNestedOpen, onCollapseChanged, isExpd, onExpdChanged}) => {
 
         return <>
             <tr>
@@ -202,7 +157,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 <td>{item.id}</td>
                 <td>{
                     nestedItems &&
-                    <button type="button" onClick={onExpdChange}>
+                    <button type="button" onClick={onExpdChanged}>
                         {isExpd ? '-' : '+' }
                     </button>
                 }</td>
