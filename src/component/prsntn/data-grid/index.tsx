@@ -22,7 +22,7 @@ import {
     paginationType, sortBtnType,
 } from './type';
 
-
+// TODO: Move, typing
 class NestableRowWrapper extends Component<any, any> {
     constructor(props) {
         super(props);
@@ -39,11 +39,15 @@ class NestableRowWrapper extends Component<any, any> {
     render() {
         const { RowCmp, isInitialExpd, ...rowProps } = this.props;
         const { isExpd } = this.state;
-        const props = { ...rowProps, isExpd, onExpdChanged: this.onExpdChanged.bind(this) };
+        const props = {
+            ...rowProps,
+            isExpd,
+            onExpdChanged: this.onExpdChanged.bind(this)
+        };
+
         return <RowCmp {...props} />;
     }
 }
-
 
 export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
@@ -102,12 +106,7 @@ export class _DataGrid extends Component<IProps, IState> {
             const { item, itemLvl, nestedItems: rawNestedItems } = itemCtx;
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
-
-            // Beware: Expand state persistency has nothing to do with list clone
-            const rowProps = {
-                ...itemCtx,
-                nestedTb,
-            };
+            const rowProps = {...itemCtx, nestedTb };
 
             return nestedTb ?
                 <NestableRowWrapper
