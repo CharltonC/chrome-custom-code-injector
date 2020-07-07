@@ -1,5 +1,4 @@
 import { ClpsHandle } from "../../../service/handle/collapse";
-import { SortHandle } from "../../../service/handle/sort";
 import {
     TFn,
 
@@ -7,11 +6,6 @@ import {
     // TODO: rename
     clpsHandleType, TNestState, IClpsProps,
 
-    ISortState,
-    ISortOption,
-    sortBtnType,
-
-    // Sort
 } from './type';
 
 export class ExpandHelper extends ClpsHandle {

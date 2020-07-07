@@ -231,40 +231,33 @@ export class _DataGrid extends Component<IProps, IState> {
     //// Default Component Template
     createTbElem(rows: ReactElement[], tbLvl?: number): ReactElement {
         const isNested: boolean = Number.isInteger(tbLvl);
-        const thElem: ReactElement = (!isNested && this.state.thState) ? this.createTbHeaderElem() : null;
-        const TB_CLS: string = 'kz-datagrid';
-        const tbProps = {
-            className: `${TB_CLS} ${TB_CLS}--table ${TB_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
-        };
+
+        // Table Header Sort Button
+        const { thState, sortState } = this.state;
+        const hsTbHeader: boolean = !isNested && !!thState;
+        const sortBtnCtx = hsTbHeader ? {
+            ...sortState.option,
+            callback: this.onSortClick.bind(this)
+        } : null;
+
+        // Table Class
+        const BASE_CLS: string = 'kz-datagrid';
+        const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--table ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
+
         return (
-            <table {...tbProps}>
-                {thElem}
+            <table className={TB_CLS}>{hsTbHeader &&
+                <thead>{thState.map((thCtxs: thHandleType.IThCtx[]) => (
+                    <tr>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx) => (
+                        <th {...thProps}>
+                            <span>{title}</span>{sortKey &&
+                            <SortBtn {...this.createSortBtnProps(sortBtnCtx, sortKey)} />}
+                        </th>))}
+                    </tr>))}
+                </thead>}
                 <tbody>
                     {rows}
                 </tbody>
             </table>
-        );
-    }
-
-    //// Table Header
-    createTbHeaderElem(): ReactElement {
-        const { thState, sortState } = this.state;
-
-        // TODO: Check if sort option exist in rows
-        const commonCtx = {
-            ...sortState.option,
-            callback: this.onSortClick.bind(this)
-        };
-
-        return (
-            <thead>{thState.map((thCtxs: thHandleType.IThCtx[]) => (
-                <tr>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx) => (
-                    <th {...thProps}>
-                        <span>{title}</span>{sortKey &&
-                        <SortBtn {...this.createSortBtnProps(commonCtx, sortKey)} />}
-                    </th>))}
-                </tr>))}
-            </thead>
         );
     }
 
@@ -315,7 +308,6 @@ export class _DataGrid extends Component<IProps, IState> {
         return { option, status };
     }
 
-    // TODO: type
     createPgnProps(): paginationType.IProps {
         const {
             option: optionProps,
