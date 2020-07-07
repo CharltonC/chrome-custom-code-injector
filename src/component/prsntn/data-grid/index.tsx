@@ -222,9 +222,9 @@ export class _DataGrid extends Component<IProps, IState> {
         return (
             <table className={TB_CLS}>{hsTbHeader &&
                 /* TODO: Table Header Compoent? */
-                <thead>{thState.map((thCtxs: thHandleType.IThCtx[]) => (
-                    <tr>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx) => (
-                        <th {...thProps}>
+                <thead>{thState.map((thCtxs: thHandleType.IThCtx[], trIdx: number) => (
+                    <tr key={trIdx}>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx, thIdx: number) => (
+                        <th key={thIdx} {...thProps}>
                             <span>{title}</span>{sortKey &&
                             <SortBtn {...this.createSortBtnProps(sortState.option, sortKey)} />}
                         </th>))}
@@ -247,15 +247,18 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     createSortBtnProps({isAsc, key}: any, sortKey: string): sortBtnType.IProps {
+        const { data } = this.state.sortState;
+        const isSameTh: boolean = sortKey === key;
+
         return {
-            isAsc: key === sortKey ? isAsc : null,
-            onClick: ((modOption) => {
-                const { state } = this;
-                const { sortState: currSortState } = state;
-                const { data, option } = currSortState;
-                const opiton = { ...option, ...modOption}
-                const sortState = this.createSortState(data, opiton);
-                this.setState({...state,  sortState});
+            isAsc: isSameTh ? isAsc : null,
+            onClick: (() => {
+                const option = {
+                    key: isSameTh ? key : sortKey,
+                    isAsc: isSameTh ? !isAsc : true
+                };
+                const sortState = this.createSortState(data, option);
+                this.setState({...this.state, sortState});
             }).bind(this)
         };
     }
