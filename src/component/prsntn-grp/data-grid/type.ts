@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import * as clpsHandleType from '../../../service/handle/collapse/type';
 import * as pgnHandleType from '../../../service/handle/paginate/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
-import * as dropdownType from '../dropdown/type';
+import * as dropdownType from '../../prsntn/dropdown/type';
 import { PgnOption } from '../../../service/handle/paginate';
 
 //// Props
@@ -107,5 +107,5 @@ export type TSelectEvt = React.ChangeEvent<HTMLSelectElement>;
 //// Reexport
 export {clpsHandleType as clpsHandleType};
 export {thHandleType as thHandleType};
-export * as sortBtnType from '../sort-btn/type';
-export * as paginationType from '../pagination/type';
+export * as sortBtnType from '../../prsntn/sort-btn/type';
+export * as paginationType from '../../prsntn/pagination/type';

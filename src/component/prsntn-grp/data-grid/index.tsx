@@ -1,12 +1,12 @@
-import React, { Component, memo, ReactElement } from "react";
+import React, { Component, memo } from "react";
 
-import { ThHandle } from '../../../service/handle/table-header/';
-import { SortHandle } from '../../../service/handle/sort/';
-import { ClpsHandle } from '../../../service/handle/collapse/';
-import { PgnHandle, PgnOption } from '../../../service/handle/paginate/';
+import { ThHandle } from '../../../service/handle/table-header';
+import { SortHandle } from '../../../service/handle/sort';
+import { ClpsHandle } from '../../../service/handle/collapse';
+import { PgnHandle, PgnOption } from '../../../service/handle/paginate';
 
-import { SortBtn } from '../sort-btn';
-import { Pagination } from '../pagination';
+import { SortBtn } from '../../prsntn/sort-btn';
+import { Pagination } from '../../prsntn/pagination';
 
 // TODO: clean
 import {
