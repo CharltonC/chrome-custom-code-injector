@@ -1,7 +1,8 @@
 import React, { Component, memo, ReactElement } from "react";
 
-import { ThHandle } from '../../../service/handle/table-header';
-import { PaginateHelper, ExpandHelper, SortHelper } from './helper';
+import { ThHandle } from '../../../service/handle/table-header/';
+import { PgnHandle, PgnOption } from '../../../service/handle/paginate/';
+import { ExpandHelper, SortHelper } from './helper';
 import { SortBtn } from '../sort-btn';
 import { Pagination } from '../pagination';
 
@@ -10,8 +11,7 @@ import {
     IProps,
     IRow, TCmpCls, TFn, IClpsProps,
     IState, ISortState, IPgnState, TShallResetState,
-    IPgnProps,
-    clpsHandleType, thHandleType,
+    pgnHandleType, clpsHandleType, thHandleType,
 } from './type';
 
 
@@ -39,7 +39,7 @@ class NestableRowWrapper extends Component<any, any> {
 
 export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
-    readonly paginateHelper: PaginateHelper = new PaginateHelper();
+    readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly expandHelper: ExpandHelper = new ExpandHelper();
     readonly sortHelper: SortHelper = new SortHelper();
     rowConfig: clpsHandleType.IRawRowConfig[];
@@ -214,7 +214,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
         const nestState = (rows.length > 1 && shallReset.nestState) ? {nestState: {}} : {};
         const sortState = (sort && shallReset.sortState) ? {sortState : this.sortHelper.createState(data.slice(0), sort)}: {};
-        const pgnState = (paginate && shallReset.pgnState) ? {pgnState: this.paginateHelper.createState(data, paginate)} : {}
+        const pgnState = (paginate && shallReset.pgnState) ? {pgnState: this.createPgnState(data, paginate)} : {}
         const thState = (header && shallReset.thState) ? {thState: this.thHandle.createThCtx(header)}: {};
         return { ...nestState, ...sortState, ...pgnState, ...thState };
     }
@@ -267,6 +267,19 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Pagination
+    createPgnState(data: any[], modOption: PgnOption): IPgnState {
+        const { pgnHandle } = this;
+
+        // Only display valid increments for <option> value
+        const { increment } = modOption;
+        modOption.increment = increment ? pgnHandle.parseNoPerPage(increment) : increment;
+
+        const option = Object.assign(pgnHandle.getDefOption(), modOption) as Required<PgnOption>;
+        const status: pgnHandleType.IPgnStatus = pgnHandle.getPgnStatus(data, option);
+        return { option, status };
+    }
+
+    // TODO: type
     createPgnProps() {
         const {
             option: optionProps,
@@ -295,11 +308,11 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    onPgnChanged(modOption) {
+    onPgnChanged(modOption: Required<PgnOption>): void {
         const { data } = this.state.sortState;
         const { option } = this.state.pgnState;
-        const status = this.paginateHelper.getPgnStatus(data, {...option, ...modOption});
-        const pgnState = { option, status };
+        const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, {...option, ...modOption});
+        const pgnState: IPgnState = { option, status };
         this.setState({...this.state, pgnState});
     }
 }
