@@ -59,7 +59,7 @@ export class PaginateHelper extends PgnHandle {
         const { increment } = modOption;
         modOption.increment = increment ? this.parseNoPerPage(increment) : increment;
 
-        const option: PgnOption = Object.assign(this.getDefOption(), modOption);
+        const option = Object.assign(this.getDefOption(), modOption) as  Required<PgnOption> ;
         const status: pgnHandleType.IPgnStatus = this.getPgnStatus(data, option);
         return { option, status };
     }
@@ -216,6 +216,7 @@ export class SortHelper extends SortHandle {
             };
 
             // Callback example: `( (sortState) => this.setState({...this.state, sortState}) ).bind(this)`
+            // TODO: move data out as part of callback passed
             if (!callback) return;
             const sortState = this.createState(data, modOption);
             callback(sortState);
