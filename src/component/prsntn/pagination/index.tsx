@@ -1,11 +1,9 @@
 import React, { ReactElement, Component, memo } from "react";
-import { inclStaticIcon } from '../../static/icon';
-import { Dropdown } from '../dropdown';
 
-import {
-    IProps,
-    TSelectEvt
-} from './type';
+import { Dropdown } from '../dropdown';
+import { inclStaticIcon } from '../../static/icon';
+
+import { IProps, TSelectEvt } from './type';
 
 const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
 const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
