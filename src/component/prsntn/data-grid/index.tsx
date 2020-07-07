@@ -1,9 +1,9 @@
 import React, { Component, memo, ReactElement } from "react";
 
 import { ThHandle } from '../../../service/handle/table-header/';
-import { PgnHandle, PgnOption } from '../../../service/handle/paginate/';
 import { SortHandle } from '../../../service/handle/sort/';
-import { ExpandHelper } from './helper';
+import { ClpsHandle } from '../../../service/handle/collapse/';
+import { PgnHandle, PgnOption } from '../../../service/handle/paginate/';
 
 import { SortBtn } from '../sort-btn';
 import { Pagination } from '../pagination';
@@ -12,7 +12,7 @@ import { Pagination } from '../pagination';
 import {
     // Props
     IProps, ISortOption,
-    IRow, TCmpCls, TFn, IClpsProps,
+    IRow, TCmpCls, TFn,
 
     // State
     IState, ISortState, IPgnState, TShallResetState,
@@ -49,7 +49,7 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
-    readonly expandHelper: ExpandHelper = new ExpandHelper();
+    readonly clpsHandle: ClpsHandle = new ClpsHandle();
     rowConfig: clpsHandleType.IRawRowConfig[];
 
     //// Builtin API
@@ -60,7 +60,7 @@ export class _DataGrid extends Component<IProps, IState> {
         this.state = {...defState, ...initState};
 
         const { rows } = this.props;
-        this.rowConfig = this.getMappedConfig(rows);
+        this.rowConfig = this.getMappedRowConfig(rows);
     }
 
     UNSAFE_componentWillReceiveProps(props: IProps): void {
@@ -71,21 +71,12 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     render() {
-        // const { data: rawData, rows: rawRows, nesting, type } = this.props;
-        // const { sortState, pgnState } = this.state;
-        // const { showInitial: visiblePath } = nesting;
-
-        // Rows
-        // const data: any[] = this.getRowData(rawData, sortState, pgnState);
-        // const rows: clpsHandleType.IRawRowConfig[] = this.getMappedConfig(rawRows);
-        // const rowsElem: ReactElement[] = this.expandHelper.getClpsState({data, rows, visiblePath});
-        // const gridElem: ReactElement = (type === 'table') ? this.createTbElem(rowsElem) : this.createListElem(rowsElem);
         const { data: rawData, nesting } = this.props;
         const { sortState, pgnState } = this.state;
         const { showInitial: visiblePath } = nesting;
 
         const data: any[] = this.getRowData(rawData, sortState, pgnState);
-        const rowsElem = this.expandHelper.getClpsState({data, rows: this.rowConfig, visiblePath});
+        const rowsElem = this.clpsHandle.getClpsState({data, rows: this.rowConfig, visiblePath});
         const gridElem: ReactElement = this.createTbElem(rowsElem);
 
         return <>
@@ -95,7 +86,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    getMappedConfig(rows: IRow[]): clpsHandleType.IRawRowConfig[] {
+    getMappedRowConfig(rows: IRow[]): clpsHandleType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
@@ -105,30 +96,19 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     createCmpTransformFn(Cmp: TCmpCls): TFn {
-        const { nestState } = this.state;
         const { nesting } = this.props;
-        const { showOnePerLvl } = nesting;      // TODO: def. value
-
-        // TODO: if no nesting
-        const callback = nesting ? ( (state) => this.setState({...this.state, nestState: state}) ).bind(this) : null;
-        const commoRowCtx = nesting ? {nestState, showOnePerLvl, callback} : null;
 
         return (itemCtx: clpsHandleType.IItemCtx) => {
             const { item, itemLvl, nestedItems: rawNestedItems } = itemCtx;
-
-            // TODO: Move to getRowProps?
             const hsClpsProps: boolean = !!nesting && !!rawNestedItems;
-            const clpsProps: IClpsProps = hsClpsProps ? this.expandHelper.createRowProps(commoRowCtx, itemCtx) : {};
-
-            // TODO: if itemCtx has `nestedItems`, then wrap it with either `ul` OR `tr/td/table/tbody`
             const nestedTb: ReactElement = hsClpsProps ? this.createTbElem(rawNestedItems, itemLvl) : null;
 
             // Beware: Expand state persistency has nothing to do with list clone
             const rowProps = {
                 ...itemCtx,
                 nestedTb,
-                clpsProps
             };
+
             return nestedTb ?
                 <NestableRowWrapper
                     key={`${item.id}-${item.name}`}
@@ -244,8 +224,10 @@ export class _DataGrid extends Component<IProps, IState> {
         const BASE_CLS: string = 'kz-datagrid';
         const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--table ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
 
+        /* TODO: Table Compoent? */
         return (
             <table className={TB_CLS}>{hsTbHeader &&
+                /* TODO: Table Header Compoent? */
                 <thead>{thState.map((thCtxs: thHandleType.IThCtx[]) => (
                     <tr>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx) => (
                         <th {...thProps}>
