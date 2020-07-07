@@ -23,29 +23,28 @@ import {
 } from './type';
 
 // TODO: Move, typing
-class NestableRowWrapper extends Component<any, any> {
+class ExpandableWrapper extends Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
-            isExpd: props.isInitialExpd
+            isExpd: props.isExpdByDef
         };
     }
 
-    onExpdChanged() {
+    onExpdChange() {
         const isExpd: boolean = !this.state.isExpd;
         this.setState({isExpd});
     }
 
     render() {
-        const { RowCmp, isInitialExpd, ...rowProps } = this.props;
+        const { Cmp, isExpdByDef, ...spareProps } = this.props;
         const { isExpd } = this.state;
-        const props = {
-            ...rowProps,
+        const cmpProps = {
+            ...spareProps,
             isExpd,
-            onExpdChanged: this.onExpdChanged.bind(this)
+            onExpdChange: this.onExpdChange.bind(this)
         };
-
-        return <RowCmp {...props} />;
+        return <Cmp {...cmpProps} />;
     }
 }
 
@@ -113,9 +112,9 @@ export class _DataGrid extends Component<IProps, IState> {
             };
 
             return nestedTb ?
-                <NestableRowWrapper
-                    isInitialExpd={isExpdByDef}
-                    RowCmp={Cmp}
+                <ExpandableWrapper
+                    isExpdByDef={isExpdByDef}
+                    Cmp={Cmp}
                     {...rowProps}
                 /> :
                 <Cmp {...rowProps} />;
@@ -133,7 +132,7 @@ export class _DataGrid extends Component<IProps, IState> {
         }
     }
 
-    //// Deal with Props changes
+    //// Deal with Props & State in General
     /**
      * Determine what slice of state should be reset for avoiding unneeded calls of creating particular state slice
      *
@@ -194,7 +193,6 @@ export class _DataGrid extends Component<IProps, IState> {
         return shallReset ? {thState, nestState, sortState, pgnState} : null;
     }
 
-    //// State & State Slices
     createState(props: IProps, shallReset?: TShallResetState): Partial<IState> {
         // TODO: default option for each
         const { data, rows, sort, paginate, header } = props;
@@ -220,12 +218,11 @@ export class _DataGrid extends Component<IProps, IState> {
         const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--table ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
 
         return (
-            <table className={TB_CLS}>{hsTbHeader &&
-                /* TODO: Table Header Compoent? */
-                <thead>{thState.map((thCtxs: thHandleType.IThCtx[], trIdx: number) => (
-                    <tr key={trIdx}>{thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx, thIdx: number) => (
+            <table className={TB_CLS}>{ hsTbHeader &&
+                <thead>{ thState.map((thCtxs: thHandleType.IThCtx[], trIdx: number) => (
+                    <tr key={trIdx}>{ thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx, thIdx: number) => (
                         <th key={thIdx} {...thProps}>
-                            <span>{title}</span>{sortKey &&
+                            <span>{title}</span>{ sortKey &&
                             <SortBtn {...this.createSortBtnProps(sortState.option, sortKey)} />}
                         </th>))}
                     </tr>))}
