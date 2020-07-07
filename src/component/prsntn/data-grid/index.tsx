@@ -293,13 +293,16 @@ export class _DataGrid extends Component<IProps, IState> {
             {...statusProps}
             {...optionProps}
             {...pageSelectProps}
-            onPgnChanged={((modPgnOption) => {
-                const option = {...optionProps, ...modPgnOption};
-                const status = this.paginateHelper.getPgnStatus(this.state.sortState.data, option);
-                const pgnState = { option, status };
-                this.setState({...this.state, pgnState});
-            }).bind(this)}
+            onPgnChanged={this.onPgnChanged.bind(this)}
         />;
+    }
+
+    onPgnChanged(modOption) {
+        const { data } = this.state.sortState;
+        const { option } = this.state.pgnState;
+        const status = this.paginateHelper.getPgnStatus(data, {...option, ...modOption});
+        const pgnState = { option, status };
+        this.setState({...this.state, pgnState});
     }
 }
 
