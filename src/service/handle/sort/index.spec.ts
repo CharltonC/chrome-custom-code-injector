@@ -22,7 +22,7 @@ describe('Handle Service - Default Sorter', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Method: objList - Sort a list of object based on an object key', () => {
+    describe('Method: sortByObjKey - Sort a list of object based on an object key', () => {
         const mockInvalidList: TLsItem[] = [{key: []}, {key: ()=>{}}, {key: 'y'}];
         const mockStrList: TLsItem[] = [{key: 'z'}, {key: 'x'}, {key: 'y'}];
         const mockNumList: TLsItem[] = [{key: 5}, {key: 1}, {key: 19},];
@@ -30,7 +30,7 @@ describe('Handle Service - Default Sorter', () => {
 
         it('should not sort if values are not same type of number, string', () => {
             isValSameTypeSpy.mockReturnValue(false);
-            sortedList = sortHandle.objList(mockStrList, 'key');
+            sortedList = sortHandle.sortByObjKey(mockStrList, 'key');
 
             expect(sortedList).toEqual(mockStrList);
             expect(compareStrSpy).not.toHaveBeenCalled();
@@ -39,7 +39,7 @@ describe('Handle Service - Default Sorter', () => {
         });
 
         it('should not sort if values type are invalid', () => {
-            sortedList = sortHandle.objList(mockInvalidList, 'key');
+            sortedList = sortHandle.sortByObjKey(mockInvalidList, 'key');
 
             expect(sortedList).toEqual(mockInvalidList);
             expect(compareStrSpy).not.toHaveBeenCalled();
@@ -48,7 +48,7 @@ describe('Handle Service - Default Sorter', () => {
         });
 
         it('should sort based on string in asc. order', () => {
-            sortedList = sortHandle.objList(mockStrList, 'key');
+            sortedList = sortHandle.sortByObjKey(mockStrList, 'key');
 
             expect(compareStrSpy).toHaveBeenCalled();
             expect(compareNumSpy).not.toHaveBeenCalled();
@@ -57,7 +57,7 @@ describe('Handle Service - Default Sorter', () => {
         });
 
         it('should sort based on string in dsc. order', () => {
-            sortedList = sortHandle.objList(mockStrList, 'key', false)
+            sortedList = sortHandle.sortByObjKey(mockStrList, 'key', false)
 
             expect(compareStrSpy).toHaveBeenCalled();
             expect(compareNumSpy).not.toHaveBeenCalled();
@@ -66,7 +66,7 @@ describe('Handle Service - Default Sorter', () => {
         });
 
         it('should sort based on number in asc. order', () => {
-            sortedList = sortHandle.objList(mockNumList, 'key');
+            sortedList = sortHandle.sortByObjKey(mockNumList, 'key');
 
             expect(compareNumSpy).toHaveBeenCalled();
             expect(compareStrSpy).not.toHaveBeenCalled();
@@ -75,7 +75,7 @@ describe('Handle Service - Default Sorter', () => {
         });
 
         it('should sort based on number in dsc. order', () => {
-            sortedList = sortHandle.objList(mockNumList, 'key', false);
+            sortedList = sortHandle.sortByObjKey(mockNumList, 'key', false);
 
             expect(compareNumSpy).toHaveBeenCalled();
             expect(compareStrSpy).not.toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe('Handle Service - Default Sorter', () => {
         });
 
         it('should sort based on locale string in asc. order', () => {
-            sortedList = sortHandle.objList(mockLocaleStrList, 'key', true, true);
+            sortedList = sortHandle.sortByObjKey(mockLocaleStrList, 'key', true, true);
 
             expect(compareLocaleStrSpy).toHaveBeenCalled();
             expect(compareStrSpy).not.toHaveBeenCalled();
@@ -93,7 +93,7 @@ describe('Handle Service - Default Sorter', () => {
         });
 
         it('should sort based on locale string in dsc. order', () => {
-            sortedList = sortHandle.objList(mockLocaleStrList, 'key', false, true);
+            sortedList = sortHandle.sortByObjKey(mockLocaleStrList, 'key', false, true);
 
             expect(compareLocaleStrSpy).toHaveBeenCalled();
             expect(compareStrSpy).not.toHaveBeenCalled();

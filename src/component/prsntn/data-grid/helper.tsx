@@ -199,8 +199,7 @@ export class SortHelper extends SortHandle {
         const { key, isAsc } = sortOption;
         return {
             option: { ...sortOption },
-            // TODO: renamed method
-            data: this.objList(data, key, isAsc)
+            data: this.sortByObjKey(data, key, isAsc)
         };
     }
 

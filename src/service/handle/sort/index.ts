@@ -7,7 +7,7 @@ export class SortHandle {
 
     constructor(){}
 
-    objList(list: TLsItem[], key: string, isAsc: boolean = true, hsLocale: boolean = false): TLsItem[] {
+    sortByObjKey(list: TLsItem[], key: string, isAsc: boolean = true, hsLocale: boolean = false): TLsItem[] {
         return list.sort((a: TLsItem, b: TLsItem) => {
             const valA: any = a[key];
             const valB: any = b[key];
