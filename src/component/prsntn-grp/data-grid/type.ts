@@ -70,7 +70,7 @@ export interface IClpsProps {
 //// Pagination
 export interface IPgnState {
     option: pgnHandleType.IOption;
-    status: pgnHandleType.IPgnStatus;
+    status: pgnHandleType.IState;
 }
 
 export interface IPgnProps {

@@ -51,7 +51,7 @@ describe('Class - Paginate Handle', () => {
         });
     });
 
-    describe('Method: getPgnStatus - Get Pagination state based on list and user option', () => {
+    describe('Method: createState - Get Pagination state based on list and user option', () => {
         const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
 
         describe('test with spied/mocked methods', () => {
@@ -70,7 +70,7 @@ describe('Class - Paginate Handle', () => {
             });
 
             it('should return def paginate state when list only has 1 or less items', () => {
-                expect(handle.getPgnStatus(['a'], mockPgnOption)).toEqual(mockEmptyPgnState);
+                expect(handle.createState(['a'], mockPgnOption)).toEqual(mockEmptyPgnState);
                 expect(getDefOptionSpy).toHaveBeenCalled();
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
                 expect(getDefPgnStatusSpy).toHaveBeenCalledWith(1, mockNoPerPage);
@@ -78,7 +78,7 @@ describe('Class - Paginate Handle', () => {
             });
 
             it('should return def paginate state when total page is lte 1', () => {
-                expect(handle.getPgnStatus(mockList, mockPgnOption)).toEqual(mockEmptyPgnState);
+                expect(handle.createState(mockList, mockPgnOption)).toEqual(mockEmptyPgnState);
                 expect(getDefOptionSpy).toHaveBeenCalled();
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
                 expect(getTotalPageSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
@@ -105,7 +105,7 @@ describe('Class - Paginate Handle', () => {
                 getRelPageCtxSpy.mockReturnValue(mockRelPageCtx);
                 parseRelPageSpy.mockReturnValue(mockParsedRelPage);
 
-                expect(handle.getPgnStatus(mockList, mockPgnOption)).toEqual({
+                expect(handle.createState(mockList, mockPgnOption)).toEqual({
                     ...mockSliceIdx,
                     ...mockParsedRelPage,
                     curr: mockCurrPage,
@@ -130,7 +130,7 @@ describe('Class - Paginate Handle', () => {
             const mockPgnOption: Partial<IOption> = { increment: [mockPerPage] };
 
             it('should return paginate state by default', () => {
-                expect(handle.getPgnStatus(mockList, mockPgnOption)).toEqual({
+                expect(handle.createState(mockList, mockPgnOption)).toEqual({
                     curr: 0,
                     startIdx: 0,
                     endIdx: 4,
@@ -149,7 +149,7 @@ describe('Class - Paginate Handle', () => {
 
             it('should return paginate state when provided current page index', () => {
                 const mockCurrPage: number = 1;
-                expect(handle.getPgnStatus(mockList, {...mockPgnOption, page: mockCurrPage})).toEqual({
+                expect(handle.createState(mockList, {...mockPgnOption, page: mockCurrPage})).toEqual({
                     curr: mockCurrPage,
                     startIdx: 4,
                     endIdx: undefined,

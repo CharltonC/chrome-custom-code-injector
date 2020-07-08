@@ -1,5 +1,5 @@
 //// Pagination State/Status
-export interface IPgnStatus extends IPageCtx, IPageSlice, IRelPage, IRecordCtx {
+export interface IState extends IPageCtx, IPageSlice, IRelPage, IRecordCtx {
     perPage: number;
     totalPage: number;
 }

@@ -1,10 +1,10 @@
-import { IPgnStatus, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
+import { IState, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
 
 /**
  * Usage:
  *      const list = ['a', 'b', 'c', 'd'];
  *
- *      const example = pgnHandle.getPgnStatus(list, {
+ *      const example = pgnHandle.createState(list, {
  *           page: 1,                       // optional starting page index
  *           increment: [100, 200, 300],    // used for <select>'s <option> (default 10 per page, i.e. [10])
  *           incrementIdx: 0,               // i.e. 100 per age
@@ -14,7 +14,7 @@ import { IPgnStatus, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, I
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
 export class PgnHandle {
-    getPgnStatus(list: any[], pgnOption: Partial<IOption>): IPgnStatus {
+    createState(list: any[], pgnOption: Partial<IOption>): IState {
         // Merge def. option with User's option
         const defOption: IOption = this.getDefOption();
         const {increment: [defIncrmVal]} = defOption;
@@ -23,7 +23,7 @@ export class PgnHandle {
 
         // Skip if we only have 1 list item OR less than 2 pages
         const totalRecord: number = list.length;
-        const defState: IPgnStatus = this.getDefPgnStatus(totalRecord, perPage);
+        const defState: IState = this.getDefPgnStatus(totalRecord, perPage);
         if (totalRecord <= 1) return defState;
         const totalPage: number = this.getTotalPage(totalRecord, perPage);
         if (totalPage <= 1) return defState;
@@ -47,7 +47,7 @@ export class PgnHandle {
         };
     }
 
-    getDefPgnStatus(totalRecord: number, perPage: number): IPgnStatus {
+    getDefPgnStatus(totalRecord: number, perPage: number): IState {
         const startIdx: number = 0;
         const recordCtx: IRecordCtx = this.getRecordCtx(totalRecord, startIdx);
         return {
@@ -56,7 +56,7 @@ export class PgnHandle {
             totalPage: 1,
             startIdx,
             pageNo: 1
-        } as IPgnStatus;
+        } as IState;
     }
 
     getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {

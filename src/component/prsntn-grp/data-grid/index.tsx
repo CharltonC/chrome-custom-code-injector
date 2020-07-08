@@ -275,7 +275,7 @@ export class _DataGrid extends Component<IProps, IState> {
         modOption.increment = increment ? pgnHandle.parseNoPerPage(increment) : increment;
 
         const option = Object.assign(pgnHandle.getDefOption(), modOption) as pgnHandleType.IOption;
-        const status: pgnHandleType.IPgnStatus = pgnHandle.getPgnStatus(data, option);
+        const status: pgnHandleType.IState = pgnHandle.createState(data, option);
         return { option, status };
     }
 
@@ -307,7 +307,7 @@ export class _DataGrid extends Component<IProps, IState> {
                 const { data } = this.state.sortState;
                 const { option: currOption } = this.state.pgnState;
                 const option = {...currOption, ...modOption} as pgnHandleType.IOption;
-                const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, option);
+                const status: pgnHandleType.IState = this.pgnHandle.createState(data, option);
                 const pgnState: IPgnState = { option, status };
                 this.setState({...this.state, pgnState});
             }).bind(this)
