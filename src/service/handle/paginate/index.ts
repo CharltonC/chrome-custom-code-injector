@@ -23,7 +23,7 @@ export class PgnHandle {
 
         // Skip if we only have 1 list item OR less than 2 pages
         const totalRecord: number = list.length;
-        const defState: IState = this.getDefPgnStatus(totalRecord, perPage);
+        const defState: IState = this.createDefState(totalRecord, perPage);
         if (totalRecord <= 1) return defState;
         const totalPage: number = this.getTotalPage(totalRecord, perPage);
         if (totalPage <= 1) return defState;
@@ -39,15 +39,7 @@ export class PgnHandle {
         return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage, ...recordCtx };
     }
 
-    getDefOption(): IOption {
-        return {
-            page: 0,
-            increment: [10],
-            incrementIdx: 0,
-        };
-    }
-
-    getDefPgnStatus(totalRecord: number, perPage: number): IState {
+    createDefState(totalRecord: number, perPage: number): IState {
         const startIdx: number = 0;
         const recordCtx: IRecordCtx = this.getRecordCtx(totalRecord, startIdx);
         return {
@@ -57,6 +49,85 @@ export class PgnHandle {
             startIdx,
             pageNo: 1
         } as IState;
+    }
+
+    // TODO: Test
+    /**
+     * Merge the updated option with existing option (either custom or default)
+     * e.g. existingOption = this.state.sortOption
+     */
+    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
+        const baseOption = existingOption ? existingOption : this.getDefOption();
+        return { ...baseOption, ...modOption };
+    }
+
+    getDefOption(): IOption {
+        return {
+            page: 0,
+            increment: [10],
+            incrementIdx: 0,
+        };
+    }
+
+    // TODO: Test, param type
+    /**
+     * Usage Example for React:
+     * const callback = ((modState) => {
+     *    this.setState({...this.state, ...modState});
+     * }).bind(this);
+     *
+     * createGenericCmpProps(option, state, data, callback);
+     */
+    createGenericCmpAttr({data, option, state, callback}) {
+        const { first, prev, next, last, totalPage, pageNo } = state;
+
+        const wrapperCallback = ((modOption: Partial<IOption>): void => {
+            const pgnOption: IOption = this.createOption(modOption, option);
+            const pgnState: IState = this.createState(data, pgnOption);
+            if (callback) callback({pgnOption, pgnState});
+        }).bind(this);
+
+        // Attr. for Buttons
+        const btns = { first, prev, next, last };
+        const btnAttrs = Object.getOwnPropertyNames(btns).reduce((propsContainer, btnName: string) => {
+            const pageIdxNo: number = btns[btnName];
+            propsContainer[`${btnName}BtnAttr`] = {
+                disabled: !Number.isInteger(pageIdxNo),
+                onClick: () => wrapperCallback({page: btns[btnName]})
+            };
+            return propsContainer;
+        }, {});
+
+        // Attr. for Page Select
+        let pageList: number[] = [];
+        let pageSelectIdx: number = 0;
+        for (let p: number = 1; p <= totalPage; p++) {
+            const pageIdx = p - 1;
+            pageList.push(pageIdx);
+            pageSelectIdx = p === pageNo ? pageIdx : pageSelectIdx;
+        }
+        const pageSelectAttr = {
+            optionValues: pageList,
+            optionSelectedValue: pageList[pageSelectIdx],
+            optionSelectedIdx: pageSelectIdx,
+            onSelect: ({target}) => wrapperCallback({page: pageList[parseInt(target.value, 10)]})
+        };
+
+        // Attr. for Per Page Select
+        const { increment, incrementIdx } = option;
+        const perPageSelectAttr = {
+            disabled: increment.length <= 1,
+            optionValues: increment.map((perPage: number) => `${perPage} Per Page`),
+            optionSelectedValue: increment[incrementIdx],
+            optionSelectedIdx: incrementIdx,
+            onSelect: ({target}) => wrapperCallback({page: 0, incrementIdx: parseInt(target.value, 10)})
+        };
+
+        return {
+            ...btnAttrs,
+            pageSelectAttr,
+            perPageSelectAttr,
+        };
     }
 
     getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {

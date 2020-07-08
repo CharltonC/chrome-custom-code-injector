@@ -15,7 +15,7 @@ describe('Class - Paginate Handle', () => {
     let getRelPageCtxSpy: jest.SpyInstance;
     let parseRelPageSpy: jest.SpyInstance;
     let getRecordCtxSpy: jest.SpyInstance;
-    let getDefPgnStatusSpy: jest.SpyInstance;
+    let createDefStateSpy: jest.SpyInstance;
     let getDefOptionSpy: jest.SpyInstance;
 
     beforeEach(() => {
@@ -32,7 +32,7 @@ describe('Class - Paginate Handle', () => {
         getRelPageCtxSpy = jest.spyOn(handle, 'getRelPageCtx');
         parseRelPageSpy = jest.spyOn(handle, 'parseRelPage');
         getRecordCtxSpy = jest.spyOn(handle, 'getRecordCtx');
-        getDefPgnStatusSpy = jest.spyOn(handle, 'getDefPgnStatus');
+        createDefStateSpy = jest.spyOn(handle, 'createDefState');
         getDefOptionSpy = jest.spyOn(handle, 'getDefOption');
     });
 
@@ -64,7 +64,7 @@ describe('Class - Paginate Handle', () => {
             beforeEach(() => {
                 ({ increment, incrementIdx } = defOption);
                 getNoPerPageSpy.mockReturnValue(mockNoPerPage);
-                getDefPgnStatusSpy.mockReturnValue(mockEmptyPgnState);
+                createDefStateSpy.mockReturnValue(mockEmptyPgnState);
                 getTotalPageSpy.mockReturnValue(1);
                 getRecordCtxSpy.mockReturnValue(mockEmptyPgnState);
             });
@@ -73,7 +73,7 @@ describe('Class - Paginate Handle', () => {
                 expect(handle.createState(['a'], mockPgnOption)).toEqual(mockEmptyPgnState);
                 expect(getDefOptionSpy).toHaveBeenCalled();
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
-                expect(getDefPgnStatusSpy).toHaveBeenCalledWith(1, mockNoPerPage);
+                expect(createDefStateSpy).toHaveBeenCalledWith(1, mockNoPerPage);
                 expect(getTotalPageSpy).not.toHaveBeenCalled();
             });
 
@@ -82,7 +82,7 @@ describe('Class - Paginate Handle', () => {
                 expect(getDefOptionSpy).toHaveBeenCalled();
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
                 expect(getTotalPageSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
-                expect(getDefPgnStatusSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
+                expect(createDefStateSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
                 expect(getCurrPageSpy).not.toHaveBeenCalled();
             });
 
@@ -115,7 +115,7 @@ describe('Class - Paginate Handle', () => {
                 });
                 expect(getDefOptionSpy).toHaveBeenCalled();
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
-                expect(getDefPgnStatusSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
+                expect(createDefStateSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
                 expect(getTotalPageSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
                 expect(getCurrPageSpy).toHaveBeenCalledWith(page, mockTotalPage-1);
                 expect(getPageSliceIdxSpy).toHaveBeenCalledWith(mockList, mockNoPerPage, page);
@@ -177,7 +177,7 @@ describe('Class - Paginate Handle', () => {
             const mockTotalRecord: number = 0;
             const mockPerPage: number = 1;
 
-            expect(handle.getDefPgnStatus(mockTotalRecord, mockPerPage)).toEqual({
+            expect(handle.createDefState(mockTotalRecord, mockPerPage)).toEqual({
                 perPage: mockPerPage,
                 startIdx: 0,
                 pageNo: 1,
