@@ -3,7 +3,7 @@ import React, { ReactElement, Component, memo } from "react";
 import { Dropdown } from '../dropdown';
 import { inclStaticIcon } from '../../static/icon';
 
-import { IProps, TSelectEvt } from './type';
+import { IProps, TSelectEvt, TEvtHandler } from './type';
 
 const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
 const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
@@ -27,15 +27,15 @@ export class _Pagination extends Component<IProps> {
             increment, incrementIdx,
 
             // Callback for Buttons & Selects
-            onPgnChanged
+            onPgnChange
         } = this.props;
 
-        const pageSelectProps = this.createPageSelectProps(pageList, pageSelectIdx, onPgnChanged);
-        const perPageSelectProps = this.createPerPageSelectProps(increment, incrementIdx, onPgnChanged);
-        const firstBtnProps = this.createBtnProps('first', first, onPgnChanged);
-        const prevBtnProps = this.createBtnProps('prev', prev, onPgnChanged);
-        const nextBtnProps = this.createBtnProps('next', next, onPgnChanged);
-        const lastBtnProps = this.createBtnProps('last', last, onPgnChanged);
+        const pageSelectProps = this.createPageSelectProps(pageList, pageSelectIdx, onPgnChange);
+        const perPageSelectProps = this.createPerPageSelectProps(increment, incrementIdx, onPgnChange);
+        const firstBtnProps = this.createBtnProps('first', first, onPgnChange);
+        const prevBtnProps = this.createBtnProps('prev', prev, onPgnChange);
+        const nextBtnProps = this.createBtnProps('next', next, onPgnChange);
+        const lastBtnProps = this.createBtnProps('last', last, onPgnChange);
 
         return (
             <div className={CLS_PREFIX}>
@@ -50,7 +50,7 @@ export class _Pagination extends Component<IProps> {
         );
     }
 
-    createBtnProps(name: string, pageIdx: number, onPgnChanged) {
+    createBtnProps(name: string, pageIdx: number, onPgnChange: TEvtHandler) {
         const CLS_SUFFIX: string = `btn-${name}`;
 
         let children: ReactElement | ReactElement[];
@@ -75,11 +75,11 @@ export class _Pagination extends Component<IProps> {
             className: `${this.CLS_PREFIX}__${CLS_SUFFIX}`,
             disabled: !Number.isInteger(pageIdx),
             children,
-            onClick: () => onPgnChanged({page: pageIdx})
+            onClick: () => onPgnChange({page: pageIdx})
         } as any;
     }
 
-    createPageSelectProps(pageList: number[], pageSelectIdx: number, onPgnChanged) {
+    createPageSelectProps(pageList: number[], pageSelectIdx: number, onPgnChange: TEvtHandler) {
         const CLS_SUFFIX: string = 'select-page';
 
         return {
@@ -90,11 +90,11 @@ export class _Pagination extends Component<IProps> {
             selectIdx: pageSelectIdx,
             list: pageList,
             listTxtTransform: (pageIdx: number) => `Page ${pageIdx+1}`,
-            onSelect: ({target}: TSelectEvt) => onPgnChanged({page: pageList[parseInt(target.value, 10)]}),
+            onSelect: ({target}: TSelectEvt) => onPgnChange({page: pageList[parseInt(target.value, 10)]}),
         };
     }
 
-    createPerPageSelectProps(increment: number[], incrementIdx: number, onPgnChanged) {
+    createPerPageSelectProps(increment: number[], incrementIdx: number, onPgnChange: TEvtHandler) {
         const CLS_SUFFIX: string = 'select-perpage';
 
         return {
@@ -104,7 +104,7 @@ export class _Pagination extends Component<IProps> {
             value: incrementIdx,
             list: increment,
             listTxtTransform: (perPage: number) => `${perPage} Per Page`,
-            onSelect: ({target}: TSelectEvt) => onPgnChanged({
+            onSelect: ({target}: TSelectEvt) => onPgnChange({
                 incrementIdx: parseInt(target.value, 10),
                 page: 0
             })

@@ -303,7 +303,7 @@ export class _DataGrid extends Component<IProps, IState> {
             ...statusProps,
             ...optionProps,
             ...pageSelectProps,
-            onPgnChanged: ((modOption: Required<PgnOption>) => {
+            onPgnChange: ((modOption: Required<PgnOption>) => {
                 const { data } = this.state.sortState;
                 const { option: currOption } = this.state.pgnState;
                 const option = {...currOption, ...modOption} as Required<PgnOption>;

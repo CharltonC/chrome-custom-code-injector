@@ -5,7 +5,9 @@ export interface IProps extends pgnHandleType.IRecordCtx, pgnHandleType.IRelPage
     pageSelectIdx: number;
     increment: number[];
     incrementIdx: number;
-    onPgnChanged: (...args: any[]) => any;
+    onPgnChange: (...args: any[]) => any;
 }
 
 export type TSelectEvt = React.ChangeEvent<HTMLSelectElement>;
+
+export type TEvtHandler = (...args: any[]) => void;
