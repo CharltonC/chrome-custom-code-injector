@@ -69,7 +69,7 @@ export interface IClpsProps {
 
 //// Pagination
 export interface IPgnState {
-    option: Required<PgnOption>;
+    option: pgnHandleType.IOption;
     status: pgnHandleType.IPgnStatus;
 }
 
@@ -84,14 +84,13 @@ export interface IPgnProps {
 
 export interface IPgnPropsCtx {
     data: any[];
-    option: PgnOption;
+    option: pgnHandleType.IOption;
     callback?: TPgnCallback;
 }
 
 export type TPgnCallback = (pgnState: IPgnState) => any;
 
 export {pgnHandleType as pgnHandleType};
-export {PgnOption as PgnOption};
 export {dropdownType as dropdownType}
 
 
