@@ -1,9 +1,9 @@
-import { IPgnStatus, IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice, IPageCtx } from './type';
-import { PgnHandle, PgnOption } from './';
+import { IOption, IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice, IPageCtx } from './type';
+import { PgnHandle } from './';
 
 describe('Class - Paginate Handle', () => {
-    const defOption: PgnOption = new PgnOption();
     let handle: PgnHandle;
+    let defOption: IOption;
     let isGteZeroSpy: jest.SpyInstance;
     let isDefinedSpy: jest.SpyInstance;
     let getNoPerPageSpy: jest.SpyInstance;
@@ -20,6 +20,7 @@ describe('Class - Paginate Handle', () => {
 
     beforeEach(() => {
         handle = new PgnHandle();
+        defOption = handle.getDefOption();
         isGteZeroSpy = jest.spyOn(handle, 'isGteZero');
         isDefinedSpy = jest.spyOn(handle, 'isDefined');
         getNoPerPageSpy = jest.spyOn(handle, 'getNoPerPage');
@@ -54,12 +55,14 @@ describe('Class - Paginate Handle', () => {
         const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
 
         describe('test with spied/mocked methods', () => {
-            const mockPgnOption: PgnOption = {};
+            const mockPgnOption: Partial<IOption> = {};
             const mockNoPerPage: number = 20;
             const mockEmptyPgnState = {};
-            const { increment, incrementIdx } = defOption;
+            let increment: number[];
+            let incrementIdx: number;
 
             beforeEach(() => {
+                ({ increment, incrementIdx } = defOption);
                 getNoPerPageSpy.mockReturnValue(mockNoPerPage);
                 getDefPgnStatusSpy.mockReturnValue(mockEmptyPgnState);
                 getTotalPageSpy.mockReturnValue(1);
@@ -124,7 +127,7 @@ describe('Class - Paginate Handle', () => {
 
         describe('test with unspied/unmocked methods', () => {
             const mockPerPage: number = 4;
-            const mockPgnOption: PgnOption = { increment: [mockPerPage] };
+            const mockPgnOption: Partial<IOption> = { increment: [mockPerPage] };
 
             it('should return paginate state by default', () => {
                 expect(handle.getPgnStatus(mockList, mockPgnOption)).toEqual({

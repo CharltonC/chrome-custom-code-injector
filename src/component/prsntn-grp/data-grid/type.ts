@@ -4,7 +4,6 @@ import * as clpsHandleType from '../../../service/handle/collapse/type';
 import * as pgnHandleType from '../../../service/handle/paginate/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
 import * as dropdownType from '../../prsntn/dropdown/type';
-import { PgnOption } from '../../../service/handle/paginate';
 
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
@@ -14,14 +13,12 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     header?: thHandleType.IThConfig[];
     expand?: IExpandOption;
     sort?: ISortOption;
-    paginate?: IPgnOption;
+    paginate?: Partial<pgnHandleType.IOption>;
 }
 
 export type TCmpCls = React.FC<any> | React.ComponentClass<any>;
 
 export type TGridType = 'table' | 'list';
-
-export interface IPgnOption extends Partial<PgnOption> {}
 
 export interface ISortOption {
     key: string;

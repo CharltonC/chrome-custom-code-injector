@@ -3,7 +3,7 @@ import React, { Component, memo } from "react";
 import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
 import { ClpsHandle } from '../../../service/handle/collapse';
-import { PgnHandle, PgnOption } from '../../../service/handle/paginate';
+import { PgnHandle } from '../../../service/handle/paginate';
 
 import { SortBtn } from '../../prsntn/sort-btn';
 import { Pagination } from '../../prsntn/pagination';
@@ -267,14 +267,14 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Pagination
-    createPgnState(data: any[], modOption: PgnOption): IPgnState {
+    createPgnState(data: any[], modOption: Partial<pgnHandleType.IOption>): IPgnState {
         const { pgnHandle } = this;
 
         // Only display valid increments for <option> value
         const { increment } = modOption;
         modOption.increment = increment ? pgnHandle.parseNoPerPage(increment) : increment;
 
-        const option = Object.assign(pgnHandle.getDefOption(), modOption) as Required<PgnOption>;
+        const option = Object.assign(pgnHandle.getDefOption(), modOption) as pgnHandleType.IOption;
         const status: pgnHandleType.IPgnStatus = pgnHandle.getPgnStatus(data, option);
         return { option, status };
     }
@@ -303,10 +303,10 @@ export class _DataGrid extends Component<IProps, IState> {
             ...statusProps,
             ...optionProps,
             ...pageSelectProps,
-            onPgnChange: ((modOption: Required<PgnOption>) => {
+            onPgnChange: ((modOption: Partial<pgnHandleType.IOption>) => {
                 const { data } = this.state.sortState;
                 const { option: currOption } = this.state.pgnState;
-                const option = {...currOption, ...modOption} as Required<PgnOption>;
+                const option = {...currOption, ...modOption} as pgnHandleType.IOption;
                 const status: pgnHandleType.IPgnStatus = this.pgnHandle.getPgnStatus(data, option);
                 const pgnState: IPgnState = { option, status };
                 this.setState({...this.state, pgnState});

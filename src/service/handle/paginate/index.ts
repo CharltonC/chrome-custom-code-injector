@@ -1,18 +1,8 @@
-import { IPgnStatus, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
-
-/**
- * Whenever one of these updates, we can use `getPgnStatus` to get the current paginate state
- */
-export class PgnOption {
-    page?: number = 0;
-    increment?: number[] = [10];
-    incrementIdx?: number = 0;
-}
+import { IPgnStatus, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
 
 /**
  * Usage:
  *      const list = ['a', 'b', 'c', 'd'];
- *      const pgnHandle = new PgnHandle();
  *
  *      const example = pgnHandle.getPgnStatus(list, {
  *           page: 1,                       // optional starting page index
@@ -24,9 +14,9 @@ export class PgnOption {
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
 export class PgnHandle {
-    getPgnStatus(list: any[], pgnOption: PgnOption): IPgnStatus {
+    getPgnStatus(list: any[], pgnOption: Partial<IOption>): IPgnStatus {
         // Merge def. option with User's option
-        const defOption: PgnOption = this.getDefOption();
+        const defOption: IOption = this.getDefOption();
         const {increment: [defIncrmVal]} = defOption;
         const { page, increment, incrementIdx } = Object.assign(defOption, pgnOption);
         let perPage: number = this.getNoPerPage(increment, incrementIdx, defIncrmVal);
@@ -49,8 +39,12 @@ export class PgnHandle {
         return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage, ...recordCtx };
     }
 
-    getDefOption(): PgnOption {
-        return new PgnOption();
+    getDefOption(): IOption {
+        return {
+            page: 0,
+            increment: [10],
+            incrementIdx: 0,
+        };
     }
 
     getDefPgnStatus(totalRecord: number, perPage: number): IPgnStatus {

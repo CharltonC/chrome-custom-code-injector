@@ -31,7 +31,7 @@ export interface IRecordCtx {
 //// Pagination Option (full)
 export interface IOption {
     page: number;
-    increment: number;
+    increment: number[];
     incrementIdx: number;
 }
 
