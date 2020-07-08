@@ -206,7 +206,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     {title: ''},
 
                 ]}
-                nesting={{
+                expand={{
                     showInitial: 'NONE',
                     // showOnePerLvl: true
                 }}

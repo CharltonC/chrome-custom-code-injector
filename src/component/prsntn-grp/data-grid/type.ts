@@ -12,7 +12,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     rows: IRow[];
     type?: TGridType;
     header?: thHandleType.IThConfig[];
-    nesting?: INestOption;
+    expand?: IExpandOption;
     sort?: ISortOption;
     paginate?: IPgnOption;
 }
@@ -28,7 +28,7 @@ export interface ISortOption {
     isAsc?: boolean;
 }
 
-export interface INestOption {
+export interface IExpandOption {
     showInitial?: clpsHandleType.TVisibleNestablePath;
     showOnePerLvl?: boolean;
 }
@@ -40,13 +40,13 @@ export interface IRow extends Array<any> {
 
 //// State
 export interface IState {
-    nestState: TNestState;
+    expandState: TExpandState;
     sortState: ISortState;
     pgnState: IPgnState;
     thState: thHandleType.IThCtx[][]
 }
 
-export type TNestState = Record<string, boolean>;
+export type TExpandState = Record<string, boolean>;
 
 export interface ISortState {
     option: ISortOption;
