@@ -43,17 +43,7 @@ describe('Class - Paginate Handle', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Default Pagination Option', () => {
-        it('should have default values', () => {
-            expect(handle.getDefOption()).toEqual({
-                page: 0,
-                increment: [10],
-                incrementIdx: 0
-            });
-        });
-    });
-
-    fdescribe('Method: createState - Get Pagination state based on list and user option', () => {
+    describe('Method: createState - Get Pagination state based on list and user option', () => {
         const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
 
         describe('test with spied/mocked methods', () => {
@@ -178,7 +168,7 @@ describe('Class - Paginate Handle', () => {
         });
     });
 
-    describe('Method: getRecordCtx - Get Default Pagination state where there is only one page', () => {
+    describe('Method: createDefState - Get Default Pagination state where there is only one page', () => {
         beforeEach(() => {
             getRecordCtxSpy.mockReturnValue({});
         });
@@ -194,6 +184,36 @@ describe('Class - Paginate Handle', () => {
                 totalPage: 1
             });
         });
+    });
+
+    describe('Method: createOption - Create a new Pagination option from an option merged with either default or custom existing option', () => {
+        const mockOption: Partial<IOption> = { page: 2 };
+
+        it('should return an option merged with default option when existing option is not provided', () => {
+            getDefOptionSpy.mockReturnValue({});
+            expect(handle.createOption(mockOption)).toEqual(mockOption);
+            expect(getDefOptionSpy).toHaveBeenCalled();
+        });
+
+        it('should return an option merged with existing option when it is provided', () => {
+            const mockExistOption = {} as IOption;
+            expect(handle.createOption(mockOption, mockExistOption)).toEqual(mockOption);
+            expect(getDefOptionSpy).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('Method: getDefOption - Get Default Pagination Option', () => {
+        it('should have default values', () => {
+            expect(handle.getDefOption()).toEqual({
+                page: 0,
+                increment: [10],
+                incrementIdx: 0
+            });
+        });
+    });
+
+    describe('Method: createGenericCmpAttr', () => {
+
     });
 
     describe('Method: getRecordCtx - Get Record Context', () => {

@@ -83,7 +83,7 @@ export class PgnHandle {
     createGenericCmpAttr({ data, option, state, callback }) {
         const { increment, incrementIdx } = option;
         const {
-            curr, first, prev, next, last,
+            first, prev, next, last,
             ltSpread, rtSpread, maxSpread,
             pageNo, totalPage,
         } = state;
@@ -94,47 +94,65 @@ export class PgnHandle {
             if (callback) callback({ pgnOption, pgnState });
         }).bind(this);
 
-        // Attr. for Buttons
+        //// Attr. for First/Prev/Next/Last as Button
         const btns = { first, prev, next, last };
-        const btnAttrs = Object.getOwnPropertyNames(btns).reduce((propsContainer, btnName: string) => {
+        const baseBtns = Object.getOwnPropertyNames(btns).reduce((propsContainer, btnName: string) => {
             const pageIdxNo: number = btns[btnName];
-            propsContainer[`${btnName}BtnAttr`] = {
+            propsContainer[`${btnName}Btn`] = {
                 disabled: !Number.isInteger(pageIdxNo),
-                onClick: () => wrapperCallback({ page: btns[btnName] })
+                onClick: () => wrapperCallback({
+                    page: btns[btnName]
+                })
             };
             return propsContainer;
         }, {});
 
-        // Attr. for Page Select
-        let pageList: number[] = [];
-        let pageSelectIdx: number = 0;
-        for (let p: number = 1; p <= totalPage; p++) {
-            const pageIdx = p - 1;
-            pageList.push(pageIdx);
-            pageSelectIdx = p === pageNo ? pageIdx : pageSelectIdx;
-        }
-        const pageSelectAttr = {
-            totalRecord,
-            optionValues: pageList,
-            optionSelectedValue: pageList[pageSelectIdx],
-            optionSelectedIdx: pageSelectIdx,
-            onSelect: ({ target }) => wrapperCallback({ page: pageList[parseInt(target.value, 10)] })
+        //// Attr. for Spread as Button
+        const ltSpreadBtns = ltSpread ? ltSpread.map((page) => ({
+            page,
+            onClick: () => wrapperCallback({
+                // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
+                // - e.g. maxSpread = 3, pageNo = 6
+                // then the page is jumped to 2 (eqv. to page index of 3)
+                page: Number.isInteger(page) ? page - 1 : pageNo - maxSpread
+            })
+        })) : null;
+        const rtSpreadBtns = rtSpread ? rtSpread.map((page) => ({
+            page,
+            onClick: () => wrapperCallback({
+                page: Number.isInteger(page) ? page - 1 : pageNo + maxSpread
+            })
+        })) : null;
+
+        //// Attr. for Spread as Select
+        const pageSelect = {
+            disabled: totalPage <= 1,
+            options: [1, ...(ltSpread ? ltSpread : []), ...(rtSpread ? rtSpread : []), totalPage],
+            selectedOptionValue: pageNo,
+            selectedOptionIdx: (ltSpread?.length + 1) || 1,
+            onClick: () => wrapperCallback({
+                page: pageNo - 1
+            })
         };
 
-        // Attr. for Per Page Select
-        const { increment, incrementIdx } = option;
-        const perPageSelectAttr = {
+        //// Attr. for Per Page Select
+        const perPageSelect = {
             disabled: increment.length <= 1,
-            optionValues: increment,
-            optionSelectedValue: increment[incrementIdx],
-            optionSelectedIdx: incrementIdx,
-            onSelect: ({ target }) => wrapperCallback({ page: 0, incrementIdx: parseInt(target.value, 10) })
+            options: increment,
+            selectedOptionValue: increment[incrementIdx],
+            selectedOptionIdx: incrementIdx,
+            onChange: ({ target }) => wrapperCallback({
+                page: 0,
+                incrementIdx: parseInt(target.value, 10)
+            })
         };
 
         return {
-            ...btnAttrs,
-            pageSelectAttr,
-            perPageSelectAttr,
+            ...baseBtns,
+            ltSpreadBtns,
+            rtSpreadBtns,
+            perPageSelect,
+            pageSelect
         };
     }
 
