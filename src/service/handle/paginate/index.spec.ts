@@ -149,7 +149,8 @@ describe('Class - Paginate Handle', () => {
                     endRecord: 4,
                     totalRecord: mockList.length,
                     ltSpread: null,
-                    rtSpread: null
+                    rtSpread: null,
+                    maxSpread: 3,
                 });
             });
 
@@ -171,6 +172,7 @@ describe('Class - Paginate Handle', () => {
                     totalRecord: mockList.length,
                     ltSpread: null,
                     rtSpread: null,
+                    maxSpread: 3,
                 });
             });
         });
@@ -355,27 +357,32 @@ describe('Class - Paginate Handle', () => {
         it('should return spread context with max spread of default 3 pages', () => {
             expect(getSpreadCtx(1, totalPage)).toEqual({
                 ltSpread: null,
-                rtSpread: [2,3,4,'...']
+                rtSpread: [2,3,4,'...'],
+                maxSpread: 3
             });
 
             expect(getSpreadCtx(2, totalPage)).toEqual({
                 ltSpread: null,
-                rtSpread: [3,4,5,'...']
+                rtSpread: [3,4,5,'...'],
+                maxSpread: 3
             });
 
             expect(getSpreadCtx(3, totalPage)).toEqual({
                 ltSpread: [2],
-                rtSpread: [4,5,6,'...']
+                rtSpread: [4,5,6,'...'],
+                maxSpread: 3
             });
 
             expect(getSpreadCtx(7, totalPage)).toEqual({
                 ltSpread: ['...',4,5,6],
-                rtSpread: [8,9]
+                rtSpread: [8,9],
+                maxSpread: 3
             });
 
             expect(getSpreadCtx(10, totalPage)).toEqual({
                 ltSpread: ['...',7,8,9],
-                rtSpread: null
+                rtSpread: null,
+                maxSpread: 3
             });
         });
 
@@ -384,17 +391,20 @@ describe('Class - Paginate Handle', () => {
 
             expect(getSpreadCtx(1, totalPage, customMaxSpread)).toEqual({
                 ltSpread: null,
-                rtSpread: [2,3,4,5,6,'...']
+                rtSpread: [2,3,4,5,6,'...'],
+                maxSpread: 5
             });
 
             expect(getSpreadCtx(7, totalPage, customMaxSpread)).toEqual({
                 ltSpread: [2,3,4,5,6],
-                rtSpread: [8,9]
+                rtSpread: [8,9],
+                maxSpread: 5
             });
 
             expect(getSpreadCtx(8, totalPage, customMaxSpread)).toEqual({
                 ltSpread: ['...',3,4,5,6,7],
-                rtSpread: [9]
+                rtSpread: [9],
+                maxSpread: 5
             });
         });
     });

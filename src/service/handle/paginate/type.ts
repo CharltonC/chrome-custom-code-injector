@@ -30,6 +30,7 @@ export interface IRecordCtx {
 export interface ISpreadCtx {
     ltSpread: TSpreadCtx;
     rtSpread: TSpreadCtx;
+    maxSpread: number;
 }
 
 export type TSpreadCtx = (number | '...')[];

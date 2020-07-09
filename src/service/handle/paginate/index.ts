@@ -81,7 +81,12 @@ export class PgnHandle {
      * createGenericCmpProps(option, state, data, callback);
      */
     createGenericCmpAttr({ data, option, state, callback }) {
-        const { first, prev, next, last, totalPage, pageNo, totalRecord } = state;
+        const { increment, incrementIdx } = option;
+        const {
+            curr, first, prev, next, last,
+            ltSpread, rtSpread, maxSpread,
+            pageNo, totalPage,
+        } = state;
 
         const wrapperCallback = ((modOption: Partial<IOption>): void => {
             const pgnOption: IOption = this.createOption(modOption, option);
@@ -250,7 +255,7 @@ export class PgnHandle {
             }, []) :
             null;
 
-        return { ltSpread, rtSpread };
+        return { ltSpread, rtSpread, maxSpread };
     }
 
     canNavToPage({ curr, last }: IPageRange, { type, target }: IPageNavQuery): boolean {
