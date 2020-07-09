@@ -15,6 +15,7 @@ describe('Class - Paginate Handle', () => {
     let getRelPageCtxSpy: jest.SpyInstance;
     let parseRelPageSpy: jest.SpyInstance;
     let getRecordCtxSpy: jest.SpyInstance;
+    let getSpreadCtxSpy: jest.SpyInstance;
     let createDefStateSpy: jest.SpyInstance;
     let getDefOptionSpy: jest.SpyInstance;
 
@@ -32,6 +33,7 @@ describe('Class - Paginate Handle', () => {
         getRelPageCtxSpy = jest.spyOn(handle, 'getRelPageCtx');
         parseRelPageSpy = jest.spyOn(handle, 'parseRelPage');
         getRecordCtxSpy = jest.spyOn(handle, 'getRecordCtx');
+        getSpreadCtxSpy = jest.spyOn(handle, 'getSpreadCtx');
         createDefStateSpy = jest.spyOn(handle, 'createDefState');
         getDefOptionSpy = jest.spyOn(handle, 'getDefOption');
     });
@@ -51,26 +53,27 @@ describe('Class - Paginate Handle', () => {
         });
     });
 
-    describe('Method: createState - Get Pagination state based on list and user option', () => {
+    fdescribe('Method: createState - Get Pagination state based on list and user option', () => {
         const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
 
         describe('test with spied/mocked methods', () => {
             const mockPgnOption: Partial<IOption> = {};
             const mockNoPerPage: number = 20;
-            const mockEmptyPgnState = {};
+            const mockEmptyObj = {};
             let increment: number[];
             let incrementIdx: number;
 
             beforeEach(() => {
                 ({ increment, incrementIdx } = defOption);
                 getNoPerPageSpy.mockReturnValue(mockNoPerPage);
-                createDefStateSpy.mockReturnValue(mockEmptyPgnState);
+                createDefStateSpy.mockReturnValue(mockEmptyObj);
                 getTotalPageSpy.mockReturnValue(1);
-                getRecordCtxSpy.mockReturnValue(mockEmptyPgnState);
+                getRecordCtxSpy.mockReturnValue(mockEmptyObj);
+                getSpreadCtxSpy.mockReturnValue(mockEmptyObj);
             });
 
             it('should return def paginate state when list only has 1 or less items', () => {
-                expect(handle.createState(['a'], mockPgnOption)).toEqual(mockEmptyPgnState);
+                expect(handle.createState(['a'], mockPgnOption)).toEqual(mockEmptyObj);
                 expect(getDefOptionSpy).toHaveBeenCalled();
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
                 expect(createDefStateSpy).toHaveBeenCalledWith(1, mockNoPerPage);
@@ -78,7 +81,7 @@ describe('Class - Paginate Handle', () => {
             });
 
             it('should return def paginate state when total page is lte 1', () => {
-                expect(handle.createState(mockList, mockPgnOption)).toEqual(mockEmptyPgnState);
+                expect(handle.createState(mockList, mockPgnOption)).toEqual(mockEmptyObj);
                 expect(getDefOptionSpy).toHaveBeenCalled();
                 expect(getNoPerPageSpy).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
                 expect(getTotalPageSpy).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
@@ -121,6 +124,7 @@ describe('Class - Paginate Handle', () => {
                 expect(getPageSliceIdxSpy).toHaveBeenCalledWith(mockList, mockNoPerPage, page);
                 expect(getRelPageSpy).toHaveBeenCalledWith(mockTotalPage, page);
                 expect(getRelPageCtxSpy).toHaveBeenCalledWith({curr: page, last: mockRelPage.last}, mockRelPage);
+                expect(getSpreadCtxSpy).toHaveBeenCalledWith(mockCurrPageNo, mockTotalPage);
                 expect(parseRelPageSpy).toHaveBeenCalledWith(mockRelPage, mockRelPageCtx);
             });
         });
@@ -143,7 +147,9 @@ describe('Class - Paginate Handle', () => {
                     perPage: mockPerPage,
                     startRecord: 1,
                     endRecord: 4,
-                    totalRecord: mockList.length
+                    totalRecord: mockList.length,
+                    ltSpread: null,
+                    rtSpread: null
                 });
             });
 
@@ -162,7 +168,9 @@ describe('Class - Paginate Handle', () => {
                     perPage: mockPerPage,
                     startRecord: 5,
                     endRecord: 6,
-                    totalRecord: mockList.length
+                    totalRecord: mockList.length,
+                    ltSpread: null,
+                    rtSpread: null,
                 });
             });
         });

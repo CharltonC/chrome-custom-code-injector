@@ -17,7 +17,7 @@ export class PgnHandle {
     createState(list: any[], pgnOption: Partial<IOption>): IState {
         // Merge def. option with User's option
         const defOption: IOption = this.getDefOption();
-        const {increment: [defIncrmVal]} = defOption;
+        const { increment: [defIncrmVal] } = defOption;
         const { page, increment, incrementIdx } = Object.assign(defOption, pgnOption);
         let perPage: number = this.getNoPerPage(increment, incrementIdx, defIncrmVal);
 
@@ -33,10 +33,12 @@ export class PgnHandle {
         const currSlice: IPageSlice = this.getPageSliceIdx(list, perPage, curr);
         const { startIdx, endIdx } = currSlice;
         const recordCtx = this.getRecordCtx(totalRecord, startIdx, endIdx);
+        const spreadCtx: ISpreadCtx = this.getSpreadCtx(pageNo, totalPage);
         let relPage: IRelPage = this.getRelPage(totalPage, curr);
-        const relPageCtx: IRelPageCtx = this.getRelPageCtx({curr, last: relPage.last}, relPage);
+        const relPageCtx: IRelPageCtx = this.getRelPageCtx({ curr, last: relPage.last }, relPage);
         relPage = this.parseRelPage(relPage, relPageCtx);
-        return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage, ...recordCtx };
+
+        return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage, ...recordCtx, ...spreadCtx };
     }
 
     createDefState(totalRecord: number, perPage: number): IState {
@@ -78,13 +80,13 @@ export class PgnHandle {
      *
      * createGenericCmpProps(option, state, data, callback);
      */
-    createGenericCmpAttr({data, option, state, callback}) {
-        const { first, prev, next, last, totalPage, pageNo } = state;
+    createGenericCmpAttr({ data, option, state, callback }) {
+        const { first, prev, next, last, totalPage, pageNo, totalRecord } = state;
 
         const wrapperCallback = ((modOption: Partial<IOption>): void => {
             const pgnOption: IOption = this.createOption(modOption, option);
             const pgnState: IState = this.createState(data, pgnOption);
-            if (callback) callback({pgnOption, pgnState});
+            if (callback) callback({ pgnOption, pgnState });
         }).bind(this);
 
         // Attr. for Buttons
@@ -93,7 +95,7 @@ export class PgnHandle {
             const pageIdxNo: number = btns[btnName];
             propsContainer[`${btnName}BtnAttr`] = {
                 disabled: !Number.isInteger(pageIdxNo),
-                onClick: () => wrapperCallback({page: btns[btnName]})
+                onClick: () => wrapperCallback({ page: btns[btnName] })
             };
             return propsContainer;
         }, {});
@@ -107,20 +109,21 @@ export class PgnHandle {
             pageSelectIdx = p === pageNo ? pageIdx : pageSelectIdx;
         }
         const pageSelectAttr = {
+            totalRecord,
             optionValues: pageList,
             optionSelectedValue: pageList[pageSelectIdx],
             optionSelectedIdx: pageSelectIdx,
-            onSelect: ({target}) => wrapperCallback({page: pageList[parseInt(target.value, 10)]})
+            onSelect: ({ target }) => wrapperCallback({ page: pageList[parseInt(target.value, 10)] })
         };
 
         // Attr. for Per Page Select
         const { increment, incrementIdx } = option;
         const perPageSelectAttr = {
             disabled: increment.length <= 1,
-            optionValues: increment.map((perPage: number) => `${perPage} Per Page`),
+            optionValues: increment,
             optionSelectedValue: increment[incrementIdx],
             optionSelectedIdx: incrementIdx,
-            onSelect: ({target}) => wrapperCallback({page: 0, incrementIdx: parseInt(target.value, 10)})
+            onSelect: ({ target }) => wrapperCallback({ page: 0, incrementIdx: parseInt(target.value, 10) })
         };
 
         return {
@@ -133,7 +136,7 @@ export class PgnHandle {
     getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {
         const hsRecord: boolean = totalRecord >= 1;
         return {
-            startRecord: (hsRecord && Number.isInteger(startIdx)) ? startIdx+1 : 0,
+            startRecord: (hsRecord && Number.isInteger(startIdx)) ? startIdx + 1 : 0,
             endRecord: (hsRecord && Number.isInteger(endIdx)) ? endIdx : totalRecord,
             totalRecord
         };
@@ -156,12 +159,12 @@ export class PgnHandle {
     }
 
     getTotalPage(lsLen: number, perPage: number): number {
-        const noOfPage: number = (lsLen > perPage) ? lsLen/perPage : 1;
+        const noOfPage: number = (lsLen > perPage) ? lsLen / perPage : 1;
         return Math.ceil(noOfPage);
     }
 
     getCurrPage(page: number, lastPage: number): IPageCtx {
-        const curr: number = (page >= 0 && page <= lastPage )? page : 0;
+        const curr: number = (page >= 0 && page <= lastPage) ? page : 0;
         const pageNo: number = curr + 1;
         return { curr, pageNo };
     }
@@ -178,7 +181,7 @@ export class PgnHandle {
     getRelPageCtx(pageRange: IPageRange, relPage: IRelPage): IRelPageCtx {
         const relPageKeys = Object.getOwnPropertyNames(relPage) as (keyof IRelPage)[];
         return relPageKeys.reduce((relPageCtx, type: string) => {
-            const pageQuery: IPageNavQuery = {type, target: relPage[type]};
+            const pageQuery: IPageNavQuery = { type, target: relPage[type] };
             relPageCtx[type] = this.canNavToPage(pageRange, pageQuery);
             return relPageCtx;
         }, {}) as IRelPageCtx;
@@ -203,13 +206,17 @@ export class PgnHandle {
 
     /**
      * Get the page number for the left/right spread in relation to current page
-     * - When remain < maxSpread, spread dont exist, show all pages from current page number
-     * - When remain > maxSpread, spread exists, show dots instead of all pages + generate the range for the dots.
+     * - When remain < maxSpread, show `maxSpread` no. of pages
+     * - When remain > maxSpread, show dots (either on left/right) + `maxSpread` no. of pages
+     * - when remain < 1, no spread is available
+     *
+     * @param maxSpread: max no. of pages for each side of the spread
      */
     getSpreadCtx(currPageNo: number, totalPage: number, maxSpread: number = 3): ISpreadCtx {
-        // show max 4 pages only for each side of the spread
+        // 1 is added to `spreadRange` in case there is '...' for either 1st/last item
         const spreadRange: any[] = [...Array(maxSpread + 1)];
         const firstPage: number = 1;
+        const DOTS = '...';
 
         const rtTotalRemain: number = totalPage - currPageNo;
         const ltTotalRemain: number = currPageNo - firstPage;
@@ -220,7 +227,7 @@ export class PgnHandle {
             spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
                 const pageNo: number = currPageNo + idx + 1;
 
-                // We exlude the 1st page or last page since its already available in the Pagination state
+                // We exclude the 1st page or last page since its already available in the Pagination state
                 const isInRange: boolean = pageNo > 1 && pageNo < totalPage;
 
                 // Check if there is any pages between "last" page number in this loop and the actual last page
@@ -228,7 +235,7 @@ export class PgnHandle {
                 // so we have page 9 in between, which we can use '...' to represent
                 const hsGtOnePageTilLastPage: boolean = idx === maxSpread && (totalPage - pageNo) > 1;
 
-                if (isInRange) container.push(hsGtOnePageTilLastPage ? '...' : pageNo);
+                if (isInRange) container.push(hsGtOnePageTilLastPage ? DOTS : pageNo);
                 return container;
             }, []) :
             null;
@@ -238,7 +245,7 @@ export class PgnHandle {
                 const pageNo: number = currPageNo - idx - 1;
                 const isInRange: boolean = pageNo > 1 && pageNo < totalPage;
                 const hsGtOnePageTilFirstPage: boolean = idx === maxSpread && (currPageNo - pageNo) > 1;
-                if (isInRange) container.unshift(hsGtOnePageTilFirstPage ? '...' : pageNo);
+                if (isInRange) container.unshift(hsGtOnePageTilFirstPage ? DOTS : pageNo);
                 return container;
             }, []) :
             null;
@@ -275,7 +282,7 @@ export class PgnHandle {
 
     isGteZero(vals: any | any[]): boolean {
         return Array.isArray(vals) ?
-            vals.every((val: any) => (Number.isInteger(val) && val >= 0) ) :
+            vals.every((val: any) => (Number.isInteger(val) && val >= 0)) :
             Number.isInteger(vals) && vals >= 0;
     }
 }
