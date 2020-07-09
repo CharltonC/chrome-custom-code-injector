@@ -1,5 +1,5 @@
 //// Pagination State/Status
-export interface IState extends IPageCtx, IPageSlice, IRelPage, IRecordCtx {
+export interface IState extends IPageCtx, IPageSlice, IRelPage, IRecordCtx, ISpreadCtx {
     perPage: number;
     totalPage: number;
 }
@@ -27,6 +27,12 @@ export interface IRecordCtx {
     endRecord: number;
 }
 
+export interface ISpreadCtx {
+    ltSpread: TSpreadCtx;
+    rtSpread: TSpreadCtx;
+}
+
+export type TSpreadCtx = (number | '...')[];
 
 //// Pagination Option (full)
 export interface IOption {

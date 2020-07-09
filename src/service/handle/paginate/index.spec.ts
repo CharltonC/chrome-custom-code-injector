@@ -340,6 +340,57 @@ describe('Class - Paginate Handle', () => {
         });
     });
 
+    describe('Method: getSpreadCtx - Get the page index for the left and right spread in relation to current page', () => {
+        const { getSpreadCtx } = PgnHandle.prototype;
+        const totalPage: number = 10;
+
+        it('should return spread context with max spread of default 3 pages', () => {
+            expect(getSpreadCtx(1, totalPage)).toEqual({
+                ltSpread: null,
+                rtSpread: [2,3,4,'...']
+            });
+
+            expect(getSpreadCtx(2, totalPage)).toEqual({
+                ltSpread: null,
+                rtSpread: [3,4,5,'...']
+            });
+
+            expect(getSpreadCtx(3, totalPage)).toEqual({
+                ltSpread: [2],
+                rtSpread: [4,5,6,'...']
+            });
+
+            expect(getSpreadCtx(7, totalPage)).toEqual({
+                ltSpread: ['...',4,5,6],
+                rtSpread: [8,9]
+            });
+
+            expect(getSpreadCtx(10, totalPage)).toEqual({
+                ltSpread: ['...',7,8,9],
+                rtSpread: null
+            });
+        });
+
+        it('should return spread context with max spread of custom pages', () => {
+            const customMaxSpread: number = 5;
+
+            expect(getSpreadCtx(1, totalPage, customMaxSpread)).toEqual({
+                ltSpread: null,
+                rtSpread: [2,3,4,5,6,'...']
+            });
+
+            expect(getSpreadCtx(7, totalPage, customMaxSpread)).toEqual({
+                ltSpread: [2,3,4,5,6],
+                rtSpread: [8,9]
+            });
+
+            expect(getSpreadCtx(8, totalPage, customMaxSpread)).toEqual({
+                ltSpread: ['...',3,4,5,6,7],
+                rtSpread: [9]
+            });
+        });
+    });
+
     describe('Method: canNavToPage - Check if a requested page can be navigated to', () => {
         // Aassume 3 pages
         const PAGE1: number = 0;

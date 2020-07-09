@@ -1,4 +1,4 @@
-import { IState, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx } from './type';
+import { IState, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx } from './type';
 
 /**
  * Usage:
@@ -201,10 +201,55 @@ export class PgnHandle {
         return { startIdx, endIdx };
     }
 
-    canNavToPage({curr, last}: IPageRange, {type, target}: IPageNavQuery): boolean {
+    /**
+     * Get the page number for the left/right spread in relation to current page
+     * - When remain < maxSpread, spread dont exist, show all pages from current page number
+     * - When remain > maxSpread, spread exists, show dots instead of all pages + generate the range for the dots.
+     */
+    getSpreadCtx(currPageNo: number, totalPage: number, maxSpread: number = 3): ISpreadCtx {
+        // show max 4 pages only for each side of the spread
+        const spreadRange: any[] = [...Array(maxSpread + 1)];
+        const firstPage: number = 1;
+
+        const rtTotalRemain: number = totalPage - currPageNo;
+        const ltTotalRemain: number = currPageNo - firstPage;
+        const hsRtSpread: boolean = rtTotalRemain > 1 && rtTotalRemain < totalPage;
+        const hsLtSpread: boolean = ltTotalRemain > 1 && ltTotalRemain < totalPage;
+
+        const rtSpread: TSpreadCtx = hsRtSpread ?
+            spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
+                const pageNo: number = currPageNo + idx + 1;
+
+                // We exlude the 1st page or last page since its already available in the Pagination state
+                const isInRange: boolean = pageNo > 1 && pageNo < totalPage;
+
+                // Check if there is any pages between "last" page number in this loop and the actual last page
+                // - e.g. last page in the loop is: 8 | actual last page is: 10,
+                // so we have page 9 in between, which we can use '...' to represent
+                const hsGtOnePageTilLastPage: boolean = idx === maxSpread && (totalPage - pageNo) > 1;
+
+                if (isInRange) container.push(hsGtOnePageTilLastPage ? '...' : pageNo);
+                return container;
+            }, []) :
+            null;
+
+        const ltSpread: TSpreadCtx = hsLtSpread ?
+            spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
+                const pageNo: number = currPageNo - idx - 1;
+                const isInRange: boolean = pageNo > 1 && pageNo < totalPage;
+                const hsGtOnePageTilFirstPage: boolean = idx === maxSpread && (currPageNo - pageNo) > 1;
+                if (isInRange) container.unshift(hsGtOnePageTilFirstPage ? '...' : pageNo);
+                return container;
+            }, []) :
+            null;
+
+        return { ltSpread, rtSpread };
+    }
+
+    canNavToPage({ curr, last }: IPageRange, { type, target }: IPageNavQuery): boolean {
         if (!this.isGteZero([curr, last])) return false;
 
-        switch(type) {
+        switch (type) {
             case 'prev':
                 // we dont need `target < curr` since we already know `target = curr - 1;`
                 return target >= 0;
