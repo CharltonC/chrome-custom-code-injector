@@ -1,24 +1,24 @@
 import { IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx } from './type';
 
-export class ClpsConfig {
+export class ExpdConfig {
     data: any[] = [];
     rows: IRawRowConfig[] = [];
     visiblePath?: TVisibleNestablePath = 'ALL';       // setting this to be diff. value will trigger change in React
 }
 
-export class ClpsHandle {
+export class ExpdHandle {
     // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
     readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
-    readonly defClpsConfig = new ClpsConfig();
+    readonly defExpdConfig = new ExpdConfig();
     readonly errMsg: IErrMsg = {
         ROW_KEY_MISSING: 'Key in Row Config is missing',
         ROW_KEY_TYPE: 'Key in Row Config must be a string',
         PROP_DATA_TYPE: 'Data must be an array',
     };
 
-    getClpsState(clpsConfig?: ClpsConfig): any[] {
-        const { data, rows, visiblePath }: ClpsConfig = Object.assign(this.defClpsConfig, clpsConfig);
+    getClpsState(clpsConfig?: ExpdConfig): any[] {
+        const { data, rows, visiblePath }: ExpdConfig = Object.assign(this.defExpdConfig, clpsConfig);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);

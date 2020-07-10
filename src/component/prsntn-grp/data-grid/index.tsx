@@ -2,7 +2,7 @@ import React, { Component, memo } from "react";
 
 import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
-import { ClpsHandle } from '../../../service/handle/collapse';
+import { ExpdHandle } from '../../../service/handle/expand';
 import { PgnHandle } from '../../../service/handle/paginate';
 
 import { SortBtn } from '../../prsntn/sort-btn';
@@ -18,7 +18,7 @@ import {
     IState, ISortState, IPgnState, TShallResetState,
 
     // Reexport types
-    pgnHandleType, clpsHandleType, thHandleType,
+    pgnHandleType, expdHandleType, thHandleType,
     paginationType, sortBtnType,
 } from './type';
 
@@ -83,8 +83,8 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
-    readonly clpsHandle: ClpsHandle = new ClpsHandle();
-    rowConfig: clpsHandleType.IRawRowConfig[];
+    readonly expdHandle: ExpdHandle = new ExpdHandle();
+    rowConfig: expdHandleType.IRawRowConfig[];
 
     //// Builtin API
     constructor(props: IProps) {
@@ -110,7 +110,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { showInitial: visiblePath } = expand;
 
         const data: any[] = this.getRowData(rawData, sortState, pgnState);
-        const rowsElem = this.clpsHandle.getClpsState({
+        const rowsElem = this.expdHandle.getClpsState({
             data,
             rows: this.rowConfig,
             visiblePath
@@ -127,17 +127,17 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    getMappedRowConfig(rows: IRow[]): clpsHandleType.IRawRowConfig[] {
+    getMappedRowConfig(rows: IRow[]): expdHandleType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
             const transformFn = this.createCmpTransformFn(row[transformFnIdx]);
-            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as clpsHandleType.IRawRowConfig;
+            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as expdHandleType.IRawRowConfig;
         });
     }
 
     createCmpTransformFn(Cmp: TCmpCls): TFn {
-        return (itemCtx: clpsHandleType.IItemCtx) => {
+        return (itemCtx: expdHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
 
             const rowProps = {

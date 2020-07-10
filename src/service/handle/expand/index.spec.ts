@@ -1,9 +1,9 @@
 import { TVisibleNestablePath, IRawRowConfig, IParsedRowConfig, IItemsCtxReq } from './type';
-import { ClpsHandle } from './';
+import { ExpdHandle } from '.';
 
 describe('Service - Collapse Handle', () => {
-    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = ClpsHandle.prototype;
-    let handle: ClpsHandle;
+    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = ExpdHandle.prototype;
+    let handle: ExpdHandle;
     let getMappedItemsCtxSpy: jest.SpyInstance;
     let getValidatedDataSpy: jest.SpyInstance;
     let parseRowConfigSpy: jest.SpyInstance;
@@ -12,7 +12,7 @@ describe('Service - Collapse Handle', () => {
     let isDefNestedOpenSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        handle = new ClpsHandle();
+        handle = new ExpdHandle();
         getMappedItemsCtxSpy = jest.spyOn(handle, 'getMappedItemsCtx');
         parseRowConfigSpy = jest.spyOn(handle, 'parseRowConfig');
         getItemPathSpy = jest.spyOn(handle, 'getItemPath');
@@ -21,9 +21,9 @@ describe('Service - Collapse Handle', () => {
         isDefNestedOpenSpy = jest.spyOn(handle, 'isExpdByDef');
     });
 
-    describe('Property - defClpsConfig: Default Collapse User Option', () => {
+    describe('Property - defExpdConfig: Default Collapse User Option', () => {
         it('should have default values', () => {
-            expect(handle.defClpsConfig).toEqual({
+            expect(handle.defExpdConfig).toEqual({
                 data: [],
                 rows: [],
                 visiblePath: 'ALL'
@@ -72,7 +72,7 @@ describe('Service - Collapse Handle', () => {
             expect(handle.getClpsState()).toBe(mockMappedItems);
             expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
             expect(getMappedItemsCtxSpy).toHaveBeenCalledWith({
-                ...handle.defClpsConfig,
+                ...handle.defExpdConfig,
                 rowLvl: 0,
                 parentPath: ''
             });
