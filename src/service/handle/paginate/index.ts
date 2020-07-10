@@ -1,3 +1,4 @@
+import { IUiHandle } from '../../../type/ui-handle';
 import { IState, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx } from './type';
 
 /**
@@ -13,7 +14,7 @@ import { IState, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelP
  *      const { startIdx, endIdx } = example;
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
-export class PgnHandle {
+export class PgnHandle implements IUiHandle {
     createState(list: any[], pgnOption: Partial<IOption>): IState {
         // Merge def. option with User's option
         const defOption: IOption = this.getDefOption();
@@ -154,6 +155,10 @@ export class PgnHandle {
             perPageSelect,
             pageSelect
         };
+    }
+
+    getGenericCmpEvtHandler() {
+
     }
 
     getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {
