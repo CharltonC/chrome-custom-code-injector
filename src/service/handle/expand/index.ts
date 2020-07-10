@@ -1,3 +1,4 @@
+import { IUiHandle } from '../../../type/ui-handle';
 import { IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx } from './type';
 
 export class ExpdConfig {
@@ -6,7 +7,7 @@ export class ExpdConfig {
     visiblePath?: TVisibleNestablePath = 'ALL';       // setting this to be diff. value will trigger change in React
 }
 
-export class ExpdHandle {
+export class ExpdHandle implements IUiHandle {
     // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
     readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
@@ -17,7 +18,17 @@ export class ExpdHandle {
         PROP_DATA_TYPE: 'Data must be an array',
     };
 
-    getClpsState(clpsConfig?: ExpdConfig): any[] {
+    //// Option
+    createOption() {
+
+    }
+
+    getDefOption() {
+
+    }
+
+    //// Full State
+    createState(clpsConfig?: ExpdConfig): any[] {
         const { data, rows, visiblePath }: ExpdConfig = Object.assign(this.defExpdConfig, clpsConfig);
 
         // Skip if data has no rows OR config doesnt exist
@@ -27,6 +38,11 @@ export class ExpdHandle {
         return this.getMappedItemsCtx({data, rows, rowLvl: 0, parentPath: '', visiblePath});
     }
 
+    getDefState() {
+
+    }
+
+    //// Partial State
     /**
      *
      * Usage in React:
@@ -69,6 +85,7 @@ export class ExpdHandle {
         return nestedData ? this.getMappedItemsCtx({...itemsReq, data: nestedData}) : null;
     }
 
+    //// Helper Methods
     /**
      * Assume the Context of Current Collapse Item is:
      * "0/lvl1NestedKey:0/lvl2NestedKey:0",
@@ -164,5 +181,14 @@ export class ExpdHandle {
 
     isGteZeroInt(val: number): boolean {
        return Number.isInteger(val) && val >= 0;
+    }
+
+    //// Generic Component Attr
+    createGenericCmpAttr() {
+
+    }
+
+    getGenericCmpEvtHandler() {
+
     }
 }

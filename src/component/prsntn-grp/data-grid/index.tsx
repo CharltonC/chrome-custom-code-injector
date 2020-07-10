@@ -110,7 +110,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { showInitial: visiblePath } = expand;
 
         const data: any[] = this.getRowData(rawData, sortState, pgnState);
-        const rowsElem = this.expdHandle.getClpsState({
+        const rowsElem = this.expdHandle.createState({
             data,
             rows: this.rowConfig,
             visiblePath

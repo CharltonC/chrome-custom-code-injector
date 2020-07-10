@@ -51,7 +51,7 @@ describe('Service - Collapse Handle', () => {
         });
     });
 
-    describe('Method - getClpsState: Get Collapse state based on User`s Collapse config/option', () => {
+    describe('Method - createState: Get Collapse state based on User`s Collapse config/option', () => {
         const mockMappedItems: any[] = [];
 
         beforeEach(() => {
@@ -61,7 +61,7 @@ describe('Service - Collapse Handle', () => {
         it('should return falsy value if the config is invalid', () => {
             getValidatedDataSpy.mockReturnValue(null);
 
-            expect(handle.getClpsState()).toBeFalsy();
+            expect(handle.createState()).toBeFalsy();
             expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
             expect(getMappedItemsCtxSpy).not.toHaveBeenCalled();
         });
@@ -69,7 +69,7 @@ describe('Service - Collapse Handle', () => {
         it('should return mapped items if the config is valid', () => {
             getValidatedDataSpy.mockReturnValue([]);
 
-            expect(handle.getClpsState()).toBe(mockMappedItems);
+            expect(handle.createState()).toBe(mockMappedItems);
             expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
             expect(getMappedItemsCtxSpy).toHaveBeenCalledWith({
                 ...handle.defExpdConfig,
