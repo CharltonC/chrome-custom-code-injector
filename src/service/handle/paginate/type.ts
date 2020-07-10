@@ -61,3 +61,34 @@ export interface IRelPageCtx extends TRelPageCtx {}
 type TRelPageCtx = {
     [K in keyof IRelPage]: boolean;
 }
+
+
+//// Generic Component Attributes
+export interface ICmpAttr {
+    firstBtnAttr: ICommonCmpAttr;
+    prevBtnAttr: ICommonCmpAttr;
+    nextBtnAttr: ICommonCmpAttr;
+    lastBtnAttr: ICommonCmpAttr;
+    ltSpreadBtnsAttr: ICommonCmpAttr[];
+    rtSpreadBtnsAttr: ICommonCmpAttr[];
+    pageSelectAttr: ICommonCmpAttr;
+    perPageSelectAttr: ICommonCmpAttr;
+}
+
+export interface ICmpAttrQuery {
+    data: any[];
+    option: IOption;
+    state: IState;
+    callback: TFn;
+}
+
+export interface ICommonCmpAttr {
+    [k: string]: any;
+    name: string;
+    disabled?: boolean;
+    onEvt: TFn;
+}
+
+
+//// Misc
+export type TFn = (...args: any[]) => any;

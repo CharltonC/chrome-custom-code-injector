@@ -1,5 +1,11 @@
 import { IUiHandle } from '../../../type/ui-handle';
-import { IState, IOption, IPageCtx, IPageSlice, IPageNavQuery, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx } from './type';
+import {
+    IState, IOption,
+    IPageNavQuery,
+    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx,
+    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr,
+    TSpreadCtx, TFn
+} from './type';
 
 /**
  * Usage:
@@ -70,95 +76,6 @@ export class PgnHandle implements IUiHandle {
             increment: [10],
             incrementIdx: 0,
         };
-    }
-
-    // TODO: Test, param type
-    /**
-     * Usage Example for React:
-     * const callback = ((modState) => {
-     *    this.setState({...this.state, ...modState});
-     * }).bind(this);
-     *
-     * createGenericCmpProps(option, state, data, callback);
-     */
-    createGenericCmpAttr({ data, option, state, callback }) {
-        const { increment, incrementIdx } = option;
-        const {
-            first, prev, next, last,
-            ltSpread, rtSpread, maxSpread,
-            pageNo, totalPage,
-        } = state;
-
-        const wrapperCallback = ((modOption: Partial<IOption>): void => {
-            const pgnOption: IOption = this.createOption(modOption, option);
-            const pgnState: IState = this.createState(data, pgnOption);
-            if (callback) callback({ pgnOption, pgnState });
-        }).bind(this);
-
-        //// Attr. for First/Prev/Next/Last as Button
-        const btns = { first, prev, next, last };
-        const baseBtns = Object.getOwnPropertyNames(btns).reduce((propsContainer, btnName: string) => {
-            const pageIdxNo: number = btns[btnName];
-            propsContainer[`${btnName}Btn`] = {
-                disabled: !Number.isInteger(pageIdxNo),
-                onClick: () => wrapperCallback({
-                    page: btns[btnName]
-                })
-            };
-            return propsContainer;
-        }, {});
-
-        //// Attr. for Spread as Button
-        const ltSpreadBtns = ltSpread ? ltSpread.map((page) => ({
-            page,
-            onClick: () => wrapperCallback({
-                // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
-                // - e.g. maxSpread = 3, pageNo = 6
-                // then the page is jumped to 2 (eqv. to page index of 3)
-                page: Number.isInteger(page) ? page - 1 : pageNo - maxSpread
-            })
-        })) : null;
-        const rtSpreadBtns = rtSpread ? rtSpread.map((page) => ({
-            page,
-            onClick: () => wrapperCallback({
-                page: Number.isInteger(page) ? page - 1 : pageNo + maxSpread
-            })
-        })) : null;
-
-        //// Attr. for Spread as Select
-        const pageSelect = {
-            disabled: totalPage <= 1,
-            options: [1, ...(ltSpread ? ltSpread : []), ...(rtSpread ? rtSpread : []), totalPage],
-            selectedOptionValue: pageNo,
-            selectedOptionIdx: (ltSpread?.length + 1) || 1,
-            onClick: () => wrapperCallback({
-                page: pageNo - 1
-            })
-        };
-
-        //// Attr. for Per Page Select
-        const perPageSelect = {
-            disabled: increment.length <= 1,
-            options: increment,
-            selectedOptionValue: increment[incrementIdx],
-            selectedOptionIdx: incrementIdx,
-            onChange: ({ target }) => wrapperCallback({
-                page: 0,
-                incrementIdx: parseInt(target.value, 10)
-            })
-        };
-
-        return {
-            ...baseBtns,
-            ltSpreadBtns,
-            rtSpreadBtns,
-            perPageSelect,
-            pageSelect
-        };
-    }
-
-    getGenericCmpEvtHandler() {
-
     }
 
     getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {
@@ -312,5 +229,106 @@ export class PgnHandle implements IUiHandle {
         return Array.isArray(vals) ?
             vals.every((val: any) => (Number.isInteger(val) && val >= 0)) :
             Number.isInteger(vals) && vals >= 0;
+    }
+
+    //// Generic UI Component Related
+    // TODO: Test, param type
+    /**
+     * Create Generic Attributes that can be passed/mapped to Attributes/Inputs/Props of Static HTML or Angular/React/Vue/etc Components
+     *
+     * - Usage Example for React:
+     * const callback = (modState => this.setState({...this.state, ...modState})).bind(this);
+     * createGenericCmpProps({option, state, data, callback});
+     */
+    createGenericCmpAttr({ data, option, state, callback }: ICmpAttrQuery): ICmpAttr {
+        const { first, prev, next, last, ltSpread, rtSpread } = state;
+        const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
+
+        return {
+            // Attr. for First/Prev/Next/Last as Button
+            firstBtnAttr: this.getTextBtnAttr(onEvt, ['first', first]),
+            prevBtnAttr: this.getTextBtnAttr(onEvt, ['prev', prev]),
+            nextBtnAttr: this.getTextBtnAttr(onEvt, ['next', next]),
+            lastBtnAttr: this.getTextBtnAttr(onEvt, ['last', last]),
+
+            // Attr. for Spread as Button
+            ltSpreadBtnsAttr: ltSpread ?
+                ltSpread.map((page: number) => this.getSpreadBtnAttr(onEvt, state, [page, true])) :
+                null,
+            rtSpreadBtnsAttr: rtSpread ?
+                rtSpread.map((page: number) => this.getSpreadBtnAttr(onEvt, state, [page, false])) :
+                null,
+
+            // Attr. for Page Select and Per Page Select
+            perPageSelectAttr: this.getPageSelectAttr(onEvt, state),
+            pageSelectAttr: this.getPerPageSelectAttr(onEvt, option)
+        };
+    }
+
+    getTextBtnAttr(onEvt: TFn, [name, pageIdx]: [string, number]): ICommonCmpAttr {
+        return {
+            name,
+            disabled: !Number.isInteger(pageIdx),
+            onEvt: () => onEvt({
+                page: pageIdx
+            })
+        };
+    }
+
+    getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [number, boolean]): ICommonCmpAttr {
+        const { pageNo, maxSpread } = state;
+
+        // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
+        // - e.g. maxSpread = 3, currPageNo = 6
+        // then the page is jumped to 2 (eqv. to page index of 3)
+        const isNotSpreadSymbol: boolean = !Number.isInteger(page);
+        const pageIdx: number = page - 1;
+        const targetPageIdx: number = isLtSpread ?
+            (isNotSpreadSymbol ? pageIdx - 1 : pageNo - maxSpread) :
+            (isNotSpreadSymbol ? pageIdx + 1 : pageNo + maxSpread);
+
+        return {
+            name: `${page}`,
+            onEvt: () => onEvt({
+                page: targetPageIdx
+            })
+        };
+    }
+
+    getPageSelectAttr(onEvt: TFn, state: IState): ICommonCmpAttr {
+        const { pageNo, totalPage, ltSpread, rtSpread } = state;
+        return {
+            name: 'page select',
+            disabled: totalPage <= 1,
+            options: [1, ...(ltSpread ? ltSpread : []), ...(rtSpread ? rtSpread : []), totalPage],
+            selectedOptionValue: pageNo,
+            selectedOptionIdx: (ltSpread?.length + 1) || 1,
+            onEvt: () => onEvt({
+                page: pageNo - 1
+            })
+        };
+    }
+
+    getPerPageSelectAttr(onEvt: TFn, option: IOption): ICommonCmpAttr {
+        const { increment, incrementIdx } = option;
+        return {
+            name: 'per page select',
+            disabled: increment.length <= 1,
+            options: increment,
+            selectedOptionValue: increment[incrementIdx],
+            selectedOptionIdx: incrementIdx,
+            onEvt: ({ target }) => onEvt({
+                page: 0,
+                incrementIdx: parseInt(target.value, 10)
+            })
+        };
+    }
+
+    getGenericCmpEvtHandler(data: any[], option: IOption, callback: TFn): TFn {
+        return ((modOption: Partial<IOption>): void => {
+            const pgnOption: IOption = this.createOption(modOption, option);
+            const pgnState: IState = this.createState(data, pgnOption);
+            if (callback) callback({ pgnOption, pgnState });
+        }).bind(this);
     }
 }
