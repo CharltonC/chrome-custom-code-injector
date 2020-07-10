@@ -313,6 +313,31 @@ export class _DataGrid extends Component<IProps, IState> {
             }).bind(this)
         };
     }
+
+    /**
+     * React Specific callback to be passed when creating Generic Attrs/Props for Component
+     * - e.g.
+     * this.pgnHandle.createGenericCmpAttr({
+     *      data: state.sortData || props.data,
+     *      option: pgnOption.
+     *      state: pgnState,
+     *      callback: this.onPgnOptionChange.bind(this)
+     * });
+     */
+    onPgnOptionChange(modOption: Partial<pgnHandleType.IOption>): void {
+        const { pgnHandle, state, props } = this;
+        const { sortedData } = state;
+        const data = sortedData || props.data;
+        const pgnOption: pgnHandleType.IOption = pgnHandle.createOption(modOption, state.pgnOption);
+        const pgnState: pgnHandleType.IState = pgnHandle.createState(data, pgnOption);
+        this.setState({
+            ...this.state,
+            pgnOption,
+            pgnState
+        });
+    }
+
+    onHeaderSortChange(modOption): void {}
 }
 
 export const DataGrid = memo(_DataGrid);
