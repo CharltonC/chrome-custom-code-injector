@@ -23,7 +23,7 @@ export class PgnHandle {
 
         // Skip if we only have 1 list item OR less than 2 pages
         const totalRecord: number = list.length;
-        const defState: IState = this.createDefState(totalRecord, perPage);
+        const defState: IState = this.getDefState(totalRecord, perPage);
         if (totalRecord <= 1) return defState;
         const totalPage: number = this.getTotalPage(totalRecord, perPage);
         if (totalPage <= 1) return defState;
@@ -41,7 +41,7 @@ export class PgnHandle {
         return { curr, ...relPage, ...currSlice, pageNo, perPage, totalPage, ...recordCtx, ...spreadCtx };
     }
 
-    createDefState(totalRecord: number, perPage: number): IState {
+    getDefState(totalRecord: number, perPage: number): IState {
         const startIdx: number = 0;
         const recordCtx: IRecordCtx = this.getRecordCtx(totalRecord, startIdx);
         return {
