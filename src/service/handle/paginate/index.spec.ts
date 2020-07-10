@@ -120,6 +120,7 @@ describe('Class - Paginate Handle', () => {
                     const mockRelPage: IRelPage = {first: 1, prev: 1, next: 1, last: 1};
                     const mockRelPageCtx: IRelPageCtx = {first: true, prev: true, next: true, last: true};
                     const mockParsedRelPage: IRelPage = {first: 2, prev: 2, next: 2, last: 2};
+                    const mockSpread: ISpreadCtx = { ltSpread: [], rtSpread: [], maxSpread: 1}
 
                     getTotalPageSpy.mockReturnValue(mockTotalPage);
                     getCurrPageSpy.mockReturnValue(mockCurrPageCtx);
@@ -127,10 +128,12 @@ describe('Class - Paginate Handle', () => {
                     getRelPageSpy.mockReturnValue(mockRelPage);
                     getRelPageCtxSpy.mockReturnValue(mockRelPageCtx);
                     parseRelPageSpy.mockReturnValue(mockParsedRelPage);
+                    getSpreadCtxSpy.mockReturnValue(mockSpread);
 
                     expect(handle.createState(mockList, mockPgnOption)).toEqual({
                         ...mockSliceIdx,
                         ...mockParsedRelPage,
+                        ...mockSpread,
                         curr: mockCurrPage,
                         pageNo: mockCurrPageNo,
                         perPage: mockNoPerPage,
@@ -144,7 +147,7 @@ describe('Class - Paginate Handle', () => {
                     expect(getPageSliceIdxSpy).toHaveBeenCalledWith(mockList, mockNoPerPage, page);
                     expect(getRelPageSpy).toHaveBeenCalledWith(mockTotalPage, page);
                     expect(getRelPageCtxSpy).toHaveBeenCalledWith({curr: page, last: mockRelPage.last}, mockRelPage);
-                    expect(getSpreadCtxSpy).toHaveBeenCalledWith(mockCurrPageNo, mockTotalPage);
+                    expect(getSpreadCtxSpy).toHaveBeenCalledWith(mockCurrPageNo, mockTotalPage, 3);
                     expect(parseRelPageSpy).toHaveBeenCalledWith(mockRelPage, mockRelPageCtx);
                 });
             });
@@ -237,7 +240,8 @@ describe('Class - Paginate Handle', () => {
                 expect(handle.getDefOption()).toEqual({
                     page: 0,
                     increment: [10],
-                    incrementIdx: 0
+                    incrementIdx: 0,
+                    maxSpread: 3
                 });
             });
         });

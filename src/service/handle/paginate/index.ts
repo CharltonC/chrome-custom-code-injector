@@ -21,12 +21,31 @@ import {
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
 export class PgnHandle implements IUiHandle {
+    //// Option
+    /**
+     * Merge the updated option with existing option (either custom or default)
+     * e.g. existingOption = this.state.sortOption
+     */
+    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
+        const baseOption = existingOption ? existingOption : this.getDefOption();
+        return { ...baseOption, ...modOption };
+    }
+
+    getDefOption(): IOption {
+        return {
+            page: 0,
+            increment: [10],
+            incrementIdx: 0,
+            maxSpread: 3
+        };
+    }
+
     //// Full State
     createState(list: any[], pgnOption: Partial<IOption>): IState {
         // Merge def. option with User's option
         const defOption: IOption = this.getDefOption();
         const { increment: [defIncrmVal] } = defOption;
-        const { page, increment, incrementIdx } = Object.assign(defOption, pgnOption);
+        const { page, increment, incrementIdx, maxSpread } = Object.assign(defOption, pgnOption);
         let perPage: number = this.getNoPerPage(increment, incrementIdx, defIncrmVal);
 
         // Skip if we only have 1 list item OR less than 2 pages
@@ -41,7 +60,7 @@ export class PgnHandle implements IUiHandle {
         const currSlice: IPageSlice = this.getPageSliceIdx(list, perPage, curr);
         const { startIdx, endIdx } = currSlice;
         const recordCtx = this.getRecordCtx(totalRecord, startIdx, endIdx);
-        const spreadCtx: ISpreadCtx = this.getSpreadCtx(pageNo, totalPage);
+        const spreadCtx: ISpreadCtx = this.getSpreadCtx(pageNo, totalPage, maxSpread);
         let relPage: IRelPage = this.getRelPage(totalPage, curr);
         const relPageCtx: IRelPageCtx = this.getRelPageCtx({ curr, last: relPage.last }, relPage);
         relPage = this.parseRelPage(relPage, relPageCtx);
@@ -182,23 +201,6 @@ export class PgnHandle implements IUiHandle {
         return { ltSpread, rtSpread, maxSpread };
     }
 
-    //// Option
-    /**
-     * Merge the updated option with existing option (either custom or default)
-     * e.g. existingOption = this.state.sortOption
-     */
-    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
-        const baseOption = existingOption ? existingOption : this.getDefOption();
-        return { ...baseOption, ...modOption };
-    }
-
-    getDefOption(): IOption {
-        return {
-            page: 0,
-            increment: [10],
-            incrementIdx: 0,
-        };
-    }
 
     //// Helper Methods
     canNavToPage({ curr, last }: IPageRange, { type, target }: IPageNavQuery): boolean {
