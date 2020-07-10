@@ -1,3 +1,10 @@
+//// Option
+export interface IOption {
+    data: any[];
+    rows: IRawRowConfig[];
+    visiblePath?: TVisibleNestablePath;
+}
+
 // other indexes except 0 are optional, e.g. [ 'nestedRowKey', ComponentClass ]
 export type TVisibleNestablePath = 'ALL' | 'NONE' | string[];
 

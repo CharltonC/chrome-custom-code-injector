@@ -1,17 +1,13 @@
 import { IUiHandle } from '../../../type/ui-handle';
-import { IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx } from './type';
-
-export class ExpdConfig {
-    data: any[] = [];
-    rows: IRawRowConfig[] = [];
-    visiblePath?: TVisibleNestablePath = 'ALL';       // setting this to be diff. value will trigger change in React
-}
+import {
+    IOption,
+    IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx
+} from './type';
 
 export class ExpdHandle implements IUiHandle {
     // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
     readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
-    readonly defExpdConfig = new ExpdConfig();
     readonly errMsg: IErrMsg = {
         ROW_KEY_MISSING: 'Key in Row Config is missing',
         ROW_KEY_TYPE: 'Key in Row Config must be a string',
@@ -19,17 +15,22 @@ export class ExpdHandle implements IUiHandle {
     };
 
     //// Option
-    createOption() {
-
+    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
+        const baseOption = existingOption ? existingOption : this.getDefOption();
+        return { ...baseOption, ...modOption };
     }
 
-    getDefOption() {
-
+    getDefOption(): IOption {
+        return {
+            data: [],
+            rows: [],
+            visiblePath: 'ALL'
+        };
     }
 
     //// Full State
-    createState(clpsConfig?: ExpdConfig): any[] {
-        const { data, rows, visiblePath }: ExpdConfig = Object.assign(this.defExpdConfig, clpsConfig);
+    createState(option: Partial<IOption> = {}): any[] {
+        const { data, rows, visiblePath }: IOption = this.createOption(option);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);
@@ -39,7 +40,7 @@ export class ExpdHandle implements IUiHandle {
     }
 
     getDefState() {
-
+        // TODO
     }
 
     //// Partial State
@@ -185,10 +186,10 @@ export class ExpdHandle implements IUiHandle {
 
     //// Generic Component Attr
     createGenericCmpAttr() {
-
+        // TODO
     }
 
     getGenericCmpEvtHandler() {
-
+        // TODO
     }
 }

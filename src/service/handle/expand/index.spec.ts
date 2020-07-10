@@ -1,7 +1,7 @@
 import { TVisibleNestablePath, IRawRowConfig, IParsedRowConfig, IItemsCtxReq } from './type';
 import { ExpdHandle } from '.';
 
-describe('Service - Collapse Handle', () => {
+describe('Service - Expand Handle', () => {
     const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = ExpdHandle.prototype;
     let handle: ExpdHandle;
     let getMappedItemsCtxSpy: jest.SpyInstance;
@@ -19,16 +19,6 @@ describe('Service - Collapse Handle', () => {
         getValidatedDataSpy = jest.spyOn(handle, 'getValidatedData');
         getMappedNestedItemsCtxSpy = jest.spyOn(handle, 'getMappedNestedItemsCtx');
         isDefNestedOpenSpy = jest.spyOn(handle, 'isExpdByDef');
-    });
-
-    describe('Property - defExpdConfig: Default Collapse User Option', () => {
-        it('should have default values', () => {
-            expect(handle.defExpdConfig).toEqual({
-                data: [],
-                rows: [],
-                visiblePath: 'ALL'
-            });
-        });
     });
 
     describe('Property - Builtin Regex', () => {
@@ -51,28 +41,34 @@ describe('Service - Collapse Handle', () => {
         });
     });
 
-    describe('Method - createState: Get Collapse state based on User`s Collapse config/option', () => {
+    describe('Method - createOption', () => {
+
+    });
+
+    describe('Method - getDefOption: Default Expand User Option', () => {
+        it('should have default values', () => {
+            expect(handle.getDefOption()).toEqual({
+                data: [],
+                rows: [],
+                visiblePath: 'ALL'
+            });
+        });
+    });
+
+    describe('Method - createState: Get Expand state based on User`s Expand config/option', () => {
         const mockMappedItems: any[] = [];
 
         beforeEach(() => {
             getMappedItemsCtxSpy.mockReturnValue(mockMappedItems);
         });
 
-        it('should return falsy value if the config is invalid', () => {
-            getValidatedDataSpy.mockReturnValue(null);
-
-            expect(handle.createState()).toBeFalsy();
-            expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
-            expect(getMappedItemsCtxSpy).not.toHaveBeenCalled();
-        });
-
-        it('should return mapped items if the config is valid', () => {
+        it('should return mapped items', () => {
             getValidatedDataSpy.mockReturnValue([]);
 
             expect(handle.createState()).toBe(mockMappedItems);
             expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
             expect(getMappedItemsCtxSpy).toHaveBeenCalledWith({
-                ...handle.defExpdConfig,
+                ...handle.getDefOption(),
                 rowLvl: 0,
                 parentPath: ''
             });
