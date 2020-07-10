@@ -21,6 +21,7 @@ import {
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
 export class PgnHandle implements IUiHandle {
+    //// Full State
     createState(list: any[], pgnOption: Partial<IOption>): IState {
         // Merge def. option with User's option
         const defOption: IOption = this.getDefOption();
@@ -60,24 +61,7 @@ export class PgnHandle implements IUiHandle {
         } as IState;
     }
 
-    // TODO: Test
-    /**
-     * Merge the updated option with existing option (either custom or default)
-     * e.g. existingOption = this.state.sortOption
-     */
-    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
-        const baseOption = existingOption ? existingOption : this.getDefOption();
-        return { ...baseOption, ...modOption };
-    }
-
-    getDefOption(): IOption {
-        return {
-            page: 0,
-            increment: [10],
-            incrementIdx: 0,
-        };
-    }
-
+    //// Partial State
     getRecordCtx(totalRecord: number, startIdx: number, endIdx?: number): IRecordCtx {
         const hsRecord: boolean = totalRecord >= 1;
         return {
@@ -198,6 +182,25 @@ export class PgnHandle implements IUiHandle {
         return { ltSpread, rtSpread, maxSpread };
     }
 
+    //// Option
+    /**
+     * Merge the updated option with existing option (either custom or default)
+     * e.g. existingOption = this.state.sortOption
+     */
+    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
+        const baseOption = existingOption ? existingOption : this.getDefOption();
+        return { ...baseOption, ...modOption };
+    }
+
+    getDefOption(): IOption {
+        return {
+            page: 0,
+            increment: [10],
+            incrementIdx: 0,
+        };
+    }
+
+    //// Helper Methods
     canNavToPage({ curr, last }: IPageRange, { type, target }: IPageNavQuery): boolean {
         if (!this.isGteZero([curr, last])) return false;
 
