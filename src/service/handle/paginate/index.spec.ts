@@ -1,11 +1,20 @@
-import { IOption, IPageRange, IPageNavQuery, IRelPage, IRelPageCtx, IPageSlice, IPageCtx } from './type';
+import {
+    IState, IOption,
+    IPageNavQuery,
+    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx,
+    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr,
+    TSpreadCtx, TFn
+} from './type';
+
 import { PgnHandle } from './';
 
 describe('Class - Paginate Handle', () => {
     let handle: PgnHandle;
     let defOption: IOption;
+
     let isGteZeroSpy: jest.SpyInstance;
     let isDefinedSpy: jest.SpyInstance;
+
     let getNoPerPageSpy: jest.SpyInstance;
     let getTotalPageSpy: jest.SpyInstance;
     let canNavToPageSpy: jest.SpyInstance;
@@ -16,17 +25,28 @@ describe('Class - Paginate Handle', () => {
     let parseRelPageSpy: jest.SpyInstance;
     let getRecordCtxSpy: jest.SpyInstance;
     let getSpreadCtxSpy: jest.SpyInstance;
+
+    let createStateSpy: jest.SpyInstance;
     let getDefStateSpy: jest.SpyInstance;
+    let createOptionSpy: jest.SpyInstance;
     let getDefOptionSpy: jest.SpyInstance;
+
+    let getTextBtnAttrSpy: jest.SpyInstance;
+    let getSpreadBtnAttrSpy: jest.SpyInstance;
+    let getPageSelectAttrSpy: jest.SpyInstance;
+    let getPerPageSelectAttrSpy: jest.SpyInstance;
+    let getGenericCmpEvtHandlerSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new PgnHandle();
         defOption = handle.getDefOption();
+
         isGteZeroSpy = jest.spyOn(handle, 'isGteZero');
         isDefinedSpy = jest.spyOn(handle, 'isDefined');
+        canNavToPageSpy = jest.spyOn(handle, 'canNavToPage');
+
         getNoPerPageSpy = jest.spyOn(handle, 'getNoPerPage');
         getTotalPageSpy = jest.spyOn(handle, 'getTotalPage');
-        canNavToPageSpy = jest.spyOn(handle, 'canNavToPage');
         getCurrPageSpy = jest.spyOn(handle, 'getCurrPage');
         getPageSliceIdxSpy = jest.spyOn(handle, 'getPageSliceIdx');
         getRelPageSpy = jest.spyOn(handle, 'getRelPage');
@@ -34,8 +54,17 @@ describe('Class - Paginate Handle', () => {
         parseRelPageSpy = jest.spyOn(handle, 'parseRelPage');
         getRecordCtxSpy = jest.spyOn(handle, 'getRecordCtx');
         getSpreadCtxSpy = jest.spyOn(handle, 'getSpreadCtx');
+
+        createStateSpy = jest.spyOn(handle, 'createState');
         getDefStateSpy = jest.spyOn(handle, 'getDefState');
+        createOptionSpy = jest.spyOn(handle, 'createOption');
         getDefOptionSpy = jest.spyOn(handle, 'getDefOption');
+
+        getTextBtnAttrSpy = jest.spyOn(handle, 'getTextBtnAttr');
+        getSpreadBtnAttrSpy = jest.spyOn(handle, 'getSpreadBtnAttr');
+        getPageSelectAttrSpy = jest.spyOn(handle, 'getPageSelectAttr');
+        getPerPageSelectAttrSpy = jest.spyOn(handle, 'getPerPageSelectAttr');
+        getGenericCmpEvtHandlerSpy = jest.spyOn(handle, 'getGenericCmpEvtHandler');
     });
 
     afterEach(() => {
@@ -545,5 +574,256 @@ describe('Class - Paginate Handle', () => {
     });
 
     describe('Method Group - Generic Component Attributes', () => {
+        const {
+            getTextBtnAttr,
+            getSpreadBtnAttr,
+            getPageSelectAttr,
+            getPerPageSelectAttr
+        } = PgnHandle.prototype;
+
+        let mockEvtHandler: jest.Mock;
+
+        beforeEach(() => {
+            mockEvtHandler = jest.fn();
+        });
+
+        describe('Method - createGenericCmpAttr: Get Generic Attributes of a Pagination Component', () => {
+            const mockOption = {} as IOption;
+
+            const mockState = {
+                first: 1,
+                prev: 2,
+                next: 3,
+                last: 4,
+                ltSpread: [5],
+                rtSpread: [6]
+            } as IState;
+
+            const mockQuery = {
+                data: [],
+                option: mockOption,
+                state: mockState,
+                callback: mockEvtHandler
+            } as ICmpAttrQuery;
+
+            beforeEach(() => {
+                getGenericCmpEvtHandlerSpy.mockReturnValue(mockEvtHandler);
+                getTextBtnAttrSpy.mockReturnValue({})
+                getSpreadBtnAttrSpy.mockReturnValue({})
+                getPageSelectAttrSpy.mockReturnValue({})
+                getPerPageSelectAttrSpy.mockReturnValue({})
+            });
+
+            it('should return attributes when left/right spread exist', () => {
+                expect(handle.createGenericCmpAttr(mockQuery)).toEqual({
+                    firstBtnAttr: {},
+                    prevBtnAttr: {},
+                    nextBtnAttr: {},
+                    lastBtnAttr: {},
+                    ltSpreadBtnsAttr: [{}],
+                    rtSpreadBtnsAttr: [{}],
+                    pageSelectAttr: {},
+                    perPageSelectAttr: {},
+                });
+            });
+
+            it('should return attributes when left/right spread dont exist', () => {
+                expect(handle.createGenericCmpAttr({
+                    ...mockQuery,
+                    state: {...mockState, ltSpread: null, rtSpread: null}
+                })).toEqual({
+                    firstBtnAttr: {},
+                    prevBtnAttr: {},
+                    nextBtnAttr: {},
+                    lastBtnAttr: {},
+                    ltSpreadBtnsAttr: null,
+                    rtSpreadBtnsAttr: null,
+                    pageSelectAttr: {},
+                    perPageSelectAttr: {},
+                });
+            });
+        });
+
+        describe('Method - getTextBtnAttr: Get Generic Attributes of a Pagination Text Button Element (e.g. first, prev, next, last)', () => {
+            it('should return attributes', () => {
+                const mockName = 'lorem';
+                const mockPageIdx = 1;
+                const { onEvt, ...attrs } = getTextBtnAttr(mockEvtHandler, [mockName, mockPageIdx]);
+                onEvt();
+
+                expect(attrs).toEqual({
+                    name: mockName,
+                    disabled: false
+                });
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: mockPageIdx});
+            });
+        });
+
+        describe('Method - getSpreadBtnAttr: Get Generic Attributes of a Pagination Spread Button Element (e.g. `...`)', () => {
+            const mockState = { pageNo: 1, maxSpread: 3 } as IState;
+
+            it('should return attributes for left spread button when it is a number', () => {
+                const mockPage = 2;
+                const mockIsLtSpread = true;
+                const expTargetPageIdx = 0;
+
+                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onEvt();
+
+                expect(name).toBe(`${mockPage}`);
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
+            });
+
+            it('should return attributes for left spread button when it is not a number (i.e. a string symbol)', () => {
+                const mockPage = '...';
+                const mockIsLtSpread = true;
+                const expTargetPageIdx = -2;
+
+                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onEvt();
+
+                expect(name).toBe('left-spread');
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
+            });
+
+            it('should return attributes for right spread button when it is a number', () => {
+                const mockPage = 2;
+                const mockIsLtSpread = false;
+                const expTargetPageIdx = 2;
+
+                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onEvt();
+
+                expect(name).toBe(`${mockPage}`);
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
+            });
+
+            it('should return attributes for right spread button when it is not a number (i.e. a string symbol)', () => {
+                const mockPage = '...';
+                const mockIsLtSpread = false;
+                const expTargetPageIdx = 4;
+
+                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onEvt();
+
+                expect(name).toBe('right-spread');
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
+            });
+        });
+
+        describe('Method - getPageSelectAttr: Get Generic Attributes of a Pagination Page Select Element', () => {
+            const pageNo = 4;
+            const totalPage = 10;
+            const ltSpread = [2,3];
+            const rtSpread = [4,5];
+            const mockState = { pageNo, totalPage, ltSpread, rtSpread } as IState;
+
+            it('should return attributes when both left and right spread exist', () => {
+                const { onEvt, ...attrs } = getPageSelectAttr(mockEvtHandler, mockState);
+                onEvt();
+
+                expect(attrs).toEqual({
+                    name: 'page select',
+                    disabled: false,
+                    options: [ 1,2,3,4,5,10 ],
+                    selectedOptionValue: pageNo,
+                    selectedOptionIdx: 3
+                });
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: pageNo - 1});
+            });
+
+            it('should return attributes when left spread doesnt exist', () => {
+                const { onEvt, ...attrs } = getPageSelectAttr(mockEvtHandler, {...mockState, ltSpread: null});
+                onEvt();
+
+                expect(attrs).toEqual({
+                    name: 'page select',
+                    disabled: false,
+                    options: [ 1,4,5,10 ],
+                    selectedOptionValue: pageNo,
+                    selectedOptionIdx: 1
+                });
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: pageNo - 1});
+            });
+
+            it('should return attributes when right spread doesnt exist', () => {
+                const { onEvt, ...attrs } = getPageSelectAttr(mockEvtHandler, {...mockState, rtSpread: null});
+                onEvt();
+
+                expect(attrs).toEqual({
+                    name: 'page select',
+                    disabled: false,
+                    options: [ 1,2,3,10 ],
+                    selectedOptionValue: pageNo,
+                    selectedOptionIdx: 3
+                });
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: pageNo - 1});
+            });
+        });
+
+        describe('Method - getPerPageSelectAttr: Get Generic Attributes of a Pagination Per Page Select Element', () => {
+            it('should return attributes', () => {
+                const mockOption = {
+                    increment: [10,20],
+                    incrementIdx: 0
+                } as IOption;
+                const mockEvtTargetVal = 1;
+                const mockEvt = { target: { value: mockEvtTargetVal} };
+
+                const { onEvt, ...attrs } = getPerPageSelectAttr(mockEvtHandler, mockOption);
+                onEvt(mockEvt);
+
+                expect(attrs).toEqual({
+                    name: 'per page select',
+                    disabled: false,
+                    options: mockOption.increment,
+                    selectedOptionValue: 10,
+                    selectedOptionIdx: mockOption.incrementIdx,
+                });
+                expect(mockEvtHandler).toHaveBeenCalledWith({
+                    page: 0,
+                    incrementIdx: mockEvtTargetVal
+                });
+            });
+        });
+
+        describe('Method - getGenericCmpEvtHandler: Create a common event handler function', () => {
+            const mockRtnPgnOption = 'option';
+            const mockRtnPgnState = 'state'
+
+            beforeEach(() => {
+                createOptionSpy.mockReturnValue(mockRtnPgnOption);
+                createStateSpy.mockReturnValue(mockRtnPgnState);
+            });
+
+            it('should return the event handler function when callback is provided', () => {
+                const mockData = [];
+                const mockOption = {} as IOption;
+                const mockModOption = { page: 1 } as IOption;
+
+                const evtHandler = handle.getGenericCmpEvtHandler(mockData, mockOption, mockEvtHandler);
+                evtHandler(mockModOption);
+
+                expect(createOptionSpy).toHaveBeenCalledWith(mockModOption, mockOption);
+                expect(createStateSpy).toHaveBeenCalledWith(mockData, mockRtnPgnOption);
+                expect(mockEvtHandler).toHaveBeenCalledWith({
+                    pgnOption: mockRtnPgnOption,
+                    pgnState: mockRtnPgnState
+                });
+            });
+
+            it('should return the event handler function when callback is not provided', () => {
+                const mockData = [];
+                const mockOption = {} as IOption;
+                const mockModOption = { page: 1 } as IOption;
+
+                const evtHandler = handle.getGenericCmpEvtHandler(mockData, mockOption);
+                evtHandler(mockModOption);
+
+                expect(createOptionSpy).toHaveBeenCalledWith(mockModOption, mockOption);
+                expect(createStateSpy).toHaveBeenCalledWith(mockData, mockRtnPgnOption);
+                expect(mockEvtHandler).not.toHaveBeenCalledWith();
+            });
+        });
     });
 });

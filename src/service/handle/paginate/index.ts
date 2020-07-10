@@ -275,20 +275,20 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [number, boolean]): ICommonCmpAttr {
+    getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [any, boolean]): ICommonCmpAttr {
         const { pageNo, maxSpread } = state;
 
         // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
         // - e.g. maxSpread = 3, currPageNo = 6
         // then the page is jumped to 2 (eqv. to page index of 3)
-        const isNotSpreadSymbol: boolean = !Number.isInteger(page);
-        const pageIdx: number = page - 1;
+        const isNum: boolean = typeof page === 'number';
+        const pageIdx = isNum ? page - 1 : pageNo;
         const targetPageIdx: number = isLtSpread ?
-            (isNotSpreadSymbol ? pageIdx - 1 : pageNo - maxSpread) :
-            (isNotSpreadSymbol ? pageIdx + 1 : pageNo + maxSpread);
+            (isNum ? pageIdx - 1 : pageNo - maxSpread) :
+            (isNum ? pageIdx + 1 : pageNo + maxSpread);
 
         return {
-            name: `${page}`,
+            name: isNum ? `${page}` : (isLtSpread ? 'left-spread' : 'right-spread'),
             onEvt: () => onEvt({
                 page: targetPageIdx
             })
@@ -324,7 +324,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getGenericCmpEvtHandler(data: any[], option: IOption, callback: TFn): TFn {
+    getGenericCmpEvtHandler(data: any[], option: IOption, callback?: TFn): TFn {
         return ((modOption: Partial<IOption>): void => {
             const pgnOption: IOption = this.createOption(modOption, option);
             const pgnState: IState = this.createState(data, pgnOption);
