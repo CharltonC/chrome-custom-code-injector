@@ -201,7 +201,6 @@ export class PgnHandle implements IUiHandle {
         return { ltSpread, rtSpread, maxSpread };
     }
 
-
     //// Helper Methods
     canNavToPage({ curr, last }: IPageRange, { type, target }: IPageNavQuery): boolean {
         if (!this.isGteZero([curr, last])) return false;
@@ -237,7 +236,6 @@ export class PgnHandle implements IUiHandle {
     }
 
     //// Generic UI Component Related
-    // TODO: Test, param type
     /**
      * Create Generic Attributes that can be passed/mapped to Attributes/Inputs/Props of Static HTML or Angular/React/Vue/etc Components
      *
