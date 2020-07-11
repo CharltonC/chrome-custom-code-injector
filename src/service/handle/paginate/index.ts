@@ -181,7 +181,7 @@ export class PgnHandle implements IUiHandle {
                 // Check if there is any pages between "last" page number in this loop and the actual last page
                 // - e.g. last page in the loop is: 8 | actual last page is: 10,
                 // so we have page 9 in between, which we can use '...' to represent
-                const hsGtOnePageTilLastPage: boolean = idx === maxSpread && (totalPage - pageNo) > 1;
+                const hsGtOnePageTilLastPage: boolean = idx === maxSpread && (totalPage - pageNo) >= 1;
 
                 if (isInRange) container.push(hsGtOnePageTilLastPage ? DOTS : pageNo);
                 return container;
@@ -192,7 +192,7 @@ export class PgnHandle implements IUiHandle {
             spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
                 const pageNo: number = currPageNo - idx - 1;
                 const isInRange: boolean = pageNo > 1 && pageNo < totalPage;
-                const hsGtOnePageTilFirstPage: boolean = idx === maxSpread && (currPageNo - pageNo) > 1;
+                const hsGtOnePageTilFirstPage: boolean = idx === maxSpread && (currPageNo - pageNo) >= 1;
                 if (isInRange) container.unshift(hsGtOnePageTilFirstPage ? DOTS : pageNo);
                 return container;
             }, []) :
