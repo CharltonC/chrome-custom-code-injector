@@ -263,8 +263,8 @@ export class PgnHandle implements IUiHandle {
                 null,
 
             // Attr. for Page Select and Per Page Select
-            perPageSelectAttr: this.getPageSelectAttr(onEvt, state),
-            pageSelectAttr: this.getPerPageSelectAttr(onEvt, option)
+            perPageSelectAttr: this.getPerPageSelectAttr(onEvt, option),
+            pageSelectAttr: this.getPageSelectAttr(onEvt, state),
         };
     }
 
