@@ -87,9 +87,15 @@ export interface ICmpAttrQuery {
 export interface ICommonCmpAttr {
     [k: string]: any;
     name: string;
-    disabled?: boolean;
+    isDisabled?: boolean;
     onEvt: TFn;
 }
+
+export interface ISelectEvt extends Event {
+    target: HTMLSelectElement;
+}
+
+export type TPageList = (string | number)[];
 
 
 //// Misc

@@ -1,9 +1,8 @@
 import {
     IState, IOption,
     IPageNavQuery,
-    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx,
-    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr,
-    TSpreadCtx, TFn
+    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, ISpreadCtx,
+    ICmpAttrQuery, TPageList,
 } from './type';
 
 import { PgnHandle } from './';
@@ -36,6 +35,7 @@ describe('Class - Paginate Handle', () => {
     let getPageSelectAttrSpy: jest.SpyInstance;
     let getPerPageSelectAttrSpy: jest.SpyInstance;
     let getGenericCmpEvtHandlerSpy: jest.SpyInstance;
+    let getTargetPageIdxByPosSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new PgnHandle();
@@ -65,6 +65,7 @@ describe('Class - Paginate Handle', () => {
         getPageSelectAttrSpy = jest.spyOn(handle, 'getPageSelectAttr');
         getPerPageSelectAttrSpy = jest.spyOn(handle, 'getPerPageSelectAttr');
         getGenericCmpEvtHandlerSpy = jest.spyOn(handle, 'getGenericCmpEvtHandler');
+        getTargetPageIdxByPosSpy = jest.spyOn(handle, 'getTargetPageIdxByPos');
     });
 
     afterEach(() => {
@@ -581,8 +582,8 @@ describe('Class - Paginate Handle', () => {
         const {
             getTextBtnAttr,
             getSpreadBtnAttr,
-            getPageSelectAttr,
-            getPerPageSelectAttr
+            getPerPageSelectAttr,
+            getTargetPageIdxByPos
         } = PgnHandle.prototype;
 
         let mockEvtHandler: jest.Mock;
@@ -657,7 +658,7 @@ describe('Class - Paginate Handle', () => {
 
                 expect(attrs).toEqual({
                     name: mockName,
-                    disabled: false
+                    isDisabled: false
                 });
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: mockPageIdx});
             });
@@ -716,52 +717,118 @@ describe('Class - Paginate Handle', () => {
         });
 
         describe('Method - getPageSelectAttr: Get Generic Attributes of a Pagination Page Select Element', () => {
-            const pageNo = 4;
-            const totalPage = 10;
-            const ltSpread = [2,3];
-            const rtSpread = [4,5];
-            const mockState = { pageNo, totalPage, ltSpread, rtSpread } as IState;
+            const pageNo: number = 4;
+            const totalPage: number = 10;
+            const ltSpread: TPageList = [2,3];
+            const rtSpread: TPageList = [5,6];
+            const mockEvt = { target: { value: 0 }};
+            const mockTargetPageIdx: number = 99;
+            let mockState;
 
-            it('should return attributes when both left and right spread exist', () => {
-                const { onEvt, ...attrs } = getPageSelectAttr(mockEvtHandler, mockState);
-                onEvt();
-
-                expect(attrs).toEqual({
-                    name: 'page select',
-                    disabled: false,
-                    options: [ 1,2,3,4,5,10 ],
-                    selectedOptionValue: pageNo,
-                    selectedOptionIdx: 3
-                });
-                expect(mockEvtHandler).toHaveBeenCalledWith({page: pageNo - 1});
+            beforeEach(() => {
+                getTargetPageIdxByPosSpy.mockReturnValue(mockTargetPageIdx);
+                mockState = { pageNo, totalPage, ltSpread, rtSpread } as IState;
             });
 
-            it('should return attributes when left spread doesnt exist', () => {
-                const { onEvt, ...attrs } = getPageSelectAttr(mockEvtHandler, {...mockState, ltSpread: null});
-                onEvt();
+            describe('regular scenarios - when current page is not first page or last page or total pages is more than 1', () => {
+                it('should return attributes when both left and right spread exist', () => {
+                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onEvt(mockEvt);
 
-                expect(attrs).toEqual({
-                    name: 'page select',
-                    disabled: false,
-                    options: [ 1,4,5,10 ],
-                    selectedOptionValue: pageNo,
-                    selectedOptionIdx: 1
+                    expect(attrs).toEqual({
+                        name: 'page select',
+                        isDisabled: false,
+                        options: [ 1,2,3,4,5,6,10 ],
+                        selectedOptionValue: pageNo,
+                        selectedOptionIdx: 3
+                    });
+                    expect(mockEvtHandler).toHaveBeenCalledWith({page: mockTargetPageIdx});
                 });
-                expect(mockEvtHandler).toHaveBeenCalledWith({page: pageNo - 1});
+
+
+                it('should return attributes when left spread doesnt exist', () => {
+                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, {...mockState, ltSpread: null});
+                    onEvt(mockEvt);
+
+                    expect(attrs).toEqual({
+                        name: 'page select',
+                        isDisabled: false,
+                        options: [ 1,4,5,6,10 ],
+                        selectedOptionValue: pageNo,
+                        selectedOptionIdx: 1
+                    });
+                    expect(mockEvtHandler).toHaveBeenCalledWith({page: mockTargetPageIdx});
+                });
+
+                it('should return attributes when right spread doesnt exist', () => {
+                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, {...mockState, rtSpread: null});
+                    onEvt(mockEvt);
+
+                    expect(attrs).toEqual({
+                        name: 'page select',
+                        isDisabled: false,
+                        options: [ 1,2,3,4,10 ],
+                        selectedOptionValue: pageNo,
+                        selectedOptionIdx: 3
+                    });
+                    expect(mockEvtHandler).toHaveBeenCalledWith({page: mockTargetPageIdx});
+                });
             });
 
-            it('should return attributes when right spread doesnt exist', () => {
-                const { onEvt, ...attrs } = getPageSelectAttr(mockEvtHandler, {...mockState, rtSpread: null});
-                onEvt();
+            describe('special scenarios - when current page is first page or last page or total page is 1', () => {
+                it('should return attributes when current page is 1', () => {
+                    const mockPageNo: number = 1;
+                    mockState = {...mockState, pageNo: mockPageNo};
 
-                expect(attrs).toEqual({
-                    name: 'page select',
-                    disabled: false,
-                    options: [ 1,2,3,10 ],
-                    selectedOptionValue: pageNo,
-                    selectedOptionIdx: 3
+                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onEvt(mockEvt);
+
+                    const expectOptionIdx: number = 0;
+                    const expectOptions: TPageList = [ mockPageNo, ...rtSpread, totalPage ];
+
+                    expect(attrs).toEqual({
+                        name: 'page select',
+                        isDisabled: false,
+                        options: expectOptions,
+                        selectedOptionValue: mockPageNo,
+                        selectedOptionIdx: expectOptionIdx
+                    });
+                    expect(mockEvtHandler).toHaveBeenCalledWith({page: mockTargetPageIdx});
                 });
-                expect(mockEvtHandler).toHaveBeenCalledWith({page: pageNo - 1});
+
+                it('should return attributes when current page is last page', () => {
+                    mockState = {...mockState, totalPage: pageNo };
+                    const expectOptions: TPageList = [ 1, ...ltSpread, pageNo ];
+                    const expectOptionIdx: number = 1 + ltSpread.length;
+                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onEvt(mockEvt);
+
+                    expect(attrs).toEqual({
+                        name: 'page select',
+                        isDisabled: false,
+                        options: expectOptions,
+                        selectedOptionValue: pageNo,
+                        selectedOptionIdx: expectOptionIdx
+                    });
+                    expect(mockEvtHandler).toHaveBeenCalledWith({page: mockTargetPageIdx});
+                });
+
+                it('should return attributes when total page is 1', () => {
+                    mockState = {...mockState, totalPage: 1 };
+                    const expectOptions: TPageList = [ 1 ];
+                    const expectOptionIdx: number = 0;
+                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onEvt(mockEvt);
+
+                    expect(attrs).toEqual({
+                        name: 'page select',
+                        isDisabled: true,
+                        options: expectOptions,
+                        selectedOptionValue: pageNo,
+                        selectedOptionIdx: expectOptionIdx
+                    });
+                    expect(mockEvtHandler).toHaveBeenCalledWith({page: mockTargetPageIdx});
+                });
             });
         });
 
@@ -779,7 +846,7 @@ describe('Class - Paginate Handle', () => {
 
                 expect(attrs).toEqual({
                     name: 'per page select',
-                    disabled: false,
+                    isDisabled: false,
                     options: mockOption.increment,
                     selectedOptionValue: 10,
                     selectedOptionIdx: mockOption.incrementIdx,
@@ -827,6 +894,26 @@ describe('Class - Paginate Handle', () => {
                 expect(createOptionSpy).toHaveBeenCalledWith(mockModOption, mockOption);
                 expect(createStateSpy).toHaveBeenCalledWith(mockData, mockRtnPgnOption);
                 expect(mockEvtHandler).not.toHaveBeenCalledWith();
+            });
+        });
+
+        describe('method - getTargetPageIdxByPos: Get the corresponding target page index based on its index a list of pages', () => {
+            const mockCurrPos: number = 0;
+            const mockLeftPos: [number, number] = [ mockCurrPos, 1 ];
+            const mockRightPos: [number, number] = [ mockCurrPos, -1 ];
+            const mockPageNo: number = 5;
+            const mockMaxSpread: number = 3;
+            const mockState = { pageNo: mockPageNo, maxSpread: mockMaxSpread } as IState;
+
+            it('should return the target page index when page is a number', () => {
+                const mockPages = [ 8, 9, 10];
+                expect(getTargetPageIdxByPos(mockState, mockPages, mockLeftPos)).toBe(mockPages[mockCurrPos] - 1);
+            });
+
+            it('should return the target page index when page is not a number', () => {
+                const mockPages = [ '...', 9, 10];
+                expect(getTargetPageIdxByPos(mockState, mockPages, mockLeftPos)).toBe(mockPageNo - mockMaxSpread);
+                expect(getTargetPageIdxByPos(mockState, mockPages, mockRightPos)).toBe(mockPageNo + mockMaxSpread);
             });
         });
     });

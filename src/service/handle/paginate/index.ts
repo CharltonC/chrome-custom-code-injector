@@ -3,7 +3,7 @@ import {
     IState, IOption,
     IPageNavQuery,
     IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx,
-    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr,
+    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr, ISelectEvt, TPageList,
     TSpreadCtx, TFn
 } from './type';
 
@@ -273,7 +273,7 @@ export class PgnHandle implements IUiHandle {
     getTextBtnAttr(onEvt: TFn, [name, pageIdx]: [string, number]): ICommonCmpAttr {
         return {
             name,
-            disabled: !Number.isInteger(pageIdx),
+            isDisabled: !Number.isInteger(pageIdx),
             onEvt: () => onEvt({
                 page: pageIdx
             })
@@ -302,15 +302,35 @@ export class PgnHandle implements IUiHandle {
 
     getPageSelectAttr(onEvt: TFn, state: IState): ICommonCmpAttr {
         const { pageNo, totalPage, ltSpread, rtSpread } = state;
+
+        const isLteOnePage: boolean = totalPage <= 1;
+
+        // Options (inclusive of all pages here)
+        const leftOptions: TPageList = (isLteOnePage || pageNo === 1) ?
+            [ 1 ] :
+            [ 1, ...(ltSpread ? ltSpread : []), pageNo ];
+
+        const rightOptions: TPageList = (isLteOnePage || pageNo === totalPage) ?
+            [] :
+            [ ...(rtSpread ? rtSpread : []), totalPage ];
+
+        const options: TPageList = [ ...leftOptions, ...rightOptions ];
+        const selectedOptionIdx: number = leftOptions.length - 1;
+
         return {
             name: 'page select',
-            disabled: totalPage <= 1,
-            options: [1, ...(ltSpread ? ltSpread : []), ...(rtSpread ? rtSpread : []), totalPage],
+            isDisabled: isLteOnePage,
+            options,
             selectedOptionValue: pageNo,
-            selectedOptionIdx: (ltSpread?.length + 1) || 1,
-            onEvt: () => onEvt({
-                page: pageNo - 1
-            })
+            selectedOptionIdx,
+            onEvt: ({ target }: ISelectEvt) => {
+                const targetPageIdx: number = this.getTargetPageIdxByPos(
+                    state,
+                    options,
+                    [ parseInt(target.value, 10), selectedOptionIdx ]
+                );
+                onEvt({ page: targetPageIdx });
+            }
         };
     }
 
@@ -318,11 +338,11 @@ export class PgnHandle implements IUiHandle {
         const { increment, incrementIdx } = option;
         return {
             name: 'per page select',
-            disabled: increment.length <= 1,
+            isDisabled: increment.length <= 1,
             options: increment,
             selectedOptionValue: increment[incrementIdx],
             selectedOptionIdx: incrementIdx,
-            onEvt: ({ target }) => onEvt({
+            onEvt: ({ target }: ISelectEvt) => onEvt({
                 page: 0,
                 incrementIdx: parseInt(target.value, 10)
             })
@@ -335,5 +355,14 @@ export class PgnHandle implements IUiHandle {
             const pgnState: IState = this.createState(data, pgnOption);
             if (callback) callback({ pgnOption, pgnState });
         }).bind(this);
+    }
+
+    getTargetPageIdxByPos(state: IState, pages: TPageList, [currPos, activePos]: [number, number]): number {
+        const { pageNo, maxSpread } = state;
+        const page: string | number = pages[currPos];
+        const targetPageIdx: number = typeof page === 'number' ?
+            page - 1 :
+            (currPos < activePos ? pageNo - maxSpread : pageNo + maxSpread);
+        return targetPageIdx;
     }
 }
