@@ -2,9 +2,9 @@ import { IUiHandle } from '../../../type/ui-handle';
 import {
     IState, IOption,
     IPageNavQuery,
-    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx,
-    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr, ISelectEvt, TPageList,
-    TSpreadCtx, TFn
+    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx,
+    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr, ICmpSelectAttr, ISelectEvt, TPageList,
+    TFn
 } from './type';
 
 /**
@@ -268,9 +268,9 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getTextBtnAttr(onEvt: TFn, [name, pageIdx]: [string, number]): ICommonCmpAttr {
+    getTextBtnAttr(onEvt: TFn, [title, pageIdx]: [string, number]): ICommonCmpAttr {
         return {
-            name,
+            title,
             isDisabled: !Number.isInteger(pageIdx),
             onEvt: () => onEvt({
                 page: pageIdx
@@ -291,14 +291,14 @@ export class PgnHandle implements IUiHandle {
             (isNum ? pageIdx + 1 : pageNo + maxSpread);
 
         return {
-            name: isNum ? `${page}` : (isLtSpread ? 'left-spread' : 'right-spread'),
+            title: isNum ? `${page}` : (isLtSpread ? 'left-spread' : 'right-spread'),
             onEvt: () => onEvt({
                 page: targetPageIdx
             })
         };
     }
 
-    getPageSelectAttr(onEvt: TFn, state: IState): ICommonCmpAttr {
+    getPageSelectAttr(onEvt: TFn, state: IState): ICmpSelectAttr {
         const { pageNo, totalPage, ltSpread, rtSpread } = state;
 
         const isLteOnePage: boolean = totalPage <= 1;
@@ -316,7 +316,7 @@ export class PgnHandle implements IUiHandle {
         const selectedOptionIdx: number = leftOptions.length - 1;
 
         return {
-            name: 'page select',
+            title: 'page select',
             isDisabled: isLteOnePage,
             options,
             selectedOptionValue: pageNo,
@@ -332,10 +332,10 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getPerPageSelectAttr(onEvt: TFn, option: IOption): ICommonCmpAttr {
+    getPerPageSelectAttr(onEvt: TFn, option: IOption): ICmpSelectAttr {
         const { increment, incrementIdx } = option;
         return {
-            name: 'per page select',
+            title: 'per page select',
             isDisabled: increment.length <= 1,
             options: increment,
             selectedOptionValue: increment[incrementIdx],

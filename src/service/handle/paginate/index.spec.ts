@@ -651,13 +651,13 @@ describe('Class - Paginate Handle', () => {
 
         describe('Method - getTextBtnAttr: Get Generic Attributes of a Pagination Text Button Element (e.g. first, prev, next, last)', () => {
             it('should return attributes', () => {
-                const mockName = 'lorem';
+                const mockTitle = 'lorem';
                 const mockPageIdx = 1;
-                const { onEvt, ...attrs } = getTextBtnAttr(mockEvtHandler, [mockName, mockPageIdx]);
+                const { onEvt, ...attrs } = getTextBtnAttr(mockEvtHandler, [mockTitle, mockPageIdx]);
                 onEvt();
 
                 expect(attrs).toEqual({
-                    name: mockName,
+                    title: mockTitle,
                     isDisabled: false
                 });
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: mockPageIdx});
@@ -672,10 +672,10 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = true;
                 const expTargetPageIdx = 0;
 
-                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
-                expect(name).toBe(`${mockPage}`);
+                expect(title).toBe(`${mockPage}`);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
 
@@ -684,10 +684,10 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = true;
                 const expTargetPageIdx = -2;
 
-                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
-                expect(name).toBe('left-spread');
+                expect(title).toBe('left-spread');
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
 
@@ -696,10 +696,10 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = false;
                 const expTargetPageIdx = 2;
 
-                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
-                expect(name).toBe(`${mockPage}`);
+                expect(title).toBe(`${mockPage}`);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
 
@@ -708,10 +708,10 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = false;
                 const expTargetPageIdx = 4;
 
-                const { name, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
-                expect(name).toBe('right-spread');
+                expect(title).toBe('right-spread');
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
         });
@@ -736,7 +736,7 @@ describe('Class - Paginate Handle', () => {
                     onEvt(mockEvt);
 
                     expect(attrs).toEqual({
-                        name: 'page select',
+                        title: 'page select',
                         isDisabled: false,
                         options: [ 1,2,3,4,5,6,10 ],
                         selectedOptionValue: pageNo,
@@ -751,7 +751,7 @@ describe('Class - Paginate Handle', () => {
                     onEvt(mockEvt);
 
                     expect(attrs).toEqual({
-                        name: 'page select',
+                        title: 'page select',
                         isDisabled: false,
                         options: [ 1,4,5,6,10 ],
                         selectedOptionValue: pageNo,
@@ -765,7 +765,7 @@ describe('Class - Paginate Handle', () => {
                     onEvt(mockEvt);
 
                     expect(attrs).toEqual({
-                        name: 'page select',
+                        title: 'page select',
                         isDisabled: false,
                         options: [ 1,2,3,4,10 ],
                         selectedOptionValue: pageNo,
@@ -787,7 +787,7 @@ describe('Class - Paginate Handle', () => {
                     const expectOptions: TPageList = [ mockPageNo, ...rtSpread, totalPage ];
 
                     expect(attrs).toEqual({
-                        name: 'page select',
+                        title: 'page select',
                         isDisabled: false,
                         options: expectOptions,
                         selectedOptionValue: mockPageNo,
@@ -804,7 +804,7 @@ describe('Class - Paginate Handle', () => {
                     onEvt(mockEvt);
 
                     expect(attrs).toEqual({
-                        name: 'page select',
+                        title: 'page select',
                         isDisabled: false,
                         options: expectOptions,
                         selectedOptionValue: pageNo,
@@ -821,7 +821,7 @@ describe('Class - Paginate Handle', () => {
                     onEvt(mockEvt);
 
                     expect(attrs).toEqual({
-                        name: 'page select',
+                        title: 'page select',
                         isDisabled: true,
                         options: expectOptions,
                         selectedOptionValue: pageNo,
@@ -845,7 +845,7 @@ describe('Class - Paginate Handle', () => {
                 onEvt(mockEvt);
 
                 expect(attrs).toEqual({
-                    name: 'per page select',
+                    title: 'per page select',
                     isDisabled: false,
                     options: mockOption.increment,
                     selectedOptionValue: 10,

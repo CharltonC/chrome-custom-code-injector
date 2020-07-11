@@ -73,8 +73,8 @@ export interface ICmpAttr {
     lastBtnAttr: ICommonCmpAttr;
     ltSpreadBtnsAttr: ICommonCmpAttr[];
     rtSpreadBtnsAttr: ICommonCmpAttr[];
-    pageSelectAttr: ICommonCmpAttr;
-    perPageSelectAttr: ICommonCmpAttr;
+    pageSelectAttr: ICmpSelectAttr;
+    perPageSelectAttr: ICmpSelectAttr;
 }
 
 export interface ICmpAttrQuery {
@@ -86,9 +86,15 @@ export interface ICmpAttrQuery {
 
 export interface ICommonCmpAttr {
     [k: string]: any;
-    name: string;
+    title: string;
     isDisabled?: boolean;
     onEvt: TFn;
+}
+
+export interface ICmpSelectAttr extends ICommonCmpAttr {
+    options: (string | number)[];
+    selectedOptionValue: string | number;
+    selectedOptionIdx: number;
 }
 
 export interface ISelectEvt extends Event {
