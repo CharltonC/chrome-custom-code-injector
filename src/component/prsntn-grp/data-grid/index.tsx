@@ -15,10 +15,10 @@ import {
     IRow, TCmpCls, TFn,
 
     // State
-    IState, ISortState, TShallResetState,
+    IState, TShallResetState,
 
     // Reexport types
-    pgnHandleType, expdHandleType, thHandleType,
+    expdHandleType, thHandleType,
     sortBtnType,
 } from './type';
 
@@ -116,7 +116,7 @@ export class _DataGrid extends Component<IProps, IState> {
             data: sortedData || rawData,
             option: this.pgnHandle.createOption(paginate, pgnOption),
             state: pgnState,
-            callback: this.onPgnOptionChange.bind(this)
+            callback: this.onOptionChange.bind(this)
         });
 
         const rowsElem = this.expdHandle.createState({
@@ -270,7 +270,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    onPgnOptionChange(modState): void {
+    onOptionChange(modState): void {
         this.setState({ ...this.state, ...modState });
     }
 }
