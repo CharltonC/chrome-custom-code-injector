@@ -36,6 +36,7 @@ describe('Class - Paginate Handle', () => {
     let getPerPageSelectAttrSpy: jest.SpyInstance;
     let getGenericCmpEvtHandlerSpy: jest.SpyInstance;
     let getTargetPageIdxByPosSpy: jest.SpyInstance;
+    let getPageIdxForSpreadSpy: jest.SpyInstance;
 
     beforeEach(() => {
         handle = new PgnHandle();
@@ -66,6 +67,7 @@ describe('Class - Paginate Handle', () => {
         getPerPageSelectAttrSpy = jest.spyOn(handle, 'getPerPageSelectAttr');
         getGenericCmpEvtHandlerSpy = jest.spyOn(handle, 'getGenericCmpEvtHandler');
         getTargetPageIdxByPosSpy = jest.spyOn(handle, 'getTargetPageIdxByPos');
+        getPageIdxForSpreadSpy = jest.spyOn(handle, 'getPageIdxForSpread');
     });
 
     afterEach(() => {
@@ -461,6 +463,23 @@ describe('Class - Paginate Handle', () => {
                 });
             });
         });
+
+        describe('Method: getPageIdxForSpread -  calculating corresponding page index for left/right spread', () => {
+            const { getPageIdxForSpread } = PgnHandle.prototype;
+            const mockMaxSpread: number = 3;
+
+              it('should return the page index for left spread', () => {
+                const mockCurrPageIdx: number = 9;
+                const pageIdx: number = getPageIdxForSpread(mockCurrPageIdx, mockMaxSpread, true);
+                expect(pageIdx).toBe(5);
+            });
+
+            it('should return the page index for right spread', () => {
+                const mockCurrPageIdx: number = 0;
+                const pageIdx: number = getPageIdxForSpread(mockCurrPageIdx, mockMaxSpread, false);
+                expect(pageIdx).toBe(4);
+            });
+        });
     });
 
     describe('Method Group - Helper', () => {
@@ -581,9 +600,7 @@ describe('Class - Paginate Handle', () => {
     describe('Method Group - Generic Component Attributes', () => {
         const {
             getTextBtnAttr,
-            getSpreadBtnAttr,
             getPerPageSelectAttr,
-            getTargetPageIdxByPos
         } = PgnHandle.prototype;
 
         let mockEvtHandler: jest.Mock;
@@ -665,30 +682,34 @@ describe('Class - Paginate Handle', () => {
         });
 
         describe('Method - getSpreadBtnAttr: Get Generic Attributes of a Pagination Spread Button Element (e.g. `...`)', () => {
-            const mockState = { pageNo: 1, maxSpread: 3 } as IState;
+            const rtnTargetPageIdx: number = 99
+            const mockState = { curr: 1, maxSpread: 3 } as IState;
+
+            beforeEach(() => {
+                getPageIdxForSpreadSpy.mockReturnValue(rtnTargetPageIdx);
+            });
 
             it('should return attributes for left spread button when it is a number', () => {
                 const mockPage = 2;
                 const mockIsLtSpread = true;
                 const expTargetPageIdx = 0;
 
-                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
-                expect(title).toBe(`${mockPage}`);
+                expect(title).toBe(mockPage);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
 
             it('should return attributes for left spread button when it is not a number (i.e. a string symbol)', () => {
                 const mockPage = '...';
                 const mockIsLtSpread = true;
-                const expTargetPageIdx = -2;
 
-                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
                 expect(title).toBe('left-spread');
-                expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: rtnTargetPageIdx});
             });
 
             it('should return attributes for right spread button when it is a number', () => {
@@ -696,23 +717,22 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = false;
                 const expTargetPageIdx = 2;
 
-                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
-                expect(title).toBe(`${mockPage}`);
+                expect(title).toBe(mockPage);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
 
             it('should return attributes for right spread button when it is not a number (i.e. a string symbol)', () => {
                 const mockPage = '...';
                 const mockIsLtSpread = false;
-                const expTargetPageIdx = 4;
 
-                const { title, onEvt } = getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
                 expect(title).toBe('right-spread');
-                expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
+                expect(mockEvtHandler).toHaveBeenCalledWith({page: rtnTargetPageIdx});
             });
         });
 
@@ -904,16 +924,21 @@ describe('Class - Paginate Handle', () => {
             const mockPageNo: number = 5;
             const mockMaxSpread: number = 3;
             const mockState = { pageNo: mockPageNo, maxSpread: mockMaxSpread } as IState;
+            const mockPageIdxForSpread: number = 99;
+
+            beforeEach(() => {
+                getPageIdxForSpreadSpy.mockReturnValue(mockPageIdxForSpread);
+            });
 
             it('should return the target page index when page is a number', () => {
                 const mockPages = [ 8, 9, 10];
-                expect(getTargetPageIdxByPos(mockState, mockPages, mockLeftPos)).toBe(mockPages[mockCurrPos] - 1);
+                expect(handle.getTargetPageIdxByPos(mockState, mockPages, mockLeftPos)).toBe(mockPages[mockCurrPos] - 1);
             });
 
             it('should return the target page index when page is not a number', () => {
                 const mockPages = [ '...', 9, 10];
-                expect(getTargetPageIdxByPos(mockState, mockPages, mockLeftPos)).toBe(mockPageNo - mockMaxSpread);
-                expect(getTargetPageIdxByPos(mockState, mockPages, mockRightPos)).toBe(mockPageNo + mockMaxSpread);
+                expect(handle.getTargetPageIdxByPos(mockState, mockPages, mockLeftPos)).toBe(mockPageIdxForSpread);
+                expect(handle.getTargetPageIdxByPos(mockState, mockPages, mockRightPos)).toBe(mockPageIdxForSpread);
             });
         });
     });

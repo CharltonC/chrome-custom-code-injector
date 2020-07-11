@@ -201,6 +201,24 @@ export class PgnHandle implements IUiHandle {
         return { ltSpread, rtSpread, maxSpread };
     }
 
+    /**
+     * Forumla for calculating corresponding page index for left/right spread '...' based on the
+     * context of current page and the maxSpread (no. of pages between current and target page)
+     *
+     * e.g. maxSpread = 3
+     * ------------------------------------------------------------
+     * Current Page          | Spread/Target Page    | Spread Type
+     * No.      | Index      | No.      | Index      |
+     * ------------------------------------------------------------
+     * 1          0            4          3            Right Spread
+     * 10         9            6          5            Left Spread
+     */
+    getPageIdxForSpread(currPageIdx: number, maxSpread: number, isLtSpread: boolean): number {
+        return isLtSpread ?
+            (currPageIdx - maxSpread - 1) :
+            (currPageIdx + maxSpread + 1) ;
+    }
+
     //// Helper Methods
     canNavToPage({ curr, last }: IPageRange, { type, target }: IPageNavQuery): boolean {
         if (!this.isGteZero([curr, last])) return false;
@@ -279,19 +297,19 @@ export class PgnHandle implements IUiHandle {
     }
 
     getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [any, boolean]): ICommonCmpAttr {
-        const { pageNo, maxSpread } = state;
+        const { curr, maxSpread } = state;
 
         // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
         // - e.g. maxSpread = 3, currPageNo = 6
         // then the page is jumped to 2 (eqv. to page index of 3)
         const isNum: boolean = typeof page === 'number';
-        const pageIdx = isNum ? page - 1 : pageNo;
+        // const pageIdx = isNum ? page - 1 : curr;
         const targetPageIdx: number = isLtSpread ?
-            (isNum ? pageIdx - 1 : pageNo - maxSpread) :
-            (isNum ? pageIdx + 1 : pageNo + maxSpread);
+            (isNum ? curr - 1 : this.getPageIdxForSpread(curr, maxSpread, true) ):
+            (isNum ? curr + 1 : this.getPageIdxForSpread(curr, maxSpread, false));
 
         return {
-            title: isNum ? `${page}` : (isLtSpread ? 'left-spread' : 'right-spread'),
+            title: isNum ? page : (isLtSpread ? 'left-spread' : 'right-spread'),
             onEvt: () => onEvt({
                 page: targetPageIdx
             })
@@ -356,11 +374,11 @@ export class PgnHandle implements IUiHandle {
     }
 
     getTargetPageIdxByPos(state: IState, pages: TPageList, [currPos, activePos]: [number, number]): number {
-        const { pageNo, maxSpread } = state;
+        const { curr, maxSpread } = state;
         const page: string | number = pages[currPos];
         const targetPageIdx: number = typeof page === 'number' ?
             page - 1 :
-            (currPos < activePos ? pageNo - maxSpread : pageNo + maxSpread);
+            this.getPageIdxForSpread(curr, maxSpread, currPos < activePos);
         return targetPageIdx;
     }
 }
