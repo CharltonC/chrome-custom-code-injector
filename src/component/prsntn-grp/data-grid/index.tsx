@@ -11,15 +11,15 @@ import { Pagination } from '../../prsntn/pagination';
 // TODO: clean
 import {
     // Props
-    IProps, ISortOption,
+    IProps,
     IRow, TCmpCls, TFn,
 
     // State
-    IState, ISortState, IPgnState, TShallResetState,
+    IState, ISortState, TShallResetState,
 
     // Reexport types
     pgnHandleType, expdHandleType, thHandleType,
-    paginationType, sortBtnType,
+    sortBtnType,
 } from './type';
 
 // TODO: Move, typing
@@ -89,7 +89,8 @@ export class _DataGrid extends Component<IProps, IState> {
     //// Builtin API
     constructor(props: IProps) {
         super(props);
-        const defState: IState = { expandState: null, sortState: null, pgnState: null, thState: null };
+
+        const defState: IState = this.getDefState();
         const initState: Partial<IState> = this.createState(props);
         this.state = {...defState, ...initState};
 
@@ -98,32 +99,51 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     UNSAFE_componentWillReceiveProps(props: IProps): void {
-        const shallReset: TShallResetState = this.shallResetState(props);
-        if (!shallReset) return;
-        const updateState = this.createState(props, shallReset);
-        this.setState({...this.state, ...updateState});
+        // const shallReset: TShallResetState = this.shallResetState(props);
+        // if (!shallReset) return;
+        // const updateState = this.createState(props, shallReset);
+        // this.setState({...this.state, ...updateState});
     }
 
     render() {
-        const { data: rawData, expand } = this.props;
-        const { sortState, pgnState } = this.state;
+        const { data: rawData, expand, paginate } = this.props;
+        const { sortedData, sortOption, pgnOption, pgnState } = this.state;
         const { showInitial: visiblePath } = expand;
 
-        const data: any[] = this.getRowData(rawData, sortState, pgnState);
+        const data: any[] = sortedData || rawData;
+
+        const pgnCmpAttr = this.pgnHandle.createGenericCmpAttr({
+            data: sortedData || rawData,
+            option: this.pgnHandle.createOption(paginate, pgnOption),
+            state: pgnState,
+            callback: this.onPgnOptionChange.bind(this)
+        });
+
         const rowsElem = this.expdHandle.createState({
-            data,
+            data: data.slice(pgnState.startIdx, pgnState.endIdx),
             rows: this.rowConfig,
             visiblePath
         });
 
         return <>
-            {pgnState && <Pagination {...this.createPgnProps()} />}
+            {pgnState && <Pagination {...pgnState} {...pgnCmpAttr} />}
             <Table
                 tbody={rowsElem}
                 thRowCtx={this.state.thState}
-                sortBtnRender={(sortKey) => <SortBtn {...this.createSortBtnProps(sortState.option, sortKey)} />}
+                sortBtnRender={(sortKey) => <SortBtn {...this.createSortBtnProps(sortOption, sortKey)} />}
                 />
         </>;
+    }
+
+    getDefState(): IState {
+        return {
+            sortOption: null,
+            sortState: null,
+            sortedData: null,
+            pgnOption: null,
+            pgnState: null,
+            thState: null
+        };
     }
 
     //// Core
@@ -154,17 +174,6 @@ export class _DataGrid extends Component<IProps, IState> {
                 /> :
                 <Cmp {...rowProps} />;
         };
-    }
-
-    getRowData(rawData: any[], sortState: ISortState, pgnState: IPgnState): any[] {
-        if (pgnState) {
-            const { startIdx, endIdx } = pgnState.status;
-            const data = sortState ? sortState.data : rawData;
-            return data.slice(startIdx, endIdx);
-
-        } else if (sortState) {
-            return sortState.data;
-        }
     }
 
     //// Deal with Props & State in General
@@ -208,136 +217,62 @@ export class _DataGrid extends Component<IProps, IState> {
      *              pgnState        no
      *              expandState       no
      */
-    shallResetState(props: IProps): TShallResetState {
-        const { data, rows, header, expand, sort, paginate } = props;
-        const { sortState: currSort, pgnState: currPaginate } = this.state;
-        const { data: currData, rows: currRows, header: currHeader, expand: currExpand } = this.props;
+    // shallResetState(props: IProps): TShallResetState {
+    //     // const { data, rows, header, expand, sort, paginate } = props;
+    //     // const { sortState: currSort, pgnState: currPaginate } = this.state;
+    //     // const { data: currData, rows: currRows, header: currHeader, expand: currExpand } = this.props;
 
-        const isDiffData: boolean = data !== currData;
-        const isDiffRows: boolean = rows !== currRows;
-        const isDiffExpand: boolean = expand !== currExpand;
-        const isDiffSort: boolean = sort !== currSort.option;
-        const isDiffPgn: boolean = paginate !== currPaginate.option;
-        const isDiffHeader: boolean = header !== currHeader;
+    //     // const isDiffData: boolean = data !== currData;
+    //     // const isDiffRows: boolean = rows !== currRows;
+    //     // const isDiffExpand: boolean = expand !== currExpand;
+    //     // const isDiffSort: boolean = sort !== currSort.option;
+    //     // // const isDiffPgn: boolean = paginate !== currPaginate.option;
+    //     // const isDiffHeader: boolean = header !== currHeader;
 
-        const thState: boolean = isDiffData || isDiffHeader;
-        const expandState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn || isDiffExpand;
-        const sortState: boolean = isDiffData || isDiffRows || isDiffSort;
-        const pgnState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn;
-        const shallReset: boolean = (thState || expandState || sortState || pgnState);
-        return shallReset ? {thState, expandState, sortState, pgnState} : null;
-    }
+    //     // const thState: boolean = isDiffData || isDiffHeader;
+    //     // const expandState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn || isDiffExpand;
+    //     // const sortState: boolean = isDiffData || isDiffRows || isDiffSort;
+    //     // const pgnState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn;
+    //     // const shallReset: boolean = (thState || expandState || sortState || pgnState);
+    //     // return shallReset ? {thState, sortState, pgnState} : null;
+    // }
 
     createState(props: IProps, shallReset?: TShallResetState): Partial<IState> {
         // TODO: default option for each
-        const { data, rows, sort, paginate, header } = props;
-        shallReset = shallReset ? shallReset : {thState: true, expandState: true, sortState: true, pgnState: true};
-
-        const expandState = (rows.length > 1 && shallReset.expandState) ? {expandState: {}} : {};
-        const sortState = (sort && shallReset.sortState) ? {sortState : this.createSortState(data.slice(0), sort)}: {};
-        const pgnState = (paginate && shallReset.pgnState) ? {pgnState: this.createPgnState(data, paginate)} : {}
-        const thState = (header && shallReset.thState) ? {thState: this.thHandle.createThCtx(header)}: {};
-        return { ...expandState, ...sortState, ...pgnState, ...thState };
-    }
-
-    //// Sorting
-    createSortState(data: any[], sortOption: ISortOption): ISortState {
-        const { key, isAsc } = sortOption;
+        const { data, sort, paginate, header } = props;
         return {
-            option: { ...sortOption },
-            data: this.sortHandle.sortByObjKey(data, key, isAsc)
+            sortOption: sort ? { ...sort } : null,
+            sortedData: sort ? this.sortHandle.sortByObjKey(data, sort.key, sort.isAsc) : null,
+            pgnOption: paginate ? this.pgnHandle.createOption(paginate) : null,
+            pgnState: paginate ? this.pgnHandle.createState(data, paginate) : null,
+            thState: header ? this.thHandle.createThCtx(header) : null
         };
     }
 
+    //// Sorting
     createSortBtnProps({isAsc, key}: any, sortKey: string): sortBtnType.IProps {
-        const { data } = this.state.sortState;
+        const { sortedData } = this.state;
         const isSameTh: boolean = sortKey === key;
 
         return {
             isAsc: isSameTh ? isAsc : null,
             onClick: (() => {
-                const option = {
+                const sortOption = {
                     key: isSameTh ? key : sortKey,
                     isAsc: isSameTh ? !isAsc : true
                 };
-                const sortState = this.createSortState(data, option);
-                this.setState({...this.state, sortState});
+                this.setState({
+                    ...this.state,
+                    sortOption,
+                    sortedData: this.sortHandle.sortByObjKey(sortedData, sortOption.key, sortOption.isAsc)
+                });
             }).bind(this)
         };
     }
 
-    //// Pagination
-    createPgnState(data: any[], modOption: Partial<pgnHandleType.IOption>): IPgnState {
-        const { pgnHandle } = this;
-
-        // Only display valid increments for <option> value
-        const { increment } = modOption;
-        modOption.increment = increment ? pgnHandle.parseNoPerPage(increment) : increment;
-
-        const option = Object.assign(pgnHandle.getDefOption(), modOption) as pgnHandleType.IOption;
-        const status: pgnHandleType.IState = pgnHandle.createState(data, option);
-        return { option, status };
+    onPgnOptionChange(modState): void {
+        this.setState({ ...this.state, ...modState });
     }
-
-    createPgnProps(): paginationType.IProps {
-        const {
-            option: optionProps,
-            status: currStatus
-        } = this.state.pgnState;
-
-        const {
-            totalPage, perPage, curr, pageNo, startIdx, endIdx,
-            ...statusProps
-        } = currStatus;
-
-        let pageList: number[] = [];
-        let pageSelectIdx: number = 0;
-        for (let p: number = 1; p <= totalPage; p++) {
-            const pageIdx = p - 1;
-            pageList.push(pageIdx);
-            pageSelectIdx = p === pageNo ? pageIdx : pageSelectIdx;
-        }
-        const pageSelectProps = {pageList, pageSelectIdx};
-
-        return {
-            ...statusProps,
-            ...optionProps,
-            ...pageSelectProps,
-            onPgnChange: ((modOption: Partial<pgnHandleType.IOption>) => {
-                const { data } = this.state.sortState;
-                const { option: currOption } = this.state.pgnState;
-                const option = {...currOption, ...modOption} as pgnHandleType.IOption;
-                const status: pgnHandleType.IState = this.pgnHandle.createState(data, option);
-                const pgnState: IPgnState = { option, status };
-                this.setState({...this.state, pgnState});
-            }).bind(this)
-        };
-    }
-
-    /**
-     * React Specific callback to be passed when creating Generic Attrs/Props for Component
-     * - e.g.
-     * this.pgnHandle.createGenericCmpAttr({
-     *      data: state.sortData || props.data,
-     *      option: pgnOption.
-     *      state: pgnState,
-     *      callback: this.onPgnOptionChange.bind(this)
-     * });
-     */
-    onPgnOptionChange(modOption: Partial<pgnHandleType.IOption>): void {
-        const { pgnHandle, state, props } = this;
-        const { sortedData } = state;
-        const data = sortedData || props.data;
-        const pgnOption: pgnHandleType.IOption = pgnHandle.createOption(modOption, state.pgnOption);
-        const pgnState: pgnHandleType.IState = pgnHandle.createState(data, pgnOption);
-        this.setState({
-            ...this.state,
-            pgnOption,
-            pgnState
-        });
-    }
-
-    onHeaderSortChange(modOption): void {}
 }
 
 export const DataGrid = memo(_DataGrid);

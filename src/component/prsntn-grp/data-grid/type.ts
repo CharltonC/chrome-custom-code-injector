@@ -37,9 +37,11 @@ export interface IRow extends Array<any> {
 
 //// State
 export interface IState {
-    expandState: TExpandState;
+    sortOption: ISortOption;
     sortState: ISortState;
-    pgnState: IPgnState;
+    sortedData: any[];
+    pgnOption: pgnHandleType.IOption;
+    pgnState: pgnHandleType.IState;
     thState: thHandleType.IThCtx[][]
 }
 
