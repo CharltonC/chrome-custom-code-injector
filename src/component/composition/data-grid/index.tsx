@@ -58,8 +58,8 @@ class Table extends Component<any> {
         const hsTbHeader: boolean = !isNested && !!thRowCtx;
 
         // Table Class
-        const BASE_CLS: string = 'kz-datagrid';
-        const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--table ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
+        const BASE_CLS: string = 'kz-datagrid__table';
+        const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
 
         return (
             <table className={TB_CLS}>{ hsTbHeader &&
@@ -125,14 +125,14 @@ export class _DataGrid extends Component<IProps, IState> {
             visiblePath
         });
 
-        return <>
+        return <div className="kz-datagrid">
             {pgnState && <Pagination {...pgnState} {...pgnCmpAttr} />}
             <Table
                 tbody={rowsElem}
                 thRowCtx={this.state.thState}
                 sortBtnRender={(sortKey) => <SortBtn {...this.createSortBtnProps(sortOption, sortKey)} />}
                 />
-        </>;
+        </div>;
     }
 
     getDefState(): IState {

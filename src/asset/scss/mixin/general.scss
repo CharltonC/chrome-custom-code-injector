@@ -207,17 +207,18 @@
 }
 
 /* Customize nested table background and border */
-@mixin nested-table-bg($selector-prefix, $max-level, $base-color, $lt-margin-offset: null) {
+@mixin nested-table-bg($selector-prefix, $max-level, $base-color, $base-nest-indent: null) {
     $color: $base-color;
+    $nest-indent: $base-nest-indent;
 
     @for $i from 1 through $max-level {
         #{$selector-prefix}#{$i} {
-            @if $lt-margin-offset != null {
-                margin-left: $lt-margin-offset;
-            }
-
             @if $i != 1 {
                 $color: darken($color, 4%);
+
+                @if $nest-indent != null {
+                    $nest-indent: $nest-indent + $base-nest-indent;
+                }
             }
             background-color: $color;
             box-shadow: inset 0 7px 10px -7px rgba(0, 0, 0, 0.1);
@@ -225,6 +226,12 @@
             > tbody > tr {
                 &:not(:first-child) {
                     border-top: 1px solid white;
+                }
+
+                @if $nest-indent != null {
+                    > td:not([colspan]):first-child {
+                        text-indent: $nest-indent;
+                    }
                 }
             }
         }

@@ -1,57 +1,52 @@
 .kz-datagrid {
-    text-align: left;
+    &__table {
+        @include nested-table-bg('&--nest-', 4, #F2F2F2, 10px);
+        width: 100%;
+        text-align: left;
 
-    &--root {
-        > thead {
-            background: #DADDE4;
-            text-transform: uppercase;
-            font: 14px $roboto-bld;
+        &--root {
+            margin-top: 15px;
+            background: transparent;
 
-            tr {
-                height: 50px;
-            }
+            > thead {
+                background: #DADDE4;
+                text-transform: uppercase;
+                font: 14px $roboto-bld;
 
-            th {
-                padding: 20px;
-                color: #505050;
-
-                > * {
-                    vertical-align: middle;
+                tr {
+                    height: 50px;
                 }
-            }
-        }
 
-        > tbody {
-            > tr {
-                border-top: 1px solid #E6E6E6;
+                th {
+                    padding: 20px;
+                    color: #505050;
 
-                &:nth-child(even) {
-                    background: #FAFAFA;
+                    > * {
+                        vertical-align: middle;
+                    }
                 }
             }
 
-            // Expand button (temp)
-            button {
-                width: 20px;
-                height: 20px;
-                line-height: 20px;
-                border: 1px solid #8E8E8E;
-                border-radius: 5px;
-                color: #8E8E8E;
+            > tbody {
+                > tr {
+                    border-top: 1px solid #E6E6E6;
+
+                    &:nth-child(even) {
+                        background: #FAFAFA;
+                    }
+                }
+
+                // Expand button (temp)
+                button {
+                    width: 20px;
+                    height: 20px;
+                    line-height: 20px;
+                    border: 1px solid #8E8E8E;
+                    border-radius: 5px;
+                    color: #8E8E8E;
+                }
             }
         }
-    }
-
-    &--root {
-        background: transparent;
-    }
-
-
-    @include nested-table-bg('&--nest-', 4, #F2F2F2, 3px);
-
-    .kz-sort-btn {
-        margin-left: 10px;
-        vertical-align: middle;
     }
 
     // temp
@@ -66,5 +61,10 @@
         }
         font: 14px Helvetica;
         color: #8E8E8E;
+    }
+
+    .kz-sort-btn {
+        margin-left: 10px;
+        vertical-align: middle;
     }
 }
