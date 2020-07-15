@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { inclStaticIcon } from '../../static/icon';
-import { DataGrid } from '.';
+import React from 'react';
+import { DataGrid } from './';
 
 export default {
     title: 'Data Grid',
@@ -8,12 +7,6 @@ export default {
 };
 
 const defStyle = { padding: 20 };
-const headerStyle = { fontSize: '18px', fontStyle: 'bold', color: 'gray' };
-const nestedUlStyle = { padding: 15, listStyle: 'disc' };
-
-const dnArwIconElem = inclStaticIcon('arrow-dn', true);
-const upArwIconElem = inclStaticIcon('arrow-up', true);
-
 const sampleData: any[] = [
     {
 
@@ -147,8 +140,7 @@ const sampleData: any[] = [
 ];
 
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const TrCmp = ({idx, item, itemPath, itemLvl, nestedItems, nestedTb, isNestedOpen, onCollapseChanged, isExpd, onExpdChange}) => {
-
+    const TrCmp = ({idx, item, itemLvl, nestedItems, nestedTb, isExpd, onExpdChange}) => {
         return <>
             <tr>
                 <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
@@ -173,23 +165,10 @@ export const ViaInternalGeneratedCollapsibleState = () => {
         </>;
     };
 
-    const [data, setData] = useState(sampleData);
-
-    const addData = () => {
-        const newData = data.slice(0);
-        newData.push({
-            name: 'Zoe',
-            age: '21',
-            id: 'A2',
-        });
-        setData(newData);
-    };
-
     return (
         <div style={defStyle}>
-            <button type="button" onClick={addData}>add data</button>
             <DataGrid
-                data={data}
+                data={sampleData}
                 rowKey="id"
                 rows={[
                     [TrCmp],
@@ -208,7 +187,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 ]}
                 expand={{
                     showInitial: 'NONE',
-                    // showOnePerLvl: true
+                    showOnePerLvl: true
                 }}
                 sort={{
                     key: 'name',
@@ -221,13 +200,6 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 callback={{
                     onPaginateChange: (modState) => console.log(modState)
                 }}
-                 // show one only at a time
-                // showCollapse={'NONE'}                           // hide all
-                // showCollapse={'ALL'}                            // show all (def)
-                // showCollapse={[                                     // show specific level (incl. its parent)
-                //     '0/lvl1key:0/lvl2key:0/',            // show 1st item's level 2 nested list (incl. its parent)
-                //     '1/lvl1key:1/',                      // show 2nd item's level 1 nested list (incl. its parent)
-                // ]}
                 />
         </div>
     );
