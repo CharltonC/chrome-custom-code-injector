@@ -1,9 +1,9 @@
 import { TVisibleNestablePath, IRawRowConfig, IParsedRowConfig, IItemsCtxReq } from './type';
-import { ExpdHandle } from '.';
+import { RowHandle } from '.';
 
 describe('Service - Expand Handle', () => {
-    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = ExpdHandle.prototype;
-    let handle: ExpdHandle;
+    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = RowHandle.prototype;
+    let handle: RowHandle;
     let getMappedItemsCtxSpy: jest.SpyInstance;
     let getValidatedDataSpy: jest.SpyInstance;
     let parseRowConfigSpy: jest.SpyInstance;
@@ -12,7 +12,7 @@ describe('Service - Expand Handle', () => {
     let isDefNestedOpenSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        handle = new ExpdHandle();
+        handle = new RowHandle();
         getMappedItemsCtxSpy = jest.spyOn(handle, 'getMappedItemsCtx');
         parseRowConfigSpy = jest.spyOn(handle, 'parseRowConfig');
         getItemPathSpy = jest.spyOn(handle, 'getItemPath');

@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-import * as expdHandleType from '../../../service/handle/expand/type';
+import * as rowHandleType from '../../../service/handle/expand/type';
 import * as pgnHandleType from '../../../service/handle/paginate/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
 import * as dropdownType from '../../prsntn/dropdown/type';
@@ -24,7 +24,7 @@ export interface ISortOption {
 }
 
 export interface IExpandOption {
-    showInitial?: expdHandleType.TVisibleNestablePath;
+    showInitial?: rowHandleType.TVisibleNestablePath;
     showOnePerLvl?: boolean;
 }
 
@@ -41,7 +41,7 @@ export interface ICallbackOption {
 
 export type TRowCmpCls = React.FC<any> | React.ComponentClass<any>;
 
-export type TRowKeyPipeFn = (ctx: expdHandleType.IItemCtx) => string;
+export type TRowKeyPipeFn = (ctx: rowHandleType.IItemCtx) => string;
 
 export type TGridType = 'table' | 'list';
 
@@ -113,7 +113,7 @@ export type TSelectEvt = React.ChangeEvent<HTMLSelectElement>;
 //// Reexport
 export {pgnHandleType as pgnHandleType};
 export {dropdownType as dropdownType}
-export {expdHandleType as expdHandleType};
+export {rowHandleType as rowHandleType};
 export {thHandleType as thHandleType};
 export * as sortBtnType from '../../prsntn/sort-btn/type';
 export * as paginationType from '../../prsntn-grp/pagination/type';

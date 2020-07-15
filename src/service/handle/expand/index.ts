@@ -4,7 +4,7 @@ import {
     IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx
 } from './type';
 
-export class ExpdHandle implements IUiHandle {
+export class RowHandle implements IUiHandle {
     // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
     readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;

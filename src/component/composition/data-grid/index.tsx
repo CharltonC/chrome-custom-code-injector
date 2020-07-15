@@ -2,7 +2,7 @@ import React, { Component, memo } from "react";
 
 import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
-import { ExpdHandle } from '../../../service/handle/expand';
+import { RowHandle } from '../../../service/handle/expand';
 import { PgnHandle } from '../../../service/handle/paginate';
 
 import { SortBtn } from '../../prsntn/sort-btn';
@@ -18,7 +18,7 @@ import {
     IState, TShallResetState,
 
     // Reexport types
-    expdHandleType, thHandleType,
+    rowHandleType, thHandleType,
     sortBtnType,
 } from './type';
 
@@ -83,8 +83,8 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
-    readonly expdHandle: ExpdHandle = new ExpdHandle();
-    rowConfig: expdHandleType.IRawRowConfig[];
+    readonly rowHandle: RowHandle = new RowHandle();
+    rowConfig: rowHandleType.IRawRowConfig[];
 
     //// Builtin API
     constructor(props: IProps) {
@@ -119,7 +119,7 @@ export class _DataGrid extends Component<IProps, IState> {
             callback: this.onOptionChange.bind(this)
         });
 
-        const rowsElem = this.expdHandle.createState({
+        const rowsElem = this.rowHandle.createState({
             data: data.slice(pgnState.startIdx, pgnState.endIdx),
             rows: this.rowConfig,
             visiblePath
@@ -147,17 +147,17 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    getMappedRowConfig(rows: IRow[], rowKey: string | TRowKeyPipeFn): expdHandleType.IRawRowConfig[] {
+    getMappedRowConfig(rows: IRow[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
             const transformFn = this.createCmpTransformFn(row[transformFnIdx], rowKey);
-            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as expdHandleType.IRawRowConfig;
+            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowConfig;
         });
     }
 
     createCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
-        return (itemCtx: expdHandleType.IItemCtx) => {
+        return (itemCtx: rowHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
 
             const rowProps = {
