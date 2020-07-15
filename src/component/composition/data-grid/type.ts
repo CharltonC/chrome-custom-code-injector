@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-import * as rowHandleType from '../../../service/handle/expand/type';
+import * as rowHandleType from '../../../service/handle/row/type';
 import * as pgnHandleType from '../../../service/handle/paginate/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
 import * as dropdownType from '../../prsntn/dropdown/type';
