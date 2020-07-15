@@ -67,12 +67,12 @@ type TRelPageCtx = {
 
 //// Generic Component Attributes
 export interface ICmpAttr {
-    firstBtnAttr: ICommonCmpAttr;
-    prevBtnAttr: ICommonCmpAttr;
-    nextBtnAttr: ICommonCmpAttr;
-    lastBtnAttr: ICommonCmpAttr;
-    ltSpreadBtnsAttr: ICommonCmpAttr[];
-    rtSpreadBtnsAttr: ICommonCmpAttr[];
+    firstBtnAttr: ICmpBtnAttr;
+    prevBtnAttr: ICmpBtnAttr;
+    nextBtnAttr: ICmpBtnAttr;
+    lastBtnAttr: ICmpBtnAttr;
+    ltSpreadBtnsAttr: ICmpBtnAttr[];
+    rtSpreadBtnsAttr: ICmpBtnAttr[];
     pageSelectAttr: ICmpSelectAttr;
     perPageSelectAttr: ICmpSelectAttr;
 }
