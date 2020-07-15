@@ -29,11 +29,11 @@ export class _Pagination extends Component<IProps> {
 
         return (
             <div className={CLS_PREFIX}>
-                <p>Showing {startRecord} - {endRecord} of {totalRecord}</p>
+                <p className={`${CLS_PREFIX}__record`}>Showing {startRecord} - {endRecord} of {totalRecord}</p>
                 <Dropdown {...perPageSelectProps} />
-                <Dropdown {...pageSelectProps} />
                 <button {...firstBtnProps}>{ltArrowElem}{ltArrowElem}</button>
                 <button {...prevBtnProps}>{ltArrowElem}</button>
+                <Dropdown {...pageSelectProps} />
                 <button {...nextBtnProps}>{rtArrowElem}</button>
                 <button {...lastBtnProps}>{rtArrowElem}{rtArrowElem}</button>
             </div>
@@ -49,7 +49,7 @@ export class _Pagination extends Component<IProps> {
     getMappedBtnProps(btnAttr: pgnHandleType.ICmpBtnAttr, btnName: string): IBtnProps {
         return {
             type: 'button',
-            className:`${CLS_PREFIX}__btn-${btnName}`,
+            className:`${CLS_PREFIX}__btn ${CLS_PREFIX}__btn--${btnName}`,
             disabled: btnAttr.isDisabled,
             onClick: btnAttr.onEvt
         }
@@ -57,6 +57,7 @@ export class _Pagination extends Component<IProps> {
 
     getMappedSelectProps(selectAttr: pgnHandleType.ICmpSelectAttr, isPerPage: boolean): ISelectProps {
         return {
+            wrapperCls: `${CLS_PREFIX}__select ${CLS_PREFIX}__select--${isPerPage ? 'perpage' : 'page'}`,
             border: true,
             disabled: selectAttr.isDisabled,
             list: selectAttr.options,
