@@ -6,7 +6,7 @@ import { ExpdHandle } from '../../../service/handle/expand';
 import { PgnHandle } from '../../../service/handle/paginate';
 
 import { SortBtn } from '../../prsntn/sort-btn';
-import { Pagination } from '../../prsntn/pagination';
+import { Pagination } from '../../prsntn-grp/pagination';
 
 // TODO: clean
 import {

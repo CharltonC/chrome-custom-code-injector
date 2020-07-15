@@ -106,4 +106,4 @@ export type TSelectEvt = React.ChangeEvent<HTMLSelectElement>;
 export {expdHandleType as expdHandleType};
 export {thHandleType as thHandleType};
 export * as sortBtnType from '../../prsntn/sort-btn/type';
-export * as paginationType from '../../prsntn/pagination/type';
+export * as paginationType from '../../prsntn-grp/pagination/type';

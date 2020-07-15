@@ -1,6 +1,6 @@
 import React, { ReactElement, memo } from "react";
 
-import { Dropdown } from '../dropdown';
+import { Dropdown } from '../../prsntn/dropdown';
 import { inclStaticIcon } from '../../static/icon';
 
 import { IProps } from './type';
