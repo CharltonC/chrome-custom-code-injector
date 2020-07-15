@@ -12,7 +12,7 @@ import { Pagination } from '../../prsntn-grp/pagination';
 import {
     // Props
     IProps,
-    IRow, TCmpCls, TFn,
+    IRow, TRowCmpCls, TFn, TRowKeyPipeFn,
 
     // State
     IState, TShallResetState,
@@ -94,8 +94,8 @@ export class _DataGrid extends Component<IProps, IState> {
         const initState: Partial<IState> = this.createState(props);
         this.state = {...defState, ...initState};
 
-        const { rows } = this.props;
-        this.rowConfig = this.getMappedRowConfig(rows);
+        const { rows, rowKey } = this.props;
+        this.rowConfig = this.getMappedRowConfig(rows, rowKey ? rowKey : 'id');
     }
 
     UNSAFE_componentWillReceiveProps(props: IProps): void {
@@ -113,7 +113,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const data: any[] = sortedData || rawData;
 
         const pgnCmpAttr = this.pgnHandle.createGenericCmpAttr({
-            data: sortedData || rawData,
+            data,
             option: this.pgnHandle.createOption(paginate, pgnOption),
             state: pgnState,
             callback: this.onOptionChange.bind(this)
@@ -147,32 +147,32 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    getMappedRowConfig(rows: IRow[]): expdHandleType.IRawRowConfig[] {
+    getMappedRowConfig(rows: IRow[], rowKey: string | TRowKeyPipeFn): expdHandleType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
-            const transformFn = this.createCmpTransformFn(row[transformFnIdx]);
+            const transformFn = this.createCmpTransformFn(row[transformFnIdx], rowKey);
             return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as expdHandleType.IRawRowConfig;
         });
     }
 
-    createCmpTransformFn(Cmp: TCmpCls): TFn {
+    createCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
         return (itemCtx: expdHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
 
             const rowProps = {
                 ...itemCtx,
-                key: `${item.id}-${item.name}`,
+                key: typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx),
                 nestedTb: nestedItems ? <Table tbody={nestedItems} tbLvl={itemLvl} /> : null
             };
 
             return nestedItems ?
                 <ExpandableWrapper
                     isExpdByDef={isExpdByDef}
-                    Cmp={Cmp}
+                    Cmp={RowCmp}
                     {...rowProps}
                 /> :
-                <Cmp {...rowProps} />;
+                <RowCmp {...rowProps} />;
         };
     }
 
@@ -217,25 +217,25 @@ export class _DataGrid extends Component<IProps, IState> {
      *              pgnState        no
      *              expandState       no
      */
-    // shallResetState(props: IProps): TShallResetState {
-    //     // const { data, rows, header, expand, sort, paginate } = props;
-    //     // const { sortState: currSort, pgnState: currPaginate } = this.state;
-    //     // const { data: currData, rows: currRows, header: currHeader, expand: currExpand } = this.props;
+/*     shallResetState(props: IProps): TShallResetState {
+        // const { data, rows, header, expand, sort, paginate } = props;
+        // const { sortState: currSort, pgnState: currPaginate } = this.state;
+        // const { data: currData, rows: currRows, header: currHeader, expand: currExpand } = this.props;
 
-    //     // const isDiffData: boolean = data !== currData;
-    //     // const isDiffRows: boolean = rows !== currRows;
-    //     // const isDiffExpand: boolean = expand !== currExpand;
-    //     // const isDiffSort: boolean = sort !== currSort.option;
-    //     // // const isDiffPgn: boolean = paginate !== currPaginate.option;
-    //     // const isDiffHeader: boolean = header !== currHeader;
+        // const isDiffData: boolean = data !== currData;
+        // const isDiffRows: boolean = rows !== currRows;
+        // const isDiffExpand: boolean = expand !== currExpand;
+        // const isDiffSort: boolean = sort !== currSort.option;
+        // // const isDiffPgn: boolean = paginate !== currPaginate.option;
+        // const isDiffHeader: boolean = header !== currHeader;
 
-    //     // const thState: boolean = isDiffData || isDiffHeader;
-    //     // const expandState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn || isDiffExpand;
-    //     // const sortState: boolean = isDiffData || isDiffRows || isDiffSort;
-    //     // const pgnState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn;
-    //     // const shallReset: boolean = (thState || expandState || sortState || pgnState);
-    //     // return shallReset ? {thState, sortState, pgnState} : null;
-    // }
+        // const thState: boolean = isDiffData || isDiffHeader;
+        // const expandState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn || isDiffExpand;
+        // const sortState: boolean = isDiffData || isDiffRows || isDiffSort;
+        // const pgnState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn;
+        // const shallReset: boolean = (thState || expandState || sortState || pgnState);
+        // return shallReset ? {thState, sortState, pgnState} : null;
+    } */
 
     createState(props: IProps, shallReset?: TShallResetState): Partial<IState> {
         // TODO: default option for each

@@ -134,13 +134,13 @@ const sampleData: any[] = [
     {
         name: 'Michael',
         age: '16',
-        id: 'A2',
+        id: 'A3',
         lvl1key: [
             {
 
                 name: 'John',
                 age: '21',
-                id: 'A1-B1',
+                id: 'A3-B1',
             }
         ]
     }
@@ -190,6 +190,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             <button type="button" onClick={addData}>add data</button>
             <DataGrid
                 data={data}
+                rowKey="id"
                 rows={[
                     [TrCmp],
                     ['lvl1key', TrCmp],
@@ -204,7 +205,6 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     {title: 'age', sortKey: 'age'},
                     {title: 'id', sortKey: 'id'},
                     {title: ''},
-
                 ]}
                 expand={{
                     showInitial: 'NONE',

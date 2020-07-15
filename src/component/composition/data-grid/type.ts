@@ -8,6 +8,7 @@ import * as dropdownType from '../../prsntn/dropdown/type';
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
+    rowKey?: string | TRowKeyPipeFn;
     rows: IRow[];
     type?: TGridType;
     header?: thHandleType.IThConfig[];
@@ -15,10 +16,6 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     sort?: ISortOption;
     paginate?: Partial<pgnHandleType.IOption>;
 }
-
-export type TCmpCls = React.FC<any> | React.ComponentClass<any>;
-
-export type TGridType = 'table' | 'list';
 
 export interface ISortOption {
     key: string;
@@ -31,9 +28,16 @@ export interface IExpandOption {
 }
 
 export interface IRow extends Array<any> {
-    0: string | TCmpCls;
-    1?: TCmpCls;
+    0: string | TRowCmpCls;
+    1?: TRowCmpCls;
 }
+
+export type TRowCmpCls = React.FC<any> | React.ComponentClass<any>;
+
+export type TRowKeyPipeFn = (ctx: expdHandleType.IItemCtx) => string;
+
+export type TGridType = 'table' | 'list';
+
 
 //// State
 export interface IState {
