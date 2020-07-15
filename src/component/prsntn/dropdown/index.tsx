@@ -38,15 +38,16 @@ export class _Dropdown extends Component<IProps, IState> {
     }
 
     render() {
-        const { id, list, listTxtTransform, border, selectIdx, onSelect, ...props } = this.props;
+        const { wrapperCls, id, list, listTxtTransform, border, selectIdx, onSelect, ...props } = this.props;
         const { hsList, hsSelectIdx } = this.state;
 
-        const baseCls: string = 'dropdown';
-        const wrapperCls: string = border ? `${baseCls} ${baseCls}--border` : `${baseCls} ${baseCls}--plain`;
+        const BASE_CLS: string = 'dropdown';
+        const BORDER_CLS: string = border ? `${BASE_CLS} ${BASE_CLS}--border` : `${BASE_CLS} ${BASE_CLS}--plain`;
+        const WRAPPER_CLS = wrapperCls ? `${wrapperCls} ${BORDER_CLS}` : BORDER_CLS;
         const selecteProps = hsSelectIdx ? { ...props, value: selectIdx } : props;
 
         return hsList ?
-            <div className={wrapperCls}>
+            <div className={WRAPPER_CLS}>
                 <select
                     {...selecteProps}
                     id={id}
