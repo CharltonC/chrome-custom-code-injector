@@ -2,7 +2,7 @@ import React, { Component, memo } from "react";
 
 import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
-import { RowHandle } from '../../../service/handle/expand';
+import { RowHandle } from '../../../service/handle/row'
 import { PgnHandle } from '../../../service/handle/paginate';
 
 import { SortBtn } from '../../prsntn/sort-btn';
