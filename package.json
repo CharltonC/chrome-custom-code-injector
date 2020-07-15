@@ -6,6 +6,7 @@
     "cmp-s": "source schematic/cmp.sh static",
     "cmp-p": "source schematic/cmp.sh prsntn",
     "cmp-g": "source schematic/cmp.sh prsntn-grp",
+    "cmp-c": "source schematic/cmp.sh composition",
     "cmp-v": "source schematic/cmp.sh view",
     "serve-files-dev": "gulp serve",
     "serve-files-prod": "gulp serve --prod --watchify",
