@@ -1,127 +1,70 @@
-import React, { ReactElement, memo } from "react";
+import React, { ReactElement, memo, Component } from "react";
 
 import { Dropdown } from '../../prsntn/dropdown';
 import { inclStaticIcon } from '../../static/icon';
 
-import { IProps } from './type';
+import {
+    IProps, IBtnProps, ISelectProps,
+    pgnHandleType
+ } from './type';
 
-export const _Pagination = (props: IProps) => {
-    const CLS_PREFIX: string = 'kz-paginate';
-    const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
-    const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
+const CLS_PREFIX: string = 'kz-paginate';
+const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
+const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
 
-    const {
-        startRecord,
-        endRecord,
-        totalRecord,
-        pageNo,
-        totalPage,
-        first: firstPage,
-        firstBtnAttr: first,
-        prevBtnAttr: prev,
-        nextBtnAttr: next,
-        lastBtnAttr: last,
-        ltSpreadBtnsAttr: ltSpread,
-        rtSpreadBtnsAttr: rtSpread,
-        perPageSelectAttr: perPage,
-        pageSelectAttr: page
-    } = props;
+export class _Pagination extends Component<IProps> {
+    render() {
+        const {
+            startRecord, endRecord, totalRecord,
+            firstBtnAttr, prevBtnAttr, nextBtnAttr, lastBtnAttr,
+            pageSelectAttr, perPageSelectAttr,
+        } = this.props;
 
-    return (
-        <div className={CLS_PREFIX}>
-            <p>Showing {startRecord} - {endRecord} of {totalRecord}</p>
-            <Dropdown
-                border={true}
-                list={perPage.options}
-                listTxtTransform={(p) => `${p} Per Page`}
-                selectIdx={perPage.selectedOptionIdx}
-                onSelect={perPage.onEvt}
-                />
-            <Dropdown
-                border={true}
-                disabled={page.isDisabled}
-                list={page.options}
-                listTxtTransform={(p) => Number.isInteger(p) ? `Page ${p}` : `${p}`}
-                selectIdx={page.selectedOptionIdx}
-                onSelect={page.onEvt}
-                />
-            <button
-                className={`${CLS_PREFIX}__btn-first`}
-                type="button"
-                disabled={first.isDisabled}
-                onClick={first.onEvt}
-                >
-                {ltArrowElem}{ltArrowElem}
-            </button>
-            <button
-                className={`${CLS_PREFIX}__btn-prev`}
-                type="button"
-                disabled={prev.isDisabled}
-                onClick={prev.onEvt}
-                >
-                {ltArrowElem}
-            </button>
-            <button
-                className={`${CLS_PREFIX}__btn-next`}
-                type="button"
-                disabled={next.isDisabled}
-                onClick={next.onEvt}
-                >
-                {rtArrowElem}
-            </button>
-            <button
-                className={`${CLS_PREFIX}__btn-last`}
-                type="button"
-                disabled={last.isDisabled}
-                onClick={last.onEvt}
-                >
-                {rtArrowElem}{rtArrowElem}
-            </button>
-            <section>
-                {!first.isDisabled &&
-                <button
-                    className={`${CLS_PREFIX}__btn-first`}
-                    type="button"
-                    onClick={first.onEvt}
-                    >
-                    1
-                </button>}
-                {ltSpread?.map(({title, onEvt}, idx) => (
-                    <button
-                        key={`lt-spread-${idx}`}
-                        type="button"
-                        onClick={onEvt}
-                        >
-                        {typeof title === 'number' ? title : '...'}
-                    </button>
-                ))}
-                <button
-                    type="button"
-                    disabled={true}
-                    >
-                    {pageNo}
-                    </button>
-                {rtSpread?.map(({title, onEvt}, idx) => (
-                    <button
-                    key={`rt-spread-${idx}`}
-                        type="button"
-                        onClick={onEvt}
-                        >
-                        {typeof title === 'number' ? title : '...'}
-                    </button>
-                ))}
-                {!last.isDisabled &&
-                <button
-                    className={`${CLS_PREFIX}__btn-last`}
-                    type="button"
-                    onClick={last.onEvt}
-                    >
-                    {totalPage}
-                    </button>
-                }
-            </section>
-        </div>
-    );
-};
+        const perPageSelectProps: ISelectProps = this.getMappedSelectProps(perPageSelectAttr, true);
+        const pageSelectProps: ISelectProps = this.getMappedSelectProps(pageSelectAttr, false);
+        const firstBtnProps: IBtnProps = this.getMappedBtnProps(firstBtnAttr, 'first');
+        const prevBtnProps: IBtnProps = this.getMappedBtnProps(prevBtnAttr, 'prev');
+        const nextBtnProps: IBtnProps = this.getMappedBtnProps(nextBtnAttr, 'next');
+        const lastBtnProps: IBtnProps = this.getMappedBtnProps(lastBtnAttr, 'last');
+
+        return (
+            <div className={CLS_PREFIX}>
+                <p>Showing {startRecord} - {endRecord} of {totalRecord}</p>
+                <Dropdown {...perPageSelectProps} />
+                <Dropdown {...pageSelectProps} />
+                <button {...firstBtnProps}>{ltArrowElem}{ltArrowElem}</button>
+                <button {...prevBtnProps}>{ltArrowElem}</button>
+                <button {...nextBtnProps}>{rtArrowElem}</button>
+                <button {...lastBtnProps}>{rtArrowElem}{rtArrowElem}</button>
+            </div>
+        );
+    }
+
+    getOptionTextPipe(isPerPage: boolean): (val: any) => string {
+        return isPerPage ?
+            (text: string | number) => `${text} Per Page` :
+            (text: string | number) => Number.isInteger(text as number) ? `Page ${text}` : `${text}`;
+    }
+
+    getMappedBtnProps(btnAttr: pgnHandleType.ICmpBtnAttr, btnName: string): IBtnProps {
+        return {
+            type: 'button',
+            className:`${CLS_PREFIX}__btn-${btnName}`,
+            disabled: btnAttr.isDisabled,
+            onClick: btnAttr.onEvt
+        }
+    }
+
+    getMappedSelectProps(selectAttr: pgnHandleType.ICmpSelectAttr, isPerPage: boolean): ISelectProps {
+        return {
+            border: true,
+            disabled: selectAttr.isDisabled,
+            list: selectAttr.options,
+            listTxtTransform: this.getOptionTextPipe(isPerPage),
+            selectIdx: selectAttr.selectedOptionIdx,
+            onSelect: selectAttr.onEvt,
+        };
+    }
+}
 
 export const Pagination = memo(_Pagination);
