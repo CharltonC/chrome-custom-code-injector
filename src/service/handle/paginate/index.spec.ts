@@ -694,10 +694,11 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = true;
                 const expTargetPageIdx = 0;
 
-                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
                 expect(title).toBe(mockPage);
+                expect(isSpread).toBe(false);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
 
@@ -705,10 +706,11 @@ describe('Class - Paginate Handle', () => {
                 const mockPage = '...';
                 const mockIsLtSpread = true;
 
-                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
                 expect(title).toBe('left-spread');
+                expect(isSpread).toBe(true);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: rtnTargetPageIdx});
             });
 
@@ -717,10 +719,11 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = false;
                 const expTargetPageIdx = 2;
 
-                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
                 expect(title).toBe(mockPage);
+                expect(isSpread).toBe(false);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: expTargetPageIdx});
             });
 
@@ -728,10 +731,11 @@ describe('Class - Paginate Handle', () => {
                 const mockPage = '...';
                 const mockIsLtSpread = false;
 
-                const { title, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
                 onEvt();
 
                 expect(title).toBe('right-spread');
+                expect(isSpread).toBe(true);
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: rtnTargetPageIdx});
             });
         });

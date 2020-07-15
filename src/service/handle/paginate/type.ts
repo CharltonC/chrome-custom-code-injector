@@ -84,17 +84,21 @@ export interface ICmpAttrQuery {
     callback: TFn;
 }
 
-export interface ICommonCmpAttr {
-    [k: string]: any;
-    title: string;
-    isDisabled?: boolean;
-    onEvt: TFn;
+export interface ICmpBtnAttr extends ICommonCmpAttr {
+    isSpread?: boolean;
 }
 
 export interface ICmpSelectAttr extends ICommonCmpAttr {
     options: (string | number)[];
     selectedOptionValue: string | number;
     selectedOptionIdx: number;
+}
+
+interface ICommonCmpAttr {
+    [k: string]: any;
+    title: string;
+    isDisabled?: boolean;
+    onEvt: TFn;
 }
 
 export interface ISelectEvt extends Event {

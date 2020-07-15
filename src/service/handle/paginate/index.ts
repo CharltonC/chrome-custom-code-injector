@@ -3,7 +3,7 @@ import {
     IState, IOption,
     IPageNavQuery,
     IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx,
-    ICmpAttrQuery, ICmpAttr, ICommonCmpAttr, ICmpSelectAttr, ISelectEvt, TPageList,
+    ICmpAttrQuery, ICmpAttr, ICmpBtnAttr, ICmpSelectAttr, ISelectEvt, TPageList,
     TFn
 } from './type';
 
@@ -286,7 +286,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getTextBtnAttr(onEvt: TFn, [title, pageIdx]: [string, number]): ICommonCmpAttr {
+    getTextBtnAttr(onEvt: TFn, [title, pageIdx]: [string, number]): ICmpBtnAttr {
         return {
             title,
             isDisabled: !Number.isInteger(pageIdx),
@@ -296,7 +296,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [any, boolean]): ICommonCmpAttr {
+    getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [any, boolean]): ICmpBtnAttr {
         const { curr, maxSpread } = state;
 
         // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
@@ -310,6 +310,7 @@ export class PgnHandle implements IUiHandle {
 
         return {
             title: isNum ? page : (isLtSpread ? 'left-spread' : 'right-spread'),
+            isSpread: !isNum,
             onEvt: () => onEvt({
                 page: targetPageIdx
             })
