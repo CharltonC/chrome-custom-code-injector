@@ -218,6 +218,9 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     page: 0,
                     increment: [10, 1],
                 }}
+                callback={{
+                    onPaginateChange: (modState) => console.log(modState)
+                }}
                  // show one only at a time
                 // showCollapse={'NONE'}                           // hide all
                 // showCollapse={'ALL'}                            // show all (def)

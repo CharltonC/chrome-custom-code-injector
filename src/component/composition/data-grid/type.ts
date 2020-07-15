@@ -15,6 +15,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     expand?: IExpandOption;
     sort?: ISortOption;
     paginate?: Partial<pgnHandleType.IOption>;
+    callback?: ICallbackOption
 }
 
 export interface ISortOption {
@@ -30,6 +31,12 @@ export interface IExpandOption {
 export interface IRow extends Array<any> {
     0: string | TRowCmpCls;
     1?: TRowCmpCls;
+}
+
+export interface ICallbackOption {
+    onPaginateChange?: TFn;
+    onSortChange?: TFn;
+    onExpandChange?: TFn;
 }
 
 export type TRowCmpCls = React.FC<any> | React.ComponentClass<any>;
@@ -96,9 +103,6 @@ export interface IPgnPropsCtx {
 
 export type TPgnCallback = (pgnState: IPgnState) => any;
 
-export {pgnHandleType as pgnHandleType};
-export {dropdownType as dropdownType}
-
 
 //// Generic
 export type TFn = (...args: any[]) => any;
@@ -107,6 +111,8 @@ export type TSelectEvt = React.ChangeEvent<HTMLSelectElement>;
 
 
 //// Reexport
+export {pgnHandleType as pgnHandleType};
+export {dropdownType as dropdownType}
 export {expdHandleType as expdHandleType};
 export {thHandleType as thHandleType};
 export * as sortBtnType from '../../prsntn/sort-btn/type';
