@@ -1,3 +1,4 @@
+import { TMethodSpy } from '../../../test-util/type';
 import { TestUtil } from '../../../test-util/';
 import {
     IState, IOption,
@@ -10,12 +11,12 @@ import { PgnHandle } from '.';
 describe('Class - Paginate Handle', () => {
     let handle: PgnHandle;
     let defOption: IOption;
-    let spy: Record<keyof typeof handle, jest.SpyInstance>;
+    let spy: TMethodSpy<PgnHandle>;
 
     beforeEach(() => {
         handle = new PgnHandle();
         defOption = handle.getDefOption();
-        spy = TestUtil.spyProtoMethods(handle);
+        spy = TestUtil.spyMethods(handle);
     });
 
     afterEach(() => {
