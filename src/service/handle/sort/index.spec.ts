@@ -1,15 +1,16 @@
+import { TMethodSpy } from '../../../test-util/type';
 import { TestUtil } from '../../../test-util/';
 import { TLsItem } from './type';
 import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {
     let sortHandle: SortHandle;
-    let spy: Record<keyof SortHandle, jest.SpyInstance>;
+    let spy: TMethodSpy<SortHandle>;
     let sortedList: TLsItem[];
 
     beforeEach(() => {
         sortHandle = new SortHandle();
-        spy = TestUtil.spyProtoMethods(sortHandle);
+        spy = TestUtil.spyMethods(sortHandle);
     });
 
     afterEach(() => {
