@@ -1,20 +1,15 @@
+import { TestUtil } from '../../../test-util/';
 import { TLsItem } from './type';
 import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {
     let sortHandle: SortHandle;
-    let compareNumSpy: jest.SpyInstance;
-    let compareStrSpy: jest.SpyInstance;
-    let compareLocaleStrSpy: jest.SpyInstance;
-    let isValSameTypeSpy: jest.SpyInstance;
+    let spy: Record<keyof SortHandle, jest.SpyInstance>;
     let sortedList: TLsItem[];
 
     beforeEach(() => {
         sortHandle = new SortHandle();
-        compareNumSpy = jest.spyOn(sortHandle, 'compareNum');
-        compareStrSpy = jest.spyOn(sortHandle, 'compareStr');
-        compareLocaleStrSpy = jest.spyOn(sortHandle, 'compareLocaleStr');
-        isValSameTypeSpy = jest.spyOn(sortHandle, 'isValSameType');
+        spy = TestUtil.spyProtoMethods(sortHandle);
     });
 
     afterEach(() => {
@@ -29,75 +24,75 @@ describe('Handle Service - Default Sorter', () => {
         const mockLocaleStrList: TLsItem[] = [{key: 'cqé'}, {key: 'rév'}, {key: 'écl'}];
 
         it('should not sort if values are not same type of number, string', () => {
-            isValSameTypeSpy.mockReturnValue(false);
+            spy.isValSameType.mockReturnValue(false);
             sortedList = sortHandle.sortByObjKey(mockStrList, 'key');
 
             expect(sortedList).toEqual(mockStrList);
-            expect(compareStrSpy).not.toHaveBeenCalled();
-            expect(compareNumSpy).not.toHaveBeenCalled();
-            expect(compareLocaleStrSpy).not.toHaveBeenCalled();
+            expect(spy.compareStr).not.toHaveBeenCalled();
+            expect(spy.compareNum).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).not.toHaveBeenCalled();
         });
 
         it('should not sort if values type are invalid', () => {
             sortedList = sortHandle.sortByObjKey(mockInvalidList, 'key');
 
             expect(sortedList).toEqual(mockInvalidList);
-            expect(compareStrSpy).not.toHaveBeenCalled();
-            expect(compareNumSpy).not.toHaveBeenCalled();
-            expect(compareLocaleStrSpy).not.toHaveBeenCalled();
+            expect(spy.compareStr).not.toHaveBeenCalled();
+            expect(spy.compareNum).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).not.toHaveBeenCalled();
         });
 
         it('should sort based on string in asc. order', () => {
             sortedList = sortHandle.sortByObjKey(mockStrList, 'key');
 
-            expect(compareStrSpy).toHaveBeenCalled();
-            expect(compareNumSpy).not.toHaveBeenCalled();
-            expect(compareLocaleStrSpy).not.toHaveBeenCalled();
+            expect(spy.compareStr).toHaveBeenCalled();
+            expect(spy.compareNum).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).not.toHaveBeenCalled();
             expect(sortedList).toEqual([{key: 'x'}, {key: 'y'}, {key: 'z'}]);
         });
 
         it('should sort based on string in dsc. order', () => {
             sortedList = sortHandle.sortByObjKey(mockStrList, 'key', false)
 
-            expect(compareStrSpy).toHaveBeenCalled();
-            expect(compareNumSpy).not.toHaveBeenCalled();
-            expect(compareLocaleStrSpy).not.toHaveBeenCalled();
+            expect(spy.compareStr).toHaveBeenCalled();
+            expect(spy.compareNum).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).not.toHaveBeenCalled();
             expect(sortedList).toEqual([{key: 'z'}, {key: 'y'}, {key: 'x'}]);
         });
 
         it('should sort based on number in asc. order', () => {
             sortedList = sortHandle.sortByObjKey(mockNumList, 'key');
 
-            expect(compareNumSpy).toHaveBeenCalled();
-            expect(compareStrSpy).not.toHaveBeenCalled();
-            expect(compareLocaleStrSpy).not.toHaveBeenCalled();
+            expect(spy.compareNum).toHaveBeenCalled();
+            expect(spy.compareStr).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).not.toHaveBeenCalled();
             expect(sortedList).toEqual([{key: 1}, {key: 5}, {key: 19}]);
         });
 
         it('should sort based on number in dsc. order', () => {
             sortedList = sortHandle.sortByObjKey(mockNumList, 'key', false);
 
-            expect(compareNumSpy).toHaveBeenCalled();
-            expect(compareStrSpy).not.toHaveBeenCalled();
-            expect(compareLocaleStrSpy).not.toHaveBeenCalled();
+            expect(spy.compareNum).toHaveBeenCalled();
+            expect(spy.compareStr).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).not.toHaveBeenCalled();
             expect(sortedList).toEqual([{key: 19}, {key: 5}, {key: 1}]);
         });
 
         it('should sort based on locale string in asc. order', () => {
             sortedList = sortHandle.sortByObjKey(mockLocaleStrList, 'key', true, true);
 
-            expect(compareLocaleStrSpy).toHaveBeenCalled();
-            expect(compareStrSpy).not.toHaveBeenCalled();
-            expect(compareNumSpy).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).toHaveBeenCalled();
+            expect(spy.compareStr).not.toHaveBeenCalled();
+            expect(spy.compareNum).not.toHaveBeenCalled();
             expect(sortedList).toEqual([{key: 'cqé'}, {key: 'écl'}, {key: 'rév'}]);
         });
 
         it('should sort based on locale string in dsc. order', () => {
             sortedList = sortHandle.sortByObjKey(mockLocaleStrList, 'key', false, true);
 
-            expect(compareLocaleStrSpy).toHaveBeenCalled();
-            expect(compareStrSpy).not.toHaveBeenCalled();
-            expect(compareNumSpy).not.toHaveBeenCalled();
+            expect(spy.compareLocaleStr).toHaveBeenCalled();
+            expect(spy.compareStr).not.toHaveBeenCalled();
+            expect(spy.compareNum).not.toHaveBeenCalled();
             expect(sortedList).toEqual([{key: 'rév'}, {key: 'écl'}, {key: 'cqé'}]);
         });
 
