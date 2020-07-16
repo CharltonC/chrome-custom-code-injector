@@ -62,7 +62,7 @@ export const TestUtil = {
         return $spy;
     },
 
-    spyProtoMethods(target): Record<string, jest.SpyInstance> {
+    spyProtoMethods(target: {new(...args: any[]): any}): Record<string, jest.SpyInstance> {
         const $spy: Record<string, jest.SpyInstance> = {};
         Object
             .getOwnPropertyNames(target.prototype)
