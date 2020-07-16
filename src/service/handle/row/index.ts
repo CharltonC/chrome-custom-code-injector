@@ -39,8 +39,8 @@ export class RowHandle implements IUiHandle {
         return this.getMappedItemsCtx({data, rows, rowLvl: 0, parentPath: '', visiblePath});
     }
 
-    getDefState() {
-        // TODO
+    getDefState(): any[] {
+        return [];
     }
 
     //// Partial State
@@ -182,14 +182,5 @@ export class RowHandle implements IUiHandle {
 
     isGteZeroInt(val: number): boolean {
        return Number.isInteger(val) && val >= 0;
-    }
-
-    //// Generic Component Attr
-    createGenericCmpAttr() {
-        // TODO
-    }
-
-    getGenericCmpEvtHandler() {
-        // TODO
     }
 }

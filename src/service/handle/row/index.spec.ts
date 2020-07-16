@@ -1,7 +1,7 @@
-import { TVisibleNestablePath, IRawRowConfig, IParsedRowConfig, IItemsCtxReq } from './type';
+import { TVisibleNestablePath, IRawRowConfig, IParsedRowConfig, IItemsCtxReq, IOption } from './type';
 import { RowHandle } from '.';
 
-describe('Service - Expand Handle', () => {
+describe('Service - Row Handle', () => {
     const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = RowHandle.prototype;
     let handle: RowHandle;
     let getMappedItemsCtxSpy: jest.SpyInstance;
@@ -42,7 +42,23 @@ describe('Service - Expand Handle', () => {
     });
 
     describe('Method - createOption', () => {
+        const mockModOption = { data: ['a'] } as IOption;
 
+        it('should return merged option when existing option is provided', () => {
+            expect(handle.createOption(mockModOption)).toEqual({
+                ...handle.getDefOption(),
+                ...mockModOption
+            });
+        });
+
+        it('should return merged option when existing option is not provided', () => {
+            const mockExistOption = { data: ['b'], visiblePath: 'NONE' } as IOption;
+
+            expect(handle.createOption(mockModOption, mockExistOption)).toEqual({
+                ...mockExistOption,
+                ...mockModOption
+            });
+        });
     });
 
     describe('Method - getDefOption: Default Expand User Option', () => {
@@ -62,16 +78,28 @@ describe('Service - Expand Handle', () => {
             getMappedItemsCtxSpy.mockReturnValue(mockMappedItems);
         });
 
+        it('should return null if data is not valid', () => {
+            getValidatedDataSpy.mockReturnValue(false);
+            expect(handle.createState()).toBeFalsy();
+            expect(getValidatedDataSpy).toHaveBeenCalledWith(mockMappedItems);
+        });
+
         it('should return mapped items', () => {
             getValidatedDataSpy.mockReturnValue([]);
 
             expect(handle.createState()).toBe(mockMappedItems);
-            expect(getValidatedDataSpy).toHaveBeenCalledWith([]);
+            expect(getValidatedDataSpy).toHaveBeenCalledWith(mockMappedItems);
             expect(getMappedItemsCtxSpy).toHaveBeenCalledWith({
                 ...handle.getDefOption(),
                 rowLvl: 0,
                 parentPath: ''
             });
+        });
+    });
+
+    describe('Method - getDefState', () => {
+        it('should return default state', () => {
+            expect(handle.getDefState()).toEqual([]);
         });
     });
 
