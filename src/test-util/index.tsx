@@ -49,5 +49,28 @@ export const TestUtil = {
         act(() => {
             elem.dispatchEvent(new EvtCls(evtType, { bubbles }));
         });
+    },
+
+    spyMethods(target: Record<string, any>): Record<string, jest.SpyInstance> {
+        const $spy: Record<string, jest.SpyInstance> = {};
+        const proto: Record<string, any> = Object.getPrototypeOf(target);
+        Object
+            .getOwnPropertyNames(proto)
+            .forEach((name: string) => {
+                $spy[name] = jest.spyOn(target, name);
+            });
+        return $spy;
+    },
+
+    spyProtoMethods(target): Record<string, jest.SpyInstance> {
+        const $spy: Record<string, jest.SpyInstance> = {};
+        Object
+            .getOwnPropertyNames(target.prototype)
+            .filter((name: string) => name !== 'constructor')   // Dont mock the constructor as it will cause problem with `this` context
+            .forEach((name: string) => {
+                $spy[name] = jest.spyOn(target.prototype, name);
+            });
+        return $spy;
     }
+
 }
