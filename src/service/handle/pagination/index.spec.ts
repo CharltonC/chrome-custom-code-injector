@@ -5,7 +5,7 @@ import {
     ICmpAttrQuery, TPageList,
 } from './type';
 
-import { PgnHandle } from './';
+import { PgnHandle } from '.';
 
 describe('Class - Paginate Handle', () => {
     let handle: PgnHandle;
