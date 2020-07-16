@@ -9,8 +9,10 @@
             "type": "node",
             "request": "launch",
             "port": 9229,
+            "outputCapture": "std",
             "args": [
-                "--inspect-brk",
+                // "--inspect-brk",
+                "--inspect",
                 "${workspaceRoot}/node_modules/jest/bin/jest",
                 "--config=${workspaceRoot}/jest.config.js",
                 "--runInBand",
