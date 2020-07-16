@@ -1,24 +1,19 @@
+import { TMethodSpy } from '../../../test-util/type';
+import { TestUtil } from '../../../test-util/';
 import {
     IThConfig,
     IThColCtx,
     IThColCtxCache,
-    IThCtx,
 } from './type';
 import { ThHandle } from './';
 
 describe('Table Header Handle', () => {
     let handle: ThHandle;
-    let createThColCtxSpy: jest.SpyInstance;
-    let createThSpanCtxSpy: jest.SpyInstance;
-    let setThColCtxCacheSpy: jest.SpyInstance;
-    let getDefThInfoCacheSpy: jest.SpyInstance;
+    let spy: TMethodSpy<ThHandle>;
 
     beforeEach(() => {
         handle = new ThHandle();
-        createThColCtxSpy = jest.spyOn(handle, 'createThColCtx');
-        createThSpanCtxSpy = jest.spyOn(handle, 'createThSpanCtx');
-        setThColCtxCacheSpy = jest.spyOn(handle, 'setThColCtxCache');
-        getDefThInfoCacheSpy = jest.spyOn(handle, 'setThColCtxCache');
+        spy = TestUtil.spyMethods(handle);
     });
 
     afterEach(() => {
@@ -40,12 +35,12 @@ describe('Table Header Handle', () => {
             const mockThConfig: any = ['lorem'];
             const mockThColCtx: any = [];
             const mockThSpanCtx: any = [[]];
-            createThColCtxSpy.mockReturnValue(mockThColCtx);
-            createThSpanCtxSpy.mockReturnValue(mockThSpanCtx);
+            spy.createThColCtx.mockReturnValue(mockThColCtx);
+            spy.createThSpanCtx.mockReturnValue(mockThSpanCtx);
 
             expect(handle.createThCtx(mockThConfig)).toBe(mockThSpanCtx);
-            expect(createThColCtxSpy).toHaveBeenCalledWith(mockThConfig);
-            expect(createThSpanCtxSpy).toHaveBeenCalledWith(mockThColCtx);
+            expect(spy.createThColCtx).toHaveBeenCalledWith(mockThConfig);
+            expect(spy.createThSpanCtx).toHaveBeenCalledWith(mockThColCtx);
         });
 
         it('should return the table header context (without mocks)', () => {
@@ -88,18 +83,18 @@ describe('Table Header Handle', () => {
                 slots: []
             };
             createThColCtxClone = createThColCtx.bind(handle);
-            createThColCtxSpy.mockReturnValue([]);
-            setThColCtxCacheSpy.mockImplementation(() => {});
+            spy.createThColCtx.mockReturnValue([]);
+            spy.setThColCtxCache.mockImplementation(() => {});
         });
 
         it('should return the column context when row level is 0', () => {
             const { subHeader } = mockThConfig[0];
 
             expect(createThColCtxClone(mockThConfig)).toEqual(mockCache.slots);
-            expect(getDefThInfoCacheSpy).toHaveBeenCalled();
-            expect(createThColCtxSpy).toHaveBeenCalledWith(subHeader, 1, mockCache);
-            expect(createThColCtxSpy).toHaveBeenCalledTimes(1);
-            expect(setThColCtxCacheSpy).toHaveBeenCalledTimes(3);
+            expect(spy.createDefThInfoCache).toHaveBeenCalled();
+            expect(spy.createThColCtx).toHaveBeenCalledWith(subHeader, 1, mockCache);
+            expect(spy.createThColCtx).toHaveBeenCalledTimes(1);
+            expect(spy.setThColCtxCache).toHaveBeenCalledTimes(3);
         });
 
         it('should return the column context when row level is not 0', () => {
@@ -109,9 +104,9 @@ describe('Table Header Handle', () => {
                 {title: 'a', ownColTotal: 0, sortKey: undefined},
                 {title: 'b', ownColTotal: null, sortKey: undefined}
             ]);
-            expect(createThColCtxSpy).toHaveBeenCalledWith(subHeader, 2, mockCache);
-            expect(createThColCtxSpy).toHaveBeenCalledTimes(1);
-            expect(setThColCtxCacheSpy).toHaveBeenCalledTimes(2);
+            expect(spy.createThColCtx).toHaveBeenCalledWith(subHeader, 2, mockCache);
+            expect(spy.createThColCtx).toHaveBeenCalledTimes(1);
+            expect(spy.setThColCtxCache).toHaveBeenCalledTimes(2);
         });
     });
 
