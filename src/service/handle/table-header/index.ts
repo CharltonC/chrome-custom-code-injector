@@ -6,14 +6,14 @@ import {
 } from './type';
 
 export class ThHandle {
-    createThCtx(thConfig: IOption[]): IThCtx[][] {
-        const colCtx = this.createThColCtx(thConfig) as IThColCtx[][];
+    createThCtx(option: IOption[]): IThCtx[][] {
+        const colCtx = this.createThColCtx(option) as IThColCtx[][];
         return this.createThSpanCtx(colCtx);
     }
 
-    createThColCtx(thConfig: IOption[], rowLvlIdx: number = 0, cache?: IThColCtxCache): IThColCtx[][] | IThColCtx[] {
+    createThColCtx(option: IOption[], rowLvlIdx: number = 0, cache?: IThColCtxCache): IThColCtx[][] | IThColCtx[] {
         cache = cache ? cache : this.createDefThInfoCache();
-        const colCtx: IThColCtx[] = thConfig.map(({ title, sortKey, subHeader }: IOption) => {
+        const colCtx: IThColCtx[] = option.map(({ title, sortKey, subHeader }: IOption) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal: number = cache.colTotal;
 
