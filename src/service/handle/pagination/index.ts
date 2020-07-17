@@ -1,4 +1,4 @@
-import { IUiHandle } from '../../../type/ui-handle';
+import { IUiHandle } from '../../../asset/ts/type/ui-handle';
 import {
     IState, IOption,
     IPageNavQuery,

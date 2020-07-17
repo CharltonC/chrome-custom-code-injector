@@ -1,4 +1,4 @@
-import { IUiHandle } from '../../../type/ui-handle';
+import { IUiHandle } from '../../../asset/ts/type/ui-handle';
 import {
     IOption,
     IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx
