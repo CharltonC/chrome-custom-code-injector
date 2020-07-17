@@ -32,6 +32,6 @@ module.exports = {
     ],
     coveragePathIgnorePatterns: [
         ...defaults.coveragePathIgnorePatterns,
-        './src/test-util/'
+        './src/asset/ts/test-util/'
     ]
 };
