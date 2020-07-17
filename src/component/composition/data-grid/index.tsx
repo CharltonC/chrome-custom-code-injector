@@ -1,4 +1,4 @@
-import React, { Component, memo } from "react";
+import React, { Component, memo, ReactElement } from "react";
 
 import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
@@ -10,16 +10,9 @@ import { Pagination } from '../../prsntn-grp/pagination';
 
 // TODO: clean
 import {
-    // Props
-    IProps,
+    IProps, IState,
     IRow, TRowCmpCls, TFn, TRowKeyPipeFn,
-
-    // State
-    IState, TShallResetState,
-
-    // Reexport types
-    rowHandleType, thHandleType,
-    sortBtnType,
+    rowHandleType,
 } from './type';
 
 // TODO: Move, typing
@@ -48,105 +41,78 @@ class ExpandableWrapper extends Component<any, any> {
     }
 }
 
-// TODO: Table
-class Table extends Component<any> {
-    render() {
-        const { tbLvl, thRowCtx, tbody, sortBtnRender } = this.props;
-        const isNested: boolean = Number.isInteger(tbLvl);
-
-        // Table Header Sort Button
-        const hsTbHeader: boolean = !isNested && !!thRowCtx;
-
-        // Table Class
-        const BASE_CLS: string = 'kz-datagrid__table';
-        const TB_CLS: string = `${BASE_CLS} ${BASE_CLS}--` + (isNested ? `nest-${tbLvl+1}` : 'root')
-
-        return (
-            <table className={TB_CLS}>{ hsTbHeader &&
-                <thead>{ thRowCtx.map((thCtxs: thHandleType.IThCtx[], trIdx: number) => (
-                    <tr key={trIdx}>{ thCtxs.map(({ title, sortKey, ...thProps }: thHandleType.IThCtx, thIdx: number) => (
-                        <th key={thIdx} {...thProps}>
-                            <span>{title}</span>
-                            {sortKey && sortBtnRender(sortKey)}
-                        </th>))}
-                    </tr>))}
-                </thead>}
-                <tbody>
-                    {tbody}
-                </tbody>
-            </table>
-        );
-    }
-}
-
 export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
-    rowConfig: rowHandleType.IRawRowConfig[];
+    readonly BASE_TB_CLS: string = 'kz-datagrid__table';
 
     //// Builtin API
     constructor(props: IProps) {
         super(props);
-
-        const defState: IState = this.getDefState();
-        const initState: Partial<IState> = this.createState(props);
-        this.state = {...defState, ...initState};
-
-        const { rows, rowKey } = this.props;
-        this.rowConfig = this.getMappedRowConfig(rows, rowKey ? rowKey : 'id');
-    }
-
-    UNSAFE_componentWillReceiveProps(props: IProps): void {
-        // const shallReset: TShallResetState = this.shallResetState(props);
-        // if (!shallReset) return;
-        // const updateState = this.createState(props, shallReset);
-        // this.setState({...this.state, ...updateState});
+        this.state = this.createState(props);
     }
 
     render() {
-        const { data: rawData, expand, paginate } = this.props;
-        const { sortedData, sortOption, pgnOption, pgnState } = this.state;
+        const { BASE_TB_CLS } = this;
+        const { data: rawData, expand } = this.props;
+        const { thState, sortState, sortOption, pgnOption, pgnState, rowOption } = this.state;
         const { showInitial: visiblePath } = expand;
 
-        const data: any[] = sortedData || rawData;
+        const data: any[] = sortState?.data || rawData;
+        const onOptionChange = this.onOptionChange.bind(this);
 
-        const pgnCmpAttr = this.pgnHandle.createGenericCmpAttr({
+        // Pagination
+        const pgnCmpAttr = pgnOption ? this.pgnHandle.createGenericCmpAttr({
             data,
-            option: this.pgnHandle.createOption(paginate, pgnOption),
+            option: pgnOption,
             state: pgnState,
-            callback: this.onOptionChange.bind(this)
-        });
+            callback: onOptionChange
+        }) : null;
 
-        const rowsElem = this.rowHandle.createState({
-            data: data.slice(pgnState.startIdx, pgnState.endIdx),
-            rows: this.rowConfig,
+        // Table Rows
+        const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
+        const tbodyTrElem: ReactElement[] = this.rowHandle.createState({
+            data: pgnOption ? data.slice(startIdx, endIdx) : data,
+            rows: rowOption,
             visiblePath
         });
 
-        return <div className="kz-datagrid">
-            {pgnState && <Pagination {...pgnState} {...pgnCmpAttr} />}
-            <Table
-                tbody={rowsElem}
-                thRowCtx={this.state.thState}
-                sortBtnRender={(sortKey) => <SortBtn {...this.createSortBtnProps(sortOption, sortKey)} />}
-                />
-        </div>;
-    }
-
-    getDefState(): IState {
-        return {
-            sortOption: null,
-            sortState: null,
-            sortedData: null,
-            pgnOption: null,
-            pgnState: null,
-            thState: null
-        };
+        return (
+            <div className="kz-datagrid">
+                {pgnOption && <Pagination {...pgnState} {...pgnCmpAttr} />}
+                <table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--root`}>
+                    {/* TODO: make this a component group? */}
+                    {thState && <thead>
+                        {thState.map((thCtxs, trIdx: number) => (
+                            <tr key={trIdx}>
+                                {/* TODO: make this a component group? */}
+                                {thCtxs.map(({ title, sortKey, ...thProps }, thIdx: number) => {
+                                    const { sortBtnAttr }: any = sortKey ? this.sortHandle.createGenericCmpAttr({
+                                        data,
+                                        option: sortOption,
+                                        callback: onOptionChange
+                                    }, sortKey) : {};
+                                    return (
+                                        <th key={thIdx} {...thProps}>
+                                            <span>{title}</span>
+                                            { sortKey && <SortBtn {...sortBtnAttr} /> }
+                                        </th>
+                                    );
+                                })}
+                            </tr>))}
+                    </thead>}
+                    <tbody>
+                        {tbodyTrElem}
+                    </tbody>
+                </table>
+            </div>
+        );
     }
 
     //// Core
+    // TODO: Move to Row Handle - createState ?
     getMappedRowConfig(rows: IRow[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
@@ -157,13 +123,19 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     createCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
+        const { BASE_TB_CLS } = this;
+
         return (itemCtx: rowHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
 
             const rowProps = {
                 ...itemCtx,
                 key: typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx),
-                nestedTb: nestedItems ? <Table tbody={nestedItems} tbLvl={itemLvl} /> : null
+                nestedTb: nestedItems ?
+                    (<table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--nest-${itemLvl+1}`} >
+                        <tbody>{nestedItems}</tbody>
+                    </table>) :
+                    null
             };
 
             return nestedItems ?
@@ -236,44 +208,30 @@ export class _DataGrid extends Component<IProps, IState> {
         // const shallReset: boolean = (thState || expandState || sortState || pgnState);
         // return shallReset ? {thState, sortState, pgnState} : null;
     } */
-
-    createState(props: IProps, shallReset?: TShallResetState): Partial<IState> {
-        // TODO: default option for each
-        const { data, sort, paginate, header } = props;
-        return {
-            sortOption: sort ? { ...sort } : null,
-            sortedData: sort ? this.sortHandle.sortByObjKey(data, sort.key, sort.isAsc) : null,
-            pgnOption: paginate ? this.pgnHandle.createOption(paginate) : null,
-            pgnState: paginate ? this.pgnHandle.createState(data, paginate) : null,
-            thState: header ? this.thHandle.createState(header) : null
-        };
-    }
-
-    //// Sorting
-    createSortBtnProps({isAsc, key}: any, sortKey: string): sortBtnType.IProps {
-        const { sortedData } = this.state;
-        const isSameTh: boolean = sortKey === key;
+    createState(props: IProps): IState {
+        const { rows, rowKey, data, sort, paginate, header } = props;
+        // TODO: this should rowState??
+        const rowOption = rows ? this.getMappedRowConfig(rows, rowKey ? rowKey : 'id') : null;
+        const sortOption = sort ? this.sortHandle.createOption(sort) : null;
+        const sortState = sort ? this.sortHandle.createState(data, sortOption) : null;
+        const pgnOption = paginate ? this.pgnHandle.createOption(paginate) : null;
+        const pgnState = paginate ? this.pgnHandle.createState(data, paginate) : null;
+        const thState = header ? this.thHandle.createState(header) : null;
 
         return {
-            isAsc: isSameTh ? isAsc : null,
-            onClick: (() => {
-                const sortOption = {
-                    key: isSameTh ? key : sortKey,
-                    isAsc: isSameTh ? !isAsc : true
-                };
-                this.setState({
-                    ...this.state,
-                    sortOption,
-                    sortedData: this.sortHandle.sortByObjKey(sortedData, sortOption.key, sortOption.isAsc)
-                });
-            }).bind(this)
+            // TODO: make option & state in one call?
+            rowOption,
+            sortOption,
+            sortState,
+            pgnOption,
+            pgnState,
+            thState,
         };
     }
 
     onOptionChange(modState): void {
-        const { callback } = this.props;
+        // TODO: add diff. callback
         this.setState({ ...this.state, ...modState });
-        if (callback?.onPaginateChange) callback.onPaginateChange(modState);
     }
 }
 

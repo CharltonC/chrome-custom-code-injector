@@ -190,8 +190,9 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     showOnePerLvl: true
                 }}
                 sort={{
-                    key: 'name',
-                    isAsc: true
+                    // key: 'name',
+                    // isAsc: true,
+                    reset: true,
                 }}
                 paginate={{
                     page: 0,

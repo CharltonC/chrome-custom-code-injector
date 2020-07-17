@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 
+import * as sortHandleType from '../../../service/handle/sort/type';
 import * as rowHandleType from '../../../service/handle/row/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
@@ -13,15 +14,12 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     type?: TGridType;
     header?: thHandleType.IOption[];
     expand?: IExpandOption;
-    sort?: ISortOption;
+    sort?: TSortOption;
     paginate?: Partial<pgnHandleType.IOption>;
     callback?: ICallbackOption
 }
 
-export interface ISortOption {
-    key: string;
-    isAsc?: boolean;
-}
+export type TSortOption = Partial<sortHandleType.IOption>;
 
 export interface IExpandOption {
     showInitial?: rowHandleType.TVisibleNestablePath;
@@ -48,20 +46,16 @@ export type TGridType = 'table' | 'list';
 
 //// State
 export interface IState {
-    sortOption: ISortOption;
-    sortState: ISortState;
-    sortedData: any[];
+    rowOption: rowHandleType.IRawRowConfig[];
+    sortOption: TSortOption;
+    // TODO: fix
+    sortState: any;
     pgnOption: pgnHandleType.IOption;
     pgnState: pgnHandleType.IState;
     thState: thHandleType.IThCtx[][]
 }
 
 export type TExpandState = Record<string, boolean>;
-
-export interface ISortState {
-    option: ISortOption;
-    data: any[];
-}
 
 export interface INestedRowProps extends React.HTMLAttributes<HTMLElement> {
     item: {[k: string]: any};
@@ -78,31 +72,6 @@ export interface IClpsProps {
     isNestedOpen?: boolean;
     onCollapseChanged?: TFn;
 }
-
-
-//// Pagination
-export interface IPgnState {
-    option: pgnHandleType.IOption;
-    status: pgnHandleType.IState;
-}
-
-export interface IPgnProps {
-    firstBtnProps: TBtnProps;
-    prevBtnProps: TBtnProps;
-    nextBtnProps: TBtnProps;
-    lastBtnProps: TBtnProps;
-    perPageSelectProps: dropdownType.IProps;
-    pageSelectProps: dropdownType.IProps;
-}
-
-export interface IPgnPropsCtx {
-    data: any[];
-    option: pgnHandleType.IOption;
-    callback?: TPgnCallback;
-}
-
-export type TPgnCallback = (pgnState: IPgnState) => any;
-
 
 //// Generic
 export type TFn = (...args: any[]) => any;
