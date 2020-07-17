@@ -148,66 +148,6 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    //// Deal with Props & State in General
-    /**
-     * Determine what slice of state should be reset for avoiding unneeded calls of creating particular state slice
-     *
-     * PROPS        SELECTIVE STATE THAT REQUIRES TO BE CHANGED IF DIFF. PROPS
-     * ---------------------------------------------------------------------
-     * data         thState:        yes - modified sort header/asc may be diff. to initial one
-     *              sortState:      yes - diff. set or data to sort
-     *              pgnState:       yes - diff. set or data to paginate
-     *              expandState       yes - since visible data is diff.
-     *
-     * rows         thState:        no - its dep. on data but indep to the curr. sort state
-     *              sortState:      yes - diff. set or data to sort
-     *              pgnState:       yes - diff. set or data to paginate
-     *              expandState       yes - as the key will be different
-     *
-     * sort         thState         no - its dep. on data but indep to the curr. sort state
-     *              sortState       yes - itself
-     *              pgnState        yes - diff. set or data to paginate
-     *              expandState       yes - since visible data is diff.
-     *
-     * expand      thState         no - its dep. on data but indep to the curr. sort state
-     *              sortState       no
-     *              pgnState        no
-     *              expandState       yes - itself
-     *
-     * paginate     thState         no - its dep. on data but indep to the curr. sort state
-     *              sortState       no
-     *              pgnState        yes - itself
-     *              expandState       yes - since visible data is diff.
-     *
-     * header       thState         yes - itself
-     *              sortState       no - thState is indep to the curr. sort state
-     *              pgnState        no
-     *              expandState       no
-     *
-     * type         thState         no
-     *              sortState       no
-     *              pgnState        no
-     *              expandState       no
-     */
-/*     shallResetState(props: IProps): TShallResetState {
-        // const { data, rows, header, expand, sort, paginate } = props;
-        // const { sortState: currSort, pgnState: currPaginate } = this.state;
-        // const { data: currData, rows: currRows, header: currHeader, expand: currExpand } = this.props;
-
-        // const isDiffData: boolean = data !== currData;
-        // const isDiffRows: boolean = rows !== currRows;
-        // const isDiffExpand: boolean = expand !== currExpand;
-        // const isDiffSort: boolean = sort !== currSort.option;
-        // // const isDiffPgn: boolean = paginate !== currPaginate.option;
-        // const isDiffHeader: boolean = header !== currHeader;
-
-        // const thState: boolean = isDiffData || isDiffHeader;
-        // const expandState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn || isDiffExpand;
-        // const sortState: boolean = isDiffData || isDiffRows || isDiffSort;
-        // const pgnState: boolean = isDiffData || isDiffRows || isDiffSort || isDiffPgn;
-        // const shallReset: boolean = (thState || expandState || sortState || pgnState);
-        // return shallReset ? {thState, sortState, pgnState} : null;
-    } */
     createState(props: IProps): IState {
         const { rows, rowKey, data, sort, paginate, header } = props;
         // TODO: this should rowState??
