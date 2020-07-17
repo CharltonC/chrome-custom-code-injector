@@ -16,9 +16,9 @@ export interface IThCtx {
 }
 
 //// Other
-export type TRowThColCtx = IThColCtx[][];
+export type TRowsThColCtx = IThColCtx[][];
 
-export type TSubRowThColCtx = IThColCtx[];
+export type TRowThColCtx = IThColCtx[];
 
 export interface IThColCtx {
     title: string;
