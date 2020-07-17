@@ -2,7 +2,7 @@ import { TMethodSpy } from '../../../test-util/type';
 import { TestUtil } from '../../../test-util/';
 import {
     IOption,
-    IThColCtx,
+    TRowThColCtx, TSubRowThColCtx,
     IThColCtxCache,
 } from './type';
 import { ThHandle } from './';
@@ -112,7 +112,7 @@ describe('Table Header Handle', () => {
 
     describe('Method - createThSpanCtx: Create rows (`tr`) of header (`th`) context for row span and column span', () => {
         const { createThSpanCtx }  = ThHandle.prototype;
-        const mockColCtxs: IThColCtx[][] = [
+        const mockColCtxs: TRowThColCtx = [
             [
                 {title: 'a', ownColTotal: 3},
                 {title: 'b'}
@@ -184,7 +184,7 @@ describe('Table Header Handle', () => {
         });
 
         it('should set the column context for that row level when row level is 0 and column context is provided', () => {
-            const mockColCtx: IThColCtx[] = [];
+            const mockColCtx: TSubRowThColCtx = [];
             setThColCtxCache(mockCache, 0, mockColCtx);
 
             const { slots, colTotal } = mockCache;
@@ -194,7 +194,7 @@ describe('Table Header Handle', () => {
         });
 
         it('should set the column context for that row level if not already exist when row level is not 0 and column context is provied', () => {
-            const mockColCtx: IThColCtx[] = [];
+            const mockColCtx: TSubRowThColCtx = [];
             setThColCtxCache(mockCache, 1, mockColCtx);
 
             const { slots, colTotal } = mockCache;

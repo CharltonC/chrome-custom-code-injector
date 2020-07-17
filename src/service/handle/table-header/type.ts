@@ -16,6 +16,10 @@ export interface IThCtx {
 }
 
 //// Other
+export type TRowThColCtx = IThColCtx[][];
+
+export type TSubRowThColCtx = IThColCtx[];
+
 export interface IThColCtx {
     title: string;
     ownColTotal?: number;

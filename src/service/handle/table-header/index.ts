@@ -1,24 +1,25 @@
 import {
     IOption, TState,
+    TRowThColCtx, TSubRowThColCtx,
     IThColCtx,
     IThColCtxCache,
 } from './type';
 
 export class ThHandle {
     createState(option: IOption[]): TState {
-        const colCtx = this.createThColCtx(option) as IThColCtx[][];
+        const colCtx = this.createThColCtx(option) as TRowThColCtx;
         return this.createThSpanCtx(colCtx);
     }
 
-    createThColCtx(option: IOption[], rowLvlIdx: number = 0, cache?: IThColCtxCache): IThColCtx[][] | IThColCtx[] {
+    createThColCtx(option: IOption[], rowLvlIdx: number = 0, cache?: IThColCtxCache): TRowThColCtx | TSubRowThColCtx {
         cache = cache ? cache : this.createDefThInfoCache();
-        const colCtx: IThColCtx[] = option.map(({ title, sortKey, subHeader }: IOption) => {
+        const colCtx: TSubRowThColCtx = option.map(({ title, sortKey, subHeader }: IOption) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal: number = cache.colTotal;
 
             // Get the Sub Row Info if there is sub headers & Update cache
             const subRowLvlIdx: number = rowLvlIdx + 1;
-            const subRowCtx = subHeader ? this.createThColCtx(subHeader, subRowLvlIdx, cache) as IThColCtx[] : null;
+            const subRowCtx = subHeader ? this.createThColCtx(subHeader, subRowLvlIdx, cache) as TSubRowThColCtx : null;
             this.setThColCtxCache(cache, subRowLvlIdx, subRowCtx);
 
             // After Cache is updated
@@ -32,7 +33,7 @@ export class ThHandle {
         return isTopLvl ? cache.slots : colCtx;
     }
 
-    setThColCtxCache(cache: IThColCtxCache, rowLvlIdx: number, colCtx?: IThColCtx[]): void {
+    setThColCtxCache(cache: IThColCtxCache, rowLvlIdx: number, colCtx?: TSubRowThColCtx): void {
         const { slots } = cache;
         const isTopLvl: boolean = rowLvlIdx === 0;
 
@@ -50,10 +51,10 @@ export class ThHandle {
         }
     }
 
-    createThSpanCtx(colCtx: IThColCtx[][]): TState {
+    createThSpanCtx(colCtx: TRowThColCtx): TState {
         let rowTotal: number = colCtx.length;
 
-        return colCtx.map((row: IThColCtx[], rowLvlIdx: number) => {
+        return colCtx.map((row: TSubRowThColCtx, rowLvlIdx: number) => {
             const is1stRowLvl: boolean = rowLvlIdx === 0;
             if (!is1stRowLvl) rowTotal--;
 
