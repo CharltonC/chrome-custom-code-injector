@@ -1,5 +1,5 @@
-import { TMethodSpy } from '../../../test-util/type';
-import { TestUtil } from '../../../test-util/';
+import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { TestUtil } from '../../../asset/ts/test-util';
 import {
     IOption,
     TRowsThColCtx, TRowThColCtx,

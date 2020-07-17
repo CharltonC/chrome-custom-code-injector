@@ -1,4 +1,4 @@
-import { TestUtil } from '../../../test-util';
+import { TestUtil } from '../../../asset/ts/test-util';
 // import { IProps, IState } from './type';
 // import { CmpCls } from './';
 

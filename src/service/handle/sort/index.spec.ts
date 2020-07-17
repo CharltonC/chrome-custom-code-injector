@@ -1,6 +1,6 @@
-import { TMethodSpy } from '../../../test-util/type';
-import { TestUtil } from '../../../test-util/';
 import { TLsItem } from './type';
+import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {

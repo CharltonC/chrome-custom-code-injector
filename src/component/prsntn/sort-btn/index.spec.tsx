@@ -1,4 +1,4 @@
-import { TestUtil } from '../../../test-util/';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { SortBtn } from './';
 
 describe('Component - TODO: Component Name', () => {

@@ -1,4 +1,4 @@
-import { TestUtil } from '../../../test-util/';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, IState , IValidationConfig } from './type';
 import { _TextInput, TextInput } from './';
 

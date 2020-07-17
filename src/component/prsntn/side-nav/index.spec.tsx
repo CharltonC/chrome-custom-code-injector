@@ -1,4 +1,4 @@
-import { TestUtil } from '../../../test-util/';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, IState, INestList, IList } from './type';
 import { _SideNav, SideNav } from './';
 import { ReactElement } from 'react';

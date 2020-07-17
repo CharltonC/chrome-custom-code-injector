@@ -1,4 +1,4 @@
-import { TestUtil } from '../../../test-util/';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, ITabItem  } from './type';
 import { _TabSwitch, TabSwitch } from './';
 

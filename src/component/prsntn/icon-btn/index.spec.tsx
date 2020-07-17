@@ -1,4 +1,4 @@
-import { TestUtil } from '../../../test-util/';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { IconBtn } from './';
 
 describe('Component - Icon Button', () => {
