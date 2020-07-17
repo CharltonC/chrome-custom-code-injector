@@ -1,19 +1,19 @@
 import {
-    IThConfig,
+    IOption,
     IThColCtx,
     IThColCtxCache,
     IThCtx,
 } from './type';
 
 export class ThHandle {
-    createThCtx(thConfig: IThConfig[]): IThCtx[][] {
+    createThCtx(thConfig: IOption[]): IThCtx[][] {
         const colCtx = this.createThColCtx(thConfig) as IThColCtx[][];
         return this.createThSpanCtx(colCtx);
     }
 
-    createThColCtx(thConfig: IThConfig[], rowLvlIdx: number = 0, cache?: IThColCtxCache): IThColCtx[][] | IThColCtx[] {
+    createThColCtx(thConfig: IOption[], rowLvlIdx: number = 0, cache?: IThColCtxCache): IThColCtx[][] | IThColCtx[] {
         cache = cache ? cache : this.createDefThInfoCache();
-        const colCtx: IThColCtx[] = thConfig.map(({ title, sortKey, subHeader }: IThConfig) => {
+        const colCtx: IThColCtx[] = thConfig.map(({ title, sortKey, subHeader }: IOption) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal: number = cache.colTotal;
 

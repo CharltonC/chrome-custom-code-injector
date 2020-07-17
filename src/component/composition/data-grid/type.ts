@@ -11,7 +11,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     rowKey?: string | TRowKeyPipeFn;
     rows: IRow[];
     type?: TGridType;
-    header?: thHandleType.IThConfig[];
+    header?: thHandleType.IOption[];
     expand?: IExpandOption;
     sort?: ISortOption;
     paginate?: Partial<pgnHandleType.IOption>;

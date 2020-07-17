@@ -1,7 +1,7 @@
-export interface IThConfig {
+export interface IOption {
     title: string;
     sortKey?: string;
-    subHeader?: IThConfig[]
+    subHeader?: IOption[]
 }
 
 export interface IThColCtx {

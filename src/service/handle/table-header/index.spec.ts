@@ -1,7 +1,7 @@
 import { TMethodSpy } from '../../../test-util/type';
 import { TestUtil } from '../../../test-util/';
 import {
-    IThConfig,
+    IOption,
     IThColCtx,
     IThColCtxCache,
 } from './type';
@@ -44,7 +44,7 @@ describe('Table Header Handle', () => {
         });
 
         it('should return the table header context (without mocks)', () => {
-            const mockThConfig: IThConfig[] = [
+            const mockThConfig: IOption[] = [
                 {title: 'a', subHeader: [
                     {title: 'a-1'},
                     {title: 'a-2'}
@@ -67,7 +67,7 @@ describe('Table Header Handle', () => {
 
     describe('Method - createThColCtx: Create rows (`tr`) of header (`th`) context for descendent columns', () => {
         const { createThColCtx } = ThHandle.prototype;
-        const mockThConfig: IThConfig[] = [
+        const mockThConfig: IOption[] = [
             {title: 'a', subHeader: [
                 {title: 'a-1'},
                 {title: 'a-2'}
