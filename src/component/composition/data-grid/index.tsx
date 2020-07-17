@@ -271,8 +271,9 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     onOptionChange(modState): void {
-        this.props.callback?.onPaginateChange(modState);
+        const { callback } = this.props;
         this.setState({ ...this.state, ...modState });
+        if (callback?.onPaginateChange) callback.onPaginateChange(modState);
     }
 }
 
