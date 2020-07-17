@@ -1,13 +1,17 @@
-import { TLsItem, TStrSortOrder } from './type';
+import { IUiHandle } from '../../../asset/ts/type/ui-handle';
+import {
+    IOption,
+    TLsItem, TStrSortOrder,
+    TFn
+} from './type';
 
-export class SortHandle {
+export class SortHandle implements IUiHandle {
     readonly noOrder: TStrSortOrder = 0;
     readonly baOrder: TStrSortOrder = 1;
     readonly abOrder: TStrSortOrder = -1;
 
-    constructor(){}
-
-    sortByObjKey(list: TLsItem[], key: string, isAsc: boolean = true, hsLocale: boolean = false): TLsItem[] {
+    //// Core
+    sortByObjKey(list: TLsItem[], {key, isAsc, hsLocale}: IOption): TLsItem[] {
         return list.sort((a: TLsItem, b: TLsItem) => {
             const valA: any = a[key];
             const valB: any = b[key];
@@ -44,5 +48,77 @@ export class SortHandle {
 
     isValSameType(valA: any, valB: any, type: string): boolean {
         return typeof valA === type && typeof valB === type;
+    }
+
+    shallSort({ key, isAsc }: IOption): boolean {
+        return key && typeof isAsc !== 'undefined';
+    }
+
+    //// Option & State
+    /**
+     * Merge the updated option with existing option (either custom or default)
+     */
+    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
+        const baseOption: IOption = existingOption ? existingOption : this.getDefOption();
+        return { ...baseOption, ...modOption };
+    }
+
+    getDefOption(): IOption {
+        return {
+            key: null,
+            isAsc: null,
+            hsLocale: false,
+            reset: false,
+        };
+    }
+
+    // TODO: type
+    // Make sure sortedData ? sortedData : originalData;
+    createState(data: TLsItem[], option: IOption){
+        const shallSort: boolean = this.shallSort(option);
+        const dataCopy: TLsItem[] = data.slice(0);
+        return {
+            data:  shallSort ? this.sortByObjKey(dataCopy, option) : null
+        };
+    }
+
+    getDefState() {
+        return { data: null };
+    }
+
+    //// Generic UI Component Related
+    // TODO: query type
+    createGenericCmpAttr(query, sortKey: string) {
+        const { data, option, callback } = query;
+        const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
+        const sortBtnAttr = this.createSortBtnAttr(onEvt, option, sortKey);
+        return { sortBtnAttr };
+    }
+
+    // TODO: query & return type
+    createSortBtnAttr(onEvt: TFn, { key, isAsc, reset }: IOption, sortKey: string) {
+        const isCurrTh: boolean = sortKey === key;
+        const shallClear: boolean = reset && !isAsc;
+
+        return {
+            // up/dn arrow highlight state for the sort btn
+            // - no highlight state for non-current header or if current header sort is temp. off
+            isAsc: isCurrTh ? isAsc : null,
+
+            // handler for sort btn
+            onClick: () => onEvt({
+                key: isCurrTh ? (shallClear ? null : sortKey) : sortKey,
+                isAsc: isCurrTh ? (shallClear ? null : !isAsc) : true
+            })
+        };
+    }
+
+    // TODO: type for sortState
+    getGenericCmpEvtHandler(data: TLsItem[], option: IOption, callback?: TFn): TFn {
+        return ((modOption: Partial<IOption>): void => {
+            const sortOption: IOption = this.createOption(modOption, option);
+            const sortState = this.createState(data, sortOption);
+            if (callback) callback({ sortOption, sortState });
+        }).bind(this);
     }
 }
