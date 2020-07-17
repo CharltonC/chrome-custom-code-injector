@@ -1,12 +1,11 @@
 import {
-    IOption,
+    IOption, TState,
     IThColCtx,
     IThColCtxCache,
-    IThCtx,
 } from './type';
 
 export class ThHandle {
-    createThCtx(option: IOption[]): IThCtx[][] {
+    createState(option: IOption[]): TState {
         const colCtx = this.createThColCtx(option) as IThColCtx[][];
         return this.createThSpanCtx(colCtx);
     }
@@ -51,7 +50,7 @@ export class ThHandle {
         }
     }
 
-    createThSpanCtx(colCtx: IThColCtx[][]): IThCtx[][] {
+    createThSpanCtx(colCtx: IThColCtx[][]): TState {
         let rowTotal: number = colCtx.length;
 
         return colCtx.map((row: IThColCtx[], rowLvlIdx: number) => {

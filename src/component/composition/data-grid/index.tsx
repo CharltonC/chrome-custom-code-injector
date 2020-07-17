@@ -245,7 +245,7 @@ export class _DataGrid extends Component<IProps, IState> {
             sortedData: sort ? this.sortHandle.sortByObjKey(data, sort.key, sort.isAsc) : null,
             pgnOption: paginate ? this.pgnHandle.createOption(paginate) : null,
             pgnState: paginate ? this.pgnHandle.createState(data, paginate) : null,
-            thState: header ? this.thHandle.createThCtx(header) : null
+            thState: header ? this.thHandle.createState(header) : null
         };
     }
 
