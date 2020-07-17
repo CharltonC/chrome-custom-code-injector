@@ -21,9 +21,9 @@ describe('Table Header Handle', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Method - getDefThInfoCache: Create a new default cache', () => {
+    describe('Method - getDefThColCtxCache: Create a new default cache', () => {
         it('should return a default cache value', () => {
-            expect(handle.getDefThInfoCache()).toEqual({
+            expect(handle.getDefThColCtxCache()).toEqual({
                 slots: [],
                 colTotal: 0
             });
@@ -91,7 +91,7 @@ describe('Table Header Handle', () => {
             const { subHeader } = mockOption[0];
 
             expect(createRowThColCtxClone(mockOption)).toEqual(mockCache.slots);
-            expect(spy.getDefThInfoCache).toHaveBeenCalled();
+            expect(spy.getDefThColCtxCache).toHaveBeenCalled();
             expect(spy.createRowThColCtx).toHaveBeenCalledWith(subHeader, 1, mockCache);
             expect(spy.createRowThColCtx).toHaveBeenCalledTimes(1);
             expect(spy.setThColCtxCache).toHaveBeenCalledTimes(3);

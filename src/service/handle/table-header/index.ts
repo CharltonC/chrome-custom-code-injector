@@ -1,8 +1,7 @@
 import {
     IOption, TState,
     TRowsThColCtx, TRowThColCtx,
-    IThColCtx,
-    IThColCtxCache,
+    IThColCtx, IThColCtxCache,
 } from './type';
 
 export class ThHandle {
@@ -12,7 +11,7 @@ export class ThHandle {
     }
 
     createRowThColCtx(option: IOption[], rowLvlIdx: number = 0, cache?: IThColCtxCache): TRowsThColCtx | TRowThColCtx {
-        cache = cache ? cache : this.getDefThInfoCache();
+        cache = cache ? cache : this.getDefThColCtxCache();
         const rowThColCtx: TRowThColCtx = option.map(({ title, sortKey, subHeader }: IOption) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal: number = cache.colTotal;
@@ -69,7 +68,10 @@ export class ThHandle {
         }
     }
 
-    getDefThInfoCache(): IThColCtxCache {
-        return { slots: [], colTotal: 0 };
+    getDefThColCtxCache(): IThColCtxCache {
+        return {
+            slots: [],
+            colTotal: 0
+        };
     }
 }
