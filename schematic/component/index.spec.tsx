@@ -20,7 +20,7 @@ describe('Component - TODO: Component Name', () => {
         // let cmp: _CmpCls;
 
         describe('constructor', () => {
-            it("should init", () => {
+            it('should init', () => {
                 expect(true).toBe(true);
             });
         });
