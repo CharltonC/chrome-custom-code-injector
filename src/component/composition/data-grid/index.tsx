@@ -113,16 +113,16 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Core
     // TODO: Move to Row Handle - createState ?
-    getMappedRowConfig(rows: IRow[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
+    transformRowOption(rows: IRow[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
-            const transformFn = this.createCmpTransformFn(row[transformFnIdx], rowKey);
+            const transformFn = this.getCmpTransformFn(row[transformFnIdx], rowKey);
             return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowConfig;
         });
     }
 
-    createCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
+    getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
         const { BASE_TB_CLS } = this;
 
         return (itemCtx: rowHandleType.IItemCtx) => {
@@ -150,8 +150,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
     createState(props: IProps): IState {
         const { rows, rowKey, data, sort, paginate, header } = props;
-        // TODO: this should rowState??
-        const rowOption = rows ? this.getMappedRowConfig(rows, rowKey ? rowKey : 'id') : null;
+        const rowOption = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
         const sortOption = sort ? this.sortHandle.createOption(sort) : null;
         const sortState = sort ? this.sortHandle.createState(data, sortOption) : null;
         const pgnOption = paginate ? this.pgnHandle.createOption(paginate) : null;
