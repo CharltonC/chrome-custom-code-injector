@@ -1,5 +1,5 @@
-import React, { Component, memo, cloneElement, ReactElement } from 'react';
-import { IProps, IState } from './type';
+import { Component, memo, cloneElement, Children, ReactElement } from 'react';
+import { IProps, IState, IChildVisibleProps } from './type';
 
 export class _VisibleWrapper extends Component<IProps, IState> {
     constructor(props: IProps) {
@@ -13,17 +13,19 @@ export class _VisibleWrapper extends Component<IProps, IState> {
     render() {
         const { isVisible } = this.state;
         const { children } = this.props;
-        const styleProps = isVisible ? {} : { style: {display: 'none'}};
-        const visibleProps = {
+        const styleProps = isVisible ? {} : { style: { display: 'none' } };
+        const visibleProps: IChildVisibleProps = {
             isVisible,
-            onVisibleChange: this.onExpdChange.bind(this)
+            onVisibleChange: this.onVisibleChange.bind(this)
         };
-        return React.Children.map(children, ((child: ReactElement) => cloneElement(child, {...styleProps, visibleProps})));
+        return Children.map(
+            children,
+            (child: ReactElement) => cloneElement(child, {...styleProps, visibleProps})
+        );
     }
 
-    onExpdChange(): void {
-        const isVisible: boolean = !this.state.isVisible;
-        this.setState({isVisible});
+    onVisibleChange(): void {
+        this.setState({isVisible: !this.state.isVisible});
     }
 }
 
