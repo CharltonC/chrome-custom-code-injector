@@ -81,7 +81,7 @@ export class SortHandle implements IUiHandle {
         };
     }
 
-    getDefState() {
+    getDefState(): IState {
         return { data: null };
     }
 
