@@ -71,7 +71,7 @@ export class SortHandle implements IUiHandle {
     }
 
     createState(data: TLsItem[], option: IOption): IState {
-        const shallSort: boolean = this.shallSort(option);
+        const shallSort: boolean = this.shallSort(option) || !data.length;
         const dataCopy: TLsItem[] = data.slice(0);
         return {
             data: shallSort ? this.sortByObjKey(dataCopy, option) : null
@@ -82,7 +82,7 @@ export class SortHandle implements IUiHandle {
         return { data: null };
     }
 
-    //// UI - Generic Component Related
+    //// UI - Generic Component Attribute
     createGenericCmpAttr({ data, option, callback }: ICmpAttrQuery, sortKey: string): ICmpAttr {
         const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
         const sortBtnAttr = this.createSortBtnAttr(onEvt, option, sortKey);
