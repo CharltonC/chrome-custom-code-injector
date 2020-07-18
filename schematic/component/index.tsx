@@ -1,4 +1,4 @@
-import React, { Component, memo } from "react";
+import React, { Component, memo } from 'react';
 
 // TODO: Update Class name
 export class _CmpCls extends Component {
