@@ -96,7 +96,7 @@ export class _DataGrid extends Component<IProps, IState> {
             const { item, isExpdByDef, nestedItems } = itemCtx;
             const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
             return nestedItems ?
-                <VisibleWrapper key={key} isDefVisible={isExpdByDef}>
+                <VisibleWrapper key={key} show={isExpdByDef}>
                     <RowCmp {...itemCtx} />
                 </VisibleWrapper> :
                 <RowCmp key={key} {...itemCtx} />;
