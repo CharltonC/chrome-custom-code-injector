@@ -1,8 +1,9 @@
 import { IUiHandle } from '../../../asset/ts/type/ui-handle';
 import {
     IOption,
-    TLsItem, TStrSortOrder,
-    TFn
+    IState,
+    ICmpAttrQuery, ICmpAttr, ICmpSortBtnAttr,
+    TLsItem, TStrSortOrder, TFn
 } from './type';
 
 export class SortHandle implements IUiHandle {
@@ -72,9 +73,7 @@ export class SortHandle implements IUiHandle {
         };
     }
 
-    // TODO: type
-    // Make sure sortedData ? sortedData : originalData;
-    createState(data: TLsItem[], option: IOption){
+    createState(data: TLsItem[], option: IOption): IState {
         const shallSort: boolean = this.shallSort(option);
         const dataCopy: TLsItem[] = data.slice(0);
         return {
@@ -87,25 +86,18 @@ export class SortHandle implements IUiHandle {
     }
 
     //// Generic UI Component Related
-    // TODO: query type
-    createGenericCmpAttr(query, sortKey: string) {
-        const { data, option, callback } = query;
+    createGenericCmpAttr({ data, option, callback }: ICmpAttrQuery, sortKey: string): ICmpAttr {
         const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
         const sortBtnAttr = this.createSortBtnAttr(onEvt, option, sortKey);
         return { sortBtnAttr };
     }
 
-    // TODO: query & return type
-    createSortBtnAttr(onEvt: TFn, { key, isAsc, reset }: IOption, sortKey: string) {
+    createSortBtnAttr(onEvt: TFn, { key, isAsc, reset }: IOption, sortKey: string): ICmpSortBtnAttr {
         const isCurrTh: boolean = sortKey === key;
         const shallClear: boolean = reset && !isAsc;
 
         return {
-            // up/dn arrow highlight state for the sort btn
-            // - no highlight state for non-current header or if current header sort is temp. off
             isAsc: isCurrTh ? isAsc : null,
-
-            // handler for sort btn
             onClick: () => onEvt({
                 key: isCurrTh ? (shallClear ? null : sortKey) : sortKey,
                 isAsc: isCurrTh ? (shallClear ? null : !isAsc) : true
@@ -113,11 +105,10 @@ export class SortHandle implements IUiHandle {
         };
     }
 
-    // TODO: type for sortState
     getGenericCmpEvtHandler(data: TLsItem[], option: IOption, callback?: TFn): TFn {
         return ((modOption: Partial<IOption>): void => {
             const sortOption: IOption = this.createOption(modOption, option);
-            const sortState = this.createState(data, sortOption);
+            const sortState: IState = this.createState(data, sortOption);
             if (callback) callback({ sortOption, sortState });
         }).bind(this);
     }
