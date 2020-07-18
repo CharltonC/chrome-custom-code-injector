@@ -71,7 +71,7 @@ export class SortHandle implements IUiHandle {
     }
 
     createState(data: TLsItem[], option: IOption): IState {
-        const shallSort: boolean = this.shallSort(option) || !data.length;
+        const shallSort: boolean = this.shallSort(option) && !!data.length;
         const dataCopy: TLsItem[] = data.slice(0);
         return {
             data: shallSort ? this.sortByObjKey(dataCopy, option) : null
