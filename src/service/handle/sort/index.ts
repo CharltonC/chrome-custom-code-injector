@@ -55,10 +55,7 @@ export class SortHandle implements IUiHandle {
         return key && typeof isAsc !== 'undefined';
     }
 
-    //// Option & State
-    /**
-     * Merge the updated option with existing option (either custom or default)
-     */
+    //// UI - Generic Option & State
     createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
         const baseOption: IOption = existingOption ? existingOption : this.getDefOption();
         return { ...baseOption, ...modOption };
@@ -77,7 +74,7 @@ export class SortHandle implements IUiHandle {
         const shallSort: boolean = this.shallSort(option);
         const dataCopy: TLsItem[] = data.slice(0);
         return {
-            data:  shallSort ? this.sortByObjKey(dataCopy, option) : null
+            data: shallSort ? this.sortByObjKey(dataCopy, option) : null
         };
     }
 
@@ -85,7 +82,7 @@ export class SortHandle implements IUiHandle {
         return { data: null };
     }
 
-    //// Generic UI Component Related
+    //// UI - Generic Component Related
     createGenericCmpAttr({ data, option, callback }: ICmpAttrQuery, sortKey: string): ICmpAttr {
         const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
         const sortBtnAttr = this.createSortBtnAttr(onEvt, option, sortKey);
