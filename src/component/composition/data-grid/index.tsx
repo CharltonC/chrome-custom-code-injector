@@ -73,6 +73,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
         // Table Rows
         const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
+        // TODO: renamed this `createState`
         const tbodyTrElem: ReactElement[] = this.rowHandle.createState({
             data: pgnOption ? data.slice(startIdx, endIdx) : data,
             rows: rowOption,
@@ -80,28 +81,22 @@ export class _DataGrid extends Component<IProps, IState> {
         });
 
         return (
-            <div className="kz-datagrid">
-                {pgnOption && <Pagination {...pgnState} {...pgnCmpAttr} />}
-                <table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--root`}>
-                    {/* TODO: make this a component group? */}
-                    {thState && <thead>
-                        {thState.map((thCtxs, trIdx: number) => (
-                            <tr key={trIdx}>
-                                {/* TODO: make this a component group? */}
-                                {thCtxs.map(({ title, sortKey, ...thProps }, thIdx: number) => {
-                                    const { sortBtnAttr }: any = sortKey ? this.sortHandle.createGenericCmpAttr({
-                                        data,
+            <div className="kz-datagrid">{ pgnOption &&
+                <Pagination {...pgnState} {...pgnCmpAttr} />}
+                <table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--root`}>{thState &&
+                    <thead>{ thState.map((thCtxs, trIdx: number) => (
+                        <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
+                            <th key={thIdx} {...thProps}>
+                                <span>{title}</span>{ sortKey &&
+                                <SortBtn
+                                    {...this.sortHandle.createGenericCmpAttr(
+                                        {data,
                                         option: sortOption,
                                         callback: onOptionChange
-                                    }, sortKey) : {};
-                                    return (
-                                        <th key={thIdx} {...thProps}>
-                                            <span>{title}</span>
-                                            { sortKey && <SortBtn {...sortBtnAttr} /> }
-                                        </th>
-                                    );
-                                })}
-                            </tr>))}
+                                    }, sortKey) as any}
+                                    /> }
+                            </th>))}
+                        </tr>))}
                     </thead>}
                     <tbody>
                         {tbodyTrElem}
