@@ -51,8 +51,8 @@ export class SortHandle implements IUiHandle {
         return typeof valA === type && typeof valB === type;
     }
 
-    shallSort({ key, isAsc }: IOption): boolean {
-        return key && typeof isAsc !== 'undefined';
+    shallSort(data: TLsItem[], { key, isAsc }: IOption): boolean {
+        return key && typeof isAsc !== 'undefined' && data.length > 1;
     }
 
     //// UI - Generic Option & State
@@ -71,7 +71,7 @@ export class SortHandle implements IUiHandle {
     }
 
     createState(data: TLsItem[], option: IOption): IState {
-        const shallSort: boolean = this.shallSort(option) && !!data.length;
+        const shallSort: boolean = this.shallSort(data, option);
         const dataCopy: TLsItem[] = data.slice(0);
         return {
             data: shallSort ? this.sortByObjKey(dataCopy, option) : null
