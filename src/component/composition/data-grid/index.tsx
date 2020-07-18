@@ -7,6 +7,7 @@ import { PgnHandle } from '../../../service/handle/pagination';
 
 import { SortBtn } from '../../prsntn/sort-btn';
 import { Pagination } from '../../prsntn-grp/pagination';
+import { VisibleWrapper } from '../../structural/visible';
 
 // TODO: clean
 import {
@@ -14,32 +15,6 @@ import {
     IRow, TRowCmpCls, TFn, TRowKeyPipeFn,
     rowHandleType,
 } from './type';
-
-// TODO: Move, typing
-class ExpandableWrapper extends Component<any, any> {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isExpd: props.isExpdByDef
-        };
-    }
-
-    onExpdChange() {
-        const isExpd: boolean = !this.state.isExpd;
-        this.setState({isExpd});
-    }
-
-    render() {
-        const { Cmp, isExpdByDef, ...spareProps } = this.props;
-        const { isExpd } = this.state;
-        const cmpProps = {
-            ...spareProps,
-            isExpd,
-            onExpdChange: this.onExpdChange.bind(this)
-        };
-        return <Cmp {...cmpProps} />;
-    }
-}
 
 export class _DataGrid extends Component<IProps, IState> {
     readonly thHandle = new ThHandle();
@@ -61,14 +36,14 @@ export class _DataGrid extends Component<IProps, IState> {
         const { showInitial: visiblePath } = expand;
 
         const data: any[] = sortState?.data || rawData;
-        const onOptionChange = this.onOptionChange.bind(this);
+        const callback = this.onOptionChange.bind(this);
 
         // Pagination
         const pgnCmpAttr = pgnOption ? this.pgnHandle.createGenericCmpAttr({
             data,
             option: pgnOption,
             state: pgnState,
-            callback: onOptionChange
+            callback
         }) : null;
 
         // Table Rows
@@ -85,17 +60,16 @@ export class _DataGrid extends Component<IProps, IState> {
                 <Pagination {...pgnState} {...pgnCmpAttr} />}
                 <table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--root`}>{thState &&
                     <thead>{ thState.map((thCtxs, trIdx: number) => (
-                        <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
-                            <th key={thIdx} {...thProps}>
-                                <span>{title}</span>{ sortKey &&
-                                <SortBtn
-                                    {...this.sortHandle.createGenericCmpAttr(
-                                        {data,
-                                        option: sortOption,
-                                        callback: onOptionChange
-                                    }, sortKey) as any}
-                                    /> }
-                            </th>))}
+                        <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => {
+                            const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr(
+                                { data, callback, option: sortOption },
+                                sortKey
+                            );
+                            return (
+                                <th key={thIdx} {...thProps}>
+                                    <span>{title}</span>{ sortKey &&
+                                    <SortBtn {...sortBtnAttr as any} /> }
+                                </th>)})}
                         </tr>))}
                     </thead>}
                     <tbody>
@@ -118,28 +92,14 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
-        const { BASE_TB_CLS } = this;
-
         return (itemCtx: rowHandleType.IItemCtx) => {
-            const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
-
-            const rowProps = {
-                ...itemCtx,
-                key: typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx),
-                nestedTb: nestedItems ?
-                    (<table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--nest-${itemLvl+1}`} >
-                        <tbody>{nestedItems}</tbody>
-                    </table>) :
-                    null
-            };
-
+            const { item, isExpdByDef, nestedItems } = itemCtx;
+            const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
             return nestedItems ?
-                <ExpandableWrapper
-                    isExpdByDef={isExpdByDef}
-                    Cmp={RowCmp}
-                    {...rowProps}
-                /> :
-                <RowCmp {...rowProps} />;
+                <VisibleWrapper key={key} isDefVisible={isExpdByDef}>
+                    <RowCmp {...itemCtx} />
+                </VisibleWrapper> :
+                <RowCmp key={key} {...itemCtx} />;
         };
     }
 
