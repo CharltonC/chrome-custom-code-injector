@@ -1,8 +1,7 @@
-// TODO: Update the Matching `HTMLAttributes`, `HTMLElement` accordingly
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-
+    isDefVisible?: boolean;
 }
 
 export interface IState {
-
+    isVisible: boolean;
 }
