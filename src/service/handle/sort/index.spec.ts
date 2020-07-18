@@ -4,13 +4,13 @@ import { IOption, TLsItem } from './type';
 import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {
-    let sortHandle: SortHandle;
+    let handle: SortHandle;
     let spy: TMethodSpy<SortHandle>;
     let sortedList: TLsItem[];
 
     beforeEach(() => {
-        sortHandle = new SortHandle();
-        spy = TestUtil.spyMethods(sortHandle);
+        handle = new SortHandle();
+        spy = TestUtil.spyMethods(handle);
     });
 
     afterEach(() => {
@@ -28,7 +28,7 @@ describe('Handle Service - Default Sorter', () => {
 
             it('should not sort if values are not same type of number, string', () => {
                 spy.isValSameType.mockReturnValue(false);
-                sortedList = sortHandle.sortByObjKey(mockStrList, mockOption);
+                sortedList = handle.sortByObjKey(mockStrList, mockOption);
 
                 expect(sortedList).toEqual(mockStrList);
                 expect(spy.compareStr).not.toHaveBeenCalled();
@@ -37,7 +37,7 @@ describe('Handle Service - Default Sorter', () => {
             });
 
             it('should not sort if values type are invalid', () => {
-                sortedList = sortHandle.sortByObjKey(mockInvalidList, mockOption);
+                sortedList = handle.sortByObjKey(mockInvalidList, mockOption);
 
                 expect(sortedList).toEqual(mockInvalidList);
                 expect(spy.compareStr).not.toHaveBeenCalled();
@@ -46,7 +46,7 @@ describe('Handle Service - Default Sorter', () => {
             });
 
             it('should sort based on string in asc. order', () => {
-                sortedList = sortHandle.sortByObjKey(mockStrList, mockOption);
+                sortedList = handle.sortByObjKey(mockStrList, mockOption);
 
                 expect(spy.compareStr).toHaveBeenCalled();
                 expect(spy.compareNum).not.toHaveBeenCalled();
@@ -55,7 +55,7 @@ describe('Handle Service - Default Sorter', () => {
             });
 
             it('should sort based on string in dsc. order', () => {
-                sortedList = sortHandle.sortByObjKey(mockStrList, {...mockOption, isAsc: false})
+                sortedList = handle.sortByObjKey(mockStrList, {...mockOption, isAsc: false})
 
                 expect(spy.compareStr).toHaveBeenCalled();
                 expect(spy.compareNum).not.toHaveBeenCalled();
@@ -64,7 +64,7 @@ describe('Handle Service - Default Sorter', () => {
             });
 
             it('should sort based on number in asc. order', () => {
-                sortedList = sortHandle.sortByObjKey(mockNumList, mockOption);
+                sortedList = handle.sortByObjKey(mockNumList, mockOption);
 
                 expect(spy.compareNum).toHaveBeenCalled();
                 expect(spy.compareStr).not.toHaveBeenCalled();
@@ -73,7 +73,7 @@ describe('Handle Service - Default Sorter', () => {
             });
 
             it('should sort based on number in dsc. order', () => {
-                sortedList = sortHandle.sortByObjKey(mockNumList, {...mockOption, isAsc: false})
+                sortedList = handle.sortByObjKey(mockNumList, {...mockOption, isAsc: false})
 
                 expect(spy.compareNum).toHaveBeenCalled();
                 expect(spy.compareStr).not.toHaveBeenCalled();
@@ -82,7 +82,7 @@ describe('Handle Service - Default Sorter', () => {
             });
 
             it('should sort based on locale string in asc. order', () => {
-                sortedList = sortHandle.sortByObjKey(mockLocaleStrList, {...mockOption, hsLocale: true})
+                sortedList = handle.sortByObjKey(mockLocaleStrList, {...mockOption, hsLocale: true})
 
                 expect(spy.compareLocaleStr).toHaveBeenCalled();
                 expect(spy.compareStr).not.toHaveBeenCalled();
@@ -91,7 +91,7 @@ describe('Handle Service - Default Sorter', () => {
             });
 
             it('should sort based on locale string in dsc. order', () => {
-                sortedList = sortHandle.sortByObjKey(mockLocaleStrList, {...mockOption, isAsc: false, hsLocale: true});
+                sortedList = handle.sortByObjKey(mockLocaleStrList, {...mockOption, isAsc: false, hsLocale: true});
 
                 expect(spy.compareLocaleStr).toHaveBeenCalled();
                 expect(spy.compareStr).not.toHaveBeenCalled();
@@ -107,12 +107,12 @@ describe('Handle Service - Default Sorter', () => {
             const mockDiff: number = mockValX - mockValY;
 
             it('should return the difference of a and b for asc. order', () => {
-                const diff: number = sortHandle.compareNum(mockValX, mockValY, true);
+                const diff: number = handle.compareNum(mockValX, mockValY, true);
                 expect(diff).toBe(mockDiff);
             });
 
             it('should return the difference of b and a for dsc. order ', () => {
-                const diff: number = sortHandle.compareNum(mockValX, mockValY, false);
+                const diff: number = handle.compareNum(mockValX, mockValY, false);
                 expect(diff).toBe(-mockDiff);
             });
         });
@@ -122,24 +122,24 @@ describe('Handle Service - Default Sorter', () => {
             const mockValY: string = 'y';
 
             it('should return 0 when a and b are the same regardless of order', () => {
-                expect(sortHandle.compareStr(mockValX, mockValX, true)).toBe(0);
-                expect(sortHandle.compareStr(mockValX, mockValX, false)).toBe(0);
+                expect(handle.compareStr(mockValX, mockValX, true)).toBe(0);
+                expect(handle.compareStr(mockValX, mockValX, false)).toBe(0);
             });
 
             it('should return -1 (ab) when a and b are in asc. order for asc. order', () => {
-                expect(sortHandle.compareStr(mockValX, mockValY, true)).toBe(-1);
+                expect(handle.compareStr(mockValX, mockValY, true)).toBe(-1);
             });
 
             it('should return 1 (ba) when a and b are in asc. order for dsc. order', () => {
-                expect(sortHandle.compareStr(mockValX, mockValY, false)).toBe(1);
+                expect(handle.compareStr(mockValX, mockValY, false)).toBe(1);
             });
 
             it('should return 1 (ba) when a and b are in dsc. order for asc. order', () => {
-                expect(sortHandle.compareStr(mockValY, mockValX, true)).toBe(1);
+                expect(handle.compareStr(mockValY, mockValX, true)).toBe(1);
             });
 
             it('should return -1 (ab) when a and b are in dsc. order for dsc. order', () => {
-                expect(sortHandle.compareStr(mockValY, mockValX, false)).toBe(-1);
+                expect(handle.compareStr(mockValY, mockValX, false)).toBe(-1);
             });
         });
 
@@ -148,32 +148,32 @@ describe('Handle Service - Default Sorter', () => {
             const mockValY: string = 'rév';
 
             it('should return 0 when a and b are the same regardless of order', () => {
-                expect(sortHandle.compareLocaleStr(mockValX, mockValX, true)).toBe(0);
-                expect(sortHandle.compareLocaleStr(mockValX, mockValX, false)).toBe(0);
+                expect(handle.compareLocaleStr(mockValX, mockValX, true)).toBe(0);
+                expect(handle.compareLocaleStr(mockValX, mockValX, false)).toBe(0);
             });
 
             it('should return -1 (ab) when a and b are in asc. order for asc. order', () => {
-                expect(sortHandle.compareLocaleStr(mockValX, mockValY, true)).toBe(-1);
+                expect(handle.compareLocaleStr(mockValX, mockValY, true)).toBe(-1);
             });
 
             it('should return 1 (ba) when a and b are in asc. order for dsc. order', () => {
-                expect(sortHandle.compareLocaleStr(mockValX, mockValY, false)).toBe(1);
+                expect(handle.compareLocaleStr(mockValX, mockValY, false)).toBe(1);
             });
         });
 
         describe('Method: isValSameType - Check if 2 values have the same type', () => {
             it('should return true if they have same type', () => {
-                expect(sortHandle.isValSameType('x', 'y', 'string')).toBe(true);
-                expect(sortHandle.isValSameType(1, 2, 'number')).toBe(true);
+                expect(handle.isValSameType('x', 'y', 'string')).toBe(true);
+                expect(handle.isValSameType(1, 2, 'number')).toBe(true);
             });
 
             it('should return false if they dont have same type', () => {
-                expect(sortHandle.isValSameType('x', 2, 'string')).toBe(false);
+                expect(handle.isValSameType('x', 2, 'string')).toBe(false);
             });
 
             it('should return false if the type specified doesnt exist', () => {
-                expect(sortHandle.isValSameType('x', 'y', 'number')).toBe(false);
-                expect(sortHandle.isValSameType(1, 2, 'lorem')).toBe(false);
+                expect(handle.isValSameType('x', 'y', 'number')).toBe(false);
+                expect(handle.isValSameType(1, 2, 'lorem')).toBe(false);
             });
         });
     });
