@@ -1,12 +1,20 @@
+//// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-    isDefVisible?: boolean;
+    show?: boolean;
+    toggle?: boolean;
 }
 
+//// State
 export interface IState {
     isVisible: boolean;
+    toggle?: boolean;
 }
 
-export interface IChildVisibleProps {
-    isVisible: boolean;
-    onVisibleChange: (...args: any[]) => void;
+//// Additional Children Props
+export interface IChildExtraProps {
+    style?: { display: string; };
+    toggleProps?: {
+        isVisible?: boolean;
+        onVisibleChange?: (...args: any[]) => void;
+    };
 }

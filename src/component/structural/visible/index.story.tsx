@@ -1,4 +1,5 @@
 import React from 'react';
+import { IChildExtraProps } from './type';
 import { VisibleWrapper } from './';
 
 export default {
@@ -21,8 +22,8 @@ export const WithControl = () => {
         padding: 10
     };
 
-    const InnerComponent = ({ visibleProps }: any) => {
-        const { isVisible, onVisibleChange } = visibleProps;
+    const InnerComponent = ({ toggleProps }: IChildExtraProps) => {
+        const { isVisible, onVisibleChange } = toggleProps;
         return (
             <div>
                 <button
