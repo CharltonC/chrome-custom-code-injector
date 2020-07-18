@@ -1,6 +1,6 @@
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IOption, TLsItem } from './type';
+import { IOption, TLsItem, ICmpAttrQuery } from './type';
 import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {
@@ -176,66 +176,267 @@ describe('Handle Service - Default Sorter', () => {
                 expect(handle.isValSameType(1, 2, 'lorem')).toBe(false);
             });
         });
+
+        describe('Method: shallSort - Check if data can be and should be sorted', () => {
+            const mockData: any = ['a', 'b'];
+            const mockOption: IOption = {key: 'lorem', isAsc: true };
+
+            it('should return false when mandatory option is not present', () => {
+                expect(handle.shallSort(mockData, {} as IOption)).toBeFalsy();
+            });
+
+            it('should return false when data has less than 1 item', () => {
+                expect(handle.shallSort([], mockOption)).toBeFalsy();
+                expect(handle.shallSort(['a'] as any, mockOption)).toBeFalsy();
+            });
+
+            it('should return true when data has more than 1 items and mandatory option is present', () => {
+                expect(handle.shallSort(mockData, mockOption)).toBeTruthy();
+            });
+        });
     });
 
     describe('UI - Generic Option and State', () => {
         describe('Method - createOption: Create an option from an partial option', () => {
-            it('should return an option when existing option is given', () => {
+            const mockDefOption = {};
+            const mockModOption: Partial<IOption> = { key: 'lorem' };
 
+            beforeEach(() => {
+                spy.getDefOption.mockReturnValue(mockDefOption);
+            });
+
+            it('should return an option when existing option is given', () => {
+                const mockExistOption: IOption = { key: 'sum', isAsc: false };
+                expect(handle.createOption(mockModOption, mockExistOption)).toEqual({
+                    ...mockExistOption,
+                    ...mockModOption
+                });
+                expect(spy.getDefOption).not.toHaveBeenCalled();
             });
 
             it('should return an option when existing option is not given', () => {
-
+                expect(handle.createOption(mockModOption)).toEqual({
+                    ...mockModOption
+                });
+                expect(spy.getDefOption).toHaveBeenCalled();
             });
         });
 
         describe('Method - getDefOption: Get default option', () => {
             it('should return default option', () => {
-
+                expect(handle.getDefOption()).toEqual({
+                    key: null,
+                    isAsc: null,
+                    hsLocale: false,
+                    reset: false,
+                });
             });
         });
 
         describe('Method - createstate: Create a sorted state (data)', () => {
-            it('should return state when mandatory option is not given', () => {
+            const mockData: any = ['a', 'b'];
+            const mockOption = {} as IOption;
+            const mockSortedData: any = [];
 
+            beforeEach(() => {
+                spy.sortByObjKey.mockReturnValue(mockSortedData);
             });
 
-            it('should return state when mandatory option is given and data list is empty', () => {
+            it('should return state when data can be sorted', () => {
+                spy.shallSort.mockReturnValue(true);
 
+                expect(handle.createState(mockData, mockOption)).toEqual({
+                    data: mockSortedData
+                });
+                expect(spy.shallSort).toHaveBeenCalledWith(mockData, mockOption);
+                expect(spy.sortByObjKey).toHaveBeenCalledWith(mockData, mockOption);
             });
 
-            it('should return state when mandatory option is given and data list is not empty', () => {
+            it('should return state when data cannot be sorted', () => {
+                spy.shallSort.mockReturnValue(false);
 
+                expect(handle.createState(mockData, mockOption)).toEqual({
+                    data: null
+                });
+                expect(spy.shallSort).toHaveBeenCalledWith(mockData, mockOption);
+                expect(spy.sortByObjKey).not.toHaveBeenCalled();
             });
         });
 
         describe('Method - getDefState: Get default sorted state (data)', () => {
             it('should return default state', () => {
-
+                expect(handle.getDefState()).toEqual({ data: null });
             });
         });
     });
 
     describe('UI - Generic Component Attribute', () => {
         describe('Method - createGenericCmpAttr: Create Generic Attributes for Sort related Components', () => {
-            it('should return attribute for components', () => {
+            const mockEvtHandler: jest.Mock = jest.fn();
+            const mockSortBtnAttr: any = {};
+            const mockCmpAttrQuery = {
+                data: [],
+                option: {},
+                callback: () => {}
+            } as ICmpAttrQuery;
+            const mockSortKey: string = 'lorem';
 
+            beforeEach(() => {
+                spy.getGenericCmpEvtHandler.mockReturnValue(mockEvtHandler);
+                spy.createSortBtnAttr.mockReturnValue(mockSortBtnAttr);
+            });
+
+            it('should return attribute for components', () => {
+                const { data, option, callback } = mockCmpAttrQuery
+
+                expect(handle.createGenericCmpAttr(mockCmpAttrQuery, mockSortKey)).toEqual({
+                    sortBtnAttr: mockSortBtnAttr
+                });
+                expect(spy.getGenericCmpEvtHandler).toHaveBeenCalledWith(
+                    data,
+                    option,
+                    callback
+                );
+                expect(spy.createSortBtnAttr).toHaveBeenCalledWith(
+                    mockEvtHandler,
+                    option,
+                    mockSortKey
+                );
             });
         });
 
         describe('Method - createSortBtnAttr: Create Generic Attributes for Sort Button Component', () => {
-            it('should return attribute for Sort Reset is on and Current key is same as Sort Key', () => {
+            const { createSortBtnAttr } = SortHandle.prototype;
+            let mockBaseOption: IOption;
+            let mockOption: IOption;
+            let mockEvtHandler: jest.Mock;
+            let mockSortKey: string;
 
+            beforeEach(() => {
+                mockBaseOption = {
+                    key: 'lorem',
+                    isAsc: true,
+                    reset: false,
+                };
+                mockEvtHandler = jest.fn();
             });
 
-            it('should return attribute for Sort Reset is off', () => {
+            describe('When Current key is same is sort key', () => {
+                beforeEach(() => {
+                    mockSortKey = mockBaseOption.key;
+                });
 
+                it('should return attribute for Sort Reset is off, current sort order is ascending', () => {
+                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockBaseOption, mockSortKey);
+                    onClick();
+
+                    expect(isAsc).toBe(mockBaseOption.isAsc);
+                    expect(mockEvtHandler).toHaveBeenCalledWith({
+                        key: mockSortKey,
+                        isAsc: !mockBaseOption.isAsc
+                    });
+                });
+
+                it('should return attribute for Sort Reset is off, current sort order is descending', () => {
+                    mockOption = {...mockBaseOption, isAsc: false };
+                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockOption, mockSortKey);
+                    onClick();
+
+                    expect(isAsc).toBe(mockOption.isAsc);
+                    expect(mockEvtHandler).toHaveBeenCalledWith({
+                        key: mockSortKey,
+                        isAsc: !mockOption.isAsc
+                    });
+                });
+
+                it('should return attribute when Sort Reset is on, current sort order is ascending', () => {
+                    mockOption = {...mockBaseOption, reset: true };
+                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockOption, mockSortKey);
+                    onClick();
+
+                    expect(isAsc).toBe(mockOption.isAsc);
+                    expect(mockEvtHandler).toHaveBeenCalledWith({
+                        key: mockSortKey,
+                        isAsc: !mockOption.isAsc
+                    });
+                });
+
+                it('should return attribute when Sort Reset is on, current sort order is descending', () => {
+                    mockOption = {...mockBaseOption, reset: true, isAsc: false };
+                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockOption, mockSortKey);
+                    onClick();
+
+                    expect(isAsc).toBe(false);
+                    expect(mockEvtHandler).toHaveBeenCalledWith({
+                        key: null,
+                        isAsc: null
+                    });
+                });
             });
+
+            describe('When Current key is different to the sort key', () => {
+                beforeEach(() => {
+                    mockSortKey = 'sum';
+                });
+
+                it('should return attribute current sort order is ascending', () => {
+                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockBaseOption, mockSortKey);
+                    onClick();
+
+                    expect(isAsc).toBe(null);
+                    expect(mockEvtHandler).toHaveBeenCalledWith({
+                        key: mockSortKey,
+                        isAsc: true
+                    });
+                });
+
+                it('should return attribute current sort order is descending', () => {
+                    mockOption = {...mockBaseOption, isAsc: false };
+                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockBaseOption, mockSortKey);
+                    onClick();
+
+                    expect(isAsc).toBe(null);
+                    expect(mockEvtHandler).toHaveBeenCalledWith({
+                        key: mockSortKey,
+                        isAsc: true
+                    });
+                });
+            });
+
         });
 
         describe('Method - getGenericCmpEvtHandler: Get Generic Event Handler For Sort Related Components', () => {
-            it('should return an binded event handler', () => {
+            const mockData: any = [];
+            const mockOption: any = {};
+            const mockModOption: any = {key: 'lorem'};
+            const mockCallback: jest.Mock = jest.fn();
+            const mockRtnOption = 'option';
+            const mockRtnState = 'state';
+            let spyBind: jest.SpyInstance;
 
+            beforeEach(() => {
+                spyBind = jest.spyOn(Function.prototype, 'bind');
+                spy.createOption.mockReturnValue(mockRtnOption);
+                spy.createState.mockReturnValue(mockRtnState);
+            });
+
+            it('should return an binded event handler when callback is provied', () => {
+                const evtHandler = handle.getGenericCmpEvtHandler(mockData, mockOption, mockCallback);
+                expect(spyBind).toHaveBeenCalledWith(handle);
+
+                evtHandler(mockModOption);
+                expect(spy.createOption).toHaveBeenCalledWith(mockModOption, mockOption);
+                expect(spy.createState).toHaveBeenCalledWith(mockData, mockRtnOption);
+                expect(mockCallback).toHaveBeenCalledWith({
+                    sortOption: mockRtnOption,
+                    sortState: mockRtnState
+                });
+            });
+
+            it('should return a binded event handler when callback is not provided', () => {
+                const evtHandler = handle.getGenericCmpEvtHandler(mockData, mockOption);
+                evtHandler(mockModOption);
+                expect(mockCallback).not.toHaveBeenCalled();
             });
         });
     });
