@@ -141,7 +141,7 @@ const sampleData: any[] = [
 
 export const ViaInternalGeneratedCollapsibleState = () => {
     const TrCmp = ({idx, item, itemLvl, nestedItems, toggleProps}) => {
-        const { isVisible, onVisibleChange } = nestedItems ? toggleProps : {} as any;
+        const { isOpen, onToggle } = nestedItems ? toggleProps : {} as any;
 
         return <>
             <tr>
@@ -151,13 +151,13 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 <td>{item.id}</td>
                 <td>{
                     nestedItems &&
-                    <button type="button" onClick={onVisibleChange}>
-                        {isVisible ? '-' : '+' }
+                    <button type="button" onClick={onToggle}>
+                        {isOpen ? '-' : '+' }
                     </button>
                 }</td>
             </tr>
             {
-                nestedItems && isVisible &&
+                nestedItems && isOpen &&
                 <tr>
                     <td colSpan={5}>
                         {nestedItems}

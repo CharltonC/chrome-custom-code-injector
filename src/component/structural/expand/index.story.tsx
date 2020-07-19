@@ -1,18 +1,18 @@
 import React from 'react';
 import { IChildExtraProps } from './type';
-import { VisibleWrapper } from './';
+import { ExpandWrapper } from '.';
 
 export default {
     title: 'Visible Wrapper',
-    component: VisibleWrapper,
+    component: ExpandWrapper,
 };
 
 
 export const WithoutControl = () => {
     return (
-        <VisibleWrapper>
+        <ExpandWrapper>
             <h1>lorem sum</h1>
-        </VisibleWrapper>
+        </ExpandWrapper>
     );
 };
 
@@ -23,24 +23,24 @@ export const WithControl = () => {
     };
 
     const InnerComponent = ({ toggleProps }: IChildExtraProps) => {
-        const { isVisible, onVisibleChange } = toggleProps;
+        const { isOpen, onToggle } = toggleProps;
         return (
             <div>
                 <button
                     type="button"
                     style={btnStyle}
-                    onClick={onVisibleChange}
+                    onClick={onToggle}
                     >
-                    {isVisible ? 'hide' : 'show'}
+                    {isOpen ? 'hide' : 'show'}
                 </button>
-                { isVisible && <h1>lorem sum</h1> }
+                { isOpen && <h1>lorem sum</h1> }
             </div>
         );
     };
 
     return (
-        <VisibleWrapper>
+        <ExpandWrapper>
             <InnerComponent />
-        </VisibleWrapper>
+        </ExpandWrapper>
     );
 };

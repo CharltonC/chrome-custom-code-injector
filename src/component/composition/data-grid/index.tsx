@@ -6,7 +6,7 @@ import { RowHandle } from '../../../service/handle/row'
 import { PgnHandle } from '../../../service/handle/pagination';
 import { SortBtn } from '../../prsntn/sort-btn';
 import { Pagination } from '../../prsntn-grp/pagination';
-import { VisibleWrapper } from '../../structural/visible';
+import { ExpandWrapper } from '../../structural/visible';
 import {
     IProps, IState,
     IRow, TRowCmpCls, TFn, TRowKeyPipeFn,
@@ -83,9 +83,9 @@ export class _DataGrid extends Component<IProps, IState> {
             }
 
             return nestedItems ?
-                <VisibleWrapper key={key} show={isExpdByDef} toggle={true}>
+                <ExpandWrapper key={key} initial={isExpdByDef}>
                     <RowCmp {...itemCtx} />
-                </VisibleWrapper> :
+                </ExpandWrapper> :
                 <RowCmp key={key} {...itemCtx} />;
         };
     }
