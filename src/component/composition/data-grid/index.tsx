@@ -35,23 +35,18 @@ export class _DataGrid extends Component<IProps, IState> {
         const data: any[] = this.getSortedData();
 
         return (
-            <div className="kz-datagrid">
-                <VisibleWrapper show={!!paginate}>
-                    <Pagination {...this.getPgnCmpProps(data)} />
-                </VisibleWrapper>
-                <table className={this.cssCls(this.BASE_TB_CLS, 'root')}>
-                    <VisibleWrapper show={!!thState}>
-                        <thead>{ thState.map((thCtxs, trIdx: number) => (
-                            <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
-                                <th key={thIdx} {...thProps}>
-                                    <span>{title}</span>
-                                    <VisibleWrapper show={!!sortKey}>
-                                        <SortBtn {...this.getSortCmpProps(data, sortKey)} />
-                                    </VisibleWrapper>
-                                </th>))}
-                            </tr>))}
-                        </thead>
-                    </VisibleWrapper>
+            <div className="kz-datagrid">{ paginate &&
+                <Pagination {...this.getPgnCmpProps(data)} />}
+                {/* TODO: Wrapper tag ? */}
+                <table className={this.cssCls(this.BASE_TB_CLS, 'root')}>{ thState &&
+                    <thead>{ thState.map((thCtxs, trIdx: number) => (
+                        <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
+                            <th key={thIdx} {...thProps}>
+                                <span>{title}</span>{ sortKey &&
+                                <SortBtn {...this.getSortCmpProps(data, sortKey)} />}
+                            </th>))}
+                        </tr>))}
+                    </thead>}
                     <tbody>
                         {this.getRowsElem(data)}
                     </tbody>
@@ -154,11 +149,13 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     wrapCmpWithTag(content: ReactElement | ReactElement[], className: string = ''): ReactElement {
+        // TODO: Type
+        const props = className ? { className } : {};
         return this.props.type === 'table' ?
-            <table className={className}>
+            <table {...props}>
                 <tbody>{content}</tbody>
             </table> :
-            <ul className={className}>{content}</ul>;
+            <ul {...props}>{content}</ul>;
     }
 }
 
