@@ -141,7 +141,6 @@ const sampleData: any[] = [
 
 export const ViaInternalGeneratedCollapsibleState = () => {
     const TrCmp = ({idx, item, itemLvl, nestedItems, toggleProps}) => {
-        const BASE_TB_CLS: string = 'kz-datagrid__table';
         const { isVisible, onVisibleChange } = nestedItems ? toggleProps : {} as any;
 
         return <>
@@ -161,9 +160,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 nestedItems && isVisible &&
                 <tr>
                     <td colSpan={5}>
-                        <table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--nest-${itemLvl+1}`} >
-                            <tbody>{nestedItems}</tbody>
-                        </table>
+                        {nestedItems}
                     </td>
                 </tr>
             }

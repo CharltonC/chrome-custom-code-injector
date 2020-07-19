@@ -1,27 +1,27 @@
 import React, { Component, memo, ReactElement } from "react";
-
+import { UtilHandle } from '../../../service/handle/util';
 import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
 import { RowHandle } from '../../../service/handle/row'
 import { PgnHandle } from '../../../service/handle/pagination';
-
 import { SortBtn } from '../../prsntn/sort-btn';
 import { Pagination } from '../../prsntn-grp/pagination';
 import { VisibleWrapper } from '../../structural/visible';
-
-// TODO: clean
 import {
     IProps, IState,
     IRow, TRowCmpCls, TFn, TRowKeyPipeFn,
-    rowHandleType,
+    rowHandleType, paginationType, sortBtnType,
 } from './type';
 
+
 export class _DataGrid extends Component<IProps, IState> {
+    //// Dependency Injection
+    readonly BASE_TB_CLS: string = 'kz-datagrid__table';
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
-    readonly BASE_TB_CLS: string = 'kz-datagrid__table';
+    readonly cssCls = new UtilHandle().cssCls;
 
     //// Builtin API
     constructor(props: IProps) {
@@ -30,50 +30,30 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     render() {
-        const { BASE_TB_CLS } = this;
-        const { data: rawData, expand } = this.props;
-        const { thState, sortState, sortOption, pgnOption, pgnState, rowOption } = this.state;
-        const { showInitial: visiblePath } = expand;
-
-        const data: any[] = sortState?.data || rawData;
-        const callback = this.onOptionChange.bind(this);
-
-        // Pagination
-        const pgnCmpAttr = pgnOption ? this.pgnHandle.createGenericCmpAttr({
-            data,
-            option: pgnOption,
-            state: pgnState,
-            callback
-        }) : null;
-
-        // Table Rows
-        const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
-        // TODO: renamed this `createState`
-        const tbodyTrElem: ReactElement[] = this.rowHandle.createState({
-            data: pgnOption ? data.slice(startIdx, endIdx) : data,
-            rows: rowOption,
-            visiblePath
-        });
+        const { paginate } = this.props;
+        const { thState } = this.state;
+        const data: any[] = this.getSortedData();
 
         return (
-            <div className="kz-datagrid">{ pgnOption &&
-                <Pagination {...pgnState} {...pgnCmpAttr} />}
-                <table className={`${BASE_TB_CLS} ${BASE_TB_CLS}--root`}>{thState &&
-                    <thead>{ thState.map((thCtxs, trIdx: number) => (
-                        <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => {
-                            const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr(
-                                { data, callback, option: sortOption },
-                                sortKey
-                            );
-                            return (
+            <div className="kz-datagrid">
+                <VisibleWrapper show={!!paginate}>
+                    <Pagination {...this.getPgnCmpProps(data)} />
+                </VisibleWrapper>
+                <table className={this.cssCls(this.BASE_TB_CLS, 'root')}>
+                    <VisibleWrapper show={!!thState}>
+                        <thead>{ thState.map((thCtxs, trIdx: number) => (
+                            <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
                                 <th key={thIdx} {...thProps}>
-                                    <span>{title}</span>{ sortKey &&
-                                    <SortBtn {...sortBtnAttr as any} /> }
-                                </th>)})}
-                        </tr>))}
-                    </thead>}
+                                    <span>{title}</span>
+                                    <VisibleWrapper show={!!sortKey}>
+                                        <SortBtn {...this.getSortCmpProps(data, sortKey)} />
+                                    </VisibleWrapper>
+                                </th>))}
+                            </tr>))}
+                        </thead>
+                    </VisibleWrapper>
                     <tbody>
-                        {tbodyTrElem}
+                        {this.getRowsElem(data)}
                     </tbody>
                 </table>
             </div>
@@ -81,7 +61,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    // TODO: Move to Row Handle - createState ?
+    // Transform the Component Row Option (from Props) to align its input with Row Handle Service
     transformRowOption(rows: IRow[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
         return rows.map((row: IRow, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
@@ -93,10 +73,17 @@ export class _DataGrid extends Component<IProps, IState> {
 
     getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
         return (itemCtx: rowHandleType.IItemCtx) => {
-            const { item, isExpdByDef, nestedItems } = itemCtx;
+            const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
+
+            if (nestedItems) {
+                const tbCls: string = this.cssCls(this.BASE_TB_CLS, `nest-${itemLvl+1}`);
+                // TODO: fix type
+                itemCtx.nestedItems = this.wrapCmpWithTag(nestedItems, tbCls) as any;
+            }
+
             return nestedItems ?
-                <VisibleWrapper key={key} show={isExpdByDef}>
+                <VisibleWrapper key={key} show={isExpdByDef} toggle={true}>
                     <RowCmp {...itemCtx} />
                 </VisibleWrapper> :
                 <RowCmp key={key} {...itemCtx} />;
@@ -114,18 +101,64 @@ export class _DataGrid extends Component<IProps, IState> {
 
         return {
             // TODO: make option & state in one call?
-            rowOption,
-            sortOption,
-            sortState,
-            pgnOption,
-            pgnState,
             thState,
+            rowOption,
+            sortOption, sortState,
+            pgnOption, pgnState,
         };
     }
 
+    getSortedData(): any[] {
+        return this.state.sortState?.data || this.props.data;
+    }
+
+    getRowsElem(data: any[]): ReactElement[] {
+        const { pgnOption, pgnState, rowOption } = this.state;
+        const { showInitial: visiblePath } = this.props.expand;
+        const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
+        return this.rowHandle.createState({
+            data: pgnOption ? data.slice(startIdx, endIdx) : data,
+            rows: rowOption,
+            visiblePath
+        });
+    }
+
+    getPgnCmpProps(data: any[]): paginationType.IProps {
+        const { pgnOption, pgnState } = this.state;
+        if (!pgnOption) return null;
+        return {
+            ...pgnState,
+            ...this.pgnHandle.createGenericCmpAttr({
+                data,
+                callback: this.onOptionChange.bind(this),
+                option: pgnOption, state: pgnState
+            })
+        };
+    }
+
+    getSortCmpProps(data: any[], sortKey: string): sortBtnType.IProps {
+        const { sortOption } = this.state;
+        if (!sortOption) return null;
+        const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
+            data,
+            callback: this.onOptionChange.bind(this),
+            option: sortOption
+        }, sortKey);
+        return sortBtnAttr;
+    }
+
+    // TODO: param type
     onOptionChange(modState): void {
         // TODO: add diff. callback
         this.setState({ ...this.state, ...modState });
+    }
+
+    wrapCmpWithTag(content: ReactElement | ReactElement[], className: string = ''): ReactElement {
+        return this.props.type === 'table' ?
+            <table className={className}>
+                <tbody>{content}</tbody>
+            </table> :
+            <ul className={className}>{content}</ul>;
     }
 }
 

@@ -2,7 +2,7 @@ import { TestUtil } from '../../../asset/ts/test-util';
 // import { IProps, IState } from './type';
 // import { CmpCls } from './';
 
-describe('Component - TODO: Component Name', () => {
+describe('Component - Data Grid', () => {
     // const mockBareProps: IProps = {};
     // const mockDefProps: IProps = {};
     // let methodSpy: jest.SpyInstance;
