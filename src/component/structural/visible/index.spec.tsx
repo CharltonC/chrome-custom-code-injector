@@ -37,38 +37,6 @@ describe('Component - Visible Wrapper', () => {
             });
         });
 
-        describe('Lifecyle - UNSAFE_componentWillReceiveProps', () => {
-            beforeEach(() => {
-                cmp = new _VisibleWrapper(mockProps);
-                setStateSpy = jest.spyOn(cmp, 'setState');
-                setStateSpy.mockImplementation(() => {});
-            });
-
-            it('should set new state when props changes', () => {
-                const mockModProps: IProps = { show: false };
-                spy.hasDiffProps.mockReturnValue([true, false]);
-
-                cmp.UNSAFE_componentWillReceiveProps(mockModProps);
-                expect(spy.hasDiffProps).toHaveBeenCalledWith(mockModProps, cmp.state);
-                expect(setStateSpy).toHaveBeenCalledWith({
-                    ...cmp.state,
-                    isVisible: false,
-                });
-            });
-
-            it('should set new state when toggle changes', () => {
-                const mockModProps: IProps = { toggle: false };
-                spy.hasDiffProps.mockReturnValue([false, true]);
-
-                cmp.UNSAFE_componentWillReceiveProps(mockModProps);
-                expect(spy.hasDiffProps).toHaveBeenCalledWith(mockModProps, cmp.state);
-                expect(setStateSpy).toHaveBeenCalledWith({
-                    ...cmp.state,
-                    toggle: false
-                });
-            });
-        });
-
         describe('Method - createState: Create Initial State', () => {
             beforeEach(() => {
                 cmp = new _VisibleWrapper(mockProps);
@@ -77,14 +45,14 @@ describe('Component - Visible Wrapper', () => {
             it('should return state when props are undefined', () => {
                 expect(cmp.createState({})).toEqual({
                     isVisible: true,
-                    toggle: true
+                    toggle: false
                 });
             });
 
             it('should return state when props are defined', () => {
-                expect(cmp.createState({ show: false, toggle: false })).toEqual({
+                expect(cmp.createState({ show: false, toggle: true })).toEqual({
                     isVisible: false,
-                    toggle: false
+                    toggle: true
                 });
             });
         });
@@ -173,7 +141,7 @@ describe('Component - Visible Wrapper', () => {
             expect($childElem.textContent).toBe('sum');
             expect(spy.getChildProps).toHaveBeenCalledWith({
                 isVisible: true,
-                toggle: true
+                toggle: false
             });
             expect(cloneElemSpy).toHaveBeenCalledWith(mockChild, mockRtnChildProps);
         });

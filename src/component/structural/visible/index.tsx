@@ -7,15 +7,6 @@ export class _VisibleWrapper extends Component<IProps, IState> {
         this.state = this.createState(props);
     }
 
-    UNSAFE_componentWillReceiveProps({show, toggle}: IProps){
-        const { isVisible: currIsVisible, toggle: currToggle } = this.state;
-        const [ isDiffVisible, isDiffToggle ] = this.hasDiffProps({show, toggle}, this.state);
-        this.setState({
-            isVisible: isDiffVisible ? show : currIsVisible,
-            toggle: isDiffToggle ? toggle : currToggle
-        });
-    }
-
     render() {
         const extraProps: IChildExtraProps = this.getChildProps(this.state);
         return Children.map(
@@ -27,7 +18,7 @@ export class _VisibleWrapper extends Component<IProps, IState> {
     createState({ show, toggle }: IProps): IState {
         return {
             isVisible: typeof show !== 'undefined' ? show : true,
-            toggle: typeof toggle !== 'undefined' ? toggle : true
+            toggle: typeof toggle !== 'undefined' ? toggle : false
         };
     }
 
