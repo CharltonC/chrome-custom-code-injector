@@ -9,8 +9,10 @@ import { Pagination } from '../../prsntn-grp/pagination';
 import { ExpandWrapper } from '../../structural/expand';
 import {
     IProps, IState,
-    IRowOption, TRowCmpCls, TFn, TRowKeyPipeFn,
+    IRowOption, TRowOption,
+    TRowCmpCls, TFn, TDataOption,
     rowHandleType, paginationType, sortBtnType,
+    thHandleType, pgnHandleType, sortHandleType
 } from './type';
 
 
@@ -32,7 +34,7 @@ export class _DataGrid extends Component<IProps, IState> {
     render() {
         const { paginate } = this.props;
         const { thState } = this.state;
-        const data: any[] = this.getSortedData();
+        const data: TDataOption = this.getSortedData();
 
         return (
             <div className="kz-datagrid">{ paginate &&
@@ -56,8 +58,19 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
+    createState(props: IProps): IState {
+        const { rows, rowKey, data, sort, paginate, header } = props;
+        const thState: thHandleType.TState = header ? this.thHandle.createState(header) : null;
+        const rowOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
+        const sortOption: sortHandleType.IOption = sort ? this.sortHandle.createOption(sort) : null;
+        const sortState: sortHandleType.IState = sort ? this.sortHandle.createState(data, sortOption) : null;
+        const pgnOption: pgnHandleType.IOption = paginate ? this.pgnHandle.createOption(paginate) : null;
+        const pgnState: pgnHandleType.IState = paginate ? this.pgnHandle.createState(data, paginate) : null;
+        return { thState, rowOption, sortOption, sortState, pgnOption, pgnState };
+    }
+
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
-    transformRowOption(rows: IRowOption[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
+    transformRowOption(rows: IRowOption[], rowKey: TRowOption): rowHandleType.IRawRowConfig[] {
         return rows.map((row: IRowOption, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
@@ -66,49 +79,41 @@ export class _DataGrid extends Component<IProps, IState> {
         });
     }
 
-    getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
+    getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: TRowOption): TFn {
         const { onExpandChange } = this.props;
         return (itemCtx: rowHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
-
-            if (nestedItems) {
-                const tbCls: string = this.cssCls(this.BASE_TB_CLS, `nest-${itemLvl+1}`);
-                // TODO: fix type
-                itemCtx.nestedItems = this.wrapCmpWithTag(nestedItems, tbCls) as any;
-            }
+            const nestedElem: ReactElement = nestedItems ?
+                this.wrapNestedItemsWithTag(
+                    nestedItems,
+                    this.cssCls(this.BASE_TB_CLS, `nest-${itemLvl+1}`)
+                ) :
+                null;
 
             return nestedItems ?
                 <ExpandWrapper key={key} initial={isExpdByDef} callback={onExpandChange}>
-                    <RowCmp {...itemCtx} />
+                    <RowCmp {...itemCtx} nestedElem={nestedElem} />
                 </ExpandWrapper> :
                 <RowCmp key={key} {...itemCtx} />;
         };
     }
 
-    createState(props: IProps): IState {
-        const { rows, rowKey, data, sort, paginate, header } = props;
-        const rowOption = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
-        const sortOption = sort ? this.sortHandle.createOption(sort) : null;
-        const sortState = sort ? this.sortHandle.createState(data, sortOption) : null;
-        const pgnOption = paginate ? this.pgnHandle.createOption(paginate) : null;
-        const pgnState = paginate ? this.pgnHandle.createState(data, paginate) : null;
-        const thState = header ? this.thHandle.createState(header) : null;
-
-        return {
-            // TODO: make option & state in one call?
-            thState,
-            rowOption,
-            sortOption, sortState,
-            pgnOption, pgnState,
-        };
+    wrapNestedItemsWithTag(content: ReactElement | ReactElement[], className: string = ''): ReactElement {
+        const props: {className?: string} = className ? { className } : {};
+        return this.props.type === 'table' ?
+            <table {...props}>
+                <tbody>{content}</tbody>
+            </table> :
+            <ul {...props}>{content}</ul>;
     }
 
-    getSortedData(): any[] {
+    //// Sort, Pagination
+    getSortedData(): TDataOption {
         return this.state.sortState?.data || this.props.data;
     }
 
-    getRowsElem(data: any[]): ReactElement[] {
+    getRowsElem(data: TDataOption): ReactElement[] {
         const { pgnOption, pgnState, rowOption } = this.state;
         const { showInitial: visiblePath } = this.props.expand;
         const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
@@ -119,7 +124,7 @@ export class _DataGrid extends Component<IProps, IState> {
         });
     }
 
-    getPgnCmpProps(data: any[]): paginationType.IProps {
+    getPgnCmpProps(data: TDataOption): paginationType.IProps {
         const {onExpandChange} = this.props;
         const { pgnOption, pgnState } = this.state;
         if (!pgnOption) return null;
@@ -135,7 +140,7 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    getSortCmpProps(data: any[], sortKey: string): sortBtnType.IProps {
+    getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
         const { onSortChange } = this.props;
         const { sortOption } = this.state;
         if (!sortOption) return null;
@@ -151,15 +156,6 @@ export class _DataGrid extends Component<IProps, IState> {
     onOptionChange(modState: Partial<IState>, userCallback: TFn): void {
         this.setState({ ...this.state, ...modState });
         if (userCallback) userCallback(modState);
-    }
-
-    wrapCmpWithTag(content: ReactElement | ReactElement[], className: string = ''): ReactElement {
-        const props: {className?: string} = className ? { className } : {};
-        return this.props.type === 'table' ?
-            <table {...props}>
-                <tbody>{content}</tbody>
-            </table> :
-            <ul {...props}>{content}</ul>;
     }
 }
 

@@ -6,10 +6,10 @@ import * as dropdownType from '../../prsntn/dropdown/type';
 
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-    data: any[];
-    rowKey?: string | TRowKeyPipeFn;
+    data: TDataOption;
+    rowKey?: TRowOption;
     rows: IRowOption[];
-    type?: TGridType;
+    type?: TGridTypeOption;
     header?: thHandleType.IOption[];
     expand?: IExpandOption;
     sort?: Partial<sortHandleType.IOption>;
@@ -31,13 +31,14 @@ export interface IRowOption extends Array<any> {
 }
 
 export type TRowCmpCls = React.FC<any> | React.ComponentClass<any>;
-export type TRowKeyPipeFn = (ctx: rowHandleType.IItemCtx) => string;
-export type TGridType = 'table' | 'list';
-
+export type TGridTypeOption = 'table' | 'list';
+export type TDataOption = Record<string, any>[];
+export type TRowOption = string | TRowKeyPipeFn;
+type TRowKeyPipeFn = (ctx: rowHandleType.IItemCtx) => string;
 
 //// State
 export interface IState {
-    thState: thHandleType.IThCtx[][]
+    thState: thHandleType.TState;
     rowOption: rowHandleType.IRawRowConfig[];
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
@@ -52,11 +53,11 @@ export type TShallResetState = {
 //// Generic
 export type TFn = (...args: any[]) => any;
 
-
 //// Reexport
 export {pgnHandleType as pgnHandleType};
 export {dropdownType as dropdownType}
 export {rowHandleType as rowHandleType};
 export {thHandleType as thHandleType};
+export {sortHandleType as sortHandleType}
 export * as sortBtnType from '../../prsntn/sort-btn/type';
 export * as paginationType from '../../prsntn-grp/pagination/type';
