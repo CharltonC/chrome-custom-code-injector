@@ -4,20 +4,20 @@ import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
 import { RowHandle } from '../../../service/handle/row'
 import { PgnHandle } from '../../../service/handle/pagination';
-import { Pagination } from '../../prsntn-grp/pagination';
-import { TableHeader } from '../../prsntn-grp/table-header';
 import { ExpandWrapper } from '../../structural/expand';
+import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
+import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {
     IProps, IRowOption, TRowKeyOption, TDataOption,
     IState,
-    TRowCmpCls, TFn,
+    TCmp, TFn,
     rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType, thHandleType
 } from './type';
 
 
 export class _DataGrid extends Component<IProps, IState> {
     //// Dependency Injection
-    readonly thHandle = new ThHandle();
+    readonly thHandle: ThHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
@@ -31,9 +31,12 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     render() {
-        const { paginate } = this.props;
+        const { paginate, component } = this.props;
+        const { pagination: UserPagination, header: UserHeader } = component;
         const { thRowsCtx } = this.state;
         const data: TDataOption = this.getSortedData();
+        const Pagination: TCmp = UserPagination ? UserPagination : DefPagination;
+        const TableHeader: TCmp = UserHeader ? UserHeader : DefTableHeader;
 
         return (
             <div className="kz-datagrid">{ paginate &&
@@ -54,8 +57,9 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Core
     createState(): IState {
-        const { rows, rowKey, data, sort, paginate, header } = this.props;
+        const { component, rowKey, data, sort, paginate, header } = this.props;
         const { thHandle, sortHandle, pgnHandle } = this;
+        const { rows } = component;
         const thRowsCtx: thHandleType.TRowsThCtx = header ? thHandle.createRowThCtx(header) : null;
         const rowsOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
         const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
@@ -75,14 +79,15 @@ export class _DataGrid extends Component<IProps, IState> {
         });
     }
 
-    getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: TRowKeyOption): TFn {
+    getCmpTransformFn(RowCmp: TCmp, rowKey: TRowKeyOption): TFn {
         const { cssCls, BASE_GRID_CLS, props } = this;
-        const { type, onExpandChange } = props;
+        const { type, callback } = props;
+        const { onExpandChange } = callback ?? {};
 
-        return (itemCtx: rowHandleType.IItemCtx) => {
+        return (itemCtx: rowHandleType.IItemCtx<ReactElement>) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
-            const nestedElem: ReactElement = nestedItems ?
+            itemCtx.nestedItems = nestedItems ?
                 this.wrapNestedItemsWithTag(
                     nestedItems,
                     type,
@@ -92,7 +97,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
             return nestedItems ?
                 <ExpandWrapper key={key} initial={isExpdByDef} callback={onExpandChange}>
-                    <RowCmp {...itemCtx} nestedElem={nestedElem} />
+                    <RowCmp {...itemCtx} />
                 </ExpandWrapper> :
                 <RowCmp key={key} {...itemCtx} />;
         };
@@ -124,7 +129,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getPgnCmpProps(data: TDataOption): paginationType.IProps {
-        const {onExpandChange} = this.props;
+        const { onPaginateChange } = this.props.callback ?? {};
         const { pgnOption, pgnState } = this.state;
         if (!pgnOption) return null;
 
@@ -132,7 +137,7 @@ export class _DataGrid extends Component<IProps, IState> {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
                 data,
-                callback: (modState: Partial<IState>) => this.onOptionChange(modState, onExpandChange),
+                callback: (modState: Partial<IState>) => this.onOptionChange(modState, onPaginateChange),
                 option: pgnOption,
                 state: pgnState
             })
@@ -140,7 +145,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
-        const { onSortChange } = this.props;
+        const { onSortChange } = this.props.callback ?? {};
         const { sortOption } = this.state;
         if (!sortOption) return null;
 
@@ -154,7 +159,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
     onOptionChange(modState: Partial<IState>, userCallback: TFn): void {
         this.setState({ ...this.state, ...modState });
-        if (userCallback) userCallback(modState);
+        userCallback?.(modState);
     }
 }
 

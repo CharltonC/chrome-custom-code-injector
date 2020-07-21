@@ -1,5 +1,8 @@
 import React from 'react';
+import { TableHeader as TableHeaderCmp } from '../../prsntn-grp/table-header';
+import { Pagination as PaginationCmp } from '../../prsntn-grp/pagination';
 import { DataGrid } from './';
+
 
 export default {
     title: 'Data Grid',
@@ -140,27 +143,23 @@ const sampleData: any[] = [
 ];
 
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const TrCmp = ({idx, item, itemLvl, nestedElem, toggleProps}) => {
-        const { isOpen, onToggle } = nestedElem ? toggleProps : {} as any;
-
+    const TrCmp = ({idx, item, itemLvl, nestedItems, toggleProps}) => {
+        const { isOpen, onToggle }: any = nestedItems ? toggleProps : {};
         return <>
             <tr>
                 <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
                 <td>{item.name}</td>
                 <td>{item.age}</td>
                 <td>{item.id}</td>
-                <td>{
-                    nestedElem &&
+                <td>{ nestedItems &&
                     <button type="button" onClick={onToggle}>
                         {isOpen ? '-' : '+' }
-                    </button>
-                }</td>
-            </tr>
-            {
-                nestedElem && isOpen &&
+                    </button>}
+                </td>
+            </tr>{ nestedItems && isOpen &&
                 <tr>
                     <td colSpan={5}>
-                        {nestedElem}
+                        {nestedItems}
                     </td>
                 </tr>
             }
@@ -171,22 +170,26 @@ export const ViaInternalGeneratedCollapsibleState = () => {
         <div style={defStyle}>
             <DataGrid
                 data={sampleData}
-                rowKey="id"
-                rows={[
-                    [TrCmp],
-                    ['lvl1key', TrCmp],
-                    ['lvl2key', TrCmp],
-                    ['lvl3key', TrCmp],
-                    ['lvl4key', TrCmp]
-                ]}
                 type={'table'}
+                rowKey="id"
                 header={[
-                    {title: 'level'},
-                    {title: 'last name', sortKey: 'name'},
-                    {title: 'age', sortKey: 'age'},
-                    {title: 'id', sortKey: 'id'},
-                    {title: ''},
+                    { title: 'level' },
+                    { title: 'last name', sortKey: 'name' },
+                    { title: 'age', sortKey: 'age' },
+                    { title: 'id', sortKey: 'id' },
+                    { title: '' },
                 ]}
+                component={{
+                    header: TableHeaderCmp,
+                    pagination: PaginationCmp,
+                    rows: [
+                        [TrCmp],
+                        ['lvl1key', TrCmp],
+                        ['lvl2key', TrCmp],
+                        ['lvl3key', TrCmp],
+                        ['lvl4key', TrCmp]
+                    ]
+                }}
                 expand={{
                     showInitial: 'NONE',
                     showOnePerLvl: true
@@ -200,9 +203,11 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     page: 0,
                     increment: [10, 1],
                 }}
-                onPaginateChange={(modState) => console.log(modState)}
-                onSortChange={(modState) => console.log(modState)}
-                onExpandChange={(modState) => console.log(modState)}
+                callback={{
+                    onPaginateChange: (modState) => console.log(modState),
+                    onSortChange: (modState) => console.log(modState),
+                    onExpandChange: (modState) => console.log(modState)
+                }}
                 />
         </div>
     );

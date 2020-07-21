@@ -3,37 +3,47 @@ import * as rowHandleType from '../../../service/handle/row/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
 import * as dropdownType from '../../prsntn/dropdown/type';
+import { ReactElement } from 'react';
 
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: TDataOption;
-    rowKey?: TRowKeyOption;
-    rows: IRowOption[];
     type?: TGridTypeOption;
     header?: thHandleType.IOption[];
+    rowKey?: TRowKeyOption;
+    component: IComponentOption;
     expand?: IExpandOption;
     sort?: Partial<sortHandleType.IOption>;
     paginate?: Partial<pgnHandleType.IOption>;
+    callback?: ICallbackOption;
+}
+
+export interface IRowOption extends Array<any> {
+    0: string | TCmp;
+    1?: TCmp;
+}
+
+interface IComponentOption {
+    rows: IRowOption[];
+    header?: TCmp;
+    pagination?: TCmp;
+}
+
+interface IExpandOption {
+    showInitial?: rowHandleType.TVisibleNestablePath;
+    showOnePerLvl?: boolean;
+}
+
+interface ICallbackOption {
     onPaginateChange?: TFn;
     onSortChange?: TFn;
     onExpandChange?: TFn;
 }
 
-export interface IExpandOption {
-    showInitial?: rowHandleType.TVisibleNestablePath;
-    showOnePerLvl?: boolean;
-}
-
-export interface IRowOption extends Array<any> {
-    0: string | TRowCmpCls;
-    1?: TRowCmpCls;
-}
-
-export type TRowCmpCls = React.FC<any> | React.ComponentClass<any>;
-export type TGridTypeOption = 'table' | 'list';
 export type TDataOption = Record<string, any>[];
-export type TRowKeyOption = string | TRowKeyPipeFn;
-type TRowKeyPipeFn = (ctx: rowHandleType.IItemCtx) => string;
+export type TGridTypeOption = 'table' | 'list';
+export type TRowKeyOption = string | ((ctx: rowHandleType.IItemCtx<ReactElement>) => string);
+export type TCmp = React.FC<any> | React.ComponentClass<any>;
 
 //// State
 export interface IState {
