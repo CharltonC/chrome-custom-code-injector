@@ -140,8 +140,8 @@ const sampleData: any[] = [
 ];
 
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const TrCmp = ({idx, item, itemLvl, nestedItems, toggleProps}) => {
-        const { isOpen, onToggle } = nestedItems ? toggleProps : {} as any;
+    const TrCmp = ({idx, item, itemLvl, nestedElem, toggleProps}) => {
+        const { isOpen, onToggle } = nestedElem ? toggleProps : {} as any;
 
         return <>
             <tr>
@@ -150,17 +150,17 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 <td>{item.age}</td>
                 <td>{item.id}</td>
                 <td>{
-                    nestedItems &&
+                    nestedElem &&
                     <button type="button" onClick={onToggle}>
                         {isOpen ? '-' : '+' }
                     </button>
                 }</td>
             </tr>
             {
-                nestedItems && isOpen &&
+                nestedElem && isOpen &&
                 <tr>
                     <td colSpan={5}>
-                        {nestedItems}
+                        {nestedElem}
                     </td>
                 </tr>
             }
@@ -192,8 +192,8 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     showOnePerLvl: true
                 }}
                 sort={{
-                    // key: 'name',
-                    // isAsc: true,
+                    key: 'name',
+                    isAsc: true,
                     reset: true,
                 }}
                 paginate={{
@@ -206,5 +206,4 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 />
         </div>
     );
-
 };

@@ -1,5 +1,5 @@
 .kz-datagrid {
-    &__table {
+    &__grid {
         @include nested-table-bg('&--nest-', 4, #F2F2F2, 10px);
         width: 100%;
         text-align: left;

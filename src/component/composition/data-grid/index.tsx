@@ -23,12 +23,12 @@ export class _DataGrid extends Component<IProps, IState> {
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
     readonly cssCls = new UtilHandle().cssCls;
-    readonly BASE_TB_CLS: string = 'kz-datagrid__table';
+    readonly BASE_GRID_CLS: string = 'kz-datagrid__grid';
 
     //// Builtin API
     constructor(props: IProps) {
         super(props);
-        this.state = this.createState(props);
+        this.state = this.createState();
     }
 
     render() {
@@ -39,8 +39,8 @@ export class _DataGrid extends Component<IProps, IState> {
         return (
             <div className="kz-datagrid">{ paginate &&
                 <Pagination {...this.getPgnCmpProps(data)} />}
-                {/* TODO: Wrapper tag ? */}
-                <table className={this.cssCls(this.BASE_TB_CLS, 'root')}>
+                {/* TODO: Wrapper tag + class ? */}
+                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>
                     <thead>{ thState?.map((thCtxs, trIdx: number) => (
                         <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
                             <th key={thIdx} {...thProps}>
@@ -58,14 +58,15 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    createState(props: IProps): IState {
-        const { rows, rowKey, data, sort, paginate, header } = props;
-        const thState: thHandleType.TState = header ? this.thHandle.createState(header) : null;
+    createState(): IState {
+        const { rows, rowKey, data, sort, paginate, header } = this.props;
+        const { thHandle, sortHandle, pgnHandle } = this;
+        const thState: thHandleType.TState = header ? thHandle.createState(header) : null;
         const rowOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
-        const sortOption: sortHandleType.IOption = sort ? this.sortHandle.createOption(sort) : null;
-        const sortState: sortHandleType.IState = sort ? this.sortHandle.createState(data, sortOption) : null;
-        const pgnOption: pgnHandleType.IOption = paginate ? this.pgnHandle.createOption(paginate) : null;
-        const pgnState: pgnHandleType.IState = paginate ? this.pgnHandle.createState(data, paginate) : null;
+        const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
+        const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;
+        const pgnOption: pgnHandleType.IOption = paginate ? pgnHandle.createOption(paginate) : null;
+        const pgnState: pgnHandleType.IState = paginate ? pgnHandle.createState(data, paginate) : null;
         return { thState, rowOption, sortOption, sortState, pgnOption, pgnState };
     }
 
@@ -87,7 +88,7 @@ export class _DataGrid extends Component<IProps, IState> {
             const nestedElem: ReactElement = nestedItems ?
                 this.wrapNestedItemsWithTag(
                     nestedItems,
-                    this.cssCls(this.BASE_TB_CLS, `nest-${itemLvl+1}`)
+                    this.cssCls(this.BASE_GRID_CLS, `nest-${itemLvl+1}`)
                 ) :
                 null;
 
