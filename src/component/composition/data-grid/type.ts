@@ -14,7 +14,9 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     expand?: IExpandOption;
     sort?: Partial<sortHandleType.IOption>;
     paginate?: Partial<pgnHandleType.IOption>;
-    callback?: ICallbackOption
+    onPaginateChange?: TFn;
+    onSortChange?: TFn;
+    onExpandChange?: TFn;
 }
 
 // TODO: Move to Expand Wrapper Cmp Type
@@ -23,16 +25,9 @@ export interface IExpandOption {
     showOnePerLvl?: boolean;
 }
 
-// TODO: Renamed to IRowOption
 export interface IRowOption extends Array<any> {
     0: string | TRowCmpCls;
     1?: TRowCmpCls;
-}
-
-export interface ICallbackOption {
-    onPaginateChange?: TFn;
-    onSortChange?: TFn;
-    onExpandChange?: TFn;
 }
 
 export type TRowCmpCls = React.FC<any> | React.ComponentClass<any>;

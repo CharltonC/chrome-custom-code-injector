@@ -200,11 +200,9 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     page: 0,
                     increment: [10, 1],
                 }}
-                callback={{
-                    onPaginateChange: (modState) => console.log(modState),
-                    onSortChange: (modState) => console.log(modState),
-                    onExpandChange: (modState) => console.log(modState),
-                }}
+                onPaginateChange={(modState) => console.log(modState)}
+                onSortChange={(modState) => console.log(modState)}
+                onExpandChange={(modState) => console.log(modState)}
                 />
         </div>
     );

@@ -67,6 +67,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: string | TRowKeyPipeFn): TFn {
+        const { onExpandChange } = this.props;
         return (itemCtx: rowHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
@@ -119,11 +120,10 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getPgnCmpProps(data: any[]): paginationType.IProps {
-        const { props, state } = this;
-        const { pgnOption, pgnState } = state;
+        const {onExpandChange} = this.props;
+        const { pgnOption, pgnState } = this.state;
         if (!pgnOption) return null;
 
-        const onExpandChange: TFn = props.callback?.onExpandChange;
         return {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
@@ -136,11 +136,10 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getSortCmpProps(data: any[], sortKey: string): sortBtnType.IProps {
-        const { props, state } = this;
-        const { sortOption } = state;
+        const { onSortChange } = this.props;
+        const { sortOption } = this.state;
         if (!sortOption) return null;
 
-        const onSortChange: TFn = props.callback?.onSortChange;
         const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
             data,
             callback: (modState: Partial<IState>) => this.onOptionChange(modState, onSortChange),
