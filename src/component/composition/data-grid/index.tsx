@@ -9,7 +9,7 @@ import { Pagination } from '../../prsntn-grp/pagination';
 import { ExpandWrapper } from '../../structural/expand';
 import {
     IProps, IState,
-    IRowOption, TRowOption,
+    IRowOption, TRowKeyOption,
     TRowCmpCls, TFn, TDataOption,
     rowHandleType, paginationType, sortBtnType,
     thHandleType, pgnHandleType, sortHandleType
@@ -70,7 +70,7 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
-    transformRowOption(rows: IRowOption[], rowKey: TRowOption): rowHandleType.IRawRowConfig[] {
+    transformRowOption(rows: IRowOption[], rowKey: TRowKeyOption): rowHandleType.IRawRowConfig[] {
         return rows.map((row: IRowOption, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
@@ -79,7 +79,7 @@ export class _DataGrid extends Component<IProps, IState> {
         });
     }
 
-    getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: TRowOption): TFn {
+    getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: TRowKeyOption): TFn {
         const { onExpandChange } = this.props;
         return (itemCtx: rowHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;

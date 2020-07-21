@@ -7,7 +7,7 @@ import * as dropdownType from '../../prsntn/dropdown/type';
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: TDataOption;
-    rowKey?: TRowOption;
+    rowKey?: TRowKeyOption;
     rows: IRowOption[];
     type?: TGridTypeOption;
     header?: thHandleType.IOption[];
@@ -33,7 +33,7 @@ export interface IRowOption extends Array<any> {
 export type TRowCmpCls = React.FC<any> | React.ComponentClass<any>;
 export type TGridTypeOption = 'table' | 'list';
 export type TDataOption = Record<string, any>[];
-export type TRowOption = string | TRowKeyPipeFn;
+export type TRowKeyOption = string | TRowKeyPipeFn;
 type TRowKeyPipeFn = (ctx: rowHandleType.IItemCtx) => string;
 
 //// State
