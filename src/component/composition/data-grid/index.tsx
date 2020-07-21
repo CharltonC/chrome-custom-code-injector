@@ -32,16 +32,16 @@ export class _DataGrid extends Component<IProps, IState> {
 
     render() {
         const { paginate } = this.props;
-        const { thState } = this.state;
+        const { thRowsCtx } = this.state;
         const data: TDataOption = this.getSortedData();
 
         return (
             <div className="kz-datagrid">{ paginate &&
                 <Pagination {...this.getPgnCmpProps(data)} />}
                 {/* TODO: Wrapper tag + class ? */}
-                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{thState &&
+                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{thRowsCtx &&
                     <TableHeader
-                        thRowsContext={thState.thRowsCtx}
+                        thRowsContext={thRowsCtx}
                         getSortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
                     />}
                     <tbody>
@@ -57,12 +57,12 @@ export class _DataGrid extends Component<IProps, IState> {
         const { rows, rowKey, data, sort, paginate, header } = this.props;
         const { thHandle, sortHandle, pgnHandle } = this;
         const thState: TThState = header ? { thRowsCtx: thHandle.createRowThCtx(header) } : null;
-        const rowOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
+        const rowsOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
         const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
         const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;
         const pgnOption: pgnHandleType.IOption = paginate ? pgnHandle.createOption(paginate) : null;
         const pgnState: pgnHandleType.IState = paginate ? pgnHandle.createState(data, paginate) : null;
-        return { thState, rowOption, sortOption, sortState, pgnOption, pgnState };
+        return { thState, rowsOption, sortOption, sortState, pgnOption, pgnState };
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
@@ -76,14 +76,17 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getCmpTransformFn(RowCmp: TRowCmpCls, rowKey: TRowKeyOption): TFn {
-        const { onExpandChange } = this.props;
+        const { cssCls, BASE_GRID_CLS, props } = this;
+        const { type, onExpandChange } = props;
+
         return (itemCtx: rowHandleType.IItemCtx) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
             const nestedElem: ReactElement = nestedItems ?
                 this.wrapNestedItemsWithTag(
                     nestedItems,
-                    this.cssCls(this.BASE_GRID_CLS, `nest-${itemLvl+1}`)
+                    type,
+                    cssCls(BASE_GRID_CLS, `nest-${itemLvl+1}`)
                 ) :
                 null;
 
@@ -95,9 +98,9 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    wrapNestedItemsWithTag(content: ReactElement | ReactElement[], className: string = ''): ReactElement {
+    wrapNestedItemsWithTag(content: ReactElement | ReactElement[], type: string = 'table', className: string = ''): ReactElement {
         const props: {className?: string} = className ? { className } : {};
-        return this.props.type === 'table' ?
+        return type === 'table' ?
             <table {...props}>
                 <tbody>{content}</tbody>
             </table> :
@@ -110,12 +113,12 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getRowsElem(data: TDataOption): ReactElement[] {
-        const { pgnOption, pgnState, rowOption } = this.state;
+        const { pgnOption, pgnState, rowsOption } = this.state;
         const { showInitial: visiblePath } = this.props.expand;
         const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
         return this.rowHandle.createState({
             data: pgnOption ? data.slice(startIdx, endIdx) : data,
-            rows: rowOption,
+            rows: rowsOption,
             visiblePath
         });
     }

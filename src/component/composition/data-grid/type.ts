@@ -19,7 +19,6 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     onExpandChange?: TFn;
 }
 
-// TODO: Move to Expand Wrapper Cmp Type
 export interface IExpandOption {
     showInitial?: rowHandleType.TVisibleNestablePath;
     showOnePerLvl?: boolean;
@@ -38,8 +37,8 @@ type TRowKeyPipeFn = (ctx: rowHandleType.IItemCtx) => string;
 
 //// State
 export interface IState {
-    thState: TThState;
-    rowOption: rowHandleType.IRawRowConfig[];
+    thRowsCtx: thHandleType.TRowsThCtx
+    rowsOption: rowHandleType.IRawRowConfig[];
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
     pgnOption: pgnHandleType.IOption;
@@ -49,10 +48,6 @@ export interface IState {
 export type TShallResetState = {
     [K in keyof IState]: boolean;
 }
-
-export type TThState = {
-    thRowsCtx: thHandleType.TRowsThCtx
-};
 
 //// Generic
 export type TFn = (...args: any[]) => any;
