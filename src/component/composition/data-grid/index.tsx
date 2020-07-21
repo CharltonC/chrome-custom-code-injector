@@ -11,7 +11,7 @@ import {
     IProps, IRowOption, TRowKeyOption, TDataOption,
     IState,
     TRowCmpCls, TFn,
-    rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType
+    rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType, thHandleType
 } from './type';
 
 
@@ -56,13 +56,13 @@ export class _DataGrid extends Component<IProps, IState> {
     createState(): IState {
         const { rows, rowKey, data, sort, paginate, header } = this.props;
         const { thHandle, sortHandle, pgnHandle } = this;
-        const thState: TThState = header ? { thRowsCtx: thHandle.createRowThCtx(header) } : null;
+        const thRowsCtx: thHandleType.TRowsThCtx = header ? thHandle.createRowThCtx(header) : null;
         const rowsOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
         const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
         const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;
         const pgnOption: pgnHandleType.IOption = paginate ? pgnHandle.createOption(paginate) : null;
         const pgnState: pgnHandleType.IState = paginate ? pgnHandle.createState(data, paginate) : null;
-        return { thState, rowsOption, sortOption, sortState, pgnOption, pgnState };
+        return { thRowsCtx, rowsOption, sortOption, sortState, pgnOption, pgnState };
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
