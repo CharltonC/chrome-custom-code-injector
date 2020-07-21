@@ -30,7 +30,7 @@ describe('Table Header Handle', () => {
         });
     });
 
-    describe('Method - createState: Create rows (`tr`) of header (`th`) context used for rendering', () => {
+    describe('Method - createRowThCtx: Create rows (`tr`) of header (`th`) context used for rendering', () => {
         it('should return the table header context (with mocks)', () => {
             const mockOption: any = ['lorem'];
             const mockThColCtx: any = [];
@@ -38,7 +38,7 @@ describe('Table Header Handle', () => {
             spy.createRowThColCtx.mockReturnValue(mockThColCtx);
             spy.createRowThSpanCtx.mockReturnValue(mockThSpanCtx);
 
-            expect(handle.createState(mockOption)).toBe(mockThSpanCtx);
+            expect(handle.createRowThCtx(mockOption)).toBe(mockThSpanCtx);
             expect(spy.createRowThColCtx).toHaveBeenCalledWith(mockOption);
             expect(spy.createRowThSpanCtx).toHaveBeenCalledWith(mockThColCtx);
         });
@@ -52,7 +52,7 @@ describe('Table Header Handle', () => {
                 {title: 'b'},
             ];
 
-            expect(handle.createState(mockOption)).toEqual([
+            expect(handle.createRowThCtx(mockOption)).toEqual([
                 [
                     {title: 'a', colSpan: 2, rowSpan: 1, sortKey: undefined},
                     {title: 'b', colSpan: 1, rowSpan: 2, sortKey: undefined},

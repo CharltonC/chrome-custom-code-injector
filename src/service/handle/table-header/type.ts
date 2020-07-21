@@ -6,7 +6,7 @@ export interface IOption {
 }
 
 //// State
-export type TState = IThCtx[][];
+export type TRowsThCtx = IThCtx[][];
 
 export interface IThCtx {
     title: string;

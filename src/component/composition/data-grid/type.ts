@@ -38,7 +38,7 @@ type TRowKeyPipeFn = (ctx: rowHandleType.IItemCtx) => string;
 
 //// State
 export interface IState {
-    thState: thHandleType.TState;
+    thState: TThState;
     rowOption: rowHandleType.IRawRowConfig[];
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
@@ -50,6 +50,10 @@ export type TShallResetState = {
     [K in keyof IState]: boolean;
 }
 
+export type TThState = {
+    thRowsCtx: thHandleType.TRowsThCtx
+};
+
 //// Generic
 export type TFn = (...args: any[]) => any;
 
@@ -57,7 +61,6 @@ export type TFn = (...args: any[]) => any;
 export {pgnHandleType as pgnHandleType};
 export {dropdownType as dropdownType}
 export {rowHandleType as rowHandleType};
-export {thHandleType as thHandleType};
 export {sortHandleType as sortHandleType}
 export * as sortBtnType from '../../prsntn/sort-btn/type';
 export * as paginationType from '../../prsntn-grp/pagination/type';

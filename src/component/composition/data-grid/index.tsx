@@ -8,11 +8,10 @@ import { SortBtn } from '../../prsntn/sort-btn';
 import { Pagination } from '../../prsntn-grp/pagination';
 import { ExpandWrapper } from '../../structural/expand';
 import {
-    IProps, IState,
-    IRowOption, TRowKeyOption,
-    TRowCmpCls, TFn, TDataOption,
-    rowHandleType, paginationType, sortBtnType,
-    thHandleType, pgnHandleType, sortHandleType
+    IProps, IRowOption, TRowKeyOption, TDataOption,
+    IState, TThState,
+    TRowCmpCls, TFn,
+    rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType
 } from './type';
 
 
@@ -61,7 +60,7 @@ export class _DataGrid extends Component<IProps, IState> {
     createState(): IState {
         const { rows, rowKey, data, sort, paginate, header } = this.props;
         const { thHandle, sortHandle, pgnHandle } = this;
-        const thState: thHandleType.TState = header ? thHandle.createState(header) : null;
+        const thState: TThState = header ? { thRowsCtx: thHandle.createRowThCtx(header) } : null;
         const rowOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
         const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
         const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;

@@ -1,11 +1,11 @@
 import {
-    IOption, TState,
-    TRowsThColCtx, TRowThColCtx,
+    IOption,
+    TRowsThCtx, TRowsThColCtx, TRowThColCtx,
     IThColCtx, IThColCtxCache,
 } from './type';
 
 export class ThHandle {
-    createState(option: IOption[]): TState {
+    createRowThCtx(option: IOption[]): TRowsThCtx {
         const rowsThColCtx = this.createRowThColCtx(option) as TRowsThColCtx;
         return this.createRowThSpanCtx(rowsThColCtx);
     }
@@ -32,7 +32,7 @@ export class ThHandle {
         return isTopLvl ? cache.slots : rowThColCtx;
     }
 
-    createRowThSpanCtx(rowsThColCtx: TRowsThColCtx): TState {
+    createRowThSpanCtx(rowsThColCtx: TRowsThColCtx): TRowsThCtx {
         let rowTotal: number = rowsThColCtx.length;
 
         return rowsThColCtx.map((row: TRowThColCtx, rowLvlIdx: number) => {
