@@ -94,7 +94,7 @@ describe('Component - Visible Wrapper', () => {
 
         it('should render when it is visible', () => {
             expect($childElem.textContent).toBe('sum');
-            expect(spy.getChildProps).toHaveBeenCalledWith(true);
+            expect(spy.getChildProps).toHaveBeenCalledWith(true, undefined);
             expect(cloneElemSpy).toHaveBeenCalledWith(mockChild, mockRtnChildProps);
         });
     });
