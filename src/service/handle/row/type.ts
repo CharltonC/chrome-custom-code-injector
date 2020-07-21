@@ -30,15 +30,15 @@ export interface IItemsCtxReq {
     visiblePath: TVisibleNestablePath;
 }
 
-export interface IItemCtx {
+export interface IItemCtx<T = any[]> {
     idx: number;
     item: any;
     itemLvl: number;
     itemKey: string;
     itemPath: string;
     parentPath: string;
-    nestedItems: any[];
     isExpdByDef: boolean;
+    nestedItems: any[] | T;
 }
 
 export interface IErrMsg {
