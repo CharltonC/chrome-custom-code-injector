@@ -6,7 +6,7 @@ import { RowHandle } from '../../../service/handle/row'
 import { PgnHandle } from '../../../service/handle/pagination';
 import { SortBtn } from '../../prsntn/sort-btn';
 import { Pagination } from '../../prsntn-grp/pagination';
-import { ExpandWrapper } from '../../structural/visible';
+import { ExpandWrapper } from '../../structural/expand';
 import {
     IProps, IState,
     IRow, TRowCmpCls, TFn, TRowKeyPipeFn,
