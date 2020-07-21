@@ -8,7 +8,7 @@ import * as dropdownType from '../../prsntn/dropdown/type';
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: any[];
     rowKey?: string | TRowKeyPipeFn;
-    rows: IRow[];
+    rows: IRowOption[];
     type?: TGridType;
     header?: thHandleType.IOption[];
     expand?: IExpandOption;
@@ -24,7 +24,7 @@ export interface IExpandOption {
 }
 
 // TODO: Renamed to IRowOption
-export interface IRow extends Array<any> {
+export interface IRowOption extends Array<any> {
     0: string | TRowCmpCls;
     1?: TRowCmpCls;
 }

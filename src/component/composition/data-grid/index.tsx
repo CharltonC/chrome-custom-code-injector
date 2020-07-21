@@ -9,19 +9,19 @@ import { Pagination } from '../../prsntn-grp/pagination';
 import { ExpandWrapper } from '../../structural/expand';
 import {
     IProps, IState,
-    IRow, TRowCmpCls, TFn, TRowKeyPipeFn,
+    IRowOption, TRowCmpCls, TFn, TRowKeyPipeFn,
     rowHandleType, paginationType, sortBtnType,
 } from './type';
 
 
 export class _DataGrid extends Component<IProps, IState> {
     //// Dependency Injection
-    readonly BASE_TB_CLS: string = 'kz-datagrid__table';
     readonly thHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
     readonly cssCls = new UtilHandle().cssCls;
+    readonly BASE_TB_CLS: string = 'kz-datagrid__table';
 
     //// Builtin API
     constructor(props: IProps) {
@@ -57,8 +57,8 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Core
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
-    transformRowOption(rows: IRow[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
-        return rows.map((row: IRow, idx: number) => {
+    transformRowOption(rows: IRowOption[], rowKey: string | TRowKeyPipeFn): rowHandleType.IRawRowConfig[] {
+        return rows.map((row: IRowOption, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
             const transformFn = this.getCmpTransformFn(row[transformFnIdx], rowKey);
@@ -129,7 +129,8 @@ export class _DataGrid extends Component<IProps, IState> {
             ...this.pgnHandle.createGenericCmpAttr({
                 data,
                 callback: (modState: Partial<IState>) => this.onOptionChange(modState, onExpandChange),
-                option: pgnOption, state: pgnState
+                option: pgnOption,
+                state: pgnState
             })
         };
     }
