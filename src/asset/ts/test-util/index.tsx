@@ -5,8 +5,8 @@ import { act } from "react-dom/test-utils";
 import { IEvtCls, TCmpCls, TCmpProps } from './type';
 
 export const TestUtil = {
-    setupElem(): HTMLElement {
-        const elem: HTMLElement = document.createElement("div");
+    setupElem(tagName: string = 'div'): HTMLElement {
+        const elem: HTMLElement = document.createElement(tagName);
         document.body.appendChild(elem);
         return elem;
     },
