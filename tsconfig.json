@@ -8,6 +8,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
+        "allowShortCircuit": true,
         "target": "es5",
         "typeRoots": [
             "node_modules/@types"
