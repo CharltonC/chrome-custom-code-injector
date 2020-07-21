@@ -9,7 +9,7 @@ import { TableHeader } from '../../prsntn-grp/table-header';
 import { ExpandWrapper } from '../../structural/expand';
 import {
     IProps, IRowOption, TRowKeyOption, TDataOption,
-    IState, TThState,
+    IState,
     TRowCmpCls, TFn,
     rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType
 } from './type';
