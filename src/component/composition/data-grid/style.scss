@@ -8,25 +8,6 @@
             margin-top: 15px;
             background: transparent;
 
-            > thead {
-                background: #DADDE4;
-                text-transform: uppercase;
-                font: 14px $roboto-bld;
-
-                tr {
-                    height: 50px;
-                }
-
-                th {
-                    padding: 20px;
-                    color: #505050;
-
-                    > * {
-                        vertical-align: middle;
-                    }
-                }
-            }
-
             > tbody {
                 > tr {
                     border-top: 1px solid #E6E6E6;

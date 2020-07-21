@@ -1,0 +1,18 @@
+.kz-tableheader {
+    background: $light-gray-300;
+    text-transform: uppercase;
+    font: 14px $roboto-bld;
+
+    tr {
+        height: 50px;
+    }
+
+    th {
+        padding: 20px;
+        color: $dark-gray-100;
+
+        > * {
+            vertical-align: middle;
+        }
+    }
+}

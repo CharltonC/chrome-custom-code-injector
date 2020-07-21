@@ -4,8 +4,8 @@ import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
 import { RowHandle } from '../../../service/handle/row'
 import { PgnHandle } from '../../../service/handle/pagination';
-import { SortBtn } from '../../prsntn/sort-btn';
 import { Pagination } from '../../prsntn-grp/pagination';
+import { TableHeader } from '../../prsntn-grp/table-header';
 import { ExpandWrapper } from '../../structural/expand';
 import {
     IProps, IRowOption, TRowKeyOption, TDataOption,
@@ -39,15 +39,11 @@ export class _DataGrid extends Component<IProps, IState> {
             <div className="kz-datagrid">{ paginate &&
                 <Pagination {...this.getPgnCmpProps(data)} />}
                 {/* TODO: Wrapper tag + class ? */}
-                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>
-                    <thead>{ thState?.map((thCtxs, trIdx: number) => (
-                        <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
-                            <th key={thIdx} {...thProps}>
-                                <span>{title}</span>{ sortKey &&
-                                <SortBtn {...this.getSortCmpProps(data, sortKey)} />}
-                            </th>))}
-                        </tr>))}
-                    </thead>
+                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{thState &&
+                    <TableHeader
+                        thRowsContext={thState.thRowsCtx}
+                        getSortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
+                    />}
                     <tbody>
                         {this.getRowsElem(data)}
                     </tbody>
