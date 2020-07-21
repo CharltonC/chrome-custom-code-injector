@@ -37,7 +37,7 @@ describe('Component - TODO: Component Name', () => {
     });
 
     beforeEach(() => {
-        $elem = TestUtil.setupElem();
+        $elem = TestUtil.setupElem('table');
         TestUtil.renderPlain($elem, TableHeader, mockProps);
         syncChildElem();
     });
