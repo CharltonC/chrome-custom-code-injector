@@ -19,6 +19,7 @@ describe('Component - Visible Wrapper', () => {
     });
 
     describe('Component Class', () => {
+        const mockCallback: jest.Mock = jest.fn();
         const mockProps: IProps = { initial: false };
 
         describe('constructor', () => {
@@ -32,25 +33,35 @@ describe('Component - Visible Wrapper', () => {
         });
 
         describe('Method - getChildProps: Get Extra Props to be passed to Children Element', () => {
+            const mockIsOpen: boolean = true;
+
             beforeEach(() => {
                 cmp = new _ExpandWrapper(mockProps);
                 setStateSpy = jest.spyOn(cmp, 'setState');
                 setStateSpy.mockImplementation(() => {});
             });
 
-            it('should return child props when toggle is on and its not visible', () => {
-                const mockIsOpen: boolean = true;
+            it('should return child props when callback is not provided', () => {
                 const { isOpen, onToggle } = cmp.getChildProps(mockIsOpen).toggleProps;
                 onToggle();
 
                 expect(isOpen).toBe(mockIsOpen);
                 expect(setStateSpy).toHaveBeenCalledWith({isOpen: !isOpen});
+                expect(mockCallback).not.toHaveBeenCalled();
+            });
+
+            it('should return child props when callback is provided', () => {
+                const { isOpen, onToggle } = cmp.getChildProps(mockIsOpen, mockCallback).toggleProps;
+                onToggle();
+
+                expect(isOpen).toBe(mockIsOpen);
+                expect(setStateSpy).toHaveBeenCalledWith({isOpen: !isOpen});
+                expect(mockCallback).toHaveBeenCalledWith(!isOpen);
             });
         });
     });
 
     describe('Render/DOM', () => {
-        // TODO: +Note
         // Specify type for `toggleProps` to silence React unknown props warning
         const MockChild = (props: {toggleProps?: any;}) => <h1>lorem</h1>;
         const mockChild = <MockChild />;

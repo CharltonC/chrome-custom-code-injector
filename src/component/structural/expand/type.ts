@@ -1,6 +1,7 @@
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     initial?: boolean;
+    callback?: (...args: any[]) => any;
 }
 
 //// State

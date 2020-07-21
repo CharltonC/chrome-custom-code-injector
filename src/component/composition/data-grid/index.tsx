@@ -79,7 +79,7 @@ export class _DataGrid extends Component<IProps, IState> {
             }
 
             return nestedItems ?
-                <ExpandWrapper key={key} initial={isExpdByDef}>
+                <ExpandWrapper key={key} initial={isExpdByDef} callback={onExpandChange}>
                     <RowCmp {...itemCtx} />
                 </ExpandWrapper> :
                 <RowCmp key={key} {...itemCtx} />;

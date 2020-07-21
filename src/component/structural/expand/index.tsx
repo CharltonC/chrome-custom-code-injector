@@ -11,17 +11,20 @@ export class _ExpandWrapper extends Component<IProps, IState> {
     }
 
     render() {
-        const { children } = this.props;
-        const extraProps: IChildExtraProps = this.getChildProps(this.state.isOpen);
+        const { isOpen } = this.state;
+        const { children, callback } = this.props;
+        const extraProps: IChildExtraProps = this.getChildProps(isOpen, callback);
         return Children.map(children, (child: ReactElement) => cloneElement(child, extraProps));
     }
 
-    getChildProps(isOpen: boolean): IChildExtraProps {
+    getChildProps(isOpen: boolean, callback?: (...args: any[]) => any): IChildExtraProps {
         return {
             toggleProps: {
                 isOpen,
-                // TODO: +Note `() => this.setState(..)` instead of `this.onSOmething.bind(this)`
-                onToggle: () => this.setState({isOpen: !isOpen})
+                onToggle: () => {
+                    this.setState({isOpen: !isOpen})
+                    if (callback) callback(!isOpen);
+                }
             } as any
         };
     }
