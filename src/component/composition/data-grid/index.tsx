@@ -38,15 +38,15 @@ export class _DataGrid extends Component<IProps, IState> {
             <div className="kz-datagrid">{ paginate &&
                 <Pagination {...this.getPgnCmpProps(data)} />}
                 {/* TODO: Wrapper tag ? */}
-                <table className={this.cssCls(this.BASE_TB_CLS, 'root')}>{ thState &&
-                    <thead>{ thState.map((thCtxs, trIdx: number) => (
+                <table className={this.cssCls(this.BASE_TB_CLS, 'root')}>
+                    <thead>{ thState?.map((thCtxs, trIdx: number) => (
                         <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
                             <th key={thIdx} {...thProps}>
                                 <span>{title}</span>{ sortKey &&
                                 <SortBtn {...this.getSortCmpProps(data, sortKey)} />}
                             </th>))}
                         </tr>))}
-                    </thead>}
+                    </thead>
                     <tbody>
                         {this.getRowsElem(data)}
                     </tbody>
@@ -119,38 +119,42 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getPgnCmpProps(data: any[]): paginationType.IProps {
-        const { pgnOption, pgnState } = this.state;
+        const { props, state } = this;
+        const { pgnOption, pgnState } = state;
         if (!pgnOption) return null;
+
+        const onExpandChange: TFn = props.callback?.onExpandChange;
         return {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
                 data,
-                callback: this.onOptionChange.bind(this),
+                callback: (modState: Partial<IState>) => this.onOptionChange(modState, onExpandChange),
                 option: pgnOption, state: pgnState
             })
         };
     }
 
     getSortCmpProps(data: any[], sortKey: string): sortBtnType.IProps {
-        const { sortOption } = this.state;
+        const { props, state } = this;
+        const { sortOption } = state;
         if (!sortOption) return null;
+
+        const onSortChange: TFn = props.callback?.onSortChange;
         const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
             data,
-            callback: this.onOptionChange.bind(this),
+            callback: (modState: Partial<IState>) => this.onOptionChange(modState, onSortChange),
             option: sortOption
         }, sortKey);
         return sortBtnAttr;
     }
 
-    // TODO: param type
-    onOptionChange(modState): void {
-        // TODO: add diff. callback
+    onOptionChange(modState: Partial<IState>, userCallback: TFn): void {
         this.setState({ ...this.state, ...modState });
+        if (userCallback) userCallback(modState);
     }
 
     wrapCmpWithTag(content: ReactElement | ReactElement[], className: string = ''): ReactElement {
-        // TODO: Type
-        const props = className ? { className } : {};
+        const props: {className?: string} = className ? { className } : {};
         return this.props.type === 'table' ?
             <table {...props}>
                 <tbody>{content}</tbody>

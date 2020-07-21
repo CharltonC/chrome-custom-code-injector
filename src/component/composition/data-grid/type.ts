@@ -42,19 +42,17 @@ export type TGridType = 'table' | 'list';
 
 //// State
 export interface IState {
+    thState: thHandleType.IThCtx[][]
     rowOption: rowHandleType.IRawRowConfig[];
     sortOption: sortHandleType.IOption;
-    // TODO: fix sortState type
-    sortState: any;
+    sortState: sortHandleType.IState;
     pgnOption: pgnHandleType.IOption;
     pgnState: pgnHandleType.IState;
-    thState: thHandleType.IThCtx[][]
 }
 
 export type TShallResetState = {
     [K in keyof IState]: boolean;
 }
-
 
 //// Generic
 export type TFn = (...args: any[]) => any;
