@@ -175,6 +175,12 @@ export class RowHandle {
         return (matchItem !== data) ? matchItem as T : null;
     }
 
+    getRelPathComparer({parentPath, itemKey, itemLvl}: IRowItemCtx): (s: string) => boolean {
+        const isRootLvlItem: boolean = itemLvl === 0;
+        const matchPattern: string = isRootLvlItem ? `${itemLvl}` : `${parentPath}/${itemKey}:`;
+        return (itemPath: string) => matchPattern.indexOf(itemPath, 0) !== -1;
+    }
+
     isGteZeroInt(val: number): boolean {
        return Number.isInteger(val) && val >= 0;
     }

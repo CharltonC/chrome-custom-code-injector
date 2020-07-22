@@ -1,10 +1,10 @@
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { TVisibleNestedOption, IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption } from './type';
+import { TVisibleNestedOption, IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption, IRowItemCtx } from './type';
 import { RowHandle } from '.';
 
 describe('Service - Row Handle', () => {
-    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt } = RowHandle.prototype;
+    const { isExpdByDef, getItemPath, parseRowConfig, getRelPathComparer, isGteZeroInt } = RowHandle.prototype;
     let handle: RowHandle;
     let spy: TMethodSpy<RowHandle>;
 
@@ -355,6 +355,30 @@ describe('Service - Row Handle', () => {
                 expect(handle.findItemInData(mockData, '0/key:0')).toBe('a');
                 expect(handle.findItemInData(mockData, '0/key:1')).toBe('b');
             });
+        });
+    });
+
+    describe('Method - getRelPathComparer: Get the string pattern for a relevant item Path', () => {
+        it('should return the relative item path when item level is not 0', () => {
+            const isRelPath = getRelPathComparer({
+                parentPath: '0/x:0',
+                itemKey: 'y',
+                itemLvl: 2,
+            } as IRowItemCtx);
+
+            expect(isRelPath('0')).toBe(true);
+            expect(isRelPath('0/x:0')).toBe(true);
+            expect(isRelPath('0/x:1')).toBe(false);
+            expect(isRelPath('0/x:0/y:')).toBe(true);
+            expect(isRelPath('1')).toBe(false);
+        });
+
+        it('should return the relative item path when item level is 0', () => {
+            const isRelPath = getRelPathComparer({itemLvl: 0} as IRowItemCtx);
+
+            expect(isRelPath('0')).toBe(true);
+            expect(isRelPath('0/x:0')).toBe(false);
+            expect(isRelPath('1')).toBe(false);
         });
     });
 
