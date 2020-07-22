@@ -30,8 +30,7 @@ interface IComponentOption {
 }
 
 interface IExpandOption {
-    showInitial?: rowHandleType.TVisibleNestedOption;
-    showOnePerLvl?: boolean;
+    all: boolean;
 }
 
 interface ICallbackOption {

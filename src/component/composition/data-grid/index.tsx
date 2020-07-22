@@ -119,7 +119,7 @@ export class _DataGrid extends Component<IProps, IState> {
 
     getRowsElem(data: TDataOption): ReactElement[] {
         const { pgnOption, pgnState, rowsOption } = this.state;
-        const { showInitial: visiblePath } = this.props.expand;
+        const visiblePath = this.props.expand?.all ? 'ALL' : 'NONE';
         const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
         return this.rowHandle.createCtxRows<ReactElement>({
             data: pgnOption ? data.slice(startIdx, endIdx) : data,

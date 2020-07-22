@@ -169,7 +169,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
         <div style={defStyle}>
             <DataGrid
                 data={sampleData}
-                type={'table'}
+                type="table"
                 rowKey="id"
                 header={[
                     { title: 'level' },
@@ -190,8 +190,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     ]
                 }}
                 expand={{
-                    showInitial: 'NONE',
-                    showOnePerLvl: true
+                    all: false
                 }}
                 sort={{
                     key: 'name',
