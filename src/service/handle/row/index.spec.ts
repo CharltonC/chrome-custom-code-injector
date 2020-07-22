@@ -375,21 +375,17 @@ describe('Service - Row Handle', () => {
 
     describe('Method - getRelPathComparer: Get the string pattern for a relevant item Path', () => {
         it('should return the relative item path when item level is not 0', () => {
-            const isRelPath = getRelPathComparer({
-                parentPath: '0/x:0',
-                itemKey: 'y',
-                itemLvl: 2,
-            } as IRowItemCtx);
+            const isRelPath = getRelPathComparer('0/x:0/x:0');
 
             expect(isRelPath('0')).toBe(true);
             expect(isRelPath('0/x:0')).toBe(true);
             expect(isRelPath('0/x:1')).toBe(false);
-            expect(isRelPath('0/x:0/y:')).toBe(true);
+            expect(isRelPath('0/x:0/y:')).toBe(false);
             expect(isRelPath('1')).toBe(false);
         });
 
         it('should return the relative item path when item level is 0', () => {
-            const isRelPath = getRelPathComparer({itemLvl: 0} as IRowItemCtx);
+            const isRelPath = getRelPathComparer('0');
 
             expect(isRelPath('0')).toBe(true);
             expect(isRelPath('0/x:0')).toBe(false);

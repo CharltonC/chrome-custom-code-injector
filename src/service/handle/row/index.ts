@@ -180,12 +180,10 @@ export class RowHandle {
         return (matchItem !== data) ? matchItem as T : null;
     }
 
-    getRelPathComparer({parentPath, itemKey, itemLvl}: IRowItemCtx): (s: string) => boolean {
-        const isRootLvlItem: boolean = itemLvl === 0;
-        const relPattern: string = isRootLvlItem ? `${itemLvl}` : `${parentPath}/${itemKey}:`;
+    getRelPathComparer(currItemPath: string): (s: string) => boolean {
         return (itemPath: string) => {
             const searchPattern: RegExp = new RegExp(`\^${itemPath}`);
-            return searchPattern.test(relPattern);
+            return searchPattern.test(currItemPath);
         };
     }
 
