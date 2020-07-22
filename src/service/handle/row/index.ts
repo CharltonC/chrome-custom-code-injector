@@ -59,7 +59,7 @@ export class RowHandle {
         return data.map((item: any, idx: number) => {
             // This Item
             const itemPath: string = this.getItemPath(idx, rowKey, parentPath);
-            const isOddRow: boolean = idx % 2 === 0;
+            const rowType = idx % 2 === 0 ? 'odd' : 'even';
 
             // Nested Items
             const nestedItems: T[] = this.getCtxNestedRows<T>({
@@ -71,7 +71,7 @@ export class RowHandle {
             const isExpdByDef: boolean = nestedItems ? this.isExpdByDef(itemPath, visiblePath) : false;
 
             // Return item
-            const itemCtx: IRowItemCtx<T[]> = { idx, isOddRow, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
+            const itemCtx: IRowItemCtx<T[]> = { idx, rowType, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
             return transformFn ? transformFn(itemCtx) : itemCtx;
         });
     }

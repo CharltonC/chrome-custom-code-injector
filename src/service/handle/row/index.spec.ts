@@ -128,7 +128,7 @@ describe('Service - Row Handle', () => {
             });
             expect(mockTransformFn).toHaveBeenCalledWith({
                 idx: 0,
-                isOddRow: true,
+                rowType: 'odd',
                 item: mockData[0],
                 itemKey: '',
                 itemLvl: mockItemsReq.rowLvl,
@@ -146,7 +146,7 @@ describe('Service - Row Handle', () => {
 
             expect(handle.getCtxRows({...mockItemsReq})).toEqual([{
                 idx: 0,
-                isOddRow: true,
+                rowType: 'odd',
                 item: mockData[0],
                 itemKey: '',
                 itemPath: mockItemPath,

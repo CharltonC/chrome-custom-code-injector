@@ -29,7 +29,7 @@ export interface ICtxRowsQuery {
 
 export interface IRowItemCtx<T = TDefNestdItems> {
     idx: number;
-    isOddRow: boolean;
+    rowType: 'odd' | 'even';
     item: any;
     itemLvl: number;
     itemKey: string;
