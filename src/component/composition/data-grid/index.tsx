@@ -61,7 +61,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { thHandle, sortHandle, pgnHandle } = this;
         const { rows } = component;
         const thRowsCtx: thHandleType.TRowsThCtx = header ? thHandle.createRowThCtx(header) : null;
-        const rowsOption: rowHandleType.IRawRowConfig[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
+        const rowsOption: rowHandleType.IRawRowsOption[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
         const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
         const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;
         const pgnOption: pgnHandleType.IOption = paginate ? pgnHandle.createOption(paginate) : null;
@@ -70,12 +70,12 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
-    transformRowOption(rows: IRowOption[], rowKey: TRowKeyOption): rowHandleType.IRawRowConfig[] {
+    transformRowOption(rows: IRowOption[], rowKey: TRowKeyOption): rowHandleType.IRawRowsOption[] {
         return rows.map((row: IRowOption, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
             const transformFn = this.getCmpTransformFn(row[transformFnIdx], rowKey);
-            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowConfig;
+            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 
@@ -84,7 +84,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { type, callback } = props;
         const { onExpandChange } = callback ?? {};
 
-        return (itemCtx: rowHandleType.IItemCtx<ReactElement>) => {
+        return (itemCtx: rowHandleType.IRowItemCtx<ReactElement>) => {
             const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
             itemCtx.nestedItems = nestedItems ?
@@ -121,7 +121,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { pgnOption, pgnState, rowsOption } = this.state;
         const { showInitial: visiblePath } = this.props.expand;
         const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
-        return this.rowHandle.createState({
+        return this.rowHandle.createCtxRows<ReactElement>({
             data: pgnOption ? data.slice(startIdx, endIdx) : data,
             rows: rowsOption,
             visiblePath

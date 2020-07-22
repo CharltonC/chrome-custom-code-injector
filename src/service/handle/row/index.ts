@@ -1,10 +1,9 @@
-import { IUiHandle } from '../../../asset/ts/type/ui-handle';
 import {
     IOption,
-    IRawRowConfig, IParsedRowConfig, IErrMsg, TVisibleNestablePath, TData, TFn, IItemsCtxReq, IItemCtx
+    IRawRowsOption, IParsedRowsOption, IErrMsg, TVisibleNestablePath, TFn, ICtxRowsQuery, IRowItemCtx
 } from './type';
 
-export class RowHandle implements IUiHandle {
+export class RowHandle {
     // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
     readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
@@ -29,25 +28,21 @@ export class RowHandle implements IUiHandle {
     }
 
     //// Full State
-    createState(option: Partial<IOption> = {}): any[] {
+    createCtxRows<T = IRowItemCtx>(option: Partial<IOption> = {}): T[] {
         const { data, rows, visiblePath }: IOption = this.createOption(option);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getMappedItemsCtx({data, rows, rowLvl: 0, parentPath: '', visiblePath});
-    }
-
-    getDefState(): any[] {
-        return [];
+        return this.getCtxRows<T>({data, rows, rowLvl: 0, parentPath: '', visiblePath});
     }
 
     //// Partial State
     /**
      *
      * Usage in React:
-     * .getMappedItemsCtx({
+     * .getCtxRows({
      *      data: <dataArray>,
      *      rowLvl: 0,       // starting index for rows
      *      rowConfig: [    //
@@ -57,17 +52,17 @@ export class RowHandle implements IUiHandle {
      *      ]
      * })
      */
-    getMappedItemsCtx<TRtnType>(itemsReq: IItemsCtxReq): IItemCtx[] | TRtnType[] {
-        const { data, rows, rowLvl, parentPath, visiblePath }: IItemsCtxReq = itemsReq;
-        const { rowKey, transformFn }: IParsedRowConfig = this.parseRowConfig(rows[rowLvl], rowLvl);
+    getCtxRows<T = IRowItemCtx>(ctxRowsQuery: ICtxRowsQuery): T[] {
+        const { data, rows, rowLvl, parentPath, visiblePath }: ICtxRowsQuery = ctxRowsQuery;
+        const { rowKey, transformFn }: IParsedRowsOption = this.parseRowConfig(rows[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
             // This Item
             const itemPath: string = this.getItemPath(idx, rowKey, parentPath);
 
             // Nested Items
-            const nestedItems: IItemCtx[] = this.getMappedNestedItemsCtx({
-                ...itemsReq,
+            const nestedItems: T[] = this.getCtxNestedRows<T>({
+                ...ctxRowsQuery,
                 data: item,
                 rowLvl: rowLvl+1,
                 parentPath: itemPath
@@ -75,15 +70,15 @@ export class RowHandle implements IUiHandle {
             const isExpdByDef: boolean = nestedItems ? this.isExpdByDef(itemPath, visiblePath) : false;
 
             // Return item
-            const itemCtx: IItemCtx = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
+            const itemCtx: IRowItemCtx<T[]> = { idx, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
             return transformFn ? transformFn(itemCtx) : itemCtx;
         });
     }
 
-    getMappedNestedItemsCtx(itemsReq: IItemsCtxReq): IItemCtx[] {
-        const { data, rows, rowLvl } = itemsReq;
+    getCtxNestedRows<T = IRowItemCtx>(ctxRowsQuery: ICtxRowsQuery): T[] {
+        const { data, rows, rowLvl } = ctxRowsQuery;
         const nestedData: any[] = this.getValidatedData(data, rows[rowLvl]);
-        return nestedData ? this.getMappedItemsCtx({...itemsReq, data: nestedData}) : null;
+        return nestedData ? this.getCtxRows<T>({...ctxRowsQuery, data: nestedData}) : null;
     }
 
     //// Helper Methods
@@ -108,7 +103,7 @@ export class RowHandle implements IUiHandle {
             (visiblePath === 'ALL' ? true : false);
     }
 
-    parseRowConfig(config: IRawRowConfig, rowLvl: number): IParsedRowConfig {
+    parseRowConfig(config: IRawRowsOption, rowLvl: number): IParsedRowsOption {
         let [ itemOne, itemTwo ] = config;
         itemOne = itemOne ? itemOne : null;
         itemTwo = itemTwo ? itemTwo : null;
@@ -125,7 +120,7 @@ export class RowHandle implements IUiHandle {
     }
 
     // Check if row config, row key, and data exists & has at least 1 item
-    getValidatedData(target: TData, config?: IRawRowConfig): any[] {
+    getValidatedData(target: any, config?: IRawRowsOption): any[] {
         //// When Target is an array, config is optional
         if (Array.isArray(target)) return !!target.length ? target : null;
 

@@ -42,13 +42,13 @@ interface ICallbackOption {
 
 export type TDataOption = Record<string, any>[];
 export type TGridTypeOption = 'table' | 'list';
-export type TRowKeyOption = string | ((ctx: rowHandleType.IItemCtx<ReactElement>) => string);
+export type TRowKeyOption = string | ((ctx: rowHandleType.IRowItemCtx<ReactElement>) => string);
 export type TCmp = React.FC<any> | React.ComponentClass<any>;
 
 //// State
 export interface IState {
     thRowsCtx: thHandleType.TRowsThCtx;
-    rowsOption: rowHandleType.IRawRowConfig[];
+    rowsOption: rowHandleType.IRawRowsOption[];
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
     pgnOption: pgnHandleType.IOption;
