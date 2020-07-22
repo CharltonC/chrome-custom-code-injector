@@ -31,12 +31,12 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     render() {
+        const { thRowsCtx } = this.state;
         const { paginate, component } = this.props;
         const { pagination: UserPagination, header: UserHeader } = component;
-        const { thRowsCtx } = this.state;
         const data: TDataOption = this.getSortedData();
-        const Pagination: TCmp = UserPagination ? UserPagination : DefPagination;
-        const TableHeader: TCmp = UserHeader ? UserHeader : DefTableHeader;
+        const Pagination: TCmp = UserPagination || DefPagination;
+        const TableHeader: TCmp = UserHeader || DefTableHeader;
 
         return (
             <div className="kz-datagrid">{ paginate &&
