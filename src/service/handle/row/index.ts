@@ -178,8 +178,11 @@ export class RowHandle {
 
     getRelPathComparer({parentPath, itemKey, itemLvl}: IRowItemCtx): (s: string) => boolean {
         const isRootLvlItem: boolean = itemLvl === 0;
-        const matchPattern: string = isRootLvlItem ? `${itemLvl}` : `${parentPath}/${itemKey}:`;
-        return (itemPath: string) => matchPattern.indexOf(itemPath, 0) !== -1;
+        const relPattern: string = isRootLvlItem ? `${itemLvl}` : `${parentPath}/${itemKey}:`;
+        return (itemPath: string) => {
+            const searchPattern: RegExp = new RegExp(`\^${itemPath}`);
+            return searchPattern.test(relPattern);
+        };
     }
 
     isGteZeroInt(val: number): boolean {
