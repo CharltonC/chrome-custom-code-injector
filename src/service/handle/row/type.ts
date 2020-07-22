@@ -2,7 +2,7 @@
 export interface IOption {
     data: any[];
     rows: IRawRowsOption[];
-    visiblePath?: TVisibleNestablePath;
+    visiblePath?: TVisibleNestedOption;
 }
 
 export interface IRawRowsOption extends Array<any> {
@@ -11,7 +11,7 @@ export interface IRawRowsOption extends Array<any> {
 }
 
 // other indexes except 0 are optional, e.g. [ 'nestedRowKey', ComponentClass ]
-export type TVisibleNestablePath = 'ALL' | 'NONE' | string[];
+export type TVisibleNestedOption = 'ALL' | 'NONE' | string[];
 
 //// Other
 export interface IParsedRowsOption {
@@ -24,7 +24,7 @@ export interface ICtxRowsQuery {
     rows: IRawRowsOption[];
     rowLvl: number;
     parentPath?: string;
-    visiblePath: TVisibleNestablePath;
+    visiblePath: TVisibleNestedOption;
 }
 
 export interface IRowItemCtx<T = TDefNestdItems> {

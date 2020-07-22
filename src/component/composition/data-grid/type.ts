@@ -30,7 +30,7 @@ interface IComponentOption {
 }
 
 interface IExpandOption {
-    showInitial?: rowHandleType.TVisibleNestablePath;
+    showInitial?: rowHandleType.TVisibleNestedOption;
     showOnePerLvl?: boolean;
 }
 

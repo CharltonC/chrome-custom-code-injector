@@ -1,6 +1,6 @@
 import {
     IOption,
-    IRawRowsOption, IParsedRowsOption, IErrMsg, TVisibleNestablePath, TFn, ICtxRowsQuery, IRowItemCtx
+    IRawRowsOption, IParsedRowsOption, IErrMsg, TVisibleNestedOption, TFn, ICtxRowsQuery, IRowItemCtx
 } from './type';
 
 export class RowHandle {
@@ -97,7 +97,7 @@ export class RowHandle {
      *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
      * }
      */
-    isExpdByDef(itemPath: string, visiblePath: TVisibleNestablePath): boolean {
+    isExpdByDef(itemPath: string, visiblePath: TVisibleNestedOption): boolean {
         return Array.isArray(visiblePath) ?
             visiblePath.some((path: string) => path.indexOf(itemPath, 0) === 0) :
             (visiblePath === 'ALL' ? true : false);

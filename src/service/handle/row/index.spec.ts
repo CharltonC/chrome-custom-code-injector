@@ -1,6 +1,6 @@
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { TVisibleNestablePath, IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption } from './type';
+import { TVisibleNestedOption, IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption } from './type';
 import { RowHandle } from '.';
 
 describe('Service - Row Handle', () => {
@@ -160,7 +160,7 @@ describe('Service - Row Handle', () => {
 
     describe('Method - isExpdByDef: Check if a row should open/collapse its nested rows', () => {
         describe('when show target context is an array of contexts', () => {
-            const mockVisiblePath: TVisibleNestablePath = [ 'a', 'a/b' ];
+            const mockVisiblePath: TVisibleNestedOption = [ 'a', 'a/b' ];
 
             it('should return false if row context is not found in the show target context', () => {
                 expect(isExpdByDef('a/b/c', mockVisiblePath)).toBe(false);
