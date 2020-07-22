@@ -27,7 +27,7 @@ export interface ICtxRowsQuery {
     visiblePath: TVisibleNestablePath;
 }
 
-export interface IRowItemCtx<T = TDefNestdItems[]> {
+export interface IRowItemCtx<T = TDefNestdItems> {
     idx: number;
     item: any;
     itemLvl: number;
