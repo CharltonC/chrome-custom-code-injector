@@ -4,7 +4,7 @@ import { TVisibleNestedOption, IRawRowsOption, IParsedRowsOption, ICtxRowsQuery,
 import { RowHandle } from '.';
 
 describe('Service - Row Handle', () => {
-    const { isExpdByDef, getItemPath, parseRowConfig, getRelPathComparer, isGteZeroInt } = RowHandle.prototype;
+    const { isExpdByDef, getItemPath, parseRowConfig, getRelPathComparer, isGteZeroInt, getRowType } = RowHandle.prototype;
     let handle: RowHandle;
     let spy: TMethodSpy<RowHandle>;
 
@@ -109,6 +109,7 @@ describe('Service - Row Handle', () => {
             mockTransformFn.mockReturnValue(mockTransformResult);
             spy.getItemPath.mockReturnValue(mockItemPath);
             spy.isExpdByDef.mockReturnValue(mockIsOpen);
+            spy.getRowType.mockReturnValue('odd');
         });
 
         it('should return mapped items when transform function is provided and there are nested items', () => {
@@ -194,6 +195,18 @@ describe('Service - Row Handle', () => {
             expect(getItemPath(mockRowIdx, null, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowIdx}`);
             expect(getItemPath(mockRowIdx, mockRowKey, null)).toBe(`${mockRowKey}:${mockRowIdx}`);
             expect(getItemPath(mockRowIdx, mockRowKey, mockPrefixCtx)).toBe(`${mockPrefixCtx}/${mockRowKey}:${mockRowIdx}`);
+        });
+    });
+
+    describe('Method - getRowType: Get the row type, whether its odd or even', () => {
+        it('should return `odd` row type if remainder is 0 when divided by 2', () => {
+            expect(getRowType(0)).toBe('odd');
+            expect(getRowType(2)).toBe('odd');
+        });
+
+        it('should return `even` row type remainder is not 0 when divided by 2', () => {
+            expect(getRowType(1)).toBe('even');
+            expect(getRowType(3)).toBe('even');
         });
     });
 

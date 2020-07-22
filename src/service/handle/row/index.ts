@@ -1,6 +1,6 @@
 import {
-    IOption,
-    IRawRowsOption, IParsedRowsOption, IErrMsg, TVisibleNestedOption, TFn, ICtxRowsQuery, IRowItemCtx
+    IOption, IRawRowsOption, IParsedRowsOption,
+    TRowType, IErrMsg, TVisibleNestedOption, TFn, ICtxRowsQuery, IRowItemCtx
 } from './type';
 
 export class RowHandle {
@@ -59,7 +59,7 @@ export class RowHandle {
         return data.map((item: any, idx: number) => {
             // This Item
             const itemPath: string = this.getItemPath(idx, rowKey, parentPath);
-            const rowType = idx % 2 === 0 ? 'odd' : 'even';
+            const rowType: TRowType = this.getRowType(idx);
 
             // Nested Items
             const nestedItems: T[] = this.getCtxNestedRows<T>({
@@ -150,6 +150,10 @@ export class RowHandle {
         const suffixCtx: string = rowKey ? [rowKey, idx].join(':') : `${idx}`;
         const rowCtx: string = prefixCtx ? [prefixCtx, suffixCtx].join('/') : suffixCtx;
         return rowCtx;
+    }
+
+    getRowType(rowIdx: number): TRowType {
+        return rowIdx % 2 === 0 ? 'odd' : 'even';
     }
 
     findItemInData<T>(data: T[], itemPath: string): T {
