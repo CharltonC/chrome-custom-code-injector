@@ -143,10 +143,10 @@ const sampleData: any[] = [
 ];
 
 export const ViaInternalGeneratedCollapsibleState = () => {
-    const TrCmp = ({idx, item, itemLvl, nestedItems, toggleProps}) => {
+    const TrCmp = ({idx, rowType, item, itemLvl, nestedItems, toggleProps}) => {
         const { isOpen, onToggle }: any = nestedItems ? toggleProps : {};
         return <>
-            <tr>
+            <tr className={`kz-datagrid__row kz-datagrid__row--${rowType}`}>
                 <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
                 <td>{item.name}</td>
                 <td>{item.age}</td>
@@ -157,12 +157,11 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     </button>}
                 </td>
             </tr>{ nestedItems && isOpen &&
-                <tr>
-                    <td colSpan={5}>
-                        {nestedItems}
-                    </td>
-                </tr>
-            }
+            <tr className="kz-datagrid__nested-row">
+                <td colSpan={5}>
+                    {nestedItems}
+                </td>
+            </tr>}
         </>;
     };
 

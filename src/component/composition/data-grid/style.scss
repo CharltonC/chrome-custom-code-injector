@@ -9,10 +9,10 @@
             background: transparent;
 
             > tbody {
-                > tr {
+                > .kz-datagrid__row {
                     border-top: 1px solid #E6E6E6;
 
-                    &:nth-child(even) {
+                    &--even {
                         background: #FAFAFA;
                     }
                 }
