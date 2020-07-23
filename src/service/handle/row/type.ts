@@ -2,6 +2,7 @@
 export interface IOption {
     data: any[];
     rows: IRawRowsOption[];
+    rowIdKey: TRowIdKeyOption;
     showAll?: boolean;
 }
 
@@ -20,6 +21,7 @@ export interface ICtxRowsQuery {
     data: any;
     rows: IRawRowsOption[];
     rowLvl: number;
+    rowIdKey: TRowIdKeyOption;
     parentPath?: string;
     showAll: boolean;
 }
@@ -28,6 +30,7 @@ export interface IRowItemCtx<T = TDefNestdItems> {
     idx: number;
     rowType: TRowType;
     item: any;
+    itemId: string;
     itemLvl: number;
     itemKey: string;
     itemPath: string;
@@ -45,5 +48,7 @@ export interface IErrMsg {
     ROW_KEY_TYPE: string;
     PROP_DATA_TYPE: string;
 }
+
+export type TRowIdKeyOption = string | ((...args: any[]) => string);
 
 export type TFn = (...args: any[]) => any;

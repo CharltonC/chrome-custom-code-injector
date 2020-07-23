@@ -85,8 +85,7 @@ export class _DataGrid extends Component<IProps, IState> {
         const { onExpandChange } = callback ?? {};
 
         return (itemCtx: rowHandleType.IRowItemCtx<ReactElement>) => {
-            const { item, itemLvl, isExpdByDef, nestedItems } = itemCtx;
-            const key: string = typeof rowKey === 'string' ? item[rowKey] : rowKey(itemCtx);
+            const { itemId, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             itemCtx.nestedItems = nestedItems ?
                 this.wrapNestedItemsWithTag(
                     nestedItems,
@@ -96,10 +95,10 @@ export class _DataGrid extends Component<IProps, IState> {
                 null;
 
             return nestedItems ?
-                <ExpandWrapper key={key} initial={isExpdByDef} callback={onExpandChange}>
+                <ExpandWrapper key={itemId} initial={isExpdByDef} callback={onExpandChange}>
                     <RowCmp {...itemCtx} />
                 </ExpandWrapper> :
-                <RowCmp key={key} {...itemCtx} />;
+                <RowCmp key={itemId} {...itemCtx} />;
         };
     }
 
@@ -118,11 +117,13 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getRowsElem(data: TDataOption): ReactElement[] {
+        const { rowKey } = this.props;
         const { pgnOption, pgnState, rowsOption } = this.state;
         const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
         return this.rowHandle.createCtxRows<ReactElement>({
             data: pgnOption ? data.slice(startIdx, endIdx) : data,
             rows: rowsOption,
+            rowIdKey: rowKey,
             showAll: this.props.expand?.all ?? false
         });
     }

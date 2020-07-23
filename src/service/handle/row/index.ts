@@ -1,5 +1,5 @@
 import {
-    IOption, IRawRowsOption, IParsedRowsOption,
+    IOption, IRawRowsOption, IParsedRowsOption, TRowIdKeyOption,
     TRowType, IErrMsg, TFn, ICtxRowsQuery, IRowItemCtx
 } from './type';
 
@@ -15,19 +15,20 @@ export class RowHandle {
         const baseOption = existingOption ? existingOption : {
             data: [],
             rows: [],
+            rowIdKey: 'id',
             showAll: false
         };
         return { ...baseOption, ...modOption };
     }
 
     createCtxRows<T = IRowItemCtx>(option: Partial<IOption> = {}): T[] {
-        const { data, rows, showAll }: IOption = this.createOption(option);
+        const { data, rows, rowIdKey, showAll }: IOption = this.createOption(option);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getCtxRows<T>({data, rows, rowLvl: 0, parentPath: '', showAll});
+        return this.getCtxRows<T>({data, rows, rowLvl: 0, rowIdKey, parentPath: '', showAll});
     }
 
     //// Partial State
@@ -45,7 +46,7 @@ export class RowHandle {
      * })
      */
     getCtxRows<T = IRowItemCtx>(ctxRowsQuery: ICtxRowsQuery): T[] {
-        const { data, rows, rowLvl, parentPath, showAll }: ICtxRowsQuery = ctxRowsQuery;
+        const { data, rows, rowIdKey, rowLvl, parentPath, showAll }: ICtxRowsQuery = ctxRowsQuery;
         const { rowKey, transformFn }: IParsedRowsOption = this.parseRowConfig(rows[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
@@ -63,7 +64,9 @@ export class RowHandle {
             const isExpdByDef: boolean = showAll && !!nestedItems?.length;
 
             // Return item
-            const itemCtx: IRowItemCtx<T[]> = { idx, rowType, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
+            const partialItemCtx = { idx, rowType, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
+            const itemId: string = typeof rowIdKey === 'function' ? rowIdKey(partialItemCtx) : item[rowIdKey];
+            const itemCtx: IRowItemCtx<T[]> = { ...partialItemCtx, itemId };
             return transformFn ? transformFn(itemCtx) : itemCtx;
         });
     }

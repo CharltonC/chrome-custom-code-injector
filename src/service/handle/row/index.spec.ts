@@ -20,6 +20,7 @@ describe('Service - Row Handle', () => {
             expect(handle.createOption(mockModOption)).toEqual({
                 rows: [],
                 showAll: false,
+                rowIdKey: 'id',
                 ...mockModOption
             });
         });
@@ -56,12 +57,13 @@ describe('Service - Row Handle', () => {
     });
 
     describe('Method - getCtxRows: Get mapped items based on the row configs provided', () => {
-        const mockData: any[] = [ {text: 'a'}];
+        const mockData: any[] = [ {text: 'a', id: 'xyz'}];
         const mockTransformFn: jest.Mock = jest.fn();
         const mockRows: IParsedRowsOption = { rowKey: '', transformFn: mockTransformFn };
         const mockItemsReq: ICtxRowsQuery = {
             data: mockData,
             rows: [],
+            rowIdKey: 'id',
             rowLvl: 0,
             parentPath: '',
             showAll: true
@@ -93,6 +95,7 @@ describe('Service - Row Handle', () => {
                 idx: 0,
                 rowType: 'odd',
                 item: mockData[0],
+                itemId: 'xyz',
                 itemKey: '',
                 itemLvl: mockItemsReq.rowLvl,
                 itemPath: mockItemPath,
@@ -103,14 +106,17 @@ describe('Service - Row Handle', () => {
         });
 
         it('should return mapped items when transform function is not provided and there is no nested items', () => {
+            const mockRowIdKey: jest.Mock = jest.fn();
+            mockRowIdKey.mockReturnValue('abc');
             const mockNestedItems: any[] = null;
             spy.parseRowConfig.mockReturnValue({...mockRows, transformFn: null});
             spy.getCtxNestedRows.mockReturnValue(mockNestedItems);
 
-            expect(handle.getCtxRows({...mockItemsReq})).toEqual([{
+            expect(handle.getCtxRows({...mockItemsReq, rowIdKey: mockRowIdKey})).toEqual([{
                 idx: 0,
                 rowType: 'odd',
                 item: mockData[0],
+                itemId: 'abc',
                 itemKey: '',
                 itemPath: mockItemPath,
                 parentPath: '',
@@ -118,6 +124,7 @@ describe('Service - Row Handle', () => {
                 nestedItems: mockNestedItems,
                 isExpdByDef: false
             }]);
+            expect(mockRowIdKey).toHaveBeenCalled();
             expect(mockTransformFn).not.toHaveBeenCalled();
         });
     });
@@ -215,6 +222,7 @@ describe('Service - Row Handle', () => {
         const mockItemsReq: ICtxRowsQuery = {
             data: {[mockNestedKey]: mockNestedData},
             rows: [[mockNestedKey]],
+            rowIdKey: 'id',
             rowLvl: 0,
             parentPath: '',
             showAll: true
