@@ -1,43 +1,33 @@
 import {
     IOption, IRawRowsOption, IParsedRowsOption,
-    TRowType, IErrMsg, TVisibleNestedOption, TFn, ICtxRowsQuery, IRowItemCtx
+    TRowType, IErrMsg, TFn, ICtxRowsQuery, IRowItemCtx
 } from './type';
 
 export class RowHandle {
-    // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
-    readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
-    readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
-    readonly itemPathPattern: RegExp = /^\d+(\/[a-zA-Z0-9]+:\d+)*$/;
-    readonly subItemPathPattern: string = '(\/[a-zA-Z0-9]+:\\d+)';
     readonly errMsg: IErrMsg = {
         ROW_KEY_MISSING: 'Key in Row Config is missing',
         ROW_KEY_TYPE: 'Key in Row Config must be a string',
         PROP_DATA_TYPE: 'Data must be an array',
     };
 
-    //// Option
+    //// Option & State
     createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
-        const baseOption = existingOption ? existingOption : this.getDefOption();
+        const baseOption = existingOption ? existingOption : {
+            data: [],
+            rows: [],
+            showAll: false
+        };
         return { ...baseOption, ...modOption };
     }
 
-    getDefOption(): IOption {
-        return {
-            data: [],
-            rows: [],
-            visiblePath: 'ALL'
-        };
-    }
-
-    //// Full State
     createCtxRows<T = IRowItemCtx>(option: Partial<IOption> = {}): T[] {
-        const { data, rows, visiblePath }: IOption = this.createOption(option);
+        const { data, rows, showAll }: IOption = this.createOption(option);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getCtxRows<T>({data, rows, rowLvl: 0, parentPath: '', visiblePath});
+        return this.getCtxRows<T>({data, rows, rowLvl: 0, parentPath: '', showAll});
     }
 
     //// Partial State
@@ -55,7 +45,7 @@ export class RowHandle {
      * })
      */
     getCtxRows<T = IRowItemCtx>(ctxRowsQuery: ICtxRowsQuery): T[] {
-        const { data, rows, rowLvl, parentPath, visiblePath }: ICtxRowsQuery = ctxRowsQuery;
+        const { data, rows, rowLvl, parentPath, showAll }: ICtxRowsQuery = ctxRowsQuery;
         const { rowKey, transformFn }: IParsedRowsOption = this.parseRowConfig(rows[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
@@ -70,7 +60,7 @@ export class RowHandle {
                 rowLvl: rowLvl+1,
                 parentPath: itemPath
             });
-            const isExpdByDef: boolean = nestedItems ? this.isExpdByDef(itemPath, visiblePath) : false;
+            const isExpdByDef: boolean = showAll && !!nestedItems?.length;
 
             // Return item
             const itemCtx: IRowItemCtx<T[]> = { idx, rowType, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
@@ -85,27 +75,6 @@ export class RowHandle {
     }
 
     //// Helper Methods
-    /**
-     * Assume the Context of Current Collapse Item is:
-     * "0/lvl1NestedKey:0/lvl2NestedKey:0",
-     *
-     * Then the Context of relevant parents items that should remain open (i.e. isExpdByDef: true) are:
-     * - "0",
-     * - "0/lvl1NestedKey:0"
-     *
-     * So the collapse state for all relavant items should be:
-     * {
-     *      "0": true
-     *      "0/lvl1NestedKey:0": true,
-     *      "0/lvl1NestedKey:0/lvl2NestedKey:0": <oppositeOfPrevCollapseState>
-     * }
-     */
-    isExpdByDef(itemPath: string, visiblePath: TVisibleNestedOption): boolean {
-        return Array.isArray(visiblePath) ?
-            visiblePath.some((path: string) => path.indexOf(itemPath, 0) === 0) :
-            (visiblePath === 'ALL' ? true : false);
-    }
-
     parseRowConfig(config: IRawRowsOption, rowLvl: number): IParsedRowsOption {
         let [ itemOne, itemTwo ] = config;
         itemOne = itemOne ? itemOne : null;
@@ -156,33 +125,6 @@ export class RowHandle {
 
     getRowType(rowIdx: number): TRowType {
         return rowIdx % 2 === 0 ? 'odd' : 'even';
-    }
-
-    /**
-     * Search item in an array by its item path
-     */
-    findItemInData<T = any>(data: T[], itemPath: string): T {
-        if (!data.length || !itemPath) return;
-
-        if (!this.ctxPattern.test(itemPath)) return;
-
-        const ctxs: string[] = itemPath.split('/');
-        const matchItem: T | T[] = ctxs.reduce((_data: T[], ctx: string) => {
-            // 1st value is the entire match; 2nd value is 1st inner bracket captures the `\w+:` (no `g` flag here in order to capture correctly)
-            const [, , key, _idx ] = ctx.match(this.ctxCapPattern);
-            const idx: number = parseFloat(_idx);
-            const hsIdx: boolean = this.isGteZeroInt(idx);
-            const hsKey: boolean = !!key;
-            try {
-                const result = (hsKey && hsIdx) ? _data[key][idx] :_data[key];
-                return result;
-            } catch (err) {
-                return data;
-            }
-        }, data);
-
-        // If we ends up with the data itself, Means we can't find any matched item
-        return (matchItem !== data) ? matchItem as T : null;
     }
 
     isGteZeroInt(val: number): boolean {

@@ -1,10 +1,10 @@
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { TVisibleNestedOption, IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption, IRowItemCtx } from './type';
+import { IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption } from './type';
 import { RowHandle } from '.';
 
 describe('Service - Row Handle', () => {
-    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt, getRowType } = RowHandle.prototype;
+    const { getItemPath, parseRowConfig, isGteZeroInt, getRowType } = RowHandle.prototype;
     let handle: RowHandle;
     let spy: TMethodSpy<RowHandle>;
 
@@ -13,52 +13,23 @@ describe('Service - Row Handle', () => {
         spy = TestUtil.spyMethods(handle);
     });
 
-    describe('Property - Builtin Regex', () => {
-        it('should test against item context', () => {
-            const { ctxPattern } = handle;
-
-            expect(ctxPattern.test('')).toBe(false);
-            expect(ctxPattern.test('0')).toBe(true);
-            expect(ctxPattern.test('0/key:1')).toBe(true);
-            expect(ctxPattern.test('0/key:1/key')).toBe(true);
-        });
-
-        it('should test against the capture groups in item context', () => {
-            const { ctxCapPattern } = handle;
-            const [ fullCap, keyGrpCap, keyCap, indexCap ] = 'key:1'.match(ctxCapPattern);
-            expect(fullCap).toBe('key:1');
-            expect(keyGrpCap).toBe('key:');
-            expect(keyCap).toBe('key');
-            expect(indexCap).toBe('1');
-        });
-    });
-
     describe('Method - createOption', () => {
         const mockModOption = { data: ['a'] } as IOption;
 
         it('should return merged option when existing option is provided', () => {
             expect(handle.createOption(mockModOption)).toEqual({
-                ...handle.getDefOption(),
+                rows: [],
+                showAll: false,
                 ...mockModOption
             });
         });
 
         it('should return merged option when existing option is not provided', () => {
-            const mockExistOption = { data: ['b'], visiblePath: 'NONE' } as IOption;
+            const mockExistOption = { data: ['b'], showAll: true } as IOption;
 
             expect(handle.createOption(mockModOption, mockExistOption)).toEqual({
                 ...mockExistOption,
                 ...mockModOption
-            });
-        });
-    });
-
-    describe('Method - getDefOption: Default Expand User Option', () => {
-        it('should have default values', () => {
-            expect(handle.getDefOption()).toEqual({
-                data: [],
-                rows: [],
-                visiblePath: 'ALL'
             });
         });
     });
@@ -81,11 +52,6 @@ describe('Service - Row Handle', () => {
 
             expect(handle.createCtxRows()).toBe(mockMappedItems);
             expect(spy.getValidatedData).toHaveBeenCalledWith(mockMappedItems);
-            expect(spy.getCtxRows).toHaveBeenCalledWith({
-                ...handle.getDefOption(),
-                rowLvl: 0,
-                parentPath: ''
-            });
         });
     });
 
@@ -98,27 +64,23 @@ describe('Service - Row Handle', () => {
             rows: [],
             rowLvl: 0,
             parentPath: '',
-            visiblePath: []
+            showAll: true
         };
-
         const mockItemPath: string = 'itemPath';
-        const mockIsOpen: boolean = false;
         const mockTransformResult: any = {};
 
         beforeEach(() => {
             mockTransformFn.mockReturnValue(mockTransformResult);
             spy.getItemPath.mockReturnValue(mockItemPath);
-            spy.isExpdByDef.mockReturnValue(mockIsOpen);
             spy.getRowType.mockReturnValue('odd');
         });
 
         it('should return mapped items when transform function is provided and there are nested items', () => {
-            const mockNestedItems: any[] = null;
+            const mockNestedItems: any[] = ['b'];
             spy.parseRowConfig.mockReturnValue(mockRows);
             spy.getCtxNestedRows.mockReturnValue(mockNestedItems);
 
             expect(handle.getCtxRows(mockItemsReq)).toEqual([mockTransformResult]);
-            expect(spy.isExpdByDef).not.toHaveBeenCalled();
             expect(spy.parseRowConfig).toHaveBeenCalledWith(mockItemsReq.rows[0], mockItemsReq.rowLvl);
             expect(spy.getItemPath).toHaveBeenCalledWith(0, '', mockItemsReq.parentPath);
             expect(spy.getCtxNestedRows).toHaveBeenCalledWith({
@@ -136,12 +98,12 @@ describe('Service - Row Handle', () => {
                 itemPath: mockItemPath,
                 parentPath: '',
                 nestedItems: mockNestedItems,
-                isExpdByDef: mockIsOpen
+                isExpdByDef: true
             });
         });
 
         it('should return mapped items when transform function is not provided and there is no nested items', () => {
-            const mockNestedItems: any[] = [];
+            const mockNestedItems: any[] = null;
             spy.parseRowConfig.mockReturnValue({...mockRows, transformFn: null});
             spy.getCtxNestedRows.mockReturnValue(mockNestedItems);
 
@@ -154,34 +116,9 @@ describe('Service - Row Handle', () => {
                 parentPath: '',
                 itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
-                isExpdByDef: mockIsOpen
+                isExpdByDef: false
             }]);
-            expect(spy.isExpdByDef).toHaveBeenCalledWith(mockItemPath, mockItemsReq.visiblePath);
             expect(mockTransformFn).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('Method - isExpdByDef: Check if a row should open/collapse its nested rows', () => {
-        describe('when show target context is an array of contexts', () => {
-            const mockVisiblePath: TVisibleNestedOption = [ 'a', 'a/b' ];
-
-            it('should return false if row context is not found in the show target context', () => {
-                expect(isExpdByDef('a/b/c', mockVisiblePath)).toBe(false);
-            });
-
-            it('should return true if row context is found in the show target context', () => {
-                expect(isExpdByDef('a/b', mockVisiblePath)).toBe(true);
-            });
-        });
-
-        describe('when show target context is `ALL` or `NONE`', () => {
-            it('should return true if show target context is show all', () => {
-                expect(isExpdByDef('', 'ALL')).toBe(true);
-            });
-
-            it('should return false if show target context is show none', () => {
-                expect(isExpdByDef('', 'NONE')).toBe(false);
-            });
         });
     });
 
@@ -280,7 +217,7 @@ describe('Service - Row Handle', () => {
             rows: [[mockNestedKey]],
             rowLvl: 0,
             parentPath: '',
-            visiblePath: []
+            showAll: true
         };
 
         beforeEach(() => {
@@ -338,37 +275,6 @@ describe('Service - Row Handle', () => {
             expect(parseRowConfig([mockRowKey, mockTransformFn], 1)).toEqual({
                 rowKey: mockRowKey,
                 transformFn: mockTransformFn
-            });
-        });
-    });
-
-    describe('Method - findItemInData: Find an item based on its context in an data array', () => {
-        const mockData: any[] = [{key: ['a', 'b']}];
-
-        describe('invalid data or item context pattern', () => {
-            it('should return falsy value when data has no items or when item context is empty', () => {
-                expect(handle.findItemInData([], '0/key:0')).toBeFalsy();
-                expect(handle.findItemInData(mockData, '')).toBeFalsy();
-            });
-
-            it('should return falsy value when the item context pattern does not match', () => {
-                expect(handle.findItemInData(mockData, '/')).toBeFalsy();
-                expect(handle.findItemInData(mockData, '..')).toBeFalsy();
-            });
-        });
-
-        describe('valid data and item context pattern', () => {
-            it('should return falsy value when data has no matched item and an error was found during the process', () => {
-                expect(handle.findItemInData(mockData, '1')).toBeFalsy();
-                expect(handle.findItemInData(mockData, '0/key:0/key:0')).toBeFalsy();
-                expect(handle.findItemInData(mockData, '0/key:2')).toBeFalsy();
-            });
-
-            it('should return the item when data has matched item', () => {
-                expect(handle.findItemInData(mockData, '0')).toBe(mockData[0]);
-                expect(handle.findItemInData(mockData, '0/key')).toEqual(mockData[0].key);
-                expect(handle.findItemInData(mockData, '0/key:0')).toBe('a');
-                expect(handle.findItemInData(mockData, '0/key:1')).toBe('b');
             });
         });
     });
