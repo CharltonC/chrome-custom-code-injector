@@ -7,6 +7,8 @@ export class RowHandle {
     // Dont use `g` flag here as it conflicts w/ regex.test()/str.search()
     readonly ctxPattern: RegExp = /^(\d+)(\/(\w+:?)\d*)*/i;
     readonly ctxCapPattern: RegExp = /((\w+):?)?(\d*)/i;
+    readonly itemPathPattern: RegExp = /^\d+(\/[a-zA-Z0-9]+:\d+)*$/;
+    readonly subItemPathPattern: string = '(\/[a-zA-Z0-9]+:\\d+)';
     readonly errMsg: IErrMsg = {
         ROW_KEY_MISSING: 'Key in Row Config is missing',
         ROW_KEY_TYPE: 'Key in Row Config must be a string',
@@ -156,7 +158,10 @@ export class RowHandle {
         return rowIdx % 2 === 0 ? 'odd' : 'even';
     }
 
-    findItemInData<T>(data: T[], itemPath: string): T {
+    /**
+     * Search item in an array by its item path
+     */
+    findItemInData<T = any>(data: T[], itemPath: string): T {
         if (!data.length || !itemPath) return;
 
         if (!this.ctxPattern.test(itemPath)) return;
@@ -180,14 +185,65 @@ export class RowHandle {
         return (matchItem !== data) ? matchItem as T : null;
     }
 
-    getRelPathComparer(currItemPath: string): (s: string) => boolean {
-        return (itemPath: string) => {
-            const searchPattern: RegExp = new RegExp(`\^${itemPath}`);
-            return searchPattern.test(currItemPath);
-        };
-    }
-
     isGteZeroInt(val: number): boolean {
        return Number.isInteger(val) && val >= 0;
+    }
+
+    //// Expand only one nested rows per level Related
+    /**
+     * Find relative item paths in the hierarchy which should stay open (when nested rows has been opened) so it can be used to determine whether other nested rows can stay open or not
+     * - this is set as a state when nested row has been opened (incl. unset the prev. one)
+     *
+     * e.g. currItemPath = '0/key1:0/key2:0/key3:0',
+     * 1/ Find all relative item paths
+     * relItemPaths = [
+     *      '0',
+     *      '0/key1:0',
+     *      '0/key1:0/key2:0',
+     *      '0/key1:0/key2:0/key3:0',
+     * ];
+     *
+     * 2/ Check if a given item path is in conflit with the existing path:
+     * - itemPath1ToCheck = '1/key1:0' (i.e. row level 1)
+     * relItemPaths[1] exists, therefore if `itemPathToCheck` has nested rows open, its open status should be false
+     *
+     * - itemPath2ToCheck = '1/key1:0/key2:0/key3:0/key4:0', (i.e. row level 4)
+     * relItemPaths[4] doesnt exist, its open status can be left untouched (i.e. can be kept)
+     *
+     */
+    getRelOpenItemPaths(currItemPath: string) {
+        if (!this.itemPathPattern.test(currItemPath)) return;
+
+        const relPaths: string[] = [];
+        currItemPath.split('/').forEach((path, rowLvl: number) => {
+            const relPath: string = this.getRelOpenItemPath(currItemPath, rowLvl);
+            if (relPath) relPaths.push(relPath);
+        });
+        return relPaths;
+    }
+
+    getRelOpenItemPath(itemPath: string, rowLvl: number): string {
+        const isGteZero: boolean = Number.isInteger(rowLvl);
+        if (!isGteZero) return;
+
+        const pathPattern: string = `^\\d+${this.subItemPathPattern}{${rowLvl}}`;
+        return itemPath.match(new RegExp(pathPattern, 'g'))?.[0];
+    }
+
+    /**
+     * Determine if nested rows can be opened
+     * - usually used with local expand/open state
+     *
+     * Usage:
+     * const canOpen = canOpenNestedRow(relOpenItemPaths, rowLvl, pathToCheck);
+     * const isOpen = canOpen && localIsOpenState;
+     */
+    canExpand(relOpenItemPaths: string[], rowLvl: number, path: string): boolean {
+        // Not found means its not the same level therefore not impacted, we leave it as it is
+        const itemPath: string = relOpenItemPaths[rowLvl];
+        if (!itemPath) return true;
+
+        // if it is already in the open relative item paths, it should stay open, else close
+        return itemPath === path;
     }
 }

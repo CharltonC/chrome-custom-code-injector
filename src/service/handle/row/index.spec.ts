@@ -4,7 +4,7 @@ import { TVisibleNestedOption, IRawRowsOption, IParsedRowsOption, ICtxRowsQuery,
 import { RowHandle } from '.';
 
 describe('Service - Row Handle', () => {
-    const { isExpdByDef, getItemPath, parseRowConfig, getRelPathComparer, isGteZeroInt, getRowType } = RowHandle.prototype;
+    const { isExpdByDef, getItemPath, parseRowConfig, isGteZeroInt, getRowType } = RowHandle.prototype;
     let handle: RowHandle;
     let spy: TMethodSpy<RowHandle>;
 
@@ -373,26 +373,6 @@ describe('Service - Row Handle', () => {
         });
     });
 
-    describe('Method - getRelPathComparer: Get the string pattern for a relevant item Path', () => {
-        it('should return the relative item path when item level is not 0', () => {
-            const isRelPath = getRelPathComparer('0/x:0/x:0');
-
-            expect(isRelPath('0')).toBe(true);
-            expect(isRelPath('0/x:0')).toBe(true);
-            expect(isRelPath('0/x:1')).toBe(false);
-            expect(isRelPath('0/x:0/y:')).toBe(false);
-            expect(isRelPath('1')).toBe(false);
-        });
-
-        it('should return the relative item path when item level is 0', () => {
-            const isRelPath = getRelPathComparer('0');
-
-            expect(isRelPath('0')).toBe(true);
-            expect(isRelPath('0/x:0')).toBe(false);
-            expect(isRelPath('1')).toBe(false);
-        });
-    });
-
     describe('Method - isGteZeroInt: Check if a number is an integer greater than and equal to 0', () => {
         it('should return true if it is integer gte 0', () => {
             expect(isGteZeroInt(0)).toBe(true);
@@ -404,4 +384,66 @@ describe('Service - Row Handle', () => {
         });
     });
 
+    describe('Method - getRelOpenItemPaths: Find relative item paths based on a given item path', () => {
+        it('should return falsy if the given item path is not a valid item path pattern', () => {
+            expect(handle.getRelOpenItemPaths('')).toBeFalsy();
+            expect(handle.getRelOpenItemPaths('x')).toBeFalsy();
+        });
+
+        it('should return relative item paths when the given item path is a valid item path pattern and relative path match is found', () => {
+            expect(handle.getRelOpenItemPaths('0')).toEqual([
+                '0'
+            ]);
+            expect(handle.getRelOpenItemPaths('0/key:1/key:2')).toEqual([
+                '0',
+                '0/key:1',
+                '0/key:1/key:2'
+            ]);
+        });
+
+        it('should return empty array when relative path match is not found', () => {
+            spy.getRelOpenItemPath.mockReturnValue(false);
+            expect(handle.getRelOpenItemPaths('0')).toEqual([]);
+            expect(handle.getRelOpenItemPaths('0/key:1/key:2')).toEqual([]);
+        });
+    });
+
+    describe('Method - getRelOpenItemPath: Find relative item path of an item path based on a given row level', () => {
+        const mockItemPath: string = '0/key1:1/key2:2';
+
+        it('should return match when that row level is found', () => {
+            expect(handle.getRelOpenItemPath(mockItemPath, 0)).toBe('0');
+            expect(handle.getRelOpenItemPath(mockItemPath, 1)).toBe('0/key1:1');
+            expect(handle.getRelOpenItemPath(mockItemPath, 2)).toBe('0/key1:1/key2:2');
+        });
+
+        it('should return falsy value when that row level is not gte 0', () => {
+            expect(handle.getRelOpenItemPath(mockItemPath, -1)).toBeFalsy();
+            expect(handle.getRelOpenItemPath(mockItemPath, 0.01)).toBeFalsy();
+        });
+
+        it('should return falsy value when that row level is not found', () => {
+            expect(handle.getRelOpenItemPath(mockItemPath, 3)).toBeFalsy();
+        });
+    });
+
+    describe('Method - canExpand: Determine if nested rows can be opened', () => {
+        const mockRelOpenItemPaths = [
+            '0',
+            '0/key:1',
+            '0/key:1/key:2'
+        ];
+
+        it('should return true if the row level is not in the relative open item paths', () => {
+            expect(handle.canExpand(mockRelOpenItemPaths, 3, 'lorem')).toBe(true);
+        });
+
+        it('should return true if both row level and path are in the reletive open item paths', () => {
+            expect(handle.canExpand(mockRelOpenItemPaths, 0, '0')).toBe(true);
+        });
+
+        it('should return false if row level is in but path is not in the relative open item paths', () => {
+            expect(handle.canExpand(mockRelOpenItemPaths, 0, '0/key:1')).toBe(false);
+        });
+    });
 });
