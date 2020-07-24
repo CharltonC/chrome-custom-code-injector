@@ -11,32 +11,39 @@ export interface IRawRowsOption extends Array<any> {
     1?: TFn;
 }
 
-//// Other
 export interface IParsedRowsOption {
     rowKey?: string;
     transformFn?: TFn;
 }
 
+export type TRowIdKeyOption = string | ((...args: any[]) => string);
+
+//// Other
 export interface ICtxRowsQuery {
     data: any;
     rows: IRawRowsOption[];
     rowLvl: number;
     rowIdKey: TRowIdKeyOption;
     parentPath?: string;
+    parentItemCtx?: IRowItemCtx<any>;
     showAll: boolean;
 }
 
-export interface IRowItemCtx<T = TDefNestdItems> {
+export interface IRowItemCtx<T = TDefNestdItems> extends IRowItemBaseCtx {
+    itemId: string;
+    isExpdByDef: boolean;
+    nestedItems: T;
+    parentItemCtx?: IRowItemCtx<T>;
+}
+
+export interface IRowItemBaseCtx {
     idx: number;
     rowType: TRowType;
     item: any;
-    itemId: string;
     itemLvl: number;
     itemKey: string;
     itemPath: string;
     parentPath: string;
-    isExpdByDef: boolean;
-    nestedItems: T;
 }
 
 type TDefNestdItems = IRowItemCtx[];
@@ -48,7 +55,5 @@ export interface IErrMsg {
     ROW_KEY_TYPE: string;
     PROP_DATA_TYPE: string;
 }
-
-export type TRowIdKeyOption = string | ((...args: any[]) => string);
 
 export type TFn = (...args: any[]) => any;

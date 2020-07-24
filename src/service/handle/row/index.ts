@@ -1,6 +1,6 @@
 import {
-    IOption, IRawRowsOption, IParsedRowsOption, TRowIdKeyOption,
-    TRowType, IErrMsg, TFn, ICtxRowsQuery, IRowItemCtx
+    IOption, IRawRowsOption, IParsedRowsOption,
+    IRowItemBaseCtx, TRowType, IErrMsg, TFn, ICtxRowsQuery, IRowItemCtx
 } from './type';
 
 export class RowHandle {
@@ -46,27 +46,41 @@ export class RowHandle {
      * })
      */
     getCtxRows<T = IRowItemCtx>(ctxRowsQuery: ICtxRowsQuery): T[] {
-        const { data, rows, rowIdKey, rowLvl, parentPath, showAll }: ICtxRowsQuery = ctxRowsQuery;
+        const { data, rows, rowIdKey, rowLvl, parentPath, showAll, parentItemCtx }: ICtxRowsQuery = ctxRowsQuery;
         const { rowKey, transformFn }: IParsedRowsOption = this.parseRowConfig(rows[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
-            // This Item
-            const itemPath: string = this.getItemPath(idx, rowKey, parentPath);
-            const rowType: TRowType = this.getRowType(idx);
+            // Self
+            const baseRowItemCtx: IRowItemBaseCtx = {
+                idx,
+                rowType: this.getRowType(idx),
+                item,
+                itemPath: this.getItemPath(idx, rowKey, parentPath),
+                parentPath: parentPath,
+                itemKey: rowKey,
+                itemLvl: rowLvl,
+            };
+            const itemCtx: IRowItemCtx<T[]> = {
+                ...baseRowItemCtx,
+                itemId: typeof rowIdKey === 'function' ? rowIdKey(baseRowItemCtx) : item[rowIdKey],
+                parentItemCtx,
+                nestedItems: null,
+                isExpdByDef: null
+            };
 
             // Nested Items
             const nestedItems: T[] = this.getCtxNestedRows<T>({
                 ...ctxRowsQuery,
                 data: item,
-                rowLvl: rowLvl+1,
-                parentPath: itemPath
+                rowLvl: rowLvl + 1,
+                parentPath: baseRowItemCtx.itemPath,
+                parentItemCtx: itemCtx,
             });
-            const isExpdByDef: boolean = showAll && !!nestedItems?.length;
+            Object.assign(itemCtx, {
+                nestedItems,
+                isExpdByDef: !!nestedItems?.length && showAll
+            })
 
-            // Return item
-            const partialItemCtx = { idx, rowType, item, itemPath, parentPath: parentPath, itemKey: rowKey, itemLvl: rowLvl, nestedItems, isExpdByDef };
-            const itemId: string = typeof rowIdKey === 'function' ? rowIdKey(partialItemCtx) : item[rowIdKey];
-            const itemCtx: IRowItemCtx<T[]> = { ...partialItemCtx, itemId };
             return transformFn ? transformFn(itemCtx) : itemCtx;
         });
     }

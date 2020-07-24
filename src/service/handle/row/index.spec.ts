@@ -60,37 +60,32 @@ describe('Service - Row Handle', () => {
         const mockData: any[] = [ {text: 'a', id: 'xyz'}];
         const mockTransformFn: jest.Mock = jest.fn();
         const mockRows: IParsedRowsOption = { rowKey: '', transformFn: mockTransformFn };
-        const mockItemsReq: ICtxRowsQuery = {
+        const mockRowType = 'odd';
+        const mockItemsReq = {
             data: mockData,
             rows: [],
             rowIdKey: 'id',
             rowLvl: 0,
             parentPath: '',
             showAll: true
-        };
+        } as ICtxRowsQuery;
         const mockItemPath: string = 'itemPath';
         const mockTransformResult: any = {};
 
         beforeEach(() => {
             mockTransformFn.mockReturnValue(mockTransformResult);
             spy.getItemPath.mockReturnValue(mockItemPath);
-            spy.getRowType.mockReturnValue('odd');
+            spy.getRowType.mockReturnValue(mockRowType);
         });
 
         it('should return mapped items when transform function is provided and there are nested items', () => {
+
             const mockNestedItems: any[] = ['b'];
             spy.parseRowConfig.mockReturnValue(mockRows);
             spy.getCtxNestedRows.mockReturnValue(mockNestedItems);
 
             expect(handle.getCtxRows(mockItemsReq)).toEqual([mockTransformResult]);
-            expect(spy.parseRowConfig).toHaveBeenCalledWith(mockItemsReq.rows[0], mockItemsReq.rowLvl);
-            expect(spy.getItemPath).toHaveBeenCalledWith(0, '', mockItemsReq.parentPath);
-            expect(spy.getCtxNestedRows).toHaveBeenCalledWith({
-                ...mockItemsReq,
-                data: mockData[0],
-                rowLvl: mockItemsReq.rowLvl + 1,
-                parentPath: mockItemPath
-            });
+            expect(spy.getCtxNestedRows).toHaveBeenCalled();
             expect(mockTransformFn).toHaveBeenCalledWith({
                 idx: 0,
                 rowType: 'odd',
@@ -106,25 +101,31 @@ describe('Service - Row Handle', () => {
         });
 
         it('should return mapped items when transform function is not provided and there is no nested items', () => {
-            const mockRowIdKey: jest.Mock = jest.fn();
-            mockRowIdKey.mockReturnValue('abc');
+            const mockRowIdKeyFn: jest.Mock = jest.fn();
             const mockNestedItems: any[] = null;
+            const mockRowRowIdKey: string = 'abc';
+            mockRowIdKeyFn.mockReturnValue(mockRowRowIdKey);
             spy.parseRowConfig.mockReturnValue({...mockRows, transformFn: null});
             spy.getCtxNestedRows.mockReturnValue(mockNestedItems);
 
-            expect(handle.getCtxRows({...mockItemsReq, rowIdKey: mockRowIdKey})).toEqual([{
-                idx: 0,
-                rowType: 'odd',
-                item: mockData[0],
-                itemId: 'abc',
+            expect(handle.getCtxRows({
+                ...mockItemsReq,
+                rowIdKey: mockRowIdKeyFn,
+            })).toEqual([{
+                itemId: mockRowRowIdKey,
                 itemKey: '',
                 itemPath: mockItemPath,
                 parentPath: '',
                 itemLvl: mockItemsReq.rowLvl,
                 nestedItems: mockNestedItems,
-                isExpdByDef: false
+                isExpdByDef: false,
+                parentItemCtx: undefined,
+                rowType: mockRowType,
+                idx: 0,
+                item: mockData[0],
             }]);
-            expect(mockRowIdKey).toHaveBeenCalled();
+            expect(mockRowIdKeyFn).toHaveBeenCalled();
+            expect(spy.getCtxNestedRows).toHaveBeenCalled();
             expect(mockTransformFn).not.toHaveBeenCalled();
         });
     });
