@@ -30,7 +30,8 @@ interface IComponentOption {
 }
 
 interface IExpandOption {
-    all: boolean;
+    showAll?: boolean;
+    oneExpandPerLevel?: boolean;
 }
 
 interface ICallbackOption {
@@ -48,11 +49,16 @@ export type TCmp = React.FC<any> | React.ComponentClass<any>;
 export interface IState {
     thRowsCtx: thHandleType.TRowsThCtx;
     rowsOption: rowHandleType.IRawRowsOption[];
+    rowsExpdState: rowHandleType.TRowsExpdState;
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
     pgnOption: pgnHandleType.IOption;
     pgnState: pgnHandleType.IState;
 }
+
+export type TModPgnState = Pick<IState, 'pgnOption' | 'pgnState'>;
+export type TModRowsExpdState = Pick<IState, 'rowsExpdState'>;
+export type TModSortState = Pick<IState, 'sortOption' | 'sortState'>;
 
 export type TShallResetState = {
     [K in keyof IState]: boolean;
@@ -60,6 +66,8 @@ export type TShallResetState = {
 
 //// Generic
 export type TFn = (...args: any[]) => any;
+export type TElemContent = ReactElement | ReactElement[];
+export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
 
 //// Reexport
 export {pgnHandleType as pgnHandleType};

@@ -8,9 +8,9 @@ import { ExpandWrapper } from '../../structural/expand';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {
-    IProps, IRowOption, TRowKeyOption, TDataOption,
-    IState,
-    TCmp, TFn,
+    IProps, IRowOption, TDataOption,
+    IState, TModPgnState, TModRowsExpdState, TModSortState,
+    TCmp, TFn, TElemContent, TRowCtx,
     rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType, thHandleType
 } from './type';
 
@@ -57,34 +57,35 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Core
     createState(): IState {
-        const { component, rowKey, data, sort, paginate, header } = this.props;
+        const { component, data, sort, paginate, header } = this.props;
         const { thHandle, sortHandle, pgnHandle } = this;
         const { rows } = component;
         const thRowsCtx: thHandleType.TRowsThCtx = header ? thHandle.createRowThCtx(header) : null;
-        const rowsOption: rowHandleType.IRawRowsOption[] = rows ? this.transformRowOption(rows, rowKey ? rowKey : 'id') : null;
+        const rowsOption: rowHandleType.IRawRowsOption[] = rows ? this.transformRowOption(rows) : null;
         const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
         const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;
         const pgnOption: pgnHandleType.IOption = paginate ? pgnHandle.createOption(paginate) : null;
         const pgnState: pgnHandleType.IState = paginate ? pgnHandle.createState(data, paginate) : null;
-        return { thRowsCtx, rowsOption, sortOption, sortState, pgnOption, pgnState };
+        return { thRowsCtx, rowsOption, sortOption, sortState, pgnOption, pgnState, rowsExpdState: {} };
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
-    transformRowOption(rows: IRowOption[], rowKey: TRowKeyOption): rowHandleType.IRawRowsOption[] {
+    transformRowOption(rows: IRowOption[]): rowHandleType.IRawRowsOption[] {
         return rows.map((row: IRowOption, idx: number) => {
             const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
             const transformFnIdx: number = is1stRowConfig ? 0 : 1;
-            const transformFn = this.getCmpTransformFn(row[transformFnIdx], rowKey);
+            const transformFn = this.getCmpTransformFn(row[transformFnIdx]);
             return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 
-    getCmpTransformFn(RowCmp: TCmp, rowKey: TRowKeyOption): TFn {
+    getCmpTransformFn(RowCmp: TCmp): TFn {
         const { cssCls, BASE_GRID_CLS, props } = this;
-        const { type, callback } = props;
+        const { type, callback, expand } = props;
         const { onExpandChange } = callback ?? {};
+        const isOneExpdPerLvl: boolean = expand?.oneExpandPerLevel ?? false;
 
-        return (itemCtx: rowHandleType.IRowItemCtx<ReactElement>) => {
+        return (itemCtx: TRowCtx) => {
             const { itemId, itemLvl, isExpdByDef, nestedItems } = itemCtx;
             itemCtx.nestedItems = nestedItems ?
                 this.wrapNestedItemsWithTag(
@@ -94,15 +95,25 @@ export class _DataGrid extends Component<IProps, IState> {
                 ) :
                 null;
 
+            const expandProps: rowHandleType.TRowExpdCmpAttr = (!!nestedItems && isOneExpdPerLvl) ?
+                this.getRowCmpExpdProps(itemCtx):
+                null;
+
+            // Why use `ExpandWrapper` and `expandProps` separately to deal with expand state?
+            // - `ExpandWrapper` is used for a local expand state where they dont interfere with each other hence keeping it to itself
+            // - `expandProps` is used where each row's expand state MAY interfere with each other hence higher/shared state
             return nestedItems ?
-                <ExpandWrapper key={itemId} initial={isExpdByDef} callback={onExpandChange}>
-                    <RowCmp {...itemCtx} />
-                </ExpandWrapper> :
+                (isOneExpdPerLvl ?
+                    <RowCmp key={itemId} {...itemCtx} expandProps={expandProps} /> :
+                    <ExpandWrapper key={itemId} initial={isExpdByDef} callback={onExpandChange}>
+                        <RowCmp {...itemCtx} />
+                    </ExpandWrapper>
+                ) :
                 <RowCmp key={itemId} {...itemCtx} />;
         };
     }
 
-    wrapNestedItemsWithTag(content: ReactElement | ReactElement[], type: string = 'table', className: string = ''): ReactElement {
+    wrapNestedItemsWithTag(content: TElemContent, type: string = 'table', className: string = ''): ReactElement {
         const props: {className?: string} = className ? { className } : {};
         return type === 'table' ?
             <table {...props}>
@@ -111,20 +122,33 @@ export class _DataGrid extends Component<IProps, IState> {
             <ul {...props}>{content}</ul>;
     }
 
-    //// Sort, Pagination
+    //// Sort, Expand, Pagination
     getSortedData(): TDataOption {
         return this.state.sortState?.data || this.props.data;
     }
 
     getRowsElem(data: TDataOption): ReactElement[] {
-        const { rowKey } = this.props;
+        const { rowKey, expand } = this.props;
         const { pgnOption, pgnState, rowsOption } = this.state;
         const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
         return this.rowHandle.createCtxRows<ReactElement>({
             data: pgnOption ? data.slice(startIdx, endIdx) : data,
             rows: rowsOption,
             rowIdKey: rowKey,
-            showAll: this.props.expand?.all ?? false
+            showAll: expand?.showAll ?? false
+        });
+    }
+
+    getRowCmpExpdProps(itemCtx: TRowCtx) {
+        const { rowHandle, props, state } = this;
+        const { onExpandChange } = props.callback ?? {};
+        const currExpdState = state?.rowsExpdState ?? {};
+        return rowHandle.getRowCmpExpdAttr({
+            // by def. all rows should be closed for this feature as `showAll` cannot be used with `expOnePerLvl`
+            isOpen: rowHandle.isRowOpen(currExpdState, itemCtx.itemId),
+            itemCtx,
+            currExpdState,
+            callback: (modState: TModRowsExpdState) => this.onStateChange(modState, onExpandChange),
         });
     }
 
@@ -137,7 +161,7 @@ export class _DataGrid extends Component<IProps, IState> {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
                 data,
-                callback: (modState: Partial<IState>) => this.onOptionChange(modState, onPaginateChange),
+                callback: (modState: Partial<IState>) => this.onStateChange(modState, onPaginateChange),
                 option: pgnOption,
                 state: pgnState
             })
@@ -145,19 +169,19 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
-        const { onSortChange } = this.props.callback ?? {};
         const { sortOption } = this.state;
         if (!sortOption) return null;
 
+        const { onSortChange } = this.props.callback ?? {};
         const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
             data,
-            callback: (modState: Partial<IState>) => this.onOptionChange(modState, onSortChange),
+            callback: (modState: TModSortState) => this.onStateChange(modState, onSortChange),
             option: sortOption
         }, sortKey);
         return sortBtnAttr;
     }
 
-    onOptionChange(modState: Partial<IState>, userCallback: TFn): void {
+    onStateChange(modState: Partial<IState>, userCallback: TFn): void {
         this.setState({ ...this.state, ...modState });
         userCallback?.(modState);
     }
