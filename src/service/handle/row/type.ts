@@ -5,18 +5,34 @@ export interface IOption {
     rowIdKey: TRowIdKeyOption;
     showAll?: boolean;
 }
-
 export interface IRawRowsOption extends Array<any> {
     0?: string | TFn;
     1?: TFn;
 }
-
 export interface IParsedRowsOption {
     rowKey?: string;
     transformFn?: TFn;
 }
 
 export type TRowIdKeyOption = string | ((...args: any[]) => string);
+
+//// State (for Showing One Expand per level feature only)
+export type TRowsExpdState = Record<string, number>;
+
+export type TRowsExpdStateEntry = [string, number];
+
+export interface IRowExpdCmpAttrQuery {
+    itemCtx: IRowItemCtx;
+    isOpen: boolean;
+    currExpdState: TRowsExpdState;
+    callback: TFn;
+}
+
+export type TRowExpdCmpAttr = {
+    isOpen: boolean;
+    onClick: TFn;
+};
+
 
 //// Other
 export interface ICtxRowsQuery {
