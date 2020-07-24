@@ -22,7 +22,7 @@ export type TRowsExpdState = Record<string, number>;
 export type TRowsExpdStateEntry = [string, number];
 
 export interface IRowExpdCmpAttrQuery {
-    itemCtx: IRowItemCtx;
+    itemCtx: IRowItemCtx<any>;
     isOpen: boolean;
     currExpdState: TRowsExpdState;
     callback: TFn;

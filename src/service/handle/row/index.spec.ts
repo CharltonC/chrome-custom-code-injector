@@ -1,6 +1,6 @@
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption, IRowItemCtx, TRowsExpdState, IRowExpdCmpAttrQuery } from './type';
+import { IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption, IRowItemCtx, TRowsExpdState } from './type';
 import { RowHandle } from '.';
 import { TFn } from '../pagination/type';
 

@@ -9,7 +9,7 @@ import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {
     IProps, IRowOption, TDataOption,
-    IState, TModPgnState, TModRowsExpdState, TModSortState,
+    IState, TModRowsExpdState, TModSortState,
     TCmp, TFn, TElemContent, TRowCtx,
     rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType, thHandleType
 } from './type';
