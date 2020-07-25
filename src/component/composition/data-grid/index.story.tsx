@@ -9,7 +9,20 @@ export default {
     component: DataGrid,
 };
 
-const defStyle = { padding: 20 };
+const defStyle = {
+    wrapper: {
+        padding: 20
+    },
+    expdBtn: {
+        width: '20px',
+        height: '20px',
+        lineHeight: '20px',
+        border: '1px solid #8E8E8E',
+        borderRadius: '5px',
+        color: '#8E8E8E',
+    }
+};
+
 const sampleData: any[] = [
     {
 
@@ -142,72 +155,70 @@ const sampleData: any[] = [
     }
 ];
 
-export const ViaInternalGeneratedCollapsibleState = () => {
-    const TrCmp = ({idx, rowType, item, itemLvl, nestedItems, expandProps}) => {
-        const { isOpen, onClick }: any = nestedItems ? expandProps : {};
-        return <>
-            <tr className={`kz-datagrid__row kz-datagrid__row--${rowType}`}>
-                <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
-                <td>{item.name}</td>
-                <td>{item.age}</td>
-                <td>{item.id}</td>
-                <td>{ nestedItems &&
-                    <button type="button" onClick={onClick}>
-                        {isOpen ? '-' : '+' }
-                    </button>}
-                </td>
-            </tr>{ nestedItems && isOpen &&
-            <tr className="kz-datagrid__nested-row">
-                <td colSpan={5}>
-                    {nestedItems}
-                </td>
-            </tr>}
-        </>;
-    };
-
-    return (
-        <div style={defStyle}>
-            <DataGrid
-                data={sampleData}
-                type="table"
-                rowKey="id"
-                header={[
-                    { title: 'level' },
-                    { title: 'last name', sortKey: 'name' },
-                    { title: 'age', sortKey: 'age' },
-                    { title: 'id', sortKey: 'id' },
-                    { title: '' },
-                ]}
-                component={{
-                    header: TableHeaderCmp,
-                    pagination: PaginationCmp,
-                    rows: [
-                        [TrCmp],
-                        ['lvl1key', TrCmp],
-                        ['lvl2key', TrCmp],
-                        ['lvl3key', TrCmp],
-                        ['lvl4key', TrCmp]
-                    ]
-                }}
-                expand={{
-                    // showAll: false
-                    oneExpandPerLevel: true
-                }}
-                sort={{
-                    key: 'name',
-                    isAsc: true,
-                    reset: true,
-                }}
-                paginate={{
-                    page: 0,
-                    increment: [10, 1],
-                }}
-                callback={{
-                    onPaginateChange: (modState) => console.log(modState),
-                    onSortChange: (modState) => console.log(modState),
-                    onExpandChange: (modState) => console.log(modState)
-                }}
-                />
-        </div>
-    );
+const TrCmp = ({idx, rowType, item, itemLvl, nestedItems, expandProps}) => {
+    const { isOpen, onClick }: any = nestedItems ? expandProps : {};
+    return <>
+        <tr className={`kz-datagrid__row kz-datagrid__row--${rowType}`}>
+            <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
+            <td>{item.name}</td>
+            <td>{item.age}</td>
+            <td>{item.id}</td>
+            <td>{ nestedItems &&
+                <button type="button" style={defStyle.expdBtn} onClick={onClick}>
+                    {isOpen ? '-' : '+' }
+                </button>}
+            </td>
+        </tr>{ nestedItems && isOpen &&
+        <tr className="kz-datagrid__nested-row">
+            <td colSpan={5}>
+                {nestedItems}
+            </td>
+        </tr>}
+    </>;
 };
+
+export const ViaInternalGeneratedCollapsibleState = () => (
+    <div style={defStyle.wrapper}>
+        <DataGrid
+            data={sampleData}
+            type="table"
+            rowKey="id"
+            header={[
+                { title: 'level' },
+                { title: 'last name', sortKey: 'name' },
+                { title: 'age', sortKey: 'age' },
+                { title: 'id', sortKey: 'id' },
+                { title: '' },
+            ]}
+            component={{
+                header: TableHeaderCmp,
+                pagination: PaginationCmp,
+                rows: [
+                    [TrCmp],
+                    ['lvl1key', TrCmp],
+                    ['lvl2key', TrCmp],
+                    ['lvl3key', TrCmp],
+                    ['lvl4key', TrCmp]
+                ]
+            }}
+            expand={{
+                // showAll: false
+                oneExpandPerLevel: true
+            }}
+            sort={{
+                key: 'name',
+                isAsc: true,
+                reset: true,
+            }}
+            paginate={{
+                page: 0,
+                increment: [10, 1],
+            }}
+            callback={{
+                onPaginateChange: (modState) => console.log(modState),
+                onSortChange: (modState) => console.log(modState),
+                onExpandChange: (modState) => console.log(modState)
+            }}
+            />
+    </div>
+);
