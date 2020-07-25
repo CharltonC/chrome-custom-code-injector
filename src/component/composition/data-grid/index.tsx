@@ -57,16 +57,17 @@ export class _DataGrid extends Component<IProps, IState> {
 
     //// Core
     createState(): IState {
-        const { component, data, sort, paginate, header } = this.props;
+        const { type, component, data, sort, paginate, header } = this.props;
         const { thHandle, sortHandle, pgnHandle } = this;
         const { rows } = component;
+        const isTb: boolean = type !== 'list' ? true : false;
         const thRowsCtx: thHandleType.TRowsThCtx = header ? thHandle.createRowThCtx(header) : null;
         const rowsOption: rowHandleType.IRawRowsOption[] = rows ? this.transformRowOption(rows) : null;
         const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
         const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;
         const pgnOption: pgnHandleType.IOption = paginate ? pgnHandle.createOption(paginate) : null;
         const pgnState: pgnHandleType.IState = paginate ? pgnHandle.createState(data, paginate) : null;
-        return { thRowsCtx, rowsOption, sortOption, sortState, pgnOption, pgnState, rowsExpdState: {} };
+        return { isTb, thRowsCtx, rowsOption, sortOption, sortState, pgnOption, pgnState, rowsExpdState: {} };
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
@@ -76,15 +77,14 @@ export class _DataGrid extends Component<IProps, IState> {
             const RowCmp: TCmp = isRootRowConfig ?
                 (row as TRootRowOption)[0] :
                 (row as TNestedRowOption)[1];
-            const [ , , nestedRowSpan ] = !isRootRowConfig ? row : [];
-            const transformFn = this.getCmpTransformFn(RowCmp, nestedRowSpan);
+            const transformFn = this.getCmpTransformFn(RowCmp);
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 
     getCmpTransformFn(RowCmp: TCmp): TFn {
         const { cssCls, BASE_GRID_CLS, props } = this;
-        const { type, callback, expand } = props;
+        const { callback, expand } = props;
         const { onExpandChange } = callback ?? {};
         const isOneExpdPerLvl: boolean = expand?.oneExpandPerLevel ?? false;
 
@@ -93,7 +93,7 @@ export class _DataGrid extends Component<IProps, IState> {
             itemCtx.nestedItems = nestedItems ?
                 this.wrapNestedItemsWithTag(
                     nestedItems,
-                    type,
+                    this.state.isTb,
                     cssCls(BASE_GRID_CLS, `nest-${itemLvl+1}`)
                 ) :
                 null;
@@ -116,9 +116,9 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    wrapNestedItemsWithTag(content: TElemContent, type: string = 'table', className: string = ''): ReactElement {
+    wrapNestedItemsWithTag(content: TElemContent, isTb: boolean, className: string = ''): ReactElement {
         const props: {className?: string} = className ? { className } : {};
-        return type === 'table' ?
+        return isTb ?
             <table {...props}>
                 <tbody>{content}</tbody>
             </table> :

@@ -25,7 +25,7 @@ export type TRowKeyOption = string | ((ctx: rowHandleType.IRowItemCtx<ReactEleme
 export type TRowsOption = [ TRootRowOption, ...Array<TNestedRowOption> ];
 export type TRowOption = TRootRowOption | TNestedRowOption;
 export type TRootRowOption = [ TFn ];
-export type TNestedRowOption = [ string, TFn, number? ];
+export type TNestedRowOption = [ string, TFn ];
 
 interface IComponentOption {
     rows: TRowsOption;
@@ -46,6 +46,7 @@ interface ICallbackOption {
 
 //// State
 export interface IState {
+    isTb: boolean;
     thRowsCtx: thHandleType.TRowsThCtx;
     rowsOption: rowHandleType.IRawRowsOption[];
     rowsExpdState: rowHandleType.TRowsExpdState;
