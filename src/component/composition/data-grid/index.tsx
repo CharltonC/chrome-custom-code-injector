@@ -73,11 +73,11 @@ export class _DataGrid extends Component<IProps, IState> {
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
     transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
         return rows.map((row: TRowOption, idx: number) => {
-            const isRootRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
+            const isRootRowConfig: boolean = idx === 0;
             const RowCmp: TCmp = isRootRowConfig ?
                 (row as TRootRowOption)[0] :
                 (row as TNestedRowOption)[1];
-            const transformFn = this.getCmpTransformFn(RowCmp);
+            const transformFn: TFn = this.getCmpTransformFn(RowCmp);
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
