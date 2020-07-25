@@ -8,7 +8,7 @@ import { ExpandWrapper } from '../../structural/expand';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {
-    IProps, IRowOption, TDataOption,
+    IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModRowsExpdState, TModSortState,
     TCmp, TFn, TElemContent, TRowCtx,
     rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType, thHandleType
@@ -70,12 +70,15 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
-    transformRowOption(rows: IRowOption[]): rowHandleType.IRawRowsOption[] {
-        return rows.map((row: IRowOption, idx: number) => {
-            const is1stRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
-            const transformFnIdx: number = is1stRowConfig ? 0 : 1;
-            const transformFn = this.getCmpTransformFn(row[transformFnIdx]);
-            return (is1stRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
+    transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
+        return rows.map((row: TRowOption, idx: number) => {
+            const isRootRowConfig: boolean = idx === 0 && typeof row[0] === 'function';
+            const RowCmp: TCmp = isRootRowConfig ?
+                (row as TRootRowOption)[0] :
+                (row as TNestedRowOption)[1];
+            const [ , , nestedRowSpan ] = !isRootRowConfig ? row : [];
+            const transformFn = this.getCmpTransformFn(RowCmp, nestedRowSpan);
+            return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 

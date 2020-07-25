@@ -18,13 +18,17 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     callback?: ICallbackOption;
 }
 
-export interface IRowOption extends Array<any> {
-    0: string | TCmp;
-    1?: TCmp;
-}
+export type TDataOption = Record<string, any>[];
+export type TGridTypeOption = 'table' | 'list';
+export type TRowKeyOption = string | ((ctx: rowHandleType.IRowItemCtx<ReactElement>) => string);
+
+export type TRowsOption = [ TRootRowOption, ...Array<TNestedRowOption> ];
+export type TRowOption = TRootRowOption | TNestedRowOption;
+export type TRootRowOption = [ TFn ];
+export type TNestedRowOption = [ string, TFn, number? ];
 
 interface IComponentOption {
-    rows: IRowOption[];
+    rows: TRowsOption;
     header?: TCmp;
     pagination?: TCmp;
 }
@@ -39,11 +43,6 @@ interface ICallbackOption {
     onSortChange?: TFn;
     onExpandChange?: TFn;
 }
-
-export type TDataOption = Record<string, any>[];
-export type TGridTypeOption = 'table' | 'list';
-export type TRowKeyOption = string | ((ctx: rowHandleType.IRowItemCtx<ReactElement>) => string);
-export type TCmp = React.FC<any> | React.ComponentClass<any>;
 
 //// State
 export interface IState {
@@ -66,6 +65,7 @@ export type TShallResetState = {
 
 //// Generic
 export type TFn = (...args: any[]) => any;
+export type TCmp = React.FC<any> | React.ComponentClass<any>;
 export type TElemContent = ReactElement | ReactElement[];
 export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
 
