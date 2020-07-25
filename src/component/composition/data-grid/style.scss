@@ -1,6 +1,6 @@
 .kz-datagrid {
     &__grid {
-        @include nested-table-bg('&--nest-', 4, #F2F2F2, 10px);
+        @include nested-table-bg('&--nest-', 4, $light-gray-400, 10px);
         width: 100%;
         text-align: left;
 
@@ -10,37 +10,28 @@
 
             > tbody {
                 > .kz-datagrid__row {
-                    border-top: 1px solid #E6E6E6;
+                    border-top: 1px solid $light-gray-500;
 
-                    &--even {
-                        background: #FAFAFA;
+                     &--even {
+                        background: $light-gray-600;
                     }
-                }
-
-                // Expand button (temp)
-                button {
-                    width: 20px;
-                    height: 20px;
-                    line-height: 20px;
-                    border: 1px solid #8E8E8E;
-                    border-radius: 5px;
-                    color: #8E8E8E;
                 }
             }
         }
     }
 
     // temp
-    th, td {
+    th,
+    td {
         width: 150px;
     }
 
-    // temp
     td {
         &:not([colspan]) {
             padding: 20px;
         }
+
         font: 14px Helvetica;
-        color: #8E8E8E;
+        color: $gray;
     }
 }
