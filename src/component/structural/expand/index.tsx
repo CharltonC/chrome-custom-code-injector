@@ -19,9 +19,9 @@ export class _ExpandWrapper extends Component<IProps, IState> {
 
     getChildProps(isOpen: boolean, callback?: (...args: any[]) => any): IChildExtraProps {
         return {
-            toggleProps: {
+            expandProps: {
                 isOpen,
-                onToggle: () => {
+                onClick: () => {
                     this.setState({isOpen: !isOpen})
                     if (callback) callback(!isOpen);
                 }

@@ -9,10 +9,11 @@ export interface IState {
     isOpen: boolean;
 }
 
+// TODO: use interface from row handle
 //// Additional Children Props
 export interface IChildExtraProps {
-    toggleProps?: {
+    expandProps?: {
         isOpen?: boolean;
-        onToggle?: (...args: any[]) => void;
+        onClick?: (...args: any[]) => void;
     };
 }

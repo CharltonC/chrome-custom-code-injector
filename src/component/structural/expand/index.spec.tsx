@@ -42,8 +42,8 @@ describe('Component - Visible Wrapper', () => {
             });
 
             it('should return child props when callback is not provided', () => {
-                const { isOpen, onToggle } = cmp.getChildProps(mockIsOpen).toggleProps;
-                onToggle();
+                const { isOpen, onClick } = cmp.getChildProps(mockIsOpen).expandProps;
+                onClick();
 
                 expect(isOpen).toBe(mockIsOpen);
                 expect(setStateSpy).toHaveBeenCalledWith({isOpen: !isOpen});
@@ -51,8 +51,8 @@ describe('Component - Visible Wrapper', () => {
             });
 
             it('should return child props when callback is provided', () => {
-                const { isOpen, onToggle } = cmp.getChildProps(mockIsOpen, mockCallback).toggleProps;
-                onToggle();
+                const { isOpen, onClick } = cmp.getChildProps(mockIsOpen, mockCallback).expandProps;
+                onClick();
 
                 expect(isOpen).toBe(mockIsOpen);
                 expect(setStateSpy).toHaveBeenCalledWith({isOpen: !isOpen});
@@ -62,8 +62,8 @@ describe('Component - Visible Wrapper', () => {
     });
 
     describe('Render/DOM', () => {
-        // Specify type for `toggleProps` to silence React unknown props warning
-        const MockChild = (props: {toggleProps?: any;}) => <h1>lorem</h1>;
+        // Specify type for `expandProps` to silence React unknown props warning
+        const MockChild = (props: {expandProps?: any;}) => <h1>lorem</h1>;
         const mockChild = <MockChild />;
         const mockChildClone: ReactElement = <h1>sum</h1>;
         const mockRtnChildProps: any = {};

@@ -22,14 +22,14 @@ export const WithControl = () => {
         padding: 10
     };
 
-    const InnerComponent = ({ toggleProps }: IChildExtraProps) => {
-        const { isOpen, onToggle } = toggleProps;
+    const InnerComponent = ({ expandProps }: IChildExtraProps) => {
+        const { isOpen, onClick } = expandProps;
         return (
             <div>
                 <button
                     type="button"
                     style={btnStyle}
-                    onClick={onToggle}
+                    onClick={onClick}
                     >
                     {isOpen ? 'hide' : 'show'}
                 </button>
