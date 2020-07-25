@@ -51,23 +51,25 @@ export class _Pagination extends Component<IProps> {
     }
 
     getMappedBtnProps(btnAttr: pgnHandleType.ICmpBtnAttr, btnName: string): IBtnProps {
+        const { disabled, onClick } = btnAttr;
         return {
             type: 'button',
             className:`${CLS_PREFIX}__btn ${CLS_PREFIX}__btn--${btnName}`,
-            disabled: btnAttr.isDisabled,
-            onClick: btnAttr.onEvt
+            disabled,
+            onClick
         }
     }
 
     getMappedSelectProps(selectAttr: pgnHandleType.ICmpSelectAttr, isPerPage: boolean): ISelectProps {
+        const { disabled, options, selectedOptionIdx, onSelect, } = selectAttr;
         return {
             wrapperCls: `${CLS_PREFIX}__select ${CLS_PREFIX}__select--${isPerPage ? 'perpage' : 'page'}`,
             border: true,
-            disabled: selectAttr.isDisabled,
-            list: selectAttr.options,
+            disabled,
+            list: options,
             listTxtTransform: this.getOptionTextPipe(isPerPage),
-            selectIdx: selectAttr.selectedOptionIdx,
-            onSelect: selectAttr.onEvt,
+            selectIdx: selectedOptionIdx,
+            onSelect,
         };
     }
 }

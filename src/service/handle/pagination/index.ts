@@ -289,8 +289,8 @@ export class PgnHandle implements IUiHandle {
     getTextBtnAttr(onEvt: TFn, [title, pageIdx]: [string, number]): ICmpBtnAttr {
         return {
             title,
-            isDisabled: !Number.isInteger(pageIdx),
-            onEvt: () => onEvt({
+            disabled: !Number.isInteger(pageIdx),
+            onClick: () => onEvt({
                 page: pageIdx
             })
         };
@@ -311,7 +311,7 @@ export class PgnHandle implements IUiHandle {
         return {
             title: isNum ? page : (isLtSpread ? 'left-spread' : 'right-spread'),
             isSpread: !isNum,
-            onEvt: () => onEvt({
+            onClick: () => onEvt({
                 page: targetPageIdx
             })
         };
@@ -336,11 +336,11 @@ export class PgnHandle implements IUiHandle {
 
         return {
             title: 'page select',
-            isDisabled: isLteOnePage,
+            disabled: isLteOnePage,
             options,
             selectedOptionValue: pageNo,
             selectedOptionIdx,
-            onEvt: ({ target }: ISelectEvt) => {
+            onSelect: ({ target }: ISelectEvt) => {
                 const targetPageIdx: number = this.getTargetPageIdxByPos(
                     state,
                     options,
@@ -355,11 +355,11 @@ export class PgnHandle implements IUiHandle {
         const { increment, incrementIdx } = option;
         return {
             title: 'per page select',
-            isDisabled: increment.length <= 1,
+            disabled: increment.length <= 1,
             options: increment,
             selectedOptionValue: increment[incrementIdx],
             selectedOptionIdx: incrementIdx,
-            onEvt: ({ target }: ISelectEvt) => onEvt({
+            onSelect: ({ target }: ISelectEvt) => onEvt({
                 page: 0,
                 incrementIdx: parseInt(target.value, 10)
             })

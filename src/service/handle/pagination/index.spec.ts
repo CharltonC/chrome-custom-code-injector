@@ -619,12 +619,12 @@ describe('Class - Paginate Handle', () => {
             it('should return attributes', () => {
                 const mockTitle = 'lorem';
                 const mockPageIdx = 1;
-                const { onEvt, ...attrs } = getTextBtnAttr(mockEvtHandler, [mockTitle, mockPageIdx]);
-                onEvt();
+                const { onClick, ...attrs } = getTextBtnAttr(mockEvtHandler, [mockTitle, mockPageIdx]);
+                onClick();
 
                 expect(attrs).toEqual({
                     title: mockTitle,
-                    isDisabled: false
+                    disabled: false
                 });
                 expect(mockEvtHandler).toHaveBeenCalledWith({page: mockPageIdx});
             });
@@ -643,8 +643,8 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = true;
                 const expTargetPageIdx = 0;
 
-                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
-                onEvt();
+                const { title, isSpread, onClick } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onClick();
 
                 expect(title).toBe(mockPage);
                 expect(isSpread).toBe(false);
@@ -655,8 +655,8 @@ describe('Class - Paginate Handle', () => {
                 const mockPage = '...';
                 const mockIsLtSpread = true;
 
-                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
-                onEvt();
+                const { title, isSpread, onClick } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onClick();
 
                 expect(title).toBe('left-spread');
                 expect(isSpread).toBe(true);
@@ -668,8 +668,8 @@ describe('Class - Paginate Handle', () => {
                 const mockIsLtSpread = false;
                 const expTargetPageIdx = 2;
 
-                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
-                onEvt();
+                const { title, isSpread, onClick } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onClick();
 
                 expect(title).toBe(mockPage);
                 expect(isSpread).toBe(false);
@@ -680,8 +680,8 @@ describe('Class - Paginate Handle', () => {
                 const mockPage = '...';
                 const mockIsLtSpread = false;
 
-                const { title, isSpread, onEvt } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
-                onEvt();
+                const { title, isSpread, onClick } = handle.getSpreadBtnAttr(mockEvtHandler, mockState, [mockPage, mockIsLtSpread]);
+                onClick();
 
                 expect(title).toBe('right-spread');
                 expect(isSpread).toBe(true);
@@ -705,12 +705,12 @@ describe('Class - Paginate Handle', () => {
 
             describe('regular scenarios - when current page is not first page or last page or total pages is more than 1', () => {
                 it('should return attributes when both left and right spread exist', () => {
-                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
-                    onEvt(mockEvt);
+                    const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onSelect(mockEvt);
 
                     expect(attrs).toEqual({
                         title: 'page select',
-                        isDisabled: false,
+                        disabled: false,
                         options: [ 1,2,3,4,5,6,10 ],
                         selectedOptionValue: pageNo,
                         selectedOptionIdx: 3
@@ -720,12 +720,12 @@ describe('Class - Paginate Handle', () => {
 
 
                 it('should return attributes when left spread doesnt exist', () => {
-                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, {...mockState, ltSpread: null});
-                    onEvt(mockEvt);
+                    const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, {...mockState, ltSpread: null});
+                    onSelect(mockEvt);
 
                     expect(attrs).toEqual({
                         title: 'page select',
-                        isDisabled: false,
+                        disabled: false,
                         options: [ 1,4,5,6,10 ],
                         selectedOptionValue: pageNo,
                         selectedOptionIdx: 1
@@ -734,12 +734,12 @@ describe('Class - Paginate Handle', () => {
                 });
 
                 it('should return attributes when right spread doesnt exist', () => {
-                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, {...mockState, rtSpread: null});
-                    onEvt(mockEvt);
+                    const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, {...mockState, rtSpread: null});
+                    onSelect(mockEvt);
 
                     expect(attrs).toEqual({
                         title: 'page select',
-                        isDisabled: false,
+                        disabled: false,
                         options: [ 1,2,3,4,10 ],
                         selectedOptionValue: pageNo,
                         selectedOptionIdx: 3
@@ -753,15 +753,15 @@ describe('Class - Paginate Handle', () => {
                     const mockPageNo: number = 1;
                     mockState = {...mockState, pageNo: mockPageNo};
 
-                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
-                    onEvt(mockEvt);
+                    const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onSelect(mockEvt);
 
                     const expectOptionIdx: number = 0;
                     const expectOptions: TPageList = [ mockPageNo, ...rtSpread, totalPage ];
 
                     expect(attrs).toEqual({
                         title: 'page select',
-                        isDisabled: false,
+                        disabled: false,
                         options: expectOptions,
                         selectedOptionValue: mockPageNo,
                         selectedOptionIdx: expectOptionIdx
@@ -773,12 +773,12 @@ describe('Class - Paginate Handle', () => {
                     mockState = {...mockState, totalPage: pageNo };
                     const expectOptions: TPageList = [ 1, ...ltSpread, pageNo ];
                     const expectOptionIdx: number = 1 + ltSpread.length;
-                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
-                    onEvt(mockEvt);
+                    const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onSelect(mockEvt);
 
                     expect(attrs).toEqual({
                         title: 'page select',
-                        isDisabled: false,
+                        disabled: false,
                         options: expectOptions,
                         selectedOptionValue: pageNo,
                         selectedOptionIdx: expectOptionIdx
@@ -790,12 +790,12 @@ describe('Class - Paginate Handle', () => {
                     mockState = {...mockState, totalPage: 1 };
                     const expectOptions: TPageList = [ 1 ];
                     const expectOptionIdx: number = 0;
-                    const { onEvt, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
-                    onEvt(mockEvt);
+                    const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
+                    onSelect(mockEvt);
 
                     expect(attrs).toEqual({
                         title: 'page select',
-                        isDisabled: true,
+                        disabled: true,
                         options: expectOptions,
                         selectedOptionValue: pageNo,
                         selectedOptionIdx: expectOptionIdx
@@ -814,12 +814,12 @@ describe('Class - Paginate Handle', () => {
                 const mockEvtTargetVal = 1;
                 const mockEvt = { target: { value: mockEvtTargetVal} };
 
-                const { onEvt, ...attrs } = getPerPageSelectAttr(mockEvtHandler, mockOption);
-                onEvt(mockEvt);
+                const { onSelect, ...attrs } = getPerPageSelectAttr(mockEvtHandler, mockOption);
+                onSelect(mockEvt);
 
                 expect(attrs).toEqual({
                     title: 'per page select',
-                    isDisabled: false,
+                    disabled: false,
                     options: mockOption.increment,
                     selectedOptionValue: 10,
                     selectedOptionIdx: mockOption.incrementIdx,

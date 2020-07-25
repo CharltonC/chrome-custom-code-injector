@@ -47,16 +47,16 @@ describe('Component - Pagination', () => {
             const mockBtnName: string  = 'lorem';
             const mockBtnAttr: pgnHandleType.ICmpBtnAttr = {
                 title: '',
-                isDisabled: true,
-                onEvt: jest.fn()
+                disabled: true,
+                onClick: jest.fn()
             };
 
             it('should return props', () => {
                 expect(cmp.getMappedBtnProps(mockBtnAttr, mockBtnName)).toEqual({
                     type: 'button',
                     className:`${CLS_PREFIX}__btn ${CLS_PREFIX}__btn--${mockBtnName}`,
-                    disabled: mockBtnAttr.isDisabled,
-                    onClick: mockBtnAttr.onEvt
+                    disabled: mockBtnAttr.disabled,
+                    onClick: mockBtnAttr.onClick
                 });
             });
         });
@@ -64,11 +64,11 @@ describe('Component - Pagination', () => {
         describe('Method - getMappedSelectProps: Get Mapped Props for Select Element', () => {
             const mockSelectAttr: pgnHandleType.ICmpSelectAttr = {
                 title: '',
-                isDisabled: true,
+                disabled: true,
                 options: [],
                 selectedOptionValue: 1,
                 selectedOptionIdx: 1,
-                onEvt: jest.fn()
+                onSelect: jest.fn()
             };
             let mockPipeFn: jest.Mock;
 
@@ -81,11 +81,11 @@ describe('Component - Pagination', () => {
                 expect(cmp.getMappedSelectProps(mockSelectAttr, true)).toEqual({
                     wrapperCls: `${CLS_PREFIX}__select ${CLS_PREFIX}__select--perpage`,
                     border: true,
-                    disabled: mockSelectAttr.isDisabled,
+                    disabled: mockSelectAttr.disabled,
                     list: mockSelectAttr.options,
                     listTxtTransform: mockPipeFn,
                     selectIdx: mockSelectAttr.selectedOptionIdx,
-                    onSelect: mockSelectAttr.onEvt,
+                    onSelect: mockSelectAttr.onSelect,
                 });
                 expect(spy.getOptionTextPipe).toHaveBeenCalledWith(true);
             });
@@ -94,11 +94,11 @@ describe('Component - Pagination', () => {
                 expect(cmp.getMappedSelectProps(mockSelectAttr, false)).toEqual({
                     wrapperCls: `${CLS_PREFIX}__select ${CLS_PREFIX}__select--page`,
                     border: true,
-                    disabled: mockSelectAttr.isDisabled,
+                    disabled: mockSelectAttr.disabled,
                     list: mockSelectAttr.options,
                     listTxtTransform: mockPipeFn,
                     selectIdx: mockSelectAttr.selectedOptionIdx,
-                    onSelect: mockSelectAttr.onEvt,
+                    onSelect: mockSelectAttr.onSelect,
                 });
                 expect(spy.getOptionTextPipe).toHaveBeenCalledWith(false);
             });
