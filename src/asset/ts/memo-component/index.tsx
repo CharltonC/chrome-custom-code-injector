@@ -3,7 +3,7 @@ import { Component } from 'react';
 /**
  * Used for Component Class Inheritance only for React Component
  */
-export class MemoComponent extends Component {
+export class MemoComponent<P = any, S = any> extends Component<P, S> {
     shouldComponentUpdate(modProps: Record<string, any>) {
         const modPropsEntries: [string, any][] = Object.entries(modProps);
         const currPropsEntries: [string, any][] = Object.entries(this.props);
