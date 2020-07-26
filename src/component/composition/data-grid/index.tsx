@@ -1,4 +1,5 @@
-import React, { Component, memo, ReactElement } from "react";
+import React, { ReactElement, Component, memo } from "react";
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { UtilHandle } from '../../../service/handle/util';
 import { ThHandle } from '../../../service/handle/table-header';
 import { SortHandle } from '../../../service/handle/sort';
@@ -9,9 +10,9 @@ import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
-    IState, TModRowsExpdState, TModSortState,
+    IState, TModRowsExpdState, TModSortState, TShallResetState,
     TCmp, TFn, TElemContent, TRowCtx,
-    rowHandleType, paginationType, sortBtnType, pgnHandleType, sortHandleType, thHandleType
+    rowHandleType, paginationType, sortBtnType
 } from './type';
 
 
@@ -30,6 +31,12 @@ export class _DataGrid extends Component<IProps, IState> {
         this.state = this.createState();
     }
 
+    UNSAFE_componentWillReceiveProps(modProps: IProps): void {
+        const shallReset: TShallResetState = this.shallResetState(modProps, this.props);
+        const modState: IState = this.createState(shallReset);
+        this.setState({...modState});
+    }
+
     render() {
         const { thRowsCtx } = this.state;
         const { paginate, component } = this.props;
@@ -37,6 +44,9 @@ export class _DataGrid extends Component<IProps, IState> {
         const data: TDataOption = this.getSortedData();
         const Pagination: TCmp = UserPagination || DefPagination;
         const TableHeader: TCmp = UserHeader || DefTableHeader;
+
+        // TODO: Dynamic Tag
+        // TODO: Resuse Header for List Grid
 
         return (
             <div className="kz-datagrid">{ paginate &&
@@ -56,18 +66,70 @@ export class _DataGrid extends Component<IProps, IState> {
     }
 
     //// Core
-    createState(): IState {
+    createState(reset?: TShallResetState): IState {
         const { type, component, data, sort, paginate, header } = this.props;
         const { thHandle, sortHandle, pgnHandle } = this;
         const { rows } = component;
-        const isTb: boolean = type !== 'list' ? true : false;
-        const thRowsCtx: thHandleType.TRowsThCtx = header ? thHandle.createRowThCtx(header) : null;
-        const rowsOption: rowHandleType.IRawRowsOption[] = rows ? this.transformRowOption(rows) : null;
-        const sortOption: sortHandleType.IOption = sort ? sortHandle.createOption(sort) : null;
-        const sortState: sortHandleType.IState = sort ? sortHandle.createState(data, sortOption) : null;
-        const pgnOption: pgnHandleType.IOption = paginate ? pgnHandle.createOption(paginate) : null;
-        const pgnState: pgnHandleType.IState = paginate ? pgnHandle.createState(data, paginate) : null;
-        return { isTb, thRowsCtx, rowsOption, sortOption, sortState, pgnOption, pgnState, rowsExpdState: {} };
+        const sortOption = sort && (reset?.sortOption || true) ? sortHandle.createOption(sort) : null;
+        const pgnOption = paginate && (reset?.pgnOption || true) ? pgnHandle.createOption(paginate) : null;
+
+        // data used to create paginate state doesnt have to be sorted, it can be generic
+        return {
+            isTb: type !== 'list' && (reset?.isTb || true) ? true : false,
+            thRowsCtx: header && (reset?.thRowsCtx || true) ? thHandle.createRowThCtx(header) : null,
+            rowsOption: rows && (reset?.rowsOption || true) ? this.transformRowOption(rows) : null,
+            sortOption,
+            sortState: sort && (reset?.sortState || true) ? sortHandle.createState(data, sortOption) : null,
+            pgnOption,
+            pgnState: paginate && (reset?.pgnState || true) ? pgnHandle.createState(data, paginate) : null,
+            rowsExpdState: rows.length > 1 && (reset?.rowsExpdState || true) ? {} : null
+        };
+    }
+
+    /*
+     * State impacted by Props changes
+     * - `R` flag means the prop is used at Render Time as a source of Truth so we dont need to recreate the internal states
+     * - The table can be used to determine what internal states needs to be recreated/updated when props changes and hence optimizing calls
+     * - Reference Table:
+     *
+     * | Props                             | States                                                                                             |
+     * |                                   |-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
+     * |                                   |   isTb    | thRowsCtx | rowsOption | sortOption | sortState | pgnOption | pgnState | rowsExpdState |
+     * |-----------------------------------|-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
+     * | data                              |     x     |     x     |      x     |      x     |     ✓     |     x     |     ✓    |       x       |
+     * | type                              |     ✓     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
+     * | header                            |     x     |     ✓     |      x     |      x     |     ✓     |     x     |     x    |       x       |
+     * | component - rows                  |     x     |     x     |      ✓     |      x     |     x     |     x     |     x    |       ✓       |
+     * | expand                            |     x     |     x     |      ✓     |      x     |     x     |     x     |     x    |       ✓       |
+     * | sort                              |     x     |     x     |      x     |      ✓     |     ✓     |     x     |     x    |       x       |
+     * | paginate                          |     x     |     x     |      x     |      x     |     x     |     ✓     |     ✓    |       x       |
+     * | rowKey (R)                        |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
+     * | component - header (R)            |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
+     * | component - pagination (R)        |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
+     * | callback - onExpandChange (R)     |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
+     * | callback - onSortChange (R)       |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
+     * | callback - onPaginationChange (R) |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
+     */
+    shallResetState(modProps: IProps, props: IProps): TShallResetState {
+        const { data, type, header, component, sort, paginate, expand } = modProps;
+        const isDiffData: boolean = data !== props.data;
+        const isDiffGridType: boolean = type !== props.type;
+        const isDffHeader: boolean = header !== props.header;
+        const isDiffRowsOption: boolean = component.rows !== props.component.rows;
+        const isDiffSort: boolean = sort !== props.sort;
+        const isDiffPgn: boolean = paginate !== props.paginate;
+        const isDiffExpd: boolean = expand !== props.expand;
+
+        return {
+            isTb: isDiffGridType,
+            sortOption: isDiffSort,
+            sortState: isDiffSort || isDiffData || isDffHeader,
+            pgnOption: isDiffPgn,
+            pgnState: isDiffPgn || isDiffData,
+            thRowsCtx: isDffHeader,
+            rowsOption: isDiffRowsOption || isDiffExpd,
+            rowsExpdState: isDiffRowsOption || isDiffExpd,
+        };
     }
 
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
@@ -93,7 +155,6 @@ export class _DataGrid extends Component<IProps, IState> {
             itemCtx.nestedItems = nestedItems ?
                 this.wrapNestedItemsWithTag(
                     nestedItems,
-                    this.state.isTb,
                     cssCls(BASE_GRID_CLS, `nest-${itemLvl+1}`)
                 ) :
                 null;
@@ -116,9 +177,9 @@ export class _DataGrid extends Component<IProps, IState> {
         };
     }
 
-    wrapNestedItemsWithTag(content: TElemContent, isTb: boolean, className: string = ''): ReactElement {
+    wrapNestedItemsWithTag(content: TElemContent, className: string = ''): ReactElement {
         const props: {className?: string} = className ? { className } : {};
-        return isTb ?
+        return this.state.isTb ?
             <table {...props}>
                 <tbody>{content}</tbody>
             </table> :
