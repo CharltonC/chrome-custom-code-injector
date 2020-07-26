@@ -1,4 +1,4 @@
-import React, { ReactElement, Component, memo } from "react";
+import React, { ReactElement } from "react";
 import { MemoComponent } from '../../../asset/ts/memo-component';
 import { UtilHandle } from '../../../service/handle/util';
 import { ThHandle } from '../../../service/handle/table-header';
@@ -16,7 +16,7 @@ import {
 } from './type';
 
 
-export class _DataGrid extends Component<IProps, IState> {
+export class DataGrid extends MemoComponent<IProps, IState> {
     //// Dependency Injection
     readonly thHandle: ThHandle = new ThHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
@@ -250,5 +250,3 @@ export class _DataGrid extends Component<IProps, IState> {
         userCallback?.(modState);
     }
 }
-
-export const DataGrid = memo(_DataGrid);
