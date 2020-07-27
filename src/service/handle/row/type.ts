@@ -16,24 +16,6 @@ export interface IParsedRowsOption {
 
 export type TRowIdKeyOption = string | ((...args: any[]) => string);
 
-//// State (for Showing One Expand per level feature only)
-export type TRowsExpdState = Record<string, number>;
-
-export type TRowsExpdStateEntry = [string, number];
-
-export interface IRowExpdCmpAttrQuery {
-    itemCtx: IRowItemCtx<any>;
-    isOpen: boolean;
-    currExpdState: TRowsExpdState;
-    callback: TFn;
-}
-
-export type TRowExpdCmpAttr = {
-    isOpen: boolean;
-    onClick: TFn;
-};
-
-
 //// Other
 export interface ICtxRowsQuery {
     data: any;

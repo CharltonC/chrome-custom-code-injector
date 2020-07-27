@@ -1,5 +1,6 @@
 import * as sortHandleType from '../../../service/handle/sort/type';
 import * as rowHandleType from '../../../service/handle/row/type';
+import * as expdHandleType from '../../../service/handle/expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
 import * as dropdownType from '../../prsntn/dropdown/type';
@@ -49,7 +50,7 @@ export interface IState {
     isTb: boolean;
     thRowsCtx: thHandleType.TRowsThCtx;
     rowsOption: rowHandleType.IRawRowsOption[];
-    rowsExpdState: rowHandleType.TRowsExpdState;
+    rowsExpdState: expdHandleType.TRowsExpdState;
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
     pgnOption: pgnHandleType.IOption;
@@ -74,6 +75,7 @@ export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
 export {pgnHandleType as pgnHandleType};
 export {dropdownType as dropdownType}
 export {rowHandleType as rowHandleType};
+export {expdHandleType as expdHandleType};
 export {sortHandleType as sortHandleType};
 export {thHandleType as thHandleType};
 export * as sortBtnType from '../../prsntn/sort-btn/type';

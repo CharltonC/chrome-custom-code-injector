@@ -2,8 +2,9 @@ import React, { ReactElement } from "react";
 import { MemoComponent } from '../../../asset/ts/memo-component';
 import { UtilHandle } from '../../../service/handle/util';
 import { ThHandle } from '../../../service/handle/table-header';
-import { SortHandle } from '../../../service/handle/sort';
 import { RowHandle } from '../../../service/handle/row'
+import { ExpdHandle } from '../../../service/handle/expand'
+import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
 import { ExpandWrapper } from '../../structural/expand';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
@@ -12,7 +13,7 @@ import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModRowsExpdState, TModSortState, TShallResetState,
     TCmp, TFn, TElemContent, TRowCtx,
-    rowHandleType, paginationType, sortBtnType
+    rowHandleType, expdHandleType, paginationType, sortBtnType
 } from './type';
 
 
@@ -159,7 +160,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
                 ) :
                 null;
 
-            const expandProps: rowHandleType.TRowExpdCmpAttr = (!!nestedItems && isOneExpdPerLvl) ?
+            const expandProps: expdHandleType.TRowExpdCmpAttr = (!!nestedItems && isOneExpdPerLvl) ?
                 this.getRowCmpExpdProps(itemCtx):
                 null;
 
@@ -204,13 +205,12 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     getRowCmpExpdProps(itemCtx: TRowCtx) {
-        const { rowHandle, props, state } = this;
+        const { expdHandle, props, state } = this;
         const { onExpandChange } = props.callback ?? {};
         const currExpdState = state?.rowsExpdState ?? {};
-        return rowHandle.getRowCmpExpdAttr({
+        return expdHandle.getRowCmpExpdAttr({
             // by def. all rows should be closed for this feature as `showAll` cannot be used with `expOnePerLvl`
-            isOpen: rowHandle.isRowOpen(currExpdState, itemCtx.itemId),
-            itemCtx,
+            itemCtx: (itemCtx as any),
             currExpdState,
             callback: (modState: TModRowsExpdState) => this.onStateChange(modState, onExpandChange),
         });
