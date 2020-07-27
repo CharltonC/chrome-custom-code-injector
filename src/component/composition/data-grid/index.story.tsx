@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TableHeader as TableHeaderCmp } from '../../prsntn-grp/table-header';
 import { Pagination as PaginationCmp } from '../../prsntn-grp/pagination';
 import { DataGrid } from './';
+import { IRowComponentProps } from './type';
 
 
 export default {
@@ -155,7 +156,7 @@ const sampleData: any[] = [
     }
 ];
 
-const TrCmp = ({idx, rowType, item, itemLvl, nestedItems, expandProps}) => {
+const TrCmp = ({ idx, rowType, item, itemLvl, nestedItems, expandProps }: IRowComponentProps) => {
     const { isOpen, onClick }: any = nestedItems ? expandProps : {};
     return <>
         <tr className={`kz-datagrid__row kz-datagrid__row--${rowType}`}>
@@ -177,10 +178,26 @@ const TrCmp = ({idx, rowType, item, itemLvl, nestedItems, expandProps}) => {
     </>;
 };
 
-export const ViaInternalGeneratedCollapsibleState = () => (
-    <div style={defStyle.wrapper}>
+export const ViaInternalGeneratedCollapsibleState = () => {
+    const [ data, setData ] = useState(sampleData);
+/*
+    useEffect(() => {
+        const id = setTimeout(() => {
+            setData([
+                ...sampleData,
+                {
+                    name: 'Tom',
+                    age: '22',
+                    id: 'A4'
+                }
+            ]);
+        }, 3000);
+        return () => clearTimeout(id);
+    }, []) */
+
+    return <div style={defStyle.wrapper}>
         <DataGrid
-            data={sampleData}
+            data={data}
             type="table"
             rowKey="id"
             header={[
@@ -202,8 +219,8 @@ export const ViaInternalGeneratedCollapsibleState = () => (
                 ]
             }}
             expand={{
-                showAll: true,
-                // onePerLevel: true
+                // showAll: true,
+                onePerLevel: true
             }}
             sort={{
                 key: 'name',
@@ -212,7 +229,7 @@ export const ViaInternalGeneratedCollapsibleState = () => (
             }}
             paginate={{
                 page: 0,
-                increment: [1, 10],
+                increment: [10, 20],
             }}
             callback={{
                 onPaginateChange: (modState) => console.log(modState),
@@ -221,4 +238,4 @@ export const ViaInternalGeneratedCollapsibleState = () => (
             }}
             />
     </div>
-);
+};

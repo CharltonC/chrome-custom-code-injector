@@ -3,7 +3,6 @@ import * as rowHandleType from '../../../service/handle/row/type';
 import * as expdHandleType from '../../../service/handle/expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as thHandleType from '../../../service/handle/table-header/type';
-import * as dropdownType from '../../prsntn/dropdown/type';
 import { ReactElement } from 'react';
 
 //// Props
@@ -22,7 +21,6 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
 export type TDataOption = Record<string, any>[];
 export type TGridTypeOption = 'table' | 'list';
 export type TRowKeyOption = string | ((ctx: rowHandleType.IRowItemCtx<ReactElement>) => string);
-
 export type TRowsOption = [ TRootRowOption, ...Array<TNestedRowOption> ];
 export type TRowOption = TRootRowOption | TNestedRowOption;
 export type TRootRowOption = [ TFn ];
@@ -55,7 +53,6 @@ export interface IState {
 export type TModPgnState = Pick<IState, 'pgnOption' | 'pgnState'>;
 export type TModExpdState = Pick<IState, 'expdState'>;
 export type TModSortState = Pick<IState, 'sortOption' | 'sortState'>;
-
 export type TShallResetState = {
     [K in keyof IState]: boolean;
 }
@@ -66,12 +63,16 @@ export type TCmp = React.FC<any> | React.ComponentClass<any>;
 export type TElemContent = ReactElement | ReactElement[];
 export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
 
+// User-Defined Row Template
+export interface IRowComponentProps extends TRowCtx {
+    expandProps: expdHandleType.IExpdBtnAttr;
+}
+
 //// Reexport
-export {pgnHandleType as pgnHandleType};
-export {dropdownType as dropdownType}
-export {rowHandleType as rowHandleType};
-export {expdHandleType as expdHandleType};
-export {sortHandleType as sortHandleType};
-export {thHandleType as thHandleType};
+export { pgnHandleType as pgnHandleType };
+export { rowHandleType as rowHandleType };
+export { expdHandleType as expdHandleType };
+export { sortHandleType as sortHandleType };
+export { thHandleType as thHandleType };
 export * as sortBtnType from '../../prsntn/sort-btn/type';
 export * as paginationType from '../../prsntn-grp/pagination/type';

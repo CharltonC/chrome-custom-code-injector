@@ -11,7 +11,7 @@ import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
-    TCmp, TFn, TElemContent, TRowCtx,
+    TCmp, TFn, TElemContent, TRowCtx, IRowComponentProps,
     rowHandleType, expdHandleType, paginationType, sortBtnType
 } from './type';
 
@@ -29,13 +29,13 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     //// Builtin API
     constructor(props: IProps) {
         super(props);
-        this.state = this.createState();
+        this.state = this.createState(props);
     }
 
     UNSAFE_componentWillReceiveProps(modProps: IProps): void {
         const shallReset: TShallResetState = this.shallResetState(modProps, this.props);
-        const modState: IState = this.createState(shallReset);
-        this.setState({...modState});
+        const modState: Partial<IState> = this.createState(modProps, shallReset);
+        this.setState({ ...this.state, ...modState });
     }
 
     render() {
@@ -47,13 +47,13 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const TableHeader: TCmp = UserHeader || DefTableHeader;
 
         // TODO: Dynamic Tag
-        // TODO: Resuse Header for List Grid
+        // TODO: Demo for Header Component for List Type Grid
 
         return (
             <div className="kz-datagrid">{ paginate &&
                 <Pagination {...this.getPgnCmpProps(data)} />}
                 {/* TODO: Wrapper tag + class ? */}
-                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{thRowsCtx &&
+                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{ thRowsCtx &&
                     <TableHeader
                         thRowsContext={thRowsCtx}
                         getSortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
@@ -67,24 +67,36 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     //// Core
-    createState(): IState {
-        const { type, component, data, sort, paginate, header } = this.props;
-        const { thHandle, expdHandle, sortHandle, pgnHandle } = this;
+    createState(props: IProps, shallResetState?: TShallResetState): IState {
+        const { type, component, data, sort, paginate, expand, header } = props;
         const { rows } = component;
+        const { thHandle, expdHandle, sortHandle, pgnHandle } = this;
         const sortOption = sort ? sortHandle.createOption(sort) : null;
         const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
 
-        // data used to create paginate state doesnt have to be sorted, it can be generic
-        return {
+        // Note: data used to create paginate state doesnt have to be sorted, it can be generic
+        const state: IState = {
             isTb: type !== 'list' ? true : false,
             thRowsCtx: header ? thHandle.createRowThCtx(header) : null,
             rowsOption: rows ? this.transformRowOption(rows) : null,
             sortOption,
             sortState: sort ? sortHandle.createState(data, sortOption) : null,
             pgnOption,
-            pgnState: paginate ? pgnHandle.createState(data, paginate) : null,
-            expdState: rows.length > 1 ? expdHandle.createState() : null
+            pgnState: paginate ? pgnHandle.createState(data, pgnOption) : null,
+            expdState: rows.length > 1 && expand ? expdHandle.createState() : null
         };
+
+        // If Reset is need, we filter out the state properties to get partial state to be merged later
+        return !shallResetState ?
+            state :
+            Object
+                .entries(shallResetState)
+                .reduce((modState: IState, [ key, shallReset ]: [ string, boolean ]) => {
+                    if (shallReset) {
+                        modState[key] = state[key]
+                    }
+                    return modState;
+                }, {} as IState);
     }
 
     /*
@@ -93,9 +105,9 @@ export class DataGrid extends MemoComponent<IProps, IState> {
      * - The table can be used to determine what internal states needs to be recreated/updated when props changes and hence optimizing calls
      * - Reference Table:
      *
-     * | Props                             | States                                                                                             |
+     * | Props Changes                     | States that need to be reset                                                                       |
      * |                                   |-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
-     * |                                   |   isTb    | thRowsCtx | rowsOption | sortOption | sortState | pgnOption | pgnState | expdState |
+     * |                                   |   isTb    | thRowsCtx | rowsOption | sortOption | sortState | pgnOption | pgnState |  expdState    |
      * |-----------------------------------|-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
      * | data                              |     x     |     x     |      x     |      x     |     ✓     |     x     |     ✓    |       ✓       |
      * | type                              |     ✓     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
@@ -116,7 +128,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const isDiffData: boolean = data !== props.data;
         const isDiffGridType: boolean = type !== props.type;
         const isDffHeader: boolean = header !== props.header;
-        const isDiffRowsOption: boolean = component.rows !== props.component.rows;
+        const isDiffRows: boolean = component.rows !== props.component.rows;
         const isDiffSort: boolean = sort !== props.sort;
         const isDiffPgn: boolean = paginate !== props.paginate;
         const isDiffExpd: boolean = expand !== props.expand;
@@ -128,8 +140,8 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             pgnOption: isDiffPgn,
             pgnState: isDiffPgn || isDiffData,
             thRowsCtx: isDffHeader,
-            rowsOption: isDiffRowsOption || isDiffExpd,
-            expdState: isDiffExpd || isDiffRowsOption || isDiffData,
+            rowsOption: isDiffRows || isDiffExpd,
+            expdState: isDiffExpd || isDiffRows || isDiffData,
         };
     }
 
@@ -147,28 +159,18 @@ export class DataGrid extends MemoComponent<IProps, IState> {
 
     getCmpTransformFn(RowCmp: TCmp): TFn {
         const { cssCls, BASE_GRID_CLS } = this;
-
         return (itemCtx: TRowCtx) => {
             const { itemId, itemLvl, nestedItems } = itemCtx;
-
-            itemCtx.nestedItems = nestedItems ?
-                this.wrapNestedItemsWithTag(
-                    nestedItems,
-                    cssCls(BASE_GRID_CLS, `nest-${itemLvl+1}`)
-                ) :
-                null;
-
-            const rowProps = {
+            const rowProps: IRowComponentProps = {
                 ...itemCtx,
-                ...{ expandProps: !!nestedItems ? this.getRowCmpExpdProps(itemCtx) : {} },
-                key: itemId,
+                nestedItems: nestedItems ? this.wrapNestedItems(nestedItems, cssCls(BASE_GRID_CLS, `nest-${itemLvl+1}`)) : null,
+                expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
             };
-
-            return <RowCmp {...rowProps} />;
+            return <RowCmp key={itemId} {...rowProps} />;
         };
     }
 
-    wrapNestedItemsWithTag(content: TElemContent, className: string = ''): ReactElement {
+    wrapNestedItems(content: TElemContent, className: string = ''): ReactElement {
         const props: {className?: string} = className ? { className } : {};
         return this.state.isTb ?
             <table {...props}>
