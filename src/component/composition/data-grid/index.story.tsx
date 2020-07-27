@@ -180,7 +180,7 @@ const TrCmp = ({ idx, rowType, item, itemLvl, nestedItems, expandProps }: IRowCo
 
 export const ViaInternalGeneratedCollapsibleState = () => {
     const [ data, setData ] = useState(sampleData);
-/*
+
     useEffect(() => {
         const id = setTimeout(() => {
             setData([
@@ -193,7 +193,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             ]);
         }, 3000);
         return () => clearTimeout(id);
-    }, []) */
+    }, [])
 
     return <div style={defStyle.wrapper}>
         <DataGrid
@@ -229,7 +229,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             }}
             paginate={{
                 page: 0,
-                increment: [10, 20],
+                increment: [1, 10, 20],
             }}
             callback={{
                 onPaginateChange: (modState) => console.log(modState),

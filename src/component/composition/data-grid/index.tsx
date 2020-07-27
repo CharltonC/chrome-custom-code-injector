@@ -52,21 +52,20 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return (
             <div className="kz-datagrid">{ paginate &&
                 <Pagination {...this.getPgnCmpProps(data)} />}
-                {/* TODO: Wrapper tag + class ? */}
                 <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{ thRowsCtx &&
                     <TableHeader
                         thRowsContext={thRowsCtx}
                         getSortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
                     />}
                     <tbody>
-                        {this.getRowsElem(data)}
+                        { this.getRowsElem(data) }
                     </tbody>
                 </table>
             </div>
         );
     }
 
-    //// Core
+    //// State
     createState(props: IProps, shallResetState?: TShallResetState): IState {
         const { type, component, data, sort, paginate, expand, header } = props;
         const { rows } = component;
@@ -145,6 +144,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
+    //// Altering Rows Option (so that it renders the corresponding Row Template Component)
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
     transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
         return rows.map((row: TRowOption, idx: number) => {
@@ -161,6 +161,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { cssCls, BASE_GRID_CLS } = this;
         return (itemCtx: TRowCtx) => {
             const { itemId, itemLvl, nestedItems } = itemCtx;
+            // TODO: row class name?
             const rowProps: IRowComponentProps = {
                 ...itemCtx,
                 nestedItems: nestedItems ? this.wrapNestedItems(nestedItems, cssCls(BASE_GRID_CLS, `nest-${itemLvl+1}`)) : null,
