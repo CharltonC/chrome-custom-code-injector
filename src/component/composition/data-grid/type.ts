@@ -13,7 +13,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     header?: thHandleType.IOption[];
     rowKey?: TRowKeyOption;
     component: IComponentOption;
-    expand?: IExpandOption;
+    expand?: Partial<expdHandleType.IOption>;
     sort?: Partial<sortHandleType.IOption>;
     paginate?: Partial<pgnHandleType.IOption>;
     callback?: ICallbackOption;
@@ -34,11 +34,6 @@ interface IComponentOption {
     pagination?: TCmp;
 }
 
-interface IExpandOption {
-    showAll?: boolean;
-    oneExpandPerLevel?: boolean;
-}
-
 interface ICallbackOption {
     onPaginateChange?: TFn;
     onSortChange?: TFn;
@@ -50,7 +45,7 @@ export interface IState {
     isTb: boolean;
     thRowsCtx: thHandleType.TRowsThCtx;
     rowsOption: rowHandleType.IRawRowsOption[];
-    rowsExpdState: expdHandleType.TRowsExpdState;
+    expdState: expdHandleType.IState;
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
     pgnOption: pgnHandleType.IOption;
@@ -58,7 +53,7 @@ export interface IState {
 }
 
 export type TModPgnState = Pick<IState, 'pgnOption' | 'pgnState'>;
-export type TModRowsExpdState = Pick<IState, 'rowsExpdState'>;
+export type TModExpdState = Pick<IState, 'expdState'>;
 export type TModSortState = Pick<IState, 'sortOption' | 'sortState'>;
 
 export type TShallResetState = {
