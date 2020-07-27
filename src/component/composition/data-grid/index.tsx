@@ -11,7 +11,7 @@ import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
-    IState, TModRowsExpdState, TModSortState, TShallResetState,
+    IState, TModExpdState, TModSortState, TShallResetState,
     TCmp, TFn, TElemContent, TRowCtx,
     rowHandleType, expdHandleType, paginationType, sortBtnType
 } from './type';
@@ -23,6 +23,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
+    readonly expdHandle: ExpdHandle = new ExpdHandle();
     readonly cssCls = new UtilHandle().cssCls;
     readonly BASE_GRID_CLS: string = 'kz-datagrid__grid';
 
@@ -67,23 +68,23 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     //// Core
-    createState(reset?: TShallResetState): IState {
+    createState(): IState {
         const { type, component, data, sort, paginate, header } = this.props;
-        const { thHandle, sortHandle, pgnHandle } = this;
+        const { thHandle, expdHandle, sortHandle, pgnHandle } = this;
         const { rows } = component;
-        const sortOption = sort && (reset?.sortOption || true) ? sortHandle.createOption(sort) : null;
-        const pgnOption = paginate && (reset?.pgnOption || true) ? pgnHandle.createOption(paginate) : null;
+        const sortOption = sort ? sortHandle.createOption(sort) : null;
+        const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
 
         // data used to create paginate state doesnt have to be sorted, it can be generic
         return {
-            isTb: type !== 'list' && (reset?.isTb || true) ? true : false,
-            thRowsCtx: header && (reset?.thRowsCtx || true) ? thHandle.createRowThCtx(header) : null,
-            rowsOption: rows && (reset?.rowsOption || true) ? this.transformRowOption(rows) : null,
+            isTb: type !== 'list' ? true : false,
+            thRowsCtx: header ? thHandle.createRowThCtx(header) : null,
+            rowsOption: rows ? this.transformRowOption(rows) : null,
             sortOption,
-            sortState: sort && (reset?.sortState || true) ? sortHandle.createState(data, sortOption) : null,
+            sortState: sort ? sortHandle.createState(data, sortOption) : null,
             pgnOption,
-            pgnState: paginate && (reset?.pgnState || true) ? pgnHandle.createState(data, paginate) : null,
-            rowsExpdState: rows.length > 1 && (reset?.rowsExpdState || true) ? {} : null
+            pgnState: paginate ? pgnHandle.createState(data, paginate) : null,
+            expdState: rows.length > 1 ? expdHandle.createState() : null
         };
     }
 
@@ -95,9 +96,9 @@ export class DataGrid extends MemoComponent<IProps, IState> {
      *
      * | Props                             | States                                                                                             |
      * |                                   |-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
-     * |                                   |   isTb    | thRowsCtx | rowsOption | sortOption | sortState | pgnOption | pgnState | rowsExpdState |
+     * |                                   |   isTb    | thRowsCtx | rowsOption | sortOption | sortState | pgnOption | pgnState | expdState |
      * |-----------------------------------|-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
-     * | data                              |     x     |     x     |      x     |      x     |     ✓     |     x     |     ✓    |       x       |
+     * | data                              |     x     |     x     |      x     |      x     |     ✓     |     x     |     ✓    |       ✓       |
      * | type                              |     ✓     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
      * | header                            |     x     |     ✓     |      x     |      x     |     ✓     |     x     |     x    |       x       |
      * | component - rows                  |     x     |     x     |      ✓     |      x     |     x     |     x     |     x    |       ✓       |
@@ -129,7 +130,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             pgnState: isDiffPgn || isDiffData,
             thRowsCtx: isDffHeader,
             rowsOption: isDiffRowsOption || isDiffExpd,
-            rowsExpdState: isDiffRowsOption || isDiffExpd,
+            expdState: isDiffExpd || isDiffRowsOption || isDiffData,
         };
     }
 
@@ -146,13 +147,11 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     getCmpTransformFn(RowCmp: TCmp): TFn {
-        const { cssCls, BASE_GRID_CLS, props } = this;
-        const { callback, expand } = props;
-        const { onExpandChange } = callback ?? {};
-        const isOneExpdPerLvl: boolean = expand?.oneExpandPerLevel ?? false;
+        const { cssCls, BASE_GRID_CLS } = this;
 
         return (itemCtx: TRowCtx) => {
-            const { itemId, itemLvl, isExpdByDef, nestedItems } = itemCtx;
+            const { itemId, itemLvl, nestedItems } = itemCtx;
+
             itemCtx.nestedItems = nestedItems ?
                 this.wrapNestedItemsWithTag(
                     nestedItems,
@@ -160,21 +159,13 @@ export class DataGrid extends MemoComponent<IProps, IState> {
                 ) :
                 null;
 
-            const expandProps: expdHandleType.TRowExpdCmpAttr = (!!nestedItems && isOneExpdPerLvl) ?
-                this.getRowCmpExpdProps(itemCtx):
-                null;
+            const rowProps = {
+                ...itemCtx,
+                ...{ expandProps: !!nestedItems ? this.getRowCmpExpdProps(itemCtx) : {} },
+                key: itemId,
+            };
 
-            // Why use `ExpandWrapper` and `expandProps` separately to deal with expand state?
-            // - `ExpandWrapper` is used for a local expand state where they dont interfere with each other hence keeping it to itself
-            // - `expandProps` is used where each row's expand state MAY interfere with each other hence higher/shared state
-            return nestedItems ?
-                (isOneExpdPerLvl ?
-                    <RowCmp key={itemId} {...itemCtx} expandProps={expandProps} /> :
-                    <ExpandWrapper key={itemId} initial={isExpdByDef} callback={onExpandChange}>
-                        <RowCmp {...itemCtx} />
-                    </ExpandWrapper>
-                ) :
-                <RowCmp key={itemId} {...itemCtx} />;
+            return <RowCmp {...rowProps} />;
         };
     }
 
@@ -205,14 +196,14 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     getRowCmpExpdProps(itemCtx: TRowCtx) {
-        const { expdHandle, props, state } = this;
-        const { onExpandChange } = props.callback ?? {};
-        const currExpdState = state?.rowsExpdState ?? {};
-        return expdHandle.getRowCmpExpdAttr({
-            // by def. all rows should be closed for this feature as `showAll` cannot be used with `expOnePerLvl`
-            itemCtx: (itemCtx as any),
-            currExpdState,
-            callback: (modState: TModRowsExpdState) => this.onStateChange(modState, onExpandChange),
+        const { expand, callback } = this.props;
+        const { onExpandChange } = callback ?? {};
+
+        return this.expdHandle.getExpdBtnAttr({
+            itemCtx: itemCtx as expdHandleType.TItemCtx,
+            expdState: this.state.expdState,
+            option: expand,
+            callback: (modState: TModExpdState) => this.onStateChange(modState, onExpandChange),
         });
     }
 

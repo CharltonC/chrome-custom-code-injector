@@ -1,17 +1,29 @@
-export type TRowsExpdState = Record<string, number>;
-
-export type TRowsExpdStateEntry = [string, number];
-
-export interface IRowExpdCmpAttrQuery {
-    itemCtx: TItemCtx;
-    currExpdState: TRowsExpdState;
-    callback: TFn;
+//// Option
+export interface IOption {
+    showAll: boolean;
+    onePerLevel: boolean;
 }
 
-export type TRowExpdCmpAttr = {
+//// State
+export interface IState {
+    [K: string]: number;
+}
+
+//// Generic Component Attribute
+export interface IExpdBtnAttrQuery {
+    itemCtx: TItemCtx;
+    expdState: IState;
+    callback: TFn;
+    option: Partial<IOption>;
+}
+
+export interface IExpdBtnAttr {
     isOpen: boolean;
     onClick: TFn;
-};
+}
+
+//// Misc
+export type TExpdStateEntry = [ string, number ];
 
 export type TItemCtx = {
     itemLvl: number;
