@@ -6,7 +6,6 @@ import { RowHandle } from '../../../service/handle/row'
 import { ExpdHandle } from '../../../service/handle/expand'
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
-import { ExpandWrapper } from '../../structural/expand';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
 import {

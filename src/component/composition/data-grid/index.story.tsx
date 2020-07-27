@@ -202,8 +202,8 @@ export const ViaInternalGeneratedCollapsibleState = () => (
                 ]
             }}
             expand={{
-                // showAll: false
-                oneExpandPerLevel: true
+                showAll: true,
+                // onePerLevel: true
             }}
             sort={{
                 key: 'name',
@@ -212,7 +212,7 @@ export const ViaInternalGeneratedCollapsibleState = () => (
             }}
             paginate={{
                 page: 0,
-                increment: [10, 1],
+                increment: [1, 10],
             }}
             callback={{
                 onPaginateChange: (modState) => console.log(modState),
