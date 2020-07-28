@@ -156,23 +156,31 @@ const sampleData: any[] = [
     }
 ];
 
-const TrCmp = ({ idx, rowType, item, itemLvl, nestedItems, expandProps }: IRowComponentProps) => {
+const TrCmp = ({ item, nestedItems , classNames, expandProps }: IRowComponentProps) => {
+    const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
     const { isOpen, onClick }: any = nestedItems ? expandProps : {};
+    const { name, age, id } = item;
+
     return <>
-        <tr className={`kz-datagrid__row kz-datagrid__row--${rowType}`}>
-            <td>{ (itemLvl === 0 ? '' : `Level ${itemLvl} - `) + `Item ${idx+1}`}</td>
-            <td>{item.name}</td>
-            <td>{item.age}</td>
-            <td>{item.id}</td>
+        <tr className={REG_ROW}>
+            <td>{id}</td>
+            <td>{name}</td>
+            <td>{age}</td>
             <td>{ nestedItems &&
                 <button type="button" style={defStyle.expdBtn} onClick={onClick}>
                     {isOpen ? '-' : '+' }
                 </button>}
             </td>
         </tr>{ nestedItems && isOpen &&
-        <tr className="kz-datagrid__nested-row">
-            <td colSpan={5}>
-                {nestedItems}
+        <tr className={NESTED_ROW}>
+            {/* Customizable Cells and Column Span*/}
+            <td colSpan={4}>
+                <table className={NESTED_GRID}>
+                    {/* Customizable Header */}
+                    <tbody>
+                        {nestedItems}
+                    </tbody>
+                </table>
             </td>
         </tr>}
     </>;
@@ -181,7 +189,7 @@ const TrCmp = ({ idx, rowType, item, itemLvl, nestedItems, expandProps }: IRowCo
 export const ViaInternalGeneratedCollapsibleState = () => {
     const [ data, setData ] = useState(sampleData);
 
-    useEffect(() => {
+/*     useEffect(() => {
         const id = setTimeout(() => {
             setData([
                 ...sampleData,
@@ -193,7 +201,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             ]);
         }, 3000);
         return () => clearTimeout(id);
-    }, [])
+    }, []) */
 
     return <div style={defStyle.wrapper}>
         <DataGrid
@@ -201,10 +209,9 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             type="table"
             rowKey="id"
             header={[
-                { title: 'level' },
-                { title: 'last name', sortKey: 'name' },
-                { title: 'age', sortKey: 'age' },
                 { title: 'id', sortKey: 'id' },
+                { title: 'name', sortKey: 'name' },
+                { title: 'age', sortKey: 'age' },
                 { title: '' },
             ]}
             component={{
@@ -229,7 +236,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
             }}
             paginate={{
                 page: 0,
-                increment: [1, 10, 20],
+                increment: [10, 5, 20],
             }}
             callback={{
                 onPaginateChange: (modState) => console.log(modState),

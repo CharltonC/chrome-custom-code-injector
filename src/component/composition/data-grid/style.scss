@@ -1,6 +1,6 @@
 .kz-datagrid {
     &__grid {
-        @include nested-table-bg('&--nest-', 4, $light-gray-400, 10px);
+        @include nested-table-bg('&--nested-', 4, $light-gray-400, 10px);
         width: 100%;
         text-align: left;
 
@@ -10,9 +10,12 @@
 
             > tbody {
                 > .kz-datagrid__row {
-                    border-top: 1px solid $light-gray-500;
+                    &--odd,
+                    &--even {
+                        border-top: 1px solid $light-gray-500;
+                    }
 
-                     &--even {
+                    &--even {
                         background: $light-gray-600;
                     }
                 }
@@ -20,17 +23,7 @@
         }
     }
 
-    // temp
-    th,
     td {
-        width: 150px;
-    }
-
-    td {
-        &:not([colspan]) {
-            padding: 20px;
-        }
-
         font: 14px Helvetica;
         color: $gray;
     }

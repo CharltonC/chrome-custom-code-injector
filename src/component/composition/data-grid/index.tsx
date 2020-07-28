@@ -8,10 +8,11 @@ import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
+import { ListHeader as DefListHeader } from '../../prsntn-grp/list-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
-    TCmp, TFn, TElemContent, TRowCtx, IRowComponentProps,
+    TCmp, TFn, TRowCtx, IRowComponentProps,
     rowHandleType, expdHandleType, paginationType, sortBtnType
 } from './type';
 
@@ -24,7 +25,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     readonly rowHandle: RowHandle = new RowHandle();
     readonly expdHandle: ExpdHandle = new ExpdHandle();
     readonly cssCls = new UtilHandle().cssCls;
-    readonly BASE_GRID_CLS: string = 'kz-datagrid__grid';
+    readonly BASE_CLS: string = 'kz-datagrid';
 
     //// Builtin API
     constructor(props: IProps) {
@@ -39,27 +40,29 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { thRowsCtx } = this.state;
+        const { BASE_CLS, cssCls } = this;
+        const { isTb, thRowsCtx } = this.state;
         const { paginate, component } = this.props;
         const { pagination: UserPagination, header: UserHeader } = component;
-        const data: TDataOption = this.getSortedData();
-        const Pagination: TCmp = UserPagination || DefPagination;
-        const TableHeader: TCmp = UserHeader || DefTableHeader;
 
-        // TODO: Dynamic Tag
-        // TODO: Demo for Header Component for List Type Grid
+        const data: TDataOption = this.getSortedData();
+        const rowsElem: ReactElement[] = this.getRowsElem(data);
+        const Grid = isTb ? 'table' : 'ul';
+        const GRID_CLS: string = cssCls(`${BASE_CLS}__grid`, 'root');
+        const gridBody: ReactElement | ReactElement[] = isTb ? <tbody>{rowsElem}</tbody> : rowsElem;
+        const Pagination: TCmp = UserPagination ?? DefPagination;
+        const GridHeader: TCmp = UserHeader ?? (isTb ? DefTableHeader : DefListHeader);
 
         return (
-            <div className="kz-datagrid">{ paginate &&
+            <div className={BASE_CLS}>{ paginate &&
                 <Pagination {...this.getPgnCmpProps(data)} />}
-                <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{ thRowsCtx &&
-                    <TableHeader
+                <Grid className={GRID_CLS}>{ thRowsCtx &&
+                    <GridHeader
                         thRowsContext={thRowsCtx}
-                    />}
-                    <tbody>
-                        { this.getRowsElem(data) }
-                    </tbody>
-                </table>
+                        sortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
+                        />}
+                    {gridBody}
+                </Grid>
             </div>
         );
     }
@@ -157,26 +160,20 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     getCmpTransformFn(RowCmp: TCmp): TFn {
-        const { cssCls, BASE_GRID_CLS } = this;
+        const { cssCls, BASE_CLS } = this;
         return (itemCtx: TRowCtx) => {
-            const { itemId, itemLvl, nestedItems } = itemCtx;
-            // TODO: row class name?
+            const { itemId, itemLvl, nestedItems, rowType } = itemCtx;
             const rowProps: IRowComponentProps = {
                 ...itemCtx,
-                nestedItems: nestedItems ? this.wrapNestedItems(nestedItems, cssCls(BASE_GRID_CLS, `nest-${itemLvl+1}`)) : null,
                 expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
+                classNames:  {
+                    REG_ROW: cssCls(`${BASE_CLS}__row`, rowType),
+                    NESTED_ROW: nestedItems ? cssCls(`${BASE_CLS}__row`, 'nested') : '',
+                    NESTED_GRID: nestedItems ? cssCls(`${BASE_CLS}__grid`, `nested-${itemLvl+1}`) : '',
+                }
             };
             return <RowCmp key={itemId} {...rowProps} />;
         };
-    }
-
-    wrapNestedItems(content: TElemContent, className: string = ''): ReactElement {
-        const props: {className?: string} = className ? { className } : {};
-        return this.state.isTb ?
-            <table {...props}>
-                <tbody>{content}</tbody>
-            </table> :
-            <ul {...props}>{content}</ul>;
     }
 
     //// Sort, Expand, Pagination

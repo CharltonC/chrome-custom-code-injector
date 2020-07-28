@@ -60,12 +60,16 @@ export type TShallResetState = {
 //// Generic
 export type TFn = (...args: any[]) => any;
 export type TCmp = React.FC<any> | React.ComponentClass<any>;
-export type TElemContent = ReactElement | ReactElement[];
 export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
 
 // User-Defined Row Template
 export interface IRowComponentProps extends TRowCtx {
     expandProps: expdHandleType.IExpdBtnAttr;
+    classNames: {
+        REG_ROW: string;
+        NESTED_ROW: string;
+        NESTED_GRID: string;
+    }
 }
 
 //// Reexport
