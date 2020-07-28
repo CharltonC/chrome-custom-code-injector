@@ -12,10 +12,10 @@ describe('Component - TODO: Component Name', () => {
             { title: 'C' },
         ],
     ];
-    const mockGetSortBtnProps: jest.Mock = jest.fn();
+    const mockSortBtnPropsFn: jest.Mock = jest.fn();
     const mockProps: IProps = {
         thRowsContext: mockThRowsCtx,
-        getSortBtnProps: mockGetSortBtnProps
+        sortBtnProps: mockSortBtnPropsFn
     };
     const mockSortBtnProps = { isAsc: true };
     let $elem: HTMLElement;
@@ -28,7 +28,7 @@ describe('Component - TODO: Component Name', () => {
     }
 
     beforeEach(() => {
-        mockGetSortBtnProps.mockReturnValue(mockSortBtnProps);
+        mockSortBtnPropsFn.mockReturnValue(mockSortBtnProps);
     });
 
     afterEach(() => {
@@ -53,7 +53,7 @@ describe('Component - TODO: Component Name', () => {
         expect($tr[0].querySelectorAll('th').length).toBe(2);
         expect($tr[1].querySelectorAll('th').length).toBe(1);
         expect($tr[0].querySelector('th').rowSpan).toBe(mockThRowsCtx[0][0].rowSpan);
-        expect(mockGetSortBtnProps.mock.calls).toEqual([
+        expect(mockSortBtnPropsFn.mock.calls).toEqual([
             [mockThRowsCtx[0][0].sortKey],
             [mockThRowsCtx[0][1].sortKey]
         ]);

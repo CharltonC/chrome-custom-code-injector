@@ -31,7 +31,7 @@ export const WithSortButton = () => {
         [ {title: 'A', sortKey: 'name'}, {title: 'B', sortKey: 'age'} ]
     ];
 
-    const getSortBtnProps = (sortKey) => {
+    const sortBtnProps = (sortKey) => {
         return {
             isAsc: sortState.key === sortKey ? sortState.isAsc : null,
             onClick: () => setSortState({
@@ -45,7 +45,7 @@ export const WithSortButton = () => {
         <table style={defStyle} >
             <TableHeader
                 thRowsContext={sampleThRowsContext}
-                getSortBtnProps={getSortBtnProps}
+                sortBtnProps={sortBtnProps}
                 />
         </table>
     );

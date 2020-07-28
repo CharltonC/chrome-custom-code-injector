@@ -55,7 +55,6 @@ export class DataGrid extends MemoComponent<IProps, IState> {
                 <table className={this.cssCls(this.BASE_GRID_CLS, 'root')}>{ thRowsCtx &&
                     <TableHeader
                         thRowsContext={thRowsCtx}
-                        getSortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
                     />}
                     <tbody>
                         { this.getRowsElem(data) }
