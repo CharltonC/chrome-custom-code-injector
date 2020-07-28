@@ -2,7 +2,7 @@ import React from 'react';
 // import { CmpCls } from '.';
 
 export default {
-    // title: 'CmpCls',
+    title: 'Default CmpCls',
     // component: CmpCls,
 };
 
