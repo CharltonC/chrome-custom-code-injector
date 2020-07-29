@@ -1,11 +1,11 @@
 import React, { memo, FC } from 'react';
 import { SortBtn } from '../../prsntn/sort-btn';
-import { IProps, thHandleType } from './type';
+import { IProps, headerGrpHandleType } from './type';
 
 export const _TableHeader: FC<IProps> = ({ thRowsContext, sortBtnProps } : IProps) => {
     return (
-        <thead className="kz-datagrid__head">{ thRowsContext.map((thCtxs: thHandleType.ICtxTbHeader[], trIdx: number) => (
-            <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }: thHandleType.ICtxTbHeader, thIdx: number) => (
+        <thead className="kz-datagrid__head">{ thRowsContext.map((thCtxs: headerGrpHandleType.ICtxTbHeader[], trIdx: number) => (
+            <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }: headerGrpHandleType.ICtxTbHeader, thIdx: number) => (
                 <th key={thIdx} {...thProps}>
                     <span>{title}</span>{ sortKey && sortBtnProps &&
                     <SortBtn {...sortBtnProps(sortKey)} />}

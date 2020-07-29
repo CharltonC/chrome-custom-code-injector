@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../../asset/ts/memo-component';
 import { UtilHandle } from '../../../service/handle/util';
-import { ThHandle } from '../../../service/handle/header-group';
+import { HeaderGrpHandle } from '../../../service/handle/header-group';
 import { RowHandle } from '../../../service/handle/row'
 import { ExpdHandle } from '../../../service/handle/expand'
 import { SortHandle } from '../../../service/handle/sort';
@@ -19,7 +19,7 @@ import {
 
 export class DataGrid extends MemoComponent<IProps, IState> {
     //// Dependency Injection
-    readonly thHandle: ThHandle = new ThHandle();
+    readonly headerGrpHandle: HeaderGrpHandle = new HeaderGrpHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
@@ -71,14 +71,14 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     createState(props: IProps, shallResetState?: TShallResetState): IState {
         const { type, component, data, sort, paginate, expand, header } = props;
         const { rows } = component;
-        const { thHandle, expdHandle, sortHandle, pgnHandle } = this;
+        const { headerGrpHandle, expdHandle, sortHandle, pgnHandle } = this;
         const sortOption = sort ? sortHandle.createOption(sort) : null;
         const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
 
         // Note: data used to create paginate state doesnt have to be sorted, it can be generic
         const state: IState = {
             isTb: type !== 'list' ? true : false,
-            thRowsCtx: header ? thHandle.getCtxTbHeaders(header) : null,
+            thRowsCtx: header ? headerGrpHandle.getCtxTbHeaders(header) : null,
             rowsOption: rows ? this.transformRowOption(rows) : null,
             sortOption,
             sortState: sort ? sortHandle.createState(data, sortOption) : null,

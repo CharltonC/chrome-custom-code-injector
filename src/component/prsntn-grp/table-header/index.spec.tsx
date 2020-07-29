@@ -1,9 +1,9 @@
 import { TestUtil } from '../../../asset/ts/test-util/';
-import { IProps, thHandleType } from './type';
+import { IProps, headerGrpHandleType } from './type';
 import { TableHeader } from './';
 
 describe('Component - TODO: Component Name', () => {
-    const mockThRowsCtx: thHandleType.ICtxTbHeader[][] = [
+    const mockThRowsCtx: headerGrpHandleType.ICtxTbHeader[][] = [
         [
             { title: 'A', sortKey: 'name', rowSpan: 2 },
             { title: 'B', sortKey: 'age' },

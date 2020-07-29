@@ -3,7 +3,7 @@ import {
     ICtxTbHeader, IBaseCtxTbHeader, ITbHeaderCache,
 } from './type';
 
-export class ThHandle {
+export class HeaderGrpHandle {
     //// Table Header
     getCtxTbHeaders(option: IOption[]): ICtxTbHeader[][] {
         const rowsThColCtx = this.getBaseCtxTbHeaders(option) as IBaseCtxTbHeader[][];

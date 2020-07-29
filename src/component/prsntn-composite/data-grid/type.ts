@@ -2,14 +2,14 @@ import * as sortHandleType from '../../../service/handle/sort/type';
 import * as rowHandleType from '../../../service/handle/row/type';
 import * as expdHandleType from '../../../service/handle/expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
-import * as thHandleType from '../../../service/handle/header-group/type';
+import * as headerGrpHandleType from '../../../service/handle/header-group/type';
 import { ReactElement } from 'react';
 
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: TDataOption;
     type?: TGridTypeOption;
-    header?: thHandleType.IOption[];
+    header?: headerGrpHandleType.IOption[];
     rowKey?: TRowKeyOption;
     component: IComponentOption;
     expand?: Partial<expdHandleType.IOption>;
@@ -41,7 +41,7 @@ interface ICallbackOption {
 //// State
 export interface IState {
     isTb: boolean;
-    thRowsCtx: thHandleType.ICtxTbHeader[][];
+    thRowsCtx: headerGrpHandleType.ICtxTbHeader[][];
     rowsOption: rowHandleType.IRawRowsOption[];
     expdState: expdHandleType.IState;
     sortOption: sortHandleType.IOption;
@@ -77,6 +77,6 @@ export { pgnHandleType as pgnHandleType };
 export { rowHandleType as rowHandleType };
 export { expdHandleType as expdHandleType };
 export { sortHandleType as sortHandleType };
-export { thHandleType as thHandleType };
+export { headerGrpHandleType as headerGrpHandleType };
 export * as sortBtnType from '../../prsntn/sort-btn/type';
 export * as paginationType from '../../prsntn-grp/pagination/type';

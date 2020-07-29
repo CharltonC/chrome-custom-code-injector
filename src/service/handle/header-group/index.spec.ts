@@ -4,14 +4,14 @@ import {
     IOption,
     IBaseCtxTbHeader, ITbHeaderCache,
 } from './type';
-import { ThHandle } from '.';
+import { HeaderGrpHandle } from '.';
 
 describe('Table Header Handle', () => {
-    let handle: ThHandle;
-    let spy: TMethodSpy<ThHandle>;
+    let handle: HeaderGrpHandle;
+    let spy: TMethodSpy<HeaderGrpHandle>;
 
     beforeEach(() => {
-        handle = new ThHandle();
+        handle = new HeaderGrpHandle();
         spy = TestUtil.spyMethods(handle);
     });
 
@@ -65,7 +65,7 @@ describe('Table Header Handle', () => {
     });
 
     describe('Method - getBaseCtxTbHeaders: Create rows (`tr`) of header (`th`) context for descendent columns', () => {
-        const { getBaseCtxTbHeaders } = ThHandle.prototype;
+        const { getBaseCtxTbHeaders } = HeaderGrpHandle.prototype;
         const mockOption: IOption[] = [
             {title: 'a', subHeader: [
                 {title: 'a-1'},
@@ -110,7 +110,7 @@ describe('Table Header Handle', () => {
     });
 
     describe('Method - getSpanCtxTbHeaders: Create rows (`tr`) of header (`th`) context for row span and column span', () => {
-        const { getSpanCtxTbHeaders }  = ThHandle.prototype;
+        const { getSpanCtxTbHeaders }  = HeaderGrpHandle.prototype;
         const mockColCtxs: IBaseCtxTbHeader[][] = [
             [
                 {title: 'a', ownColTotal: 3},
@@ -164,7 +164,7 @@ describe('Table Header Handle', () => {
     });
 
     describe('Method - setTbHeaderCache: Update the cache value during the process where `th` column context is being created', () => {
-        const { setTbHeaderCache }  = ThHandle.prototype;
+        const { setTbHeaderCache }  = HeaderGrpHandle.prototype;
         let mockCache: ITbHeaderCache;
 
         beforeEach(() => {
