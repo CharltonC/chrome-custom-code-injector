@@ -3,6 +3,7 @@ import {
     ICtxTbHeader, IBaseCtxTbHeader, ITbHeaderCache,
     ICtxListHeader, IBaseCtxListHeader, IListHeaderCache,
 } from './type';
+import { WithSelectedIndexAndCallback } from '../../../component/prsntn/dropdown/index.story';
 
 export class HeaderGrpHandle {
     //// Table Header
@@ -77,7 +78,7 @@ export class HeaderGrpHandle {
     }
 
     //// List Header
-    getCtxListHeaders(option: IOption[]): ICtxListHeader[] {
+    getCtxListHeaders(option: IOption[]) {
         const cache: IListHeaderCache = {
             colTotal: 0,
             rowTotal: option.length ? 1 : 0
@@ -86,8 +87,42 @@ export class HeaderGrpHandle {
         return this.getSpanCtxListHeaders(baseCtxHeaders, cache.rowTotal);
     }
 
+    fillHeaders(rowTotal, container, headers, rowLvl: number = 0, parentPosIdx: number = 0) {
+        let nextInsertPos: number = parentPosIdx;
+
+        headers.forEach(({ subHeader, title, sortKey, rowSpan, colSpan }, cellPos: number) => {
+            // If there are subHeader
+            if (subHeader) {
+                // Fill out this current row
+                [...Array(colSpan)].forEach((span, idx: number) => {
+                    container[rowLvl][nextInsertPos + idx] = idx === 0 ? { title } : { title: '' };
+                });
+
+                // Fill the next rows
+                this.fillHeaders(rowTotal, container, subHeader, rowLvl + 1, nextInsertPos);
+
+            // else we have rowSpan > 1
+            } else {
+                // Fill out this current row
+                container[rowLvl][nextInsertPos] = { title };
+
+                // Fill the next rows
+                if (rowSpan > 1) {
+                    const remainRowTotal: number = rowTotal - rowLvl - 1;
+                    [...Array(remainRowTotal)].forEach((item, idx) => {
+                        const currRowLvl: number = rowLvl + idx + 1;
+                        container[currRowLvl][nextInsertPos] = { title: '' };
+                    });
+                }
+            }
+
+            // calculate the insert index for the next header afterwards
+            nextInsertPos = nextInsertPos + (colSpan ?? 0);
+        });
+    }
+
     getBaseCtxListHeaders(option: IOption[], rowLvlIdx: number, cache: IListHeaderCache): IBaseCtxListHeader[] {
-        return option.map(({ subHeader, ...remains }) => {
+        return option.map(({ subHeader, ...rest }) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal = cache.colTotal;
 
@@ -99,7 +134,7 @@ export class HeaderGrpHandle {
             // After Cache is updated
             const ownColTotal = subHeader ? (cache.colTotal - currColTotal) : null;
             return {
-                ...remains,
+                ...rest,
                 ownColTotal,
                 subHeader: subRowCtx
             };
@@ -107,9 +142,9 @@ export class HeaderGrpHandle {
     }
 
     getSpanCtxListHeaders(baseCtxHeaders: IBaseCtxListHeader[], rowTotal: number): ICtxListHeader[] {
-        return baseCtxHeaders.map(({ subHeader, ownColTotal, ...remains }: IBaseCtxListHeader) => {
+        return baseCtxHeaders.map(({ subHeader, ownColTotal, ...rest }: IBaseCtxListHeader) => {
             return {
-                ...remains,
+                ...rest,
                 colSpan: ownColTotal ? ownColTotal : 1,
                 rowSpan: ownColTotal ? 1 : rowTotal,
                 subHeader: subHeader ? this.getSpanCtxListHeaders(subHeader, rowTotal - 1) : subHeader
