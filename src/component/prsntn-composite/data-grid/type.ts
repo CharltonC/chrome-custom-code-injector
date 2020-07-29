@@ -2,7 +2,7 @@ import * as sortHandleType from '../../../service/handle/sort/type';
 import * as rowHandleType from '../../../service/handle/row/type';
 import * as expdHandleType from '../../../service/handle/expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
-import * as thHandleType from '../../../service/handle/table-header/type';
+import * as thHandleType from '../../../service/handle/header-group/type';
 import { ReactElement } from 'react';
 
 //// Props

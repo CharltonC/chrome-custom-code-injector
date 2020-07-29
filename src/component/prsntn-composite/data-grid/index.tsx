@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../../asset/ts/memo-component';
 import { UtilHandle } from '../../../service/handle/util';
-import { ThHandle } from '../../../service/handle/table-header';
+import { ThHandle } from '../../../service/handle/header-group';
 import { RowHandle } from '../../../service/handle/row'
 import { ExpdHandle } from '../../../service/handle/expand'
 import { SortHandle } from '../../../service/handle/sort';

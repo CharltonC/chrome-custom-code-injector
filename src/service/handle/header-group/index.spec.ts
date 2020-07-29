@@ -4,7 +4,7 @@ import {
     IOption,
     IBaseCtxTbHeader, ITbHeaderCache,
 } from './type';
-import { ThHandle } from './';
+import { ThHandle } from '.';
 
 describe('Table Header Handle', () => {
     let handle: ThHandle;
