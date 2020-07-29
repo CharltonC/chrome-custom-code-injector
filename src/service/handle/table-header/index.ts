@@ -1,25 +1,25 @@
 import {
     IOption,
-    TRowsThCtx, TRowsThColCtx, TRowThColCtx,
-    IThColCtx, IThColCtxCache,
+    ICtxTbHeader, IBaseCtxTbHeader, ITbHeaderCache,
 } from './type';
 
 export class ThHandle {
-    createRowThCtx(option: IOption[]): TRowsThCtx {
-        const rowsThColCtx = this.createRowThColCtx(option) as TRowsThColCtx;
-        return this.createRowThSpanCtx(rowsThColCtx);
+    //// Table Header
+    getCtxTbHeaders(option: IOption[]): ICtxTbHeader[][] {
+        const rowsThColCtx = this.getBaseCtxTbHeaders(option) as IBaseCtxTbHeader[][];
+        return this.getSpanCtxTbHeaders(rowsThColCtx);
     }
 
-    createRowThColCtx(option: IOption[], rowLvlIdx: number = 0, cache?: IThColCtxCache): TRowsThColCtx | TRowThColCtx {
-        cache = cache ? cache : this.getDefThColCtxCache();
-        const rowThColCtx: TRowThColCtx = option.map(({ title, sortKey, subHeader }: IOption) => {
+    getBaseCtxTbHeaders(option: IOption[], rowLvlIdx: number = 0, cache?: ITbHeaderCache): IBaseCtxTbHeader[][] | IBaseCtxTbHeader[] {
+        cache = cache ? cache : this.getDefTbHeaderCache();
+        const rowThColCtx: IBaseCtxTbHeader[] = option.map(({ title, sortKey, subHeader }: IOption) => {
             // Get the curr. value so that we can later get diff. in total no. of columns
             const currColTotal: number = cache.colTotal;
 
             // Get the Sub Row Info if there is sub headers & Update cache
             const subRowLvlIdx: number = rowLvlIdx + 1;
-            const subRowCtx = subHeader ? this.createRowThColCtx(subHeader, subRowLvlIdx, cache) as TRowThColCtx : null;
-            this.setThColCtxCache(cache, subRowLvlIdx, subRowCtx);
+            const subRowCtx = subHeader ? this.getBaseCtxTbHeaders(subHeader, subRowLvlIdx, cache) as IBaseCtxTbHeader[] : null;
+            this.setTbHeaderCache(cache, subRowLvlIdx, subRowCtx);
 
             // After Cache is updated
             const ownColTotal: number = subHeader ? (cache.colTotal - currColTotal) : null;
@@ -27,19 +27,19 @@ export class ThHandle {
         });
 
         const isTopLvl: boolean = rowLvlIdx === 0;
-        if(isTopLvl) this.setThColCtxCache(cache, rowLvlIdx, rowThColCtx);
+        if(isTopLvl) this.setTbHeaderCache(cache, rowLvlIdx, rowThColCtx);
 
         return isTopLvl ? cache.slots : rowThColCtx;
     }
 
-    createRowThSpanCtx(rowsThColCtx: TRowsThColCtx): TRowsThCtx {
+    getSpanCtxTbHeaders(rowsThColCtx: IBaseCtxTbHeader[][]): ICtxTbHeader[][] {
         let rowTotal: number = rowsThColCtx.length;
 
-        return rowsThColCtx.map((row: TRowThColCtx, rowLvlIdx: number) => {
+        return rowsThColCtx.map((row: IBaseCtxTbHeader[], rowLvlIdx: number) => {
             const is1stRowLvl: boolean = rowLvlIdx === 0;
             if (!is1stRowLvl) rowTotal--;
 
-            return row.map((thColCtx: IThColCtx) => {
+            return row.map((thColCtx: IBaseCtxTbHeader) => {
                 const { ownColTotal, ...thCtx } = thColCtx;
                 return {
                     ...thCtx,
@@ -50,7 +50,7 @@ export class ThHandle {
         });
     }
 
-    setThColCtxCache(cache: IThColCtxCache, rowLvlIdx: number, rowThColCtx?: TRowThColCtx): void {
+    setTbHeaderCache(cache: ITbHeaderCache, rowLvlIdx: number, rowThColCtx?: IBaseCtxTbHeader[]): void {
         const { slots } = cache;
         const isTopLvl: boolean = rowLvlIdx === 0;
 
@@ -68,7 +68,7 @@ export class ThHandle {
         }
     }
 
-    getDefThColCtxCache(): IThColCtxCache {
+    getDefTbHeaderCache(): ITbHeaderCache {
         return {
             slots: [],
             colTotal: 0

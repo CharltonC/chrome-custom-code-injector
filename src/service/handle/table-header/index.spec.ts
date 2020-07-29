@@ -2,8 +2,7 @@ import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import {
     IOption,
-    TRowsThColCtx, TRowThColCtx,
-    IThColCtxCache,
+    IBaseCtxTbHeader, ITbHeaderCache,
 } from './type';
 import { ThHandle } from './';
 
@@ -21,26 +20,26 @@ describe('Table Header Handle', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Method - getDefThColCtxCache: Create a new default cache', () => {
+    describe('Method - getDefTbHeaderCache: Create a new default cache', () => {
         it('should return a default cache value', () => {
-            expect(handle.getDefThColCtxCache()).toEqual({
+            expect(handle.getDefTbHeaderCache()).toEqual({
                 slots: [],
                 colTotal: 0
             });
         });
     });
 
-    describe('Method - createRowThCtx: Create rows (`tr`) of header (`th`) context used for rendering', () => {
+    describe('Method - getCtxTbHeaders: Create rows (`tr`) of header (`th`) context used for rendering', () => {
         it('should return the table header context (with mocks)', () => {
             const mockOption: any = ['lorem'];
             const mockThColCtx: any = [];
             const mockThSpanCtx: any = [[]];
-            spy.createRowThColCtx.mockReturnValue(mockThColCtx);
-            spy.createRowThSpanCtx.mockReturnValue(mockThSpanCtx);
+            spy.getBaseCtxTbHeaders.mockReturnValue(mockThColCtx);
+            spy.getSpanCtxTbHeaders.mockReturnValue(mockThSpanCtx);
 
-            expect(handle.createRowThCtx(mockOption)).toBe(mockThSpanCtx);
-            expect(spy.createRowThColCtx).toHaveBeenCalledWith(mockOption);
-            expect(spy.createRowThSpanCtx).toHaveBeenCalledWith(mockThColCtx);
+            expect(handle.getCtxTbHeaders(mockOption)).toBe(mockThSpanCtx);
+            expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledWith(mockOption);
+            expect(spy.getSpanCtxTbHeaders).toHaveBeenCalledWith(mockThColCtx);
         });
 
         it('should return the table header context (without mocks)', () => {
@@ -52,7 +51,7 @@ describe('Table Header Handle', () => {
                 {title: 'b'},
             ];
 
-            expect(handle.createRowThCtx(mockOption)).toEqual([
+            expect(handle.getCtxTbHeaders(mockOption)).toEqual([
                 [
                     {title: 'a', colSpan: 2, rowSpan: 1, sortKey: undefined},
                     {title: 'b', colSpan: 1, rowSpan: 2, sortKey: undefined},
@@ -65,8 +64,8 @@ describe('Table Header Handle', () => {
         });
     });
 
-    describe('Method - createRowThColCtx: Create rows (`tr`) of header (`th`) context for descendent columns', () => {
-        const { createRowThColCtx } = ThHandle.prototype;
+    describe('Method - getBaseCtxTbHeaders: Create rows (`tr`) of header (`th`) context for descendent columns', () => {
+        const { getBaseCtxTbHeaders } = ThHandle.prototype;
         const mockOption: IOption[] = [
             {title: 'a', subHeader: [
                 {title: 'a-1'},
@@ -74,45 +73,45 @@ describe('Table Header Handle', () => {
             ]},
             {title: 'b'},
         ];
-        let mockCache: IThColCtxCache;
-        let createRowThColCtxClone;
+        let mockCache: ITbHeaderCache;
+        let getBaseCtxTbHeadersClone;
 
         beforeEach(() => {
             mockCache = {
                 colTotal: 0,
                 slots: []
             };
-            createRowThColCtxClone = createRowThColCtx.bind(handle);
-            spy.createRowThColCtx.mockReturnValue([]);
-            spy.setThColCtxCache.mockImplementation(() => {});
+            getBaseCtxTbHeadersClone = getBaseCtxTbHeaders.bind(handle);
+            spy.getBaseCtxTbHeaders.mockReturnValue([]);
+            spy.setTbHeaderCache.mockImplementation(() => {});
         });
 
         it('should return the column context when row level is 0', () => {
             const { subHeader } = mockOption[0];
 
-            expect(createRowThColCtxClone(mockOption)).toEqual(mockCache.slots);
-            expect(spy.getDefThColCtxCache).toHaveBeenCalled();
-            expect(spy.createRowThColCtx).toHaveBeenCalledWith(subHeader, 1, mockCache);
-            expect(spy.createRowThColCtx).toHaveBeenCalledTimes(1);
-            expect(spy.setThColCtxCache).toHaveBeenCalledTimes(3);
+            expect(getBaseCtxTbHeadersClone(mockOption)).toEqual(mockCache.slots);
+            expect(spy.getDefTbHeaderCache).toHaveBeenCalled();
+            expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledWith(subHeader, 1, mockCache);
+            expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledTimes(1);
+            expect(spy.setTbHeaderCache).toHaveBeenCalledTimes(3);
         });
 
         it('should return the column context when row level is not 0', () => {
             const { subHeader } = mockOption[0];
 
-            expect(createRowThColCtxClone(mockOption, 1, mockCache)).toEqual([
+            expect(getBaseCtxTbHeadersClone(mockOption, 1, mockCache)).toEqual([
                 {title: 'a', ownColTotal: 0, sortKey: undefined},
                 {title: 'b', ownColTotal: null, sortKey: undefined}
             ]);
-            expect(spy.createRowThColCtx).toHaveBeenCalledWith(subHeader, 2, mockCache);
-            expect(spy.createRowThColCtx).toHaveBeenCalledTimes(1);
-            expect(spy.setThColCtxCache).toHaveBeenCalledTimes(2);
+            expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledWith(subHeader, 2, mockCache);
+            expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledTimes(1);
+            expect(spy.setTbHeaderCache).toHaveBeenCalledTimes(2);
         });
     });
 
-    describe('Method - createRowThSpanCtx: Create rows (`tr`) of header (`th`) context for row span and column span', () => {
-        const { createRowThSpanCtx }  = ThHandle.prototype;
-        const mockColCtxs: TRowsThColCtx = [
+    describe('Method - getSpanCtxTbHeaders: Create rows (`tr`) of header (`th`) context for row span and column span', () => {
+        const { getSpanCtxTbHeaders }  = ThHandle.prototype;
+        const mockColCtxs: IBaseCtxTbHeader[][] = [
             [
                 {title: 'a', ownColTotal: 3},
                 {title: 'b'}
@@ -129,7 +128,7 @@ describe('Table Header Handle', () => {
         const [ mockColCtx1, mockColCtx2 ] = mockColCtxs;
 
         it('should return header context for row span and column span', () => {
-            const [ colCtx1, colCtx2, colCtx3 ] = createRowThSpanCtx(mockColCtxs);
+            const [ colCtx1, colCtx2, colCtx3 ] = getSpanCtxTbHeaders(mockColCtxs);
 
             expect(colCtx1[0]).toEqual(
                 {title: 'a',
@@ -164,9 +163,9 @@ describe('Table Header Handle', () => {
         });
     });
 
-    describe('Method - setThColCtxCache: Update the cache value during the process where `th` column context is being created', () => {
-        const { setThColCtxCache }  = ThHandle.prototype;
-        let mockCache: IThColCtxCache;
+    describe('Method - setTbHeaderCache: Update the cache value during the process where `th` column context is being created', () => {
+        const { setTbHeaderCache }  = ThHandle.prototype;
+        let mockCache: ITbHeaderCache;
 
         beforeEach(() => {
             mockCache = {
@@ -176,16 +175,16 @@ describe('Table Header Handle', () => {
         });
 
         it('should increment the column total when column context isnt provided', () => {
-            setThColCtxCache(mockCache, 1);
+            setTbHeaderCache(mockCache, 1);
             expect(mockCache.colTotal).toBe(1);
 
-            setThColCtxCache(mockCache, 0);
+            setTbHeaderCache(mockCache, 0);
             expect(mockCache.colTotal).toBe(2);
         });
 
         it('should set the column context for that row level when row level is 0 and column context is provided', () => {
-            const mockColCtx: TRowThColCtx = [];
-            setThColCtxCache(mockCache, 0, mockColCtx);
+            const mockColCtx: IBaseCtxTbHeader[] = [];
+            setTbHeaderCache(mockCache, 0, mockColCtx);
 
             const { slots, colTotal } = mockCache;
             expect(slots[0]).toBe(mockColCtx);
@@ -194,8 +193,8 @@ describe('Table Header Handle', () => {
         });
 
         it('should set the column context for that row level if not already exist when row level is not 0 and column context is provied', () => {
-            const mockColCtx: TRowThColCtx = [];
-            setThColCtxCache(mockCache, 1, mockColCtx);
+            const mockColCtx: IBaseCtxTbHeader[] = [];
+            setTbHeaderCache(mockCache, 1, mockColCtx);
 
             const { slots, colTotal } = mockCache;
             expect(slots[1]).toBe(mockColCtx);
@@ -207,7 +206,7 @@ describe('Table Header Handle', () => {
             // Fake the existing column context and context to be appended
             (mockCache.slots[1] as any) = ['a'];
             const mockColCtx: any = ['b'];
-            setThColCtxCache(mockCache, 1, mockColCtx);
+            setTbHeaderCache(mockCache, 1, mockColCtx);
 
             const { slots, colTotal } = mockCache;
             expect(slots[1]).toEqual(['a', 'b']);

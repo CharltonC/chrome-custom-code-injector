@@ -6,9 +6,8 @@ export interface IOption {
 }
 
 //// State
-export type TRowsThCtx = IThCtx[][];
-
-export interface IThCtx {
+export type ICtxTbHeader[][] = ICtxTbHeader[][];
+export interface ICtxTbHeader {
     title: string;
     sortKey?: string;
     rowSpan?: number;
@@ -16,16 +15,12 @@ export interface IThCtx {
 }
 
 //// Other
-export type TRowsThColCtx = IThColCtx[][];
-
-export type TRowThColCtx = IThColCtx[];
-
-export interface IThColCtx {
+export interface IBaseCtxTbHeader {
     title: string;
     ownColTotal?: number;
 }
 
-export interface IThColCtxCache {
-    slots: IThColCtx[][];
+export interface ITbHeaderCache {
+    slots: IBaseCtxTbHeader[][];
     colTotal: number;
 }

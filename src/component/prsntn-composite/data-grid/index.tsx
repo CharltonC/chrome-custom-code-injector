@@ -78,7 +78,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         // Note: data used to create paginate state doesnt have to be sorted, it can be generic
         const state: IState = {
             isTb: type !== 'list' ? true : false,
-            thRowsCtx: header ? thHandle.createRowThCtx(header) : null,
+            thRowsCtx: header ? thHandle.getCtxTbHeaders(header) : null,
             rowsOption: rows ? this.transformRowOption(rows) : null,
             sortOption,
             sortState: sort ? sortHandle.createState(data, sortOption) : null,
