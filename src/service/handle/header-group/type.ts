@@ -13,6 +13,10 @@ export interface ICtxTbHeader {
     colSpan?: number;
 }
 
+export interface ICtxListHeader extends ICtxTbHeader {
+    subHeader: ICtxListHeader[];
+}
+
 //// Other
 export interface IBaseCtxTbHeader {
     title: string;
@@ -21,5 +25,15 @@ export interface IBaseCtxTbHeader {
 
 export interface ITbHeaderCache {
     slots: IBaseCtxTbHeader[][];
+    colTotal: number;
+}
+
+export interface IBaseCtxListHeader extends IOption {
+    ownColTotal?: number;
+    subHeader: IBaseCtxListHeader[];
+}
+
+export interface IListHeaderCache {
+    rowTotal: number;
     colTotal: number;
 }
