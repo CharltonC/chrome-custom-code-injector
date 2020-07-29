@@ -48,7 +48,7 @@ describe('Component - TODO: Component Name', () => {
     });
 
     it('should render', () => {
-        expect($th.className).toBe('kz-tableheader');
+        expect($th.className).toBe('kz-datagrid__head');
         expect($tr.length).toBe(2);
         expect($tr[0].querySelectorAll('th').length).toBe(2);
         expect($tr[1].querySelectorAll('th').length).toBe(1);
