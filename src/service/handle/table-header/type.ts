@@ -6,7 +6,6 @@ export interface IOption {
 }
 
 //// State
-export type ICtxTbHeader[][] = ICtxTbHeader[][];
 export interface ICtxTbHeader {
     title: string;
     sortKey?: string;
