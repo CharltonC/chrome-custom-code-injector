@@ -13,8 +13,8 @@ export interface ICtxTbHeader {
     colSpan?: number;
 }
 
-export interface ICtxListHeader extends ICtxTbHeader {
-    subHeader: ICtxListHeader[];
+export interface ISpanCtxListHeader extends ICtxTbHeader {
+    subHeader: ISpanCtxListHeader[];
 }
 
 //// Other
@@ -36,4 +36,9 @@ export interface IBaseCtxListHeader extends IOption {
 export interface IListHeaderCache {
     rowTotal: number;
     colTotal: number;
+}
+
+export interface ISubHeaderCtx {
+    rowLvl: number;
+    parentPos: number;
 }

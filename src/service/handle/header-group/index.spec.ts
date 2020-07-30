@@ -217,67 +217,77 @@ describe('Table Header Handle', () => {
 
     fdescribe('List Header Group', () => {
         describe('Method - getCtxListHeaders', () => {
-            // it('', () => {
-            //     const headers = [
-            //         {
-            //             title: 'a',
-            //             colSpan: 2,
-            //             rowSpan: 1,
-            //             subHeader: [
-            //                 {title: 'a-1', colSpan: 1, rowSpan: 1},
-            //                 {title: 'a-2', colSpan: 1, rowSpan: 1}
-            //         ]},
-            //         {title: 'b', colSpan: 1, rowSpan: 2},
-            //     ];
+            it('', () => {
+                const headers = [
+                    {
+                        title: 'a',
+                        subHeader: [
+                            {title: 'a-1'},
+                            {title: 'a-2'}
+                    ]},
+                    {title: 'b'},
+                ];
 
-            //     const rowsContainer = [...Array(2)].map(() => []);
-            //     handle.fill(2, rowsContainer, headers);
-            //     expect(rowsContainer).toEqual([
-            //         [
-            //             { title: 'a' },
-            //             { title: '' },
-            //             { title: 'b' },
-            //         ],
-            //         [
-            //             { title: 'a-1' },
-            //             { title: 'a-2' },
-            //             { title: '' },
-            //         ]
-            //     ]);
-            // });
+                expect(handle.getCtxListHeaders(headers)).toEqual([
+                    [
+                        { title: 'a' },
+                        { title: '' },
+                        { title: 'b' },
+                    ],
+                    [
+                        { title: 'a-1' },
+                        { title: 'a-2' },
+                        { title: '' },
+                    ]
+                ]);
+            });
 
-            // it('', () => {
-            //     const headers = [
-            //         {
-            //             title: 'a',
-            //             colSpan: 1,
-            //             rowSpan: 3,
-            //         }, {
-            //             title: 'b',
-            //             colSpan: 3,
-            //             rowSpan: 1,
-            //             subHeader: [
-            //                 {title: 'b-1', colSpan: 2, rowSpan: 1, subHeader: [
-            //                     {title: 'b-1-1', colSpan: 1, rowSpan: 1},
-            //                     {title: 'b-1-2', colSpan: 1, rowSpan: 1},
-            //                 ]},
-            //                 {title: 'b-2', colSpan: 1, rowSpan: 2}
-            //             ]
-            //         }, {
-            //             title: 'c',
-            //             colSpan: 2,
-            //             rowSpan: 1,
-            //             subHeader: [
-            //                 {title: 'c-1', colSpan: 1, rowSpan: 2},
-            //                 {title: 'c-2', colSpan: 1, rowSpan: 2},
-            //             ]
-            //         },
-            //     ];
-
-            //     const rowsContainer = [...Array(3)].map(() => []);
-            //     handle.fillHeaders(3, rowsContainer, headers);
-            //     expect(rowsContainer).toEqual([]);
-            // });
+            it('', () => {
+                const headers = [
+                    {
+                        title: 'a',
+                    }, {
+                        title: 'b',
+                        subHeader: [
+                            {title: 'b-1', subHeader: [
+                                {title: 'b-1-1'},
+                                {title: 'b-1-2'},
+                            ]},
+                            {title: 'b-2'}
+                        ]
+                    }, {
+                        title: 'c',
+                        subHeader: [
+                            {title: 'c-1'},
+                            {title: 'c-2'},
+                        ]
+                    },
+                ];
+                expect(handle.getCtxListHeaders(headers)).toEqual([
+                    [
+                        { 'title': 'a' },
+                        { 'title': 'b' },
+                        { 'title': '' },
+                        { 'title': '' },
+                        { 'title': 'c' },
+                        { 'title': '' }
+                    ], [
+                        { 'title': '' },
+                        { 'title': 'b-1' },
+                        { 'title': '' },
+                        { 'title': 'b-2' },
+                        { 'title': 'c-1' },
+                        { 'title': 'c-2' }
+                    ], [
+                        { 'title': '' },
+                        { 'title': 'b-1-1' },
+                        { 'title': 'b-1-2' },
+                        { 'title': '' },
+                        { 'title': '' },
+                        { 'title': '' }
+                    ]
+                ]);
+            });
         });
     });
 });
