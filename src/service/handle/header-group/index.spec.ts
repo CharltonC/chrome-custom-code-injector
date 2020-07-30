@@ -2,7 +2,7 @@ import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import {
     IOption,
-    IBaseCtxTbHeader, ITbHeaderCache,
+    IBaseCtxTbHeader, ITbHeaderCache, IBaseCtxListHeader, ISpanCtxListHeader,
 } from './type';
 import { HeaderGrpHandle } from '.';
 
@@ -217,76 +217,118 @@ describe('Header Group Handle', () => {
         });
     });
 
-    fdescribe('List Header Group', () => {
-        describe('Method - getCtxListHeaders', () => {
-            it('', () => {
-                const headers = [
-                    {
-                        title: 'a',
-                        subHeader: [
-                            {title: 'a-1'},
-                            {title: 'a-2'}
-                    ]},
-                    {title: 'b'},
-                ];
+    describe('List Header Group', () => {
+        const mockBaseOption: IOption[] = [
+            { title: 'a', subHeader: [
+                {title: 'a-1', sortKey: 'x' },
+                {title: 'a-2'}
+            ]},
+            {title: 'b'},
+        ];
 
-                expect(handle.getCtxListHeaders(headers)).toEqual([
+        const mockComplexOption: IOption[] = [
+            { title: 'a', },
+            { title: 'b', subHeader: [
+                {title: 'b-1', subHeader: [
+                    {title: 'b-1-1' },
+                    {title: 'b-1-2' },
+                ]},
+                {title: 'b-2'}
+            ]}, {
+                title: 'c',
+                subHeader: [
+                    {title: 'c-1' },
+                    {title: 'c-2' },
+                ]
+            }
+        ];
+
+        const mockBaseCtxHeaders: IBaseCtxListHeader[] = [
+            { title: 'a', ownColTotal: 2, subHeader: [
+                {title: 'a-1', sortKey: 'x', ownColTotal: undefined },
+                {title: 'a-2', ownColTotal: undefined },
+            ]},
+            {title: 'b', ownColTotal: undefined }
+        ];
+
+        const mockSpanCtxHeaders: ISpanCtxListHeader[] = [
+            { title: 'a', colSpan: 2, rowSpan: 1, subHeader: [
+                { title: 'a-1', colSpan: 1, rowSpan: 1, sortKey: 'x' },
+                { title: 'a-2', colSpan: 1, rowSpan: 1 },
+            ]},
+            {title: 'b', colSpan: 1, rowSpan: 2 },
+        ];
+
+        describe('Method - getCtxListHeaders: Get the contextual list headers', () => {
+            it('should return headers (without mocks)', () => {
+                expect(handle.getCtxListHeaders(mockBaseOption)).toEqual([
                     [
-                        { title: 'a' },
+                        { title: 'a', colSpan: 2, rowSpan: 1 },
                         { title: '' },
-                        { title: 'b' },
+                        { title: 'b', colSpan: 1, rowSpan: 2 },
                     ],
                     [
-                        { title: 'a-1' },
-                        { title: 'a-2' },
+                        { title: 'a-1', sortKey: 'x', colSpan: 1, rowSpan: 1 },
+                        { title: 'a-2', colSpan: 1, rowSpan: 1 },
                         { title: '' },
                     ]
                 ]);
-            });
 
-            it('', () => {
-                const headers = [
-                    {
-                        title: 'a',
-                    }, {
-                        title: 'b',
-                        subHeader: [
-                            {title: 'b-1', subHeader: [
-                                {title: 'b-1-1'},
-                                {title: 'b-1-2'},
-                            ]},
-                            {title: 'b-2'}
-                        ]
-                    }, {
-                        title: 'c',
-                        subHeader: [
-                            {title: 'c-1'},
-                            {title: 'c-2'},
-                        ]
-                    },
-                ];
-                expect(handle.getCtxListHeaders(headers)).toEqual([
+                expect(handle.getCtxListHeaders(mockComplexOption)).toEqual([
                     [
-                        { 'title': 'a' },
-                        { 'title': 'b' },
+                        { 'title': 'a', rowSpan: 3, colSpan: 1 },
+                        { 'title': 'b', rowSpan: 1, colSpan: 3 },
                         { 'title': '' },
                         { 'title': '' },
-                        { 'title': 'c' },
+                        { 'title': 'c', rowSpan: 1, colSpan: 2 },
                         { 'title': '' }
                     ], [
                         { 'title': '' },
-                        { 'title': 'b-1' },
+                        { 'title': 'b-1', rowSpan: 1, colSpan: 2 },
                         { 'title': '' },
-                        { 'title': 'b-2' },
-                        { 'title': 'c-1' },
-                        { 'title': 'c-2' }
+                        { 'title': 'b-2', rowSpan: 2, colSpan: 1 },
+                        { 'title': 'c-1', rowSpan: 2, colSpan: 1 },
+                        { 'title': 'c-2', rowSpan: 2, colSpan: 1 }
                     ], [
                         { 'title': '' },
-                        { 'title': 'b-1-1' },
-                        { 'title': 'b-1-2' },
+                        { 'title': 'b-1-1', rowSpan: 1, colSpan: 1 },
+                        { 'title': 'b-1-2', rowSpan: 1, colSpan: 1 },
                         { 'title': '' },
                         { 'title': '' },
                         { 'title': '' }
+                    ]
+                ]);
+            });
+        });
+
+        describe('Method - getBaseCtxListHeaders: Get the base contextual list headers', () => {
+            it('should return headers', () => {
+                expect(handle.getBaseCtxListHeaders(mockBaseOption)).toEqual({
+                    rowTotal: 2,
+                    colTotal: 3,
+                    baseCtxHeaders: mockBaseCtxHeaders
+                });
+            });
+        });
+
+        describe('Method - getSpanCtxListHeaders: Get the contextual Column and Row Span list headers', () => {
+            it('should return headers', () => {
+                const mockRowTotal: number = 2;
+                expect(handle.getSpanCtxListHeaders(mockBaseCtxHeaders, mockRowTotal)).toEqual(mockSpanCtxHeaders);
+            });
+        });
+
+        describe('Method - fillListHeaders: Create the list headers with empty values for corresponding rows and column spans', () => {
+            it('should return headers', () => {
+                expect(handle.fillListHeaders(mockSpanCtxHeaders, 2)).toEqual([
+                    [
+                        { title: 'a', colSpan: 2, rowSpan: 1 },
+                        { title: '' },
+                        { title: 'b', colSpan: 1, rowSpan: 2 },
+                    ], [
+                        { title: 'a-1', sortKey: 'x', colSpan: 1, rowSpan: 1 },
+                        { title: 'a-2', colSpan: 1, rowSpan: 1 },
+                        { title: '' }
                     ]
                 ]);
             });

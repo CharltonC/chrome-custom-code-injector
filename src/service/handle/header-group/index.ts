@@ -115,11 +115,12 @@ export class HeaderGrpHandle {
 
     getSpanCtxListHeaders(baseCtxHeaders: IBaseCtxListHeader[], rowTotal: number): ISpanCtxListHeader[] {
         return baseCtxHeaders.map(({ subHeader, ownColTotal, ...rest }: IBaseCtxListHeader) => {
+            const props = subHeader ? { subHeader: this.getSpanCtxListHeaders(subHeader, rowTotal - 1) }: {};
             return {
                 ...rest,
                 colSpan: ownColTotal ? ownColTotal : 1,
                 rowSpan: ownColTotal ? 1 : rowTotal,
-                subHeader: subHeader ? this.getSpanCtxListHeaders(subHeader, rowTotal - 1) : subHeader
+                ...props
             };
         });
     }
@@ -163,7 +164,7 @@ export class HeaderGrpHandle {
             }
 
             // Update the insert index for the next header afterwards
-            insertPos = insertPos + (colSpan ?? 0);
+            insertPos = insertPos + colSpan;
 
             return rows;
 
