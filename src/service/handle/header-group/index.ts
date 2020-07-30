@@ -77,14 +77,13 @@ export class HeaderGrpHandle {
     }
 
     //// List Header
-    getCtxListHeaders(option: IOption[]) {
+    getCtxListHeaders(option: IOption[]): ICtxTbHeader[][] {
         const cache: IListHeaderCache = { colTotal: 0, rowTotal: 0 };
         const baseCtxHeaders: IBaseCtxListHeader[] = this.getBaseCtxListHeaders(option, cache);
 
         const { rowTotal } = cache;
         const spanCtxListHeaders: ISpanCtxListHeader[] = this.getSpanCtxListHeaders(baseCtxHeaders, rowTotal);
-        const ctxListHeaders = this.fillListHeaders(spanCtxListHeaders, [...Array(rowTotal)].map(() => []));
-        return ctxListHeaders;
+        return this.fillListHeaders(spanCtxListHeaders, [...Array(rowTotal)].map(() => []));
     }
 
     getBaseCtxListHeaders(option: IOption[], cache: IListHeaderCache, rowLvl: number = 1): IBaseCtxListHeader[] {
@@ -121,17 +120,19 @@ export class HeaderGrpHandle {
         });
     }
 
-    fillListHeaders(spanCtxHeaders: ISpanCtxListHeader[], rows: any[][], subHeaderCtx?: ISubHeaderCtx) {
+    fillListHeaders(spanCtxHeaders: ISpanCtxListHeader[], rowsContainer: ICtxTbHeader[][], subHeaderCtx?: ISubHeaderCtx): ICtxTbHeader[][] {
         const { rowLvl, parentPos }  = subHeaderCtx ?? { rowLvl: 0, parentPos: 0 };
         let insertPos: number = parentPos;      // Insert Position to be used for the head cell
 
-        spanCtxHeaders.forEach(({ subHeader, rowSpan, colSpan, ...rest }: ISpanCtxListHeader) => {
+        return spanCtxHeaders.reduce((rows: ICtxTbHeader[][], { subHeader, ...header } : ISpanCtxListHeader) => {
+            const { colSpan } = header;
+
             if (subHeader) {
                 // Fill out this current row for itself (Horizontal Cells)
                 [...Array(colSpan)].forEach((span, idx: number) => {
                     rows[rowLvl][insertPos + idx] = idx === 0 ?
-                        { ...rest } :
-                        { ...rest, title: '' };
+                        { ...header } :
+                        { ...header, title: '' };
                 });
 
                 // Fill the next remaining rows for its sub headers (Horizontal Cells for the Next Rows)
@@ -146,15 +147,15 @@ export class HeaderGrpHandle {
                 [...Array(remainRowsTotal)].forEach((item, idx: number) => {
                     // starting from the current row level `rowLvl`
                     rows[rowLvl + idx][insertPos] = idx === 0 ?
-                        { ...rest } :
-                        { ...rest, title: '' } ;
+                        { ...header } :
+                        { ...header, title: '' } ;
                 });
             }
 
             // Update the insert index for the next header afterwards
             insertPos = insertPos + (colSpan ?? 0);
-        });
 
-        return rows;
+            return rows;
+        }, rowsContainer);
     }
 }
