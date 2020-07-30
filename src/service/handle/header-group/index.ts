@@ -91,14 +91,14 @@ export class HeaderGrpHandle {
         // Record total no. of rows at each level
         cache.rowTotal = Math.max(cache.rowTotal, rowLvl);
 
-        return option.map(({ subHeader, ...rest }: IOption) => {
-            let baseCtxSubHeader: IBaseCtxListHeader[];
+        return option.map(({ subHeader: subHeaders, ...rest }: IOption) => {
+            let subHeader: IBaseCtxListHeader[];
             let ownColTotal: number;
 
             // Find out how many sub columns it contains if there is subheader
-            if (subHeader) {
+            if (subHeaders) {
                 const { colTotal: currColTotal } = cache;
-                baseCtxSubHeader = this.getBaseCtxListHeaders(subHeader, cache, rowLvl + 1);
+                subHeader = this.getBaseCtxListHeaders(subHeaders, cache, rowLvl + 1);
                 ownColTotal = cache.colTotal - currColTotal;
 
             // if there is not subheader, it means only 1 column by itself
@@ -106,11 +106,7 @@ export class HeaderGrpHandle {
                 cache.colTotal++;
             }
 
-            return {
-                ...rest,
-                ownColTotal,
-                subHeader: baseCtxSubHeader
-            };
+            return { ...rest, ownColTotal, subHeader };
         });
     }
 
