@@ -81,7 +81,7 @@ export class HeaderGrpHandle {
     getCtxListHeaders(option: IOption[]): IState[][] {
         const { baseCtxHeaders, rowTotal } = this.getBaseCtxListHeaders(option);
         const spanCtxListHeaders: ISpanCtxListHeader[] = this.getSpanCtxListHeaders(baseCtxHeaders, rowTotal);
-        const ctxListHeaders: IState[][] = this.fillListHeaders(spanCtxListHeaders, rowTotal);
+        const ctxListHeaders: IState[][] = this.getFilledListHeaders(spanCtxListHeaders, rowTotal);
         return ctxListHeaders;
     }
 
@@ -125,7 +125,7 @@ export class HeaderGrpHandle {
         });
     }
 
-    fillListHeaders(spanCtxHeaders: ISpanCtxListHeader[], rowTotal: number, cache?: IFillListHeaderCache): IState[][] {
+    getFilledListHeaders(spanCtxHeaders: ISpanCtxListHeader[], rowTotal: number, cache?: IFillListHeaderCache): IState[][] {
         cache = cache ?? {
             rowLvl: 0,
             parentPos: 0,
@@ -146,7 +146,7 @@ export class HeaderGrpHandle {
                 });
 
                 // Fill the next remaining rows for its sub headers (Horizontal Cells for the Next Rows)
-                this.fillListHeaders(subHeader, rowTotal, {
+                this.getFilledListHeaders(subHeader, rowTotal, {
                     ...cache,
                     rowLvl: rowLvl + 1,
                     parentPos: insertPos

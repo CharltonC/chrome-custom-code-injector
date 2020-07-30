@@ -318,9 +318,9 @@ describe('Header Group Handle', () => {
             });
         });
 
-        describe('Method - fillListHeaders: Create the list headers with empty values for corresponding rows and column spans', () => {
+        describe('Method - getFilledListHeaders: Create the list headers with empty values for corresponding rows and column spans', () => {
             it('should return headers', () => {
-                expect(handle.fillListHeaders(mockSpanCtxHeaders, 2)).toEqual([
+                expect(handle.getFilledListHeaders(mockSpanCtxHeaders, 2)).toEqual([
                     [
                         { title: 'a', colSpan: 2, rowSpan: 1 },
                         { title: '' },
