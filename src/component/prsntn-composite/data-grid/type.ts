@@ -41,7 +41,7 @@ interface ICallbackOption {
 //// State
 export interface IState {
     isTb: boolean;
-    thRowsCtx: headerGrpHandleType.ICtxTbHeader[][];
+    thRowsCtx: headerGrpHandleType.IState[][];
     rowsOption: rowHandleType.IRawRowsOption[];
     expdState: expdHandleType.IState;
     sortOption: sortHandleType.IOption;

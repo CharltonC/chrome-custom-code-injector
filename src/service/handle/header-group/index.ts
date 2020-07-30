@@ -1,12 +1,13 @@
 import {
     IOption,
-    ICtxTbHeader, IBaseCtxTbHeader, ITbHeaderCache,
-    ISpanCtxListHeader, IBaseCtxListHeader, IListHeaderCache, ISubHeaderCtx,
+    IState,
+    IBaseCtxTbHeader, ITbHeaderCache,
+    ISpanCtxListHeader, IBaseCtxListHeaders, IBaseCtxListHeader, IBaseListHeaderCache, IFillListHeaderCache,
 } from './type';
 
 export class HeaderGrpHandle {
     //// Table Header
-    getCtxTbHeaders(option: IOption[]): ICtxTbHeader[][] {
+    getCtxTbHeaders(option: IOption[]): IState[][] {
         const rowsThColCtx = this.getBaseCtxTbHeaders(option) as IBaseCtxTbHeader[][];
         return this.getSpanCtxTbHeaders(rowsThColCtx);
     }
@@ -33,7 +34,7 @@ export class HeaderGrpHandle {
         return isTopLvl ? cache.slots : rowThColCtx;
     }
 
-    getSpanCtxTbHeaders(rowsThColCtx: IBaseCtxTbHeader[][]): ICtxTbHeader[][] {
+    getSpanCtxTbHeaders(rowsThColCtx: IBaseCtxTbHeader[][]): IState[][] {
         let rowTotal: number = rowsThColCtx.length;
 
         return rowsThColCtx.map((row: IBaseCtxTbHeader[], rowLvlIdx: number) => {
@@ -77,27 +78,28 @@ export class HeaderGrpHandle {
     }
 
     //// List Header
-    getCtxListHeaders(option: IOption[]): ICtxTbHeader[][] {
-        const cache: IListHeaderCache = { colTotal: 0, rowTotal: 0 };
-        const baseCtxHeaders: IBaseCtxListHeader[] = this.getBaseCtxListHeaders(option, cache);
-
-        const { rowTotal } = cache;
+    getCtxListHeaders(option: IOption[]): IState[][] {
+        const { baseCtxHeaders, rowTotal } = this.getBaseCtxListHeaders(option);
         const spanCtxListHeaders: ISpanCtxListHeader[] = this.getSpanCtxListHeaders(baseCtxHeaders, rowTotal);
-        return this.fillListHeaders(spanCtxListHeaders, [...Array(rowTotal)].map(() => []));
+        const ctxListHeaders: IState[][] = this.fillListHeaders(spanCtxListHeaders, rowTotal);
+        return ctxListHeaders;
     }
 
-    getBaseCtxListHeaders(option: IOption[], cache: IListHeaderCache, rowLvl: number = 1): IBaseCtxListHeader[] {
+    getBaseCtxListHeaders(option: IOption[], rowLvl?: number, cache?: IBaseListHeaderCache): IBaseCtxListHeaders {
+        cache = cache ?? { colTotal: 0, rowTotal: 0 };
+        rowLvl = rowLvl ?? 1;       // must be literal value instead of cached
+
         // Record total no. of rows at each level
         cache.rowTotal = Math.max(cache.rowTotal, rowLvl);
 
-        return option.map(({ subHeader: subHeaders, ...rest }: IOption) => {
+        const baseCtxHeaders: IBaseCtxListHeader[] = option.map(({ subHeader: subHeaders, ...rest }: IOption) => {
             let subHeader: IBaseCtxListHeader[];
             let ownColTotal: number;
 
             // Find out how many sub columns it contains if there is subheader
             if (subHeaders) {
                 const { colTotal: currColTotal } = cache;
-                subHeader = this.getBaseCtxListHeaders(subHeaders, cache, rowLvl + 1);
+                ({ baseCtxHeaders: subHeader } = this.getBaseCtxListHeaders(subHeaders, rowLvl + 1, cache));
                 ownColTotal = cache.colTotal - currColTotal;
 
             // if there is not subheader, it means only 1 column by itself
@@ -107,6 +109,8 @@ export class HeaderGrpHandle {
 
             return { ...rest, ownColTotal, subHeader };
         });
+
+        return { ...cache, baseCtxHeaders };
     }
 
     getSpanCtxListHeaders(baseCtxHeaders: IBaseCtxListHeader[], rowTotal: number): ISpanCtxListHeader[] {
@@ -120,11 +124,16 @@ export class HeaderGrpHandle {
         });
     }
 
-    fillListHeaders(spanCtxHeaders: ISpanCtxListHeader[], rowsContainer: ICtxTbHeader[][], subHeaderCtx?: ISubHeaderCtx): ICtxTbHeader[][] {
-        const { rowLvl, parentPos }  = subHeaderCtx ?? { rowLvl: 0, parentPos: 0 };
+    fillListHeaders(spanCtxHeaders: ISpanCtxListHeader[], rowTotal: number, cache?: IFillListHeaderCache): IState[][] {
+        cache = cache ?? {
+            rowLvl: 0,
+            parentPos: 0,
+            rowsContainer: [...Array(rowTotal)].map(() => []),
+        };
+        const { rowLvl, parentPos, rowsContainer } = cache;
         let insertPos: number = parentPos;      // Insert Position to be used for the head cell
 
-        return spanCtxHeaders.reduce((rows: ICtxTbHeader[][], { subHeader, ...header } : ISpanCtxListHeader) => {
+        return spanCtxHeaders.reduce((rows: IState[][], { subHeader, ...header } : ISpanCtxListHeader) => {
             const { colSpan } = header;
 
             if (subHeader) {
@@ -136,7 +145,8 @@ export class HeaderGrpHandle {
                 });
 
                 // Fill the next remaining rows for its sub headers (Horizontal Cells for the Next Rows)
-                this.fillListHeaders(subHeader, rows, {
+                this.fillListHeaders(subHeader, rowTotal, {
+                    ...cache,
                     rowLvl: rowLvl + 1,
                     parentPos: insertPos
                 });
@@ -156,6 +166,7 @@ export class HeaderGrpHandle {
             insertPos = insertPos + (colSpan ?? 0);
 
             return rows;
+
         }, rowsContainer);
     }
 }

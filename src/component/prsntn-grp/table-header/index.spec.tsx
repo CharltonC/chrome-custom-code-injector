@@ -3,7 +3,7 @@ import { IProps, headerGrpHandleType } from './type';
 import { TableHeader } from './';
 
 describe('Component - TODO: Component Name', () => {
-    const mockThRowsCtx: headerGrpHandleType.ICtxTbHeader[][] = [
+    const mockThRowsCtx: headerGrpHandleType.IState[][] = [
         [
             { title: 'A', sortKey: 'name', rowSpan: 2 },
             { title: 'B', sortKey: 'age' },
