@@ -132,7 +132,7 @@ export class HeaderGrpHandle {
                 [...Array(colSpan)].forEach((span, idx: number) => {
                     rows[rowLvl][insertPos + idx] = idx === 0 ?
                         { ...header } :
-                        { ...header, title: '' };
+                        { title: '' } ;
                 });
 
                 // Fill the next remaining rows for its sub headers (Horizontal Cells for the Next Rows)
@@ -148,7 +148,7 @@ export class HeaderGrpHandle {
                     // starting from the current row level `rowLvl`
                     rows[rowLvl + idx][insertPos] = idx === 0 ?
                         { ...header } :
-                        { ...header, title: '' } ;
+                        { title: '' } ;
                 });
             }
 
