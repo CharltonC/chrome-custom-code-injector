@@ -6,6 +6,10 @@ import {
 } from './type';
 
 export class HeaderGrpHandle {
+    getCtxHeaders(option: IOption[], isTb: boolean): IState[][] {
+        return isTb ? this.getCtxTbHeaders(option) : this.getCtxListHeaders(option);
+    }
+
     //// Table Header
     getCtxTbHeaders(option: IOption[]): IState[][] {
         const rowsThColCtx = this.getBaseCtxTbHeaders(option) as IBaseCtxTbHeader[][];

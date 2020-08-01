@@ -20,6 +20,15 @@ describe('Header Group Handle', () => {
         jest.restoreAllMocks();
     });
 
+    it('should return contextual headers', () => {
+        const mockOption = [];
+        spy.getCtxTbHeaders.mockReturnValue('table');
+        spy.getCtxListHeaders.mockReturnValue('list');
+
+        expect(handle.getCtxHeaders(mockOption, true)).toEqual('table');
+        expect(handle.getCtxHeaders(mockOption, false)).toEqual('list');
+    });
+
     describe('Table Header Group', () => {
         describe('Method - getDefTbHeaderCache: Create a new default cache', () => {
             it('should return a default cache value', () => {
