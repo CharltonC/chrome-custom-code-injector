@@ -7,7 +7,7 @@ import { ExpdHandle } from '../../../service/ui-handle/expand'
 import { SortHandle } from '../../../service/ui-handle/sort';
 import { PgnHandle } from '../../../service/ui-handle/pagination';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
-import { TableHeader as DefTableHeader } from '../../prsntn-grp/grid-header';
+import { GridHeader as DefGridHeader } from '../../prsntn-grp/grid-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
@@ -73,11 +73,12 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { headerGrpHandle, expdHandle, sortHandle, pgnHandle } = this;
         const sortOption = sort ? sortHandle.createOption(sort) : null;
         const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
+        const isTb: boolean = type !== 'list' ? true : false;
 
         // Note: data used to create paginate state doesnt have to be sorted, it can be generic
         const state: IState = {
-            isTb: type !== 'list' ? true : false,
-            thRowsCtx: header ? headerGrpHandle.getCtxTbHeaders(header) : null,
+            isTb,
+            thRowsCtx: header ? headerGrpHandle.getCtxHeaders(header, isTb) : null,
             rowsOption: rows ? this.transformRowOption(rows) : null,
             sortOption,
             sortState: sort ? sortHandle.createState(data, sortOption) : null,

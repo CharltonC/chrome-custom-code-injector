@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TableHeader as TableHeaderCmp } from '../../prsntn-grp/grid-header';
+import { GridHeader as GridHeaderCmp } from '../../prsntn-grp/grid-header';
 import { Pagination as PaginationCmp } from '../../prsntn-grp/pagination';
 import { DataGrid } from './';
 import { IRowComponentProps } from './type';
@@ -215,7 +215,7 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                 { title: '' },
             ]}
             component={{
-                header: TableHeaderCmp,
+                header: GridHeaderCmp,
                 pagination: PaginationCmp,
                 rows: [
                     [TrCmp],

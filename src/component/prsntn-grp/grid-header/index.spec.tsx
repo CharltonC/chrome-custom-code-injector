@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, headerGrpHandleType } from './type';
-import { TableHeader } from '.';
+import { GridHeader } from '.';
 
 describe('Component - Grid Header', () => {
     const mockThRowsCtx: headerGrpHandleType.IState[][] = [
@@ -38,7 +38,7 @@ describe('Component - Grid Header', () => {
 
     beforeEach(() => {
         $elem = TestUtil.setupElem('table');
-        TestUtil.renderPlain($elem, TableHeader, mockProps);
+        TestUtil.renderPlain($elem, GridHeader, mockProps);
         syncChildElem();
     });
 

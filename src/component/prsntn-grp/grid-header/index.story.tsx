@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { TableHeader } from '.';
+import { GridHeader } from '.';
 
 export default {
     title: 'Table Header',
-    component: TableHeader,
+    component: GridHeader,
 };
 
 const defStyle = {};
@@ -16,7 +16,7 @@ export const WithoutSortButton = () => {
 
     return (
         <table style={defStyle} >
-            <TableHeader thRowsContext={sampleThRowsContext} />
+            <GridHeader thRowsContext={sampleThRowsContext} />
         </table>
     );
 };
@@ -43,7 +43,7 @@ export const WithSortButton = () => {
 
     return (
         <table style={defStyle} >
-            <TableHeader
+            <GridHeader
                 thRowsContext={sampleThRowsContext}
                 sortBtnProps={sortBtnProps}
                 />
