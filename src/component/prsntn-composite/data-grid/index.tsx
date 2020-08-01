@@ -50,7 +50,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const GRID_CLS: string = cssCls(`${BASE_CLS}__grid`, 'root');
         const gridBody: ReactElement | ReactElement[] = isTb ? <tbody>{rowsElem}</tbody> : rowsElem;
         const Pagination: TCmp = UserPagination ?? DefPagination;
-        const GridHeader: TCmp = UserHeader ?? (isTb ? DefTableHeader : DefListHeader);
+        const GridHeader: TCmp = UserHeader ?? DefGridHeader;
 
         return (
             <div className={BASE_CLS}>{ paginate &&
