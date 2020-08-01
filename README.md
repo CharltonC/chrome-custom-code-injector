@@ -43,7 +43,7 @@ npm install
 ## CLI Command (refer to `gulpfile.js` file for the rest)
 * Generate Compnents (dev):
 ```
-npm run cmp-[s|p|g|v]
+npm run cmp-[s|p|g|v|c]
 ```
 * Serve: Watch files + Compile:
 ```
@@ -117,6 +117,9 @@ gulp build-ts:test [--watch]?
             font/
             icon/
             ts/ 
+                type/           // typings
+                test-util/      // Unit Test Utility/Helper Module for simplifying testing                
+
             scss/    
                 mixin/          // scss reusable extendables and mixins
                 var/            // scss variables
@@ -125,6 +128,8 @@ gulp build-ts:test [--watch]?
         component/              // various categories of components
             prsntn/             // presentation component
             prsntn-grp/         // presentation component group
+            prsntn-composite/   // presentation composition components (i.e. complex/full functionalities)
+            structural          // structural wrapper component only
             static/             // static component (fixed html)
             view/               // view (for used with router)
 
@@ -136,9 +141,12 @@ gulp build-ts:test [--watch]?
                 style.scss?     // styel for index page
 
         service/                // services
+            ui-handle/          // ui related handles             
+                <name>/ 
+                    index.ts
+                    index.spec.ts
+                    type.ts
         
-        test-util/              // Unit Test Utility/Helper Module for simplifying testing
-
         manifest.json           // manifest ("config") for the chrome extension 
 
     .eslintrc.json              // Typescript/js linting config
