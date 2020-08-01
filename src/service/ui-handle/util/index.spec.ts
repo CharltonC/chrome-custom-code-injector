@@ -1,4 +1,4 @@
-import { UtilHandle } from './';
+import { UtilHandle } from '.';
 
 describe('Utility Handle', () => {
     describe('method - cssCls: Get the Class Class based on a base class and a suffix', () => {
