@@ -1,17 +1,20 @@
 .kz-datagrid__head {
+    display: table-header-group;
     background: $light-gray-300;
     text-transform: uppercase;
     font: 14px $roboto-bld;
 
-    tr {
+    &-row {
+        display: table-row;
         height: 50px;
     }
 
-    th {
+    &-cell {
+        display: table-cell;
         padding: 20px;
         color: $dark-gray-100;
 
-        span, button {
+        span, .kz-sort-btn {
             vertical-align: middle;
         }
     }
@@ -20,4 +23,6 @@
         margin-left: 10px;
         vertical-align: middle;
     }
+
+
 }
