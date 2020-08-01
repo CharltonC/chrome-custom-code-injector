@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TableHeader as TableHeaderCmp } from '../../prsntn-grp/table-header';
+import { TableHeader as TableHeaderCmp } from '../../prsntn-grp/grid-header';
 import { Pagination as PaginationCmp } from '../../prsntn-grp/pagination';
 import { DataGrid } from './';
 import { IRowComponentProps } from './type';

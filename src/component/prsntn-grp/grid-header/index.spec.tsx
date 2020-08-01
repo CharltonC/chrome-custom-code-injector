@@ -1,8 +1,8 @@
-import { TestUtil } from '../../../asset/ts/test-util/';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, headerGrpHandleType } from './type';
-import { TableHeader } from './';
+import { TableHeader } from '.';
 
-describe('Component - TODO: Component Name', () => {
+describe('Component - Grid Header', () => {
     const mockThRowsCtx: headerGrpHandleType.IState[][] = [
         [
             { title: 'A', sortKey: 'name', rowSpan: 2 },

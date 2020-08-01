@@ -7,7 +7,7 @@ import { ExpdHandle } from '../../../service/ui-handle/expand'
 import { SortHandle } from '../../../service/ui-handle/sort';
 import { PgnHandle } from '../../../service/ui-handle/pagination';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
-import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
+import { TableHeader as DefTableHeader } from '../../prsntn-grp/grid-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
