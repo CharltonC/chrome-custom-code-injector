@@ -8,7 +8,6 @@ import { SortHandle } from '../../../service/ui-handle/sort';
 import { PgnHandle } from '../../../service/ui-handle/pagination';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { TableHeader as DefTableHeader } from '../../prsntn-grp/table-header';
-import { ListHeader as DefListHeader } from '../../prsntn-grp/list-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
