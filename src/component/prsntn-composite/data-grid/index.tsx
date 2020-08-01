@@ -57,7 +57,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
                 <Pagination {...this.getPgnCmpProps(data)} />}
                 <Grid className={GRID_CLS}>{ thRowsCtx &&
                     <GridHeader
-                        thRowsContext={thRowsCtx}
+                        rowsContext={thRowsCtx}
                         sortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
                         />}
                     {gridBody}

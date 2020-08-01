@@ -1,19 +1,34 @@
-import React, { memo, FC } from 'react';
+import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../../asset/ts/memo-component';
 import { SortBtn } from '../../prsntn/sort-btn';
 import { IProps, headerGrpHandleType } from './type';
 
-export const _GridHeader: FC<IProps> = ({ thRowsContext, sortBtnProps } : IProps) => {
-    return (
-        <thead className="kz-datagrid__head">{ thRowsContext.map((thCtxs: headerGrpHandleType.IState[], trIdx: number) => (
-            <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }: headerGrpHandleType.IState, thIdx: number) => (
-                <th key={thIdx} {...thProps}>
-                    <span>{title}</span>{ sortKey && sortBtnProps &&
-                    <SortBtn {...sortBtnProps(sortKey)} />}
-                </th>))}
-            </tr>))}
-        </thead>
-    );
-};
+export class GridHeader extends MemoComponent<IProps> {
+    constructor(props: IProps) {
+        super(props);
+    }
 
-export const GridHeader = memo(_GridHeader);
+    render() {
+        const { props } = this;
+        const isTb: boolean = props.type !== 'list';
+        return this.renderTbHeader(props);
+        // return isTb ? this.renderTbHeader(props) ? this.renderListHeader(props);
+    }
+
+    renderTbHeader({ rowsContext, sortBtnProps } : IProps): ReactElement {
+        return (
+            <thead className="kz-datagrid__head">{ rowsContext.map((thCtxs: headerGrpHandleType.IState[], trIdx: number) => (
+                <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }: headerGrpHandleType.IState, thIdx: number) => (
+                    <th key={thIdx} {...thProps}>
+                        <span>{title}</span>{ sortKey && sortBtnProps &&
+                        <SortBtn {...sortBtnProps(sortKey)} />}
+                    </th>))}
+                </tr>))}
+            </thead>
+        );
+    }
+
+    // renderListHeader({ rowsContext, sortBtnProps } : IProps): ReactElement {
+
+    // }
+}

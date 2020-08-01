@@ -14,7 +14,7 @@ describe('Component - Grid Header', () => {
     ];
     const mockSortBtnPropsFn: jest.Mock = jest.fn();
     const mockProps: IProps = {
-        thRowsContext: mockThRowsCtx,
+        rowsContext: mockThRowsCtx,
         sortBtnProps: mockSortBtnPropsFn
     };
     const mockSortBtnProps = { isAsc: true };

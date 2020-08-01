@@ -9,14 +9,14 @@ export default {
 const defStyle = {};
 
 export const WithoutSortButton = () => {
-    const sampleThRowsContext = [
+    const sampleRowsContext = [
         [ {title: 'A', colSpan: 2}, {title: 'B', rowSpan: 2} ],
         [ {title: 'A1'}, {title: 'A2'} ]
     ];
 
     return (
         <table style={defStyle} >
-            <GridHeader thRowsContext={sampleThRowsContext} />
+            <GridHeader rowsContext={sampleRowsContext} />
         </table>
     );
 };
@@ -27,7 +27,7 @@ export const WithSortButton = () => {
         key: 'name'
     });
 
-    const sampleThRowsContext = [
+    const sampleRowsContext = [
         [ {title: 'A', sortKey: 'name'}, {title: 'B', sortKey: 'age'} ]
     ];
 
@@ -44,7 +44,7 @@ export const WithSortButton = () => {
     return (
         <table style={defStyle} >
             <GridHeader
-                thRowsContext={sampleThRowsContext}
+                rowsContext={sampleRowsContext}
                 sortBtnProps={sortBtnProps}
                 />
         </table>
