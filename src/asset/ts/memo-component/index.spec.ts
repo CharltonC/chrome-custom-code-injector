@@ -27,6 +27,11 @@ describe('Memo Component', () => {
             (memoCmp as any).props = val;
         };
 
+        it('should return false when there are no new props and no state', () => {
+            setPropsVal(mockProps);
+            expect(memoCmp.shouldComponentUpdate({}, null)).toBeFalsy();
+        });
+
         it('should return false when there are no new props', () => {
             setPropsVal(mockProps);
             expect(memoCmp.shouldComponentUpdate({}, mockEmptyState)).toBeFalsy();

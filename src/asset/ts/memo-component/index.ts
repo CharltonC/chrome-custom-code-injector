@@ -7,7 +7,7 @@ import { TObj, TObjEntry } from './type';
 export class MemoComponent<P = TObj, S = TObj> extends Component<P, S> {
     shouldComponentUpdate(modProps: TObj, modState: TObj) {
         // Check State 1st (since internal state changes should be prioritized)
-        const modStateItems: TObjEntry[] = Object.entries(modState);
+        const modStateItems: TObjEntry[] = modState ? Object.entries(modState) : [];
         const isDiffState: boolean = modStateItems.length &&
             modStateItems.some(([key, val]: TObjEntry) => {
                 return val !== this.state[key];
