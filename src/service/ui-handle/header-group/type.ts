@@ -7,6 +7,12 @@ export interface IOption {
 
 //// State
 export interface IState {
+    rowTotal: number;
+    colTotal: number;
+    headers: IHeader[] | IHeader[][];
+}
+
+export interface IHeader {
     title: string;
     sortKey?: string;
     rowSpan?: number;
@@ -22,6 +28,7 @@ export interface IBaseCtxTbHeader {
 export interface ITbHeaderCache {
     slots: IBaseCtxTbHeader[][];
     colTotal: number;
+    rowTotal: number;
 }
 
 //// List Header
@@ -36,7 +43,7 @@ export interface IBaseCtxListHeader extends IOption {
     subHeader?: IBaseCtxListHeader[];
 }
 
-export interface ISpanCtxListHeader extends IState {
+export interface ISpanCtxListHeader extends IHeader {
     subHeader?: ISpanCtxListHeader[];
 }
 
@@ -44,10 +51,3 @@ export interface IBaseListHeaderCache {
     rowTotal: number;
     colTotal: number;
 }
-
-export interface IFillListHeaderCache {
-    rowLvl: number;
-    parentPos: number;
-    rowsContainer: IState[][];
-}
-

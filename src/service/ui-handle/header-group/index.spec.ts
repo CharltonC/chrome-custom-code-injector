@@ -34,7 +34,8 @@ describe('Header Group Handle', () => {
             it('should return a default cache value', () => {
                 expect(handle.getDefTbHeaderCache()).toEqual({
                     slots: [],
-                    colTotal: 0
+                    colTotal: 0,
+                    rowTotal: 0
                 });
             });
         });
@@ -47,9 +48,7 @@ describe('Header Group Handle', () => {
                 spy.getBaseCtxTbHeaders.mockReturnValue(mockThColCtx);
                 spy.getSpanCtxTbHeaders.mockReturnValue(mockThSpanCtx);
 
-                expect(handle.getCtxTbHeaders(mockOption)).toBe(mockThSpanCtx);
-                expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledWith(mockOption);
-                expect(spy.getSpanCtxTbHeaders).toHaveBeenCalledWith(mockThColCtx);
+                expect(handle.getCtxTbHeaders(mockOption).headers).toBe(mockThSpanCtx);
             });
 
             it('should return the table header context (without mocks)', () => {
@@ -61,16 +60,20 @@ describe('Header Group Handle', () => {
                     {title: 'b'},
                 ];
 
-                expect(handle.getCtxTbHeaders(mockOption)).toEqual([
-                    [
-                        {title: 'a', colSpan: 2, rowSpan: 1, sortKey: undefined},
-                        {title: 'b', colSpan: 1, rowSpan: 2, sortKey: undefined},
-                    ],
-                    [
-                        {title: 'a-1', colSpan: 1, rowSpan: 1, sortKey: undefined},
-                        {title: 'a-2', colSpan: 1, rowSpan: 1, sortKey: undefined},
+                expect(handle.getCtxTbHeaders(mockOption)).toEqual({
+                    rowTotal: 2,
+                    colTotal: 3,
+                    headers: [
+                        [
+                            {title: 'a', colSpan: 2, rowSpan: 1, sortKey: undefined},
+                            {title: 'b', colSpan: 1, rowSpan: 2, sortKey: undefined},
+                        ],
+                        [
+                            {title: 'a-1', colSpan: 1, rowSpan: 1, sortKey: undefined},
+                            {title: 'a-2', colSpan: 1, rowSpan: 1, sortKey: undefined},
+                        ]
                     ]
-                ]);
+                });
             });
         });
 
@@ -88,6 +91,7 @@ describe('Header Group Handle', () => {
 
             beforeEach(() => {
                 mockCache = {
+                    rowTotal: 0,
                     colTotal: 0,
                     slots: []
                 };
@@ -99,7 +103,7 @@ describe('Header Group Handle', () => {
             it('should return the column context when row level is 0', () => {
                 const { subHeader } = mockOption[0];
 
-                expect(getBaseCtxTbHeadersClone(mockOption)).toEqual(mockCache.slots);
+                expect(getBaseCtxTbHeadersClone(mockOption)).toEqual(mockCache);
                 expect(spy.getDefTbHeaderCache).toHaveBeenCalled();
                 expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledWith(subHeader, 1, mockCache);
                 expect(spy.getBaseCtxTbHeaders).toHaveBeenCalledTimes(1);
@@ -179,6 +183,7 @@ describe('Header Group Handle', () => {
 
             beforeEach(() => {
                 mockCache = {
+                    rowTotal: 0,
                     colTotal: 0,
                     slots: []
                 };
@@ -235,23 +240,6 @@ describe('Header Group Handle', () => {
             {title: 'b'},
         ];
 
-        const mockComplexOption: IOption[] = [
-            { title: 'a', },
-            { title: 'b', subHeader: [
-                {title: 'b-1', subHeader: [
-                    {title: 'b-1-1' },
-                    {title: 'b-1-2' },
-                ]},
-                {title: 'b-2'}
-            ]}, {
-                title: 'c',
-                subHeader: [
-                    {title: 'c-1' },
-                    {title: 'c-2' },
-                ]
-            }
-        ];
-
         const mockBaseCtxHeaders: IBaseCtxListHeader[] = [
             { title: 'a', ownColTotal: 2, subHeader: [
                 {title: 'a-1', sortKey: 'x', ownColTotal: undefined },
@@ -270,43 +258,16 @@ describe('Header Group Handle', () => {
 
         describe('Method - getCtxListHeaders: Get the contextual list headers', () => {
             it('should return headers (without mocks)', () => {
-                expect(handle.getCtxListHeaders(mockBaseOption)).toEqual([
-                    [
+                expect(handle.getCtxListHeaders(mockBaseOption)).toEqual({
+                    rowTotal: 2,
+                    colTotal: 3,
+                    headers: [
                         { title: 'a', colSpan: 2, rowSpan: 1 },
-                        { title: '' },
-                        { title: 'b', colSpan: 1, rowSpan: 2 },
-                    ],
-                    [
                         { title: 'a-1', sortKey: 'x', colSpan: 1, rowSpan: 1 },
                         { title: 'a-2', colSpan: 1, rowSpan: 1 },
-                        { title: '' },
+                        { title: 'b', colSpan: 1, rowSpan: 2 },
                     ]
-                ]);
-
-                expect(handle.getCtxListHeaders(mockComplexOption)).toEqual([
-                    [
-                        { 'title': 'a', rowSpan: 3, colSpan: 1 },
-                        { 'title': 'b', rowSpan: 1, colSpan: 3 },
-                        { 'title': '' },
-                        { 'title': '' },
-                        { 'title': 'c', rowSpan: 1, colSpan: 2 },
-                        { 'title': '' }
-                    ], [
-                        { 'title': '' },
-                        { 'title': 'b-1', rowSpan: 1, colSpan: 2 },
-                        { 'title': '' },
-                        { 'title': 'b-2', rowSpan: 2, colSpan: 1 },
-                        { 'title': 'c-1', rowSpan: 2, colSpan: 1 },
-                        { 'title': 'c-2', rowSpan: 2, colSpan: 1 }
-                    ], [
-                        { 'title': '' },
-                        { 'title': 'b-1-1', rowSpan: 1, colSpan: 1 },
-                        { 'title': 'b-1-2', rowSpan: 1, colSpan: 1 },
-                        { 'title': '' },
-                        { 'title': '' },
-                        { 'title': '' }
-                    ]
-                ]);
+                });
             });
         });
 
@@ -324,22 +285,6 @@ describe('Header Group Handle', () => {
             it('should return headers', () => {
                 const mockRowTotal: number = 2;
                 expect(handle.getSpanCtxListHeaders(mockBaseCtxHeaders, mockRowTotal)).toEqual(mockSpanCtxHeaders);
-            });
-        });
-
-        describe('Method - getFilledListHeaders: Create the list headers with empty values for corresponding rows and column spans', () => {
-            it('should return headers', () => {
-                expect(handle.getFilledListHeaders(mockSpanCtxHeaders, 2)).toEqual([
-                    [
-                        { title: 'a', colSpan: 2, rowSpan: 1 },
-                        { title: '' },
-                        { title: 'b', colSpan: 1, rowSpan: 2 },
-                    ], [
-                        { title: 'a-1', sortKey: 'x', colSpan: 1, rowSpan: 1 },
-                        { title: 'a-2', colSpan: 1, rowSpan: 1 },
-                        { title: '' }
-                    ]
-                ]);
             });
         });
     });
