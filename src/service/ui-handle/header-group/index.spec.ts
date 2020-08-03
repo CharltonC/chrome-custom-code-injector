@@ -2,7 +2,8 @@ import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import {
     IOption,
-    IBaseCtxTbHeader, ITbHeaderCache, IBaseCtxListHeader, ISpanCtxListHeader,
+    IBaseTbHeader, ITbHeaderCache,
+    IBaseListHeader, ISpanListHeader,
 } from './type';
 import { HeaderGrpHandle } from '.';
 
@@ -18,15 +19,6 @@ describe('Header Group Handle', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
-    });
-
-    it('should return contextual headers', () => {
-        const mockOption = [];
-        spy.getCtxTbHeaders.mockReturnValue('table');
-        spy.getCtxListHeaders.mockReturnValue('list');
-
-        expect(handle.getCtxHeaders(mockOption, true)).toEqual('table');
-        expect(handle.getCtxHeaders(mockOption, false)).toEqual('list');
     });
 
     describe('Table Header Group', () => {
@@ -125,7 +117,7 @@ describe('Header Group Handle', () => {
 
         describe('Method - getSpanCtxTbHeaders: Create rows (`tr`) of header (`th`) context for row span and column span', () => {
             const { getSpanCtxTbHeaders }  = HeaderGrpHandle.prototype;
-            const mockColCtxs: IBaseCtxTbHeader[][] = [
+            const mockColCtxs: IBaseTbHeader[][] = [
                 [
                     {title: 'a', ownColTotal: 3},
                     {title: 'b'}
@@ -198,7 +190,7 @@ describe('Header Group Handle', () => {
             });
 
             it('should set the column context for that row level when row level is 0 and column context is provided', () => {
-                const mockColCtx: IBaseCtxTbHeader[] = [];
+                const mockColCtx: IBaseTbHeader[] = [];
                 setTbHeaderCache(mockCache, 0, mockColCtx);
 
                 const { slots, colTotal } = mockCache;
@@ -208,7 +200,7 @@ describe('Header Group Handle', () => {
             });
 
             it('should set the column context for that row level if not already exist when row level is not 0 and column context is provied', () => {
-                const mockColCtx: IBaseCtxTbHeader[] = [];
+                const mockColCtx: IBaseTbHeader[] = [];
                 setTbHeaderCache(mockCache, 1, mockColCtx);
 
                 const { slots, colTotal } = mockCache;
@@ -240,7 +232,7 @@ describe('Header Group Handle', () => {
             {title: 'b'},
         ];
 
-        const mockBaseCtxHeaders: IBaseCtxListHeader[] = [
+        const mockBaseCtxHeaders: IBaseListHeader[] = [
             { title: 'a', ownColTotal: 2, subHeader: [
                 {title: 'a-1', sortKey: 'x', ownColTotal: undefined },
                 {title: 'a-2', ownColTotal: undefined },
@@ -248,7 +240,7 @@ describe('Header Group Handle', () => {
             {title: 'b', ownColTotal: undefined }
         ];
 
-        const mockSpanCtxHeaders: ISpanCtxListHeader[] = [
+        const mockSpanCtxHeaders: ISpanListHeader[] = [
             { title: 'a', colSpan: 2, rowSpan: 1, subHeader: [
                 { title: 'a-1', colSpan: 1, rowSpan: 1, sortKey: 'x' },
                 { title: 'a-2', colSpan: 1, rowSpan: 1 },
@@ -257,16 +249,17 @@ describe('Header Group Handle', () => {
         ];
 
         describe('Method - getCtxListHeaders: Get the contextual list headers', () => {
-            it('should return headers (without mocks)', () => {
+            it('should return headers', () => {
+                const mockBaseHeader = { rowTotal: 1, colTotal: 2, headers: [] };
+                const mockSpanHeader = 'span';
+                const mockFlattenHeaders = 'flat';
+                spy.getBaseCtxListHeaders.mockReturnValue(mockBaseHeader);
+                spy.getSpanCtxListHeaders.mockReturnValue(mockSpanHeader);
+                spy.getFlattenListHeaders.mockReturnValue(mockFlattenHeaders);
+
                 expect(handle.getCtxListHeaders(mockBaseOption)).toEqual({
-                    rowTotal: 2,
-                    colTotal: 3,
-                    headers: [
-                        { title: 'a', colSpan: 2, rowSpan: 1 },
-                        { title: 'a-1', sortKey: 'x', colSpan: 1, rowSpan: 1 },
-                        { title: 'a-2', colSpan: 1, rowSpan: 1 },
-                        { title: 'b', colSpan: 1, rowSpan: 2 },
-                    ]
+                    ...mockBaseHeader,
+                    headers: mockFlattenHeaders
                 });
             });
         });
@@ -276,7 +269,7 @@ describe('Header Group Handle', () => {
                 expect(handle.getBaseCtxListHeaders(mockBaseOption)).toEqual({
                     rowTotal: 2,
                     colTotal: 3,
-                    baseCtxHeaders: mockBaseCtxHeaders
+                    headers: mockBaseCtxHeaders
                 });
             });
         });
@@ -285,6 +278,17 @@ describe('Header Group Handle', () => {
             it('should return headers', () => {
                 const mockRowTotal: number = 2;
                 expect(handle.getSpanCtxListHeaders(mockBaseCtxHeaders, mockRowTotal)).toEqual(mockSpanCtxHeaders);
+            });
+        });
+
+        describe('Method - getFlattenListHeaders: Get the Flatten array for list headers', () => {
+            it('should return headers', () => {
+                expect(handle.getFlattenListHeaders(mockSpanCtxHeaders)).toEqual([
+                    { title: 'a', colSpan: 2, rowSpan: 1, gridColumn: '1 / 3', gridRow: '1 / 2' },
+                    { title: 'a-1', colSpan: 1, rowSpan: 1, gridColumn: '1 / 2', gridRow: '2 / 3' , sortKey: 'x' },
+                    { title: 'a-2', colSpan: 1, rowSpan: 1, gridColumn: '2 / 3', gridRow: '2 / 3' },
+                    { title: 'b', colSpan: 1, rowSpan: 2, gridColumn: '3 / 4', gridRow: '1 / 3' },
+                ]);
             });
         });
     });

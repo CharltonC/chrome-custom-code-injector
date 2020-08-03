@@ -5,49 +5,44 @@ export interface IOption {
     subHeader?: IOption[]
 }
 
-//// State
-export interface IState {
-    rowTotal: number;
-    colTotal: number;
-    headers: IHeader[] | IHeader[][];
+//// Table Header
+export interface ICtxTbHeader extends IRowCol {
+    headers: IHeader[][];
 }
 
-export interface IHeader {
-    title: string;
-    sortKey?: string;
+export interface IBaseTbHeader extends Pick<IOption, 'title'> {
+    ownColTotal?: number;
+}
+
+export interface ITbHeaderCache extends IRowCol {
+    slots: IBaseTbHeader[][];
+}
+
+//// List Header
+export interface ICtxListHeader extends IRowCol {
+    headers: IHeader[];
+}
+
+export interface IBaseCtxListHeader extends IRowCol {
+    headers: IBaseListHeader[];
+}
+
+export interface ISpanListHeader extends IHeader {
+    subHeader?: ISpanListHeader[];
+}
+
+export interface IBaseListHeader extends IOption {
+    ownColTotal?: number;
+    subHeader?: IBaseListHeader[];
+}
+
+//// Common
+export interface IHeader extends Exclude<IOption, 'subHeader'>{
     rowSpan?: number;
     colSpan?: number;
 }
 
-//// Table Header
-export interface IBaseCtxTbHeader {
-    title: string;
-    ownColTotal?: number;
-}
-
-export interface ITbHeaderCache {
-    slots: IBaseCtxTbHeader[][];
-    colTotal: number;
-    rowTotal: number;
-}
-
-//// List Header
-export interface IBaseCtxListHeaders {
-    colTotal: number;
-    rowTotal: number;
-    baseCtxHeaders: IBaseCtxListHeader[];
-}
-
-export interface IBaseCtxListHeader extends IOption {
-    ownColTotal?: number;
-    subHeader?: IBaseCtxListHeader[];
-}
-
-export interface ISpanCtxListHeader extends IHeader {
-    subHeader?: ISpanCtxListHeader[];
-}
-
-export interface IBaseListHeaderCache {
+export interface IRowCol {
     rowTotal: number;
     colTotal: number;
 }
