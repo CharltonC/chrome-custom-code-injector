@@ -259,6 +259,8 @@ describe('Header Group Handle', () => {
 
                 expect(handle.getCtxListHeaders(mockBaseOption)).toEqual({
                     ...mockBaseHeader,
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gridTemplateRows: 'repeat(1, 1fr)',
                     headers: mockFlattenHeaders
                 });
             });

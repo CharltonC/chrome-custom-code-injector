@@ -90,7 +90,13 @@ export class HeaderGrpHandle {
         const { headers: baseCtxHeaders, rowTotal, colTotal } = this.getBaseCtxListHeaders(option);
         const spanCtxListHeaders: ISpanListHeader[] = this.getSpanCtxListHeaders(baseCtxHeaders, rowTotal);
         const headers: IHeader[] = this.getFlattenListHeaders(spanCtxListHeaders);
-        return { colTotal, rowTotal, headers };
+        return {
+            colTotal,
+            rowTotal,
+            headers,
+            gridTemplateRows: `repeat(${rowTotal}, 1fr)`,
+            gridTemplateColumns: `repeat(${colTotal}, 1fr)`
+        };
     }
 
     getBaseCtxListHeaders(option: IOption[], rowLvl?: number, cache?: IRowCol): IBaseCtxListHeader {

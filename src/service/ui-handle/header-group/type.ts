@@ -21,6 +21,8 @@ export interface ITbHeaderCache extends IRowCol {
 //// List Header
 export interface ICtxListHeader extends IRowCol {
     headers: IHeader[];
+    gridTemplateRows: string;
+    gridTemplateColumns: string;
 }
 
 export interface IBaseCtxListHeader extends IRowCol {
@@ -37,9 +39,13 @@ export interface IBaseListHeader extends IOption {
 }
 
 //// Common
-export interface IHeader extends Exclude<IOption, 'subHeader'>{
+export interface IHeader {
+    title: string;
+    sortKey?: string;
     rowSpan?: number;
     colSpan?: number;
+    gridColumn?: string;
+    gridRow?: string;
 }
 
 export interface IRowCol {
