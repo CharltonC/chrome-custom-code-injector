@@ -1,49 +1,76 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../../asset/ts/memo-component';
+import { UtilHandle } from '../../../service/ui-handle/util';
 import { SortBtn } from '../../prsntn/sort-btn';
-import { IProps, THeadContext, TThSpanProps, TLiSpanProps } from './type';
+import { IProps, TTbHeaderRows, TListHeaderRows } from './type';
 
 export class GridHeader extends MemoComponent<IProps> {
     readonly BASE_CLS: string = 'kz-datagrid__head';
+    readonly cssCls = new UtilHandle().cssCls;
 
     constructor(props: IProps) {
         super(props);
     }
 
     render() {
-        const { BASE_CLS } = this;
-        const { table: isTb, rowsContext, sortBtnProps } = this.props;
-        const HeadTag = isTb ? 'thead' : 'ul';
-        const RowTag = isTb ? 'tr' : 'li';
-        const CellTag = isTb ? 'th' : 'div';
+        const TB: string = 'table';
+        const isTb: boolean = (this.props.type ?? TB) === TB;
+        return isTb ? this.renderTbHeader() : this.renderListHeader();
+    }
+
+    renderTbHeader(): ReactElement {
+        const { BASE_CLS, cssCls } = this;
+        const { rows, sortBtnProps } = this.props;
+        const WRAPPER_CLS: string = cssCls(BASE_CLS, 'table');
+        const { headers } = rows as TTbHeaderRows;
 
         return (
-            <HeadTag className={BASE_CLS}>{ rowsContext.map((thCtxs: THeadContext[], trIdx: number) => (
-                <RowTag
-                    key={trIdx}
-                    className={`${BASE_CLS}-row`}
-                    >{ thCtxs.map( ({ title, sortKey, ...thProps }: THeadContext, thIdx: number) => (
-                    <CellTag
+            <thead className={WRAPPER_CLS}>{ headers.map((thCtxs, trIdx: number) => (
+                <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
+                <th
                         key={thIdx}
                         className={`${BASE_CLS}-cell`}
-                        {...this.parseSpanProps(thProps, isTb)}
+                        {...thProps}
                         >
                         <span>{title}</span>{ sortKey && sortBtnProps &&
                         <SortBtn {...sortBtnProps(sortKey)} />}
-                    </CellTag>))}
-                </RowTag>))}
-            </HeadTag>
+                    </th>))}
+                </tr>))}
+            </thead>
         );
     }
 
-    parseSpanProps(props: TThSpanProps, isTb: boolean): TThSpanProps | TLiSpanProps {
-        if (!props) return {} as any;
-        if (isTb) return props;
+    renderListHeader(): ReactElement {
+        const { BASE_CLS, cssCls } = this;
+        const { rows, sortBtnProps } = this.props;
+        const WRAPPER_CLS: string = cssCls(BASE_CLS, 'list');
+        const { headers, rowTotal, colTotal, ...wrapperCssGrid } = rows as TListHeaderRows;
+        const wrapperCssGridVar = this.getCssGridVar(wrapperCssGrid);
 
-        const { colSpan, rowSpan } = props;
-        return {
-            'data-colspan': colSpan,
-            'data-rowspan': rowSpan
-        } as TLiSpanProps;
+        return (
+            <ul
+                style={wrapperCssGridVar}
+                className={WRAPPER_CLS}
+                >{ headers.map(({ title, sortKey, rowSpan, colSpan, ...cellCssGrid }, thIdx: number) => (
+                <li
+                    key={thIdx}
+                    className={`${BASE_CLS}-cell`}
+                    style={this.getCssGridVar(cellCssGrid)}
+                    >
+                    <span>{title}</span>{ sortKey && sortBtnProps &&
+                    <SortBtn {...sortBtnProps(sortKey)} />}
+                </li>))}
+            </ul>
+        );
+    }
+
+    getCssGridVar(cssGrid: Record<string, any>): Record<string, string> {
+        const cssGridVar: Record<string, string> = {};
+        Object
+            .entries(cssGrid)
+            .forEach(([key, val]: [string, any]) => {
+                cssGridVar[`--${key}`] = `${val}`;
+            });
+        return cssGridVar;
     }
 }

@@ -1,16 +1,23 @@
 .kz-datagrid__head {
-    display: table-header-group;
     background: $light-gray-300;
     text-transform: uppercase;
     font: 14px $roboto-bld;
 
-    &-row {
-        display: table-row;
-        height: 50px;
+    &--list {
+        // Desktop only
+        @include mq('d') {
+            display: grid;
+            grid-template-rows: var(--gridTemplateRows);
+            grid-template-columns: var(--gridTemplateColumns);
+
+            .kz-datagrid__head-cell {
+                grid-column: var(--gridColumn);
+                grid-row: var(--gridRow);
+            }
+        }
     }
 
     &-cell {
-        display: table-cell;
         padding: 20px;
         color: $dark-gray-100;
 
@@ -23,6 +30,4 @@
         margin-left: 10px;
         vertical-align: middle;
     }
-
-
 }

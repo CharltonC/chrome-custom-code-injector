@@ -8,28 +8,28 @@ export default {
 
 const defStyle = {};
 
-export const WithoutSortButton = () => {
-    const sampleRowsContext = [
-        [ {title: 'A', colSpan: 2}, {title: 'B', rowSpan: 2} ],
-        [ {title: 'A1'}, {title: 'A2'} ]
-    ];
+export const TableHeaderGroup = () => {
+    const rows = {
+        rowTotal: 2,
+        colTotal: 2,
+        headers: [
+            [ {title: 'A', colSpan: 2}, {title: 'B', rowSpan: 2} ],
+            [ {title: 'A1'}, {title: 'A2'} ]
+        ]
+    };
 
     return (
         <table style={defStyle} >
-            <GridHeader rowsContext={sampleRowsContext} />
+            <GridHeader rows={rows} />
         </table>
     );
 };
 
-export const WithSortButton = () => {
+export const ListHeaderGroup = () => {
     const [ sortState, setSortState ] = useState({
         isAsc: true,
         key: 'name'
     });
-
-    const sampleRowsContext = [
-        [ {title: 'A', sortKey: 'name'}, {title: 'B', sortKey: 'age'} ]
-    ];
 
     const sortBtnProps = (sortKey) => {
         return {
@@ -41,10 +41,24 @@ export const WithSortButton = () => {
         };
     }
 
+    const rows = {
+        rowTotal: 2,
+        colTotal: 3,
+        headers: [
+            { title: 'A', sortKey: 'name', gridColumn: '1/3', gridRow: '1/2' },
+            { title: 'A-1', sortKey: 'first name', gridColumn: '1/2', gridRow: '2/3' },
+            { title: 'A-2', sortKey: 'last name', gridColumn: '2/3', gridRow: '2/3' },
+            { title: 'B', sortKey: 'age', gridColumn: '3/4', gridRow: '1/3' },
+        ],
+        gridTemplateColumns: '',
+        gridTemplateRows: ''
+    };
+
     return (
         <table style={defStyle} >
             <GridHeader
-                rowsContext={sampleRowsContext}
+                type="list"
+                rows={rows}
                 sortBtnProps={sortBtnProps}
                 />
         </table>

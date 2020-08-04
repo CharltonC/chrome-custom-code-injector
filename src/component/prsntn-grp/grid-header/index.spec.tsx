@@ -1,112 +1,116 @@
+import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, THeadContext, TThSpanProps } from './type';
 import { GridHeader } from '.';
 
 describe('Component - Grid Header', () => {
-    const mockHeaderRowsCtx: THeadContext[][] = [
-        [
-            { title: 'A', sortKey: 'name', rowSpan: 2 },
-            { title: 'B', sortKey: 'age' },
-        ], [
-            { title: 'C' },
-        ],
-    ];
+    let spy: TMethodSpy<GridHeader>;
+    let mockSortBtnProps: jest.Mock;
+    let $elem: HTMLElement;
+    let $head: HTMLElement;
+    let $row: NodeListOf<HTMLElement>;
+
+
+    beforeEach(() => {
+        mockSortBtnProps = jest.fn();
+    });
 
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+
+        if (!$elem) return;
+        TestUtil.teardown($elem);
+        $elem = null;
     });
 
-    describe('Parse Header Col/Row Span Props', () => {
-        const { parseSpanProps } = GridHeader.prototype;
-
-        it('should return empty object if props doesnt exist', () => {
-            expect(parseSpanProps(null, true)).toEqual({});
-        });
-
-        it('should return itself if it is a table', () => {
-            const mockHeaderSpanProps: TThSpanProps = { rowSpan: 1, colSpan: 1};
-            expect(parseSpanProps(mockHeaderSpanProps, true)).toEqual(mockHeaderSpanProps);
-        });
-
-        it('should return parsed props for list header if it is a list', () => {
-            const mockHeaderSpanProps: TThSpanProps = { rowSpan: 1, colSpan: 1};
-            expect(parseSpanProps(mockHeaderSpanProps, false)).toEqual({
-                'data-colspan': 1,
-                'data-rowspan': 1
+    describe('Render Table Header', () => {
+        beforeEach(() => {
+            $elem = TestUtil.setupElem('table');
+            TestUtil.renderPlain($elem, GridHeader, {
+                type: 'table',
+                sortBtnProps: mockSortBtnProps,
+                rows: {
+                    rowTotal: 1,
+                    colTotal: 1,
+                    headers: [
+                        [
+                            { title: 'A', sortKey: 'name', rowSpan: 2 },
+                            { title: 'B', sortKey: 'age' },
+                        ], [
+                            { title: 'C' },
+                        ]
+                    ]
+                }
             });
+            $head = $elem.querySelector('thead');
+            $row = $elem.querySelectorAll('tr');
+        });
+
+        it('should render', () => {
+            expect($head.className).toContain('kz-datagrid__head--table');
+            expect($row.length).toBe(2);
+            expect($row[0].querySelectorAll('th').length).toBe(2);
+            expect($row[0].querySelector('th').rowSpan).toBe(2);
+            expect($row[1].querySelectorAll('th').length).toBe(1);
+            expect(mockSortBtnProps.mock.calls).toEqual([ ['name'], ['age'] ]);
         });
     });
 
-    describe('Render', () => {
-        const mockSortBtnPropsFn: jest.Mock = jest.fn();
-        const mockProps: IProps = {
-            rowsContext: mockHeaderRowsCtx,
-            sortBtnProps: mockSortBtnPropsFn
-        };
-        const mockSortBtnProps = { isAsc: true };
-        let $elem: HTMLElement;
-        let $head: HTMLElement;
-        let $row: NodeListOf<HTMLElement>;
+    describe('Render List Header', () => {
+        beforeEach(() => {
+            spy = TestUtil.spyProtoMethods(GridHeader);
+            spy.getCssGridVar.mockReturnValue({});
+
+            $elem = TestUtil.setupElem('div');
+            TestUtil.renderPlain($elem, GridHeader, {
+                type: 'list',
+                sortBtnProps: mockSortBtnProps,
+                rows: {
+                    rowTotal: 1,
+                    colTotal: 1,
+                    gridTemplateRows: '1',
+                    gridTemplateColumns: '1',
+                    headers: [
+                        { title: 'A', sortKey: 'name', rowSpan: 2 },
+                        { title: 'B', sortKey: 'age' },
+                        { title: 'C' },
+                    ]
+                }
+            });
+            $head = $elem.querySelector('ul');
+            $row = $elem.querySelectorAll('li');
+        });
+
+        it('should render', () => {
+            expect($head.className).toContain('kz-datagrid__head--list');
+            expect($row.length).toBe(3);
+            expect($row[0].querySelectorAll('.sort').length).toBe(0);
+            expect(mockSortBtnProps.mock.calls).toEqual([ ['name'], ['age'] ]);
+        });
+    });
+
+    describe('Methods', () => {
+        let cmp: GridHeader;
 
         beforeEach(() => {
-            mockSortBtnPropsFn.mockReturnValue(mockSortBtnProps);
+            cmp = new GridHeader({} as any);
+            spy = TestUtil.spyProtoMethods(GridHeader);
         });
 
-        afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+        it('should default to render table when header type is not specified', () => {
+            spy.renderTbHeader.mockReturnValue('table');
+            spy.renderListHeader.mockReturnValue('list');
+            expect(cmp.render()).toBe('table');
         });
 
-        describe('Table Header', () => {
-            function syncChildElem() {
-                $head = $elem.querySelector('thead');
-                $row = $elem.querySelectorAll('tr');
-            }
-
-            beforeEach(() => {
-                $elem = TestUtil.setupElem('table');
-                TestUtil.renderPlain($elem, GridHeader, { ...mockProps, table: true });
-                syncChildElem();
-            });
-
-            it('should render', () => {
-                expect($head.className).toBe('kz-datagrid__head');
-                expect($row.length).toBe(2);
-                expect($row[0].querySelectorAll('th').length).toBe(2);
-                expect($row[1].querySelectorAll('th').length).toBe(1);
-                expect($row[0].querySelector('th').rowSpan).toBe(mockHeaderRowsCtx[0][0].rowSpan);
-                expect(mockSortBtnPropsFn.mock.calls).toEqual([
-                    [mockHeaderRowsCtx[0][0].sortKey],
-                    [mockHeaderRowsCtx[0][1].sortKey]
-                ]);
-            });
-        });
-
-        describe('List Header', () => {
-            function syncChildElem() {
-                $head = $elem.querySelector('ul');
-                $row = $elem.querySelectorAll('li');
-            }
-
-            beforeEach(() => {
-                $elem = TestUtil.setupElem('div');
-                TestUtil.renderPlain($elem, GridHeader, { ...mockProps, table: false });
-                syncChildElem();
-            });
-
-            it('should render', () => {
-                expect($head.className).toBe('kz-datagrid__head');
-                expect($row.length).toBe(2);
-                expect($row[0].querySelectorAll('div').length).toBe(2);
-                expect($row[1].querySelectorAll('div').length).toBe(1);
-                expect($row[0].querySelector('div').getAttribute('data-rowspan')).toBe(`${mockHeaderRowsCtx[0][0].rowSpan}`);
-                expect(mockSortBtnPropsFn.mock.calls).toEqual([
-                    [mockHeaderRowsCtx[0][0].sortKey],
-                    [mockHeaderRowsCtx[0][1].sortKey]
-                ]);
+        it('should return the css related grid variables object', () => {
+            expect(cmp.getCssGridVar({
+                'a': '1',
+                'b': '2'
+            })).toEqual({
+                '--a': '1',
+                '--b': '2'
             });
         });
     });
 });
-
