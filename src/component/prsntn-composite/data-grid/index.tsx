@@ -185,11 +185,6 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    //// Sort, Expand, Pagination
-    getSortedData(): TDataOption {
-        return this.state.sortState?.data || this.props.data;
-    }
-
     getRowsElem(data: TDataOption): ReactElement[] {
         const { rowKey, expand } = this.props;
         const { pgnOption, pgnState, rowsOption } = this.state;
@@ -200,6 +195,24 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             rowIdKey: rowKey,
             showAll: expand?.showAll ?? false
         });
+    }
+
+    //// Sort, Expand, Pagination
+    getSortedData(): TDataOption {
+        return this.state.sortState?.data || this.props.data;
+    }
+
+    getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
+        const { sortOption } = this.state;
+        if (!sortOption) return null;
+
+        const { onSortChange } = this.props.callback ?? {};
+        const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
+            data,
+            callback: (modState: TModSortState) => this.onStateChange(modState, onSortChange),
+            option: sortOption
+        }, sortKey);
+        return sortBtnAttr;
     }
 
     getRowCmpExpdProps(itemCtx: TRowCtx) {
@@ -228,19 +241,6 @@ export class DataGrid extends MemoComponent<IProps, IState> {
                 state: pgnState
             })
         };
-    }
-
-    getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
-        const { sortOption } = this.state;
-        if (!sortOption) return null;
-
-        const { onSortChange } = this.props.callback ?? {};
-        const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
-            data,
-            callback: (modState: TModSortState) => this.onStateChange(modState, onSortChange),
-            option: sortOption
-        }, sortKey);
-        return sortBtnAttr;
     }
 
     onStateChange(modState: Partial<IState>, userCallback: TFn): void {
