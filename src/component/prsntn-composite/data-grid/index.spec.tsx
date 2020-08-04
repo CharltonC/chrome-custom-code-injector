@@ -3,12 +3,8 @@ import { TestUtil } from '../../../asset/ts/test-util';
 // import { CmpCls } from './';
 
 describe('Component - Data Grid', () => {
-    // const mockBareProps: IProps = {};
-    // const mockDefProps: IProps = {};
-    // let methodSpy: jest.SpyInstance;
-
     beforeEach(() => {
-        // methodSpy = jest.spyOn(_CmpCls.prototype, 'method');
+
     });
 
     afterEach(() => {
@@ -16,47 +12,63 @@ describe('Component - Data Grid', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Component Class', () => {
-        // let cmp: _CmpCls;
-
+    describe('Buildin API', () => {
         describe('constructor', () => {
-            it("should init", () => {
-                expect(true).toBe(true);
-            });
-        });
-
-        describe('Lifecycle - TODO: Name', () => {
 
         });
 
-        describe('Method - TODO: Name', () => {
+        describe('Lifecycle - UNSAFE_componentWillReceiveProps', () => {
+
+        });
+
+        describe('render', () => {
 
         });
     });
 
-    describe('Render/DOM', () => {
-        let $elem: HTMLElement;
-        // let $childElem: HTMLElement;
+    describe('State related', () => {
+        describe('Method - createState: Create initial or updated state', () => {
 
-        function syncChildElem() {
-            // $childElem = $elem.querySelector('');
-        }
-
-        beforeEach(() => {
-            $elem = TestUtil.setupElem();
-            syncChildElem();
         });
 
-        afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+        describe('Method - shallResetState: Determine which states should be updated/re-created', () => {
+
+        });
+    });
+
+    describe('Row and Row Transform related', () => {
+        describe('Method - transformRowOption: Transform the Row to return User Provided Row component', () => {
+
         });
 
-        describe('default render', () => {
-            it('should render ..', () => {});
+        describe('Method - getRowCmpProps: Get Props for Row component', () => {
+
         });
 
-        describe('interaction', () => {
+        describe('Method - getRowsElem: Get all the row elements', () => {
+
+        });
+    });
+
+
+    describe('Sort, Expand, Pagination related', () => {
+        describe('Method - getSortedData: Get either the raw or sorted data', () => {
+
+        });
+
+        describe('Method - getSortCmpProps: Get the sorting related props for Grid Header Component', () => {
+
+        });
+
+        describe('Method - getRowCmpExpdProps: Get the expand related props for Row Component', () => {
+
+        });
+
+        describe('Method - getPgnCmpProps: Get the props for Pagination Component', () => {
+
+        });
+
+        describe('Method - onStateChange: Common Handler for state changes', () => {
 
         });
     });
