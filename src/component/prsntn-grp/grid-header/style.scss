@@ -4,17 +4,16 @@
     font: 14px $roboto-bld;
 
     &--list {
-        // Desktop only
-        @include mq('d') {
-            display: grid;
-            grid-template-rows: var(--gridTemplateRows);
-            grid-template-columns: var(--gridTemplateColumns);
+        // Grid (Desktop only, Responsive not part of current Scope for now)
+        display: grid;
+        grid-template-rows: var(--gridTemplateRows);
+        grid-template-columns: var(--gridTemplateColumns);
 
-            .kz-datagrid__head-cell {
-                grid-column: var(--gridColumn);
-                grid-row: var(--gridRow);
-            }
+        .kz-datagrid__head-cell {
+            grid-column: var(--gridColumn);
+            grid-row: var(--gridRow);
         }
+        // END - Grid
     }
 
     &-cell {
