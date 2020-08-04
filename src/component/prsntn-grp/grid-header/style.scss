@@ -2,9 +2,10 @@
     background: $light-gray-300;
     text-transform: uppercase;
     font: 14px $roboto-bld;
+    text-align: left;
 
-    &--list {
-        // Grid (Desktop only, Responsive not part of current Scope for now)
+    // Grid (Desktop only, Responsive not part of current Scope for now)
+    .kz-datagrid--list & {
         display: grid;
         grid-template-rows: var(--gridTemplateRows);
         grid-template-columns: var(--gridTemplateColumns);
@@ -13,8 +14,8 @@
             grid-column: var(--gridColumn);
             grid-row: var(--gridRow);
         }
-        // END - Grid
     }
+    // END - Grid
 
     &-cell {
         padding: 20px;

@@ -19,13 +19,12 @@ export class GridHeader extends MemoComponent<IProps> {
     }
 
     renderTbHeader(): ReactElement {
-        const { BASE_CLS, cssCls } = this;
+        const { BASE_CLS } = this;
         const { rows, sortBtnProps } = this.props;
-        const WRAPPER_CLS: string = cssCls(BASE_CLS, 'table');
         const { headers } = rows as TTbHeaderRows;
 
         return (
-            <thead className={WRAPPER_CLS}>{ headers.map((thCtxs, trIdx: number) => (
+            <thead className={BASE_CLS}>{ headers.map((thCtxs, trIdx: number) => (
                 <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
                 <th
                         key={thIdx}
@@ -41,16 +40,15 @@ export class GridHeader extends MemoComponent<IProps> {
     }
 
     renderListHeader(): ReactElement {
-        const { BASE_CLS, cssCls } = this;
+        const { BASE_CLS } = this;
         const { rows, sortBtnProps } = this.props;
-        const WRAPPER_CLS: string = cssCls(BASE_CLS, 'list');
         const { headers, rowTotal, colTotal, ...wrapperCssGrid } = rows as TListHeaderRows;
         const wrapperCssGridVar = this.getCssGridVar(wrapperCssGrid);
 
         return (
             <ul
                 style={wrapperCssGridVar}
-                className={WRAPPER_CLS}
+                className={BASE_CLS}
                 >{ headers.map(({ title, sortKey, rowSpan, colSpan, ...cellCssGrid }, thIdx: number) => (
                 <li
                     key={thIdx}

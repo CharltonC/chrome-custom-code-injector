@@ -6,9 +6,7 @@ describe('Component - Grid Header', () => {
     let spy: TMethodSpy<GridHeader>;
     let mockSortBtnProps: jest.Mock;
     let $elem: HTMLElement;
-    let $head: HTMLElement;
     let $row: NodeListOf<HTMLElement>;
-
 
     beforeEach(() => {
         mockSortBtnProps = jest.fn();
@@ -42,12 +40,10 @@ describe('Component - Grid Header', () => {
                     ]
                 }
             });
-            $head = $elem.querySelector('thead');
             $row = $elem.querySelectorAll('tr');
         });
 
         it('should render', () => {
-            expect($head.className).toContain('kz-datagrid__head--table');
             expect($row.length).toBe(2);
             expect($row[0].querySelectorAll('th').length).toBe(2);
             expect($row[0].querySelector('th').rowSpan).toBe(2);
@@ -77,12 +73,10 @@ describe('Component - Grid Header', () => {
                     ]
                 }
             });
-            $head = $elem.querySelector('ul');
             $row = $elem.querySelectorAll('li');
         });
 
         it('should render', () => {
-            expect($head.className).toContain('kz-datagrid__head--list');
             expect($row.length).toBe(3);
             expect($row[0].querySelectorAll('.sort').length).toBe(0);
             expect(mockSortBtnProps.mock.calls).toEqual([ ['name'], ['age'] ]);
