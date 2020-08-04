@@ -3,7 +3,7 @@ import {
     ICtxTbHeader, ICtxListHeader,
     IHeader, IBaseTbHeader, ITbHeaderCache,
     ISpanListHeader, IBaseCtxListHeader, IBaseListHeader,
-    IRowCol,
+    IRowColTotal,
 } from './type';
 
 export class HeaderGrpHandle {
@@ -99,7 +99,7 @@ export class HeaderGrpHandle {
         };
     }
 
-    getBaseCtxListHeaders(option: IOption[], rowLvl?: number, cache?: IRowCol): IBaseCtxListHeader {
+    getBaseCtxListHeaders(option: IOption[], rowLvl?: number, cache?: IRowColTotal): IBaseCtxListHeader {
         cache = cache ?? { colTotal: 0, rowTotal: 0 };
         rowLvl = rowLvl ?? 1;       // must be literal value instead of cached
 
@@ -141,7 +141,7 @@ export class HeaderGrpHandle {
 
     getFlattenListHeaders(spanCtxHeaders: ISpanListHeader[], rowIdx: number = 0): IHeader[] {
         let currColIdx = 0;
-        return spanCtxHeaders.reduce((headers, { subHeader, colSpan, rowSpan, ...rest }: ISpanListHeader, colIdx: number) => {
+        return spanCtxHeaders.reduce((headers, { subHeader, colSpan, rowSpan, ...rest }: ISpanListHeader) => {
             headers.push({
                 ...rest,
                 colSpan,

@@ -6,7 +6,7 @@ export interface IOption {
 }
 
 //// Table Header
-export interface ICtxTbHeader extends IRowCol {
+export interface ICtxTbHeader extends IRowColTotal {
     headers: IHeader[][];
 }
 
@@ -14,18 +14,18 @@ export interface IBaseTbHeader extends Pick<IOption, 'title'> {
     ownColTotal?: number;
 }
 
-export interface ITbHeaderCache extends IRowCol {
+export interface ITbHeaderCache extends IRowColTotal {
     slots: IBaseTbHeader[][];
 }
 
 //// List Header
-export interface ICtxListHeader extends IRowCol {
-    headers: IHeader[];
+export interface ICtxListHeader extends IRowColTotal {
+    headers: IListHeader[];
     gridTemplateRows: string;
     gridTemplateColumns: string;
 }
 
-export interface IBaseCtxListHeader extends IRowCol {
+export interface IBaseCtxListHeader extends IRowColTotal {
     headers: IBaseListHeader[];
 }
 
@@ -38,17 +38,20 @@ export interface IBaseListHeader extends IOption {
     subHeader?: IBaseListHeader[];
 }
 
+export interface IListHeader extends IHeader {
+    gridColumn?: string;
+    gridRow?: string;
+}
+
 //// Common
 export interface IHeader {
     title: string;
     sortKey?: string;
     rowSpan?: number;
     colSpan?: number;
-    gridColumn?: string;
-    gridRow?: string;
 }
 
-export interface IRowCol {
+export interface IRowColTotal {
     rowTotal: number;
     colTotal: number;
 }
