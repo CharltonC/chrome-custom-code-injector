@@ -1,30 +1,88 @@
 .kz-datagrid {
-    &__grid {
+    &--table {
+        table {
+            width: 100%;
+        }
+    }
+
+    &--list {
+        // Grid (Responsive NOT part of current Scope for now)
+        .kz-datagrid__row {
+            display: grid;
+            grid-template-columns: repeat(var(--cols), 1fr);
+
+            span {
+                display: inline-block;
+            }
+        }
+
+/*         @include mq('mt') {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            .kz-datagrid__head {
+                display: none;
+            }
+
+            .kz-datagrid__row {
+                grid-template-columns: repeat(1fr, var(--cols));
+
+                span {
+                    display: block;
+                    width: 100%;
+                    position: relative;
+                    padding-left: 100px;
+
+                    &:before {
+                        position: absolute;
+                        left: 10px;
+                        margin-right: 10px;
+                        content: attr(data-header);
+                        font-weight: bold;
+                        font-variant: small-caps;
+                    }
+                }
+            }
+        }
+
+        @include mq('d') {
+            .kz-datagrid__row {
+                grid-template-columns: repeat(var(--cols), 1fr);
+            }
+        } */
+        // - END Grid Specific
+    }
+
+    .kz-paginate {
+        margin-bottom: 15px;
+    }
+
+    &__body {
         @include nested-table-bg('&--nested-', 4, $light-gray-400, 10px);
-        width: 100%;
         text-align: left;
 
         &--root {
-            margin-top: 15px;
             background: transparent;
 
-            > tbody {
-                > .kz-datagrid__row {
-                    &--odd,
-                    &--even {
-                        border-top: 1px solid $light-gray-500;
-                    }
+            > .kz-datagrid__row {
+                &--odd,
+                &--even {
+                    border-top: 1px solid $light-gray-500;
+                }
 
-                    &--even {
-                        background: $light-gray-600;
-                    }
+                &--even {
+                    background: $light-gray-600;
                 }
             }
         }
     }
 
-    td {
-        font: 14px Helvetica;
-        color: $gray;
+    &__row:not(&__row--nested) {
+        > td,
+        span {
+            padding: 20px;
+            font: 14px Helvetica;
+            color: $gray;
+        }
     }
 }

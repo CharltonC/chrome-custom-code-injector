@@ -30,6 +30,7 @@ interface IComponentOption {
     rows: TRowsOption;
     header?: TCmp;
     pagination?: TCmp;
+    commonProps?: Record<string, any>;
 }
 
 interface ICallbackOption {
@@ -41,7 +42,7 @@ interface ICallbackOption {
 //// State
 export interface IState {
     isTb: boolean;
-    thRowsCtx: headerGrpHandleType.IState[][];
+    headerCtx: TTbHeaderCtx | TListHeaderCtx;
     rowsOption: rowHandleType.IRawRowsOption[];
     expdState: expdHandleType.IState;
     sortOption: sortHandleType.IOption;
@@ -57,6 +58,9 @@ export type TShallResetState = {
     [K in keyof IState]: boolean;
 }
 
+type TTbHeaderCtx = headerGrpHandleType.ICtxTbHeader;
+type TListHeaderCtx = headerGrpHandleType.ICtxListHeader;
+
 //// Generic
 export type TFn = (...args: any[]) => any;
 export type TCmp = React.FC<any> | React.ComponentClass<any>;
@@ -64,7 +68,10 @@ export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
 
 // User-Defined Row Template
 export interface IRowComponentProps extends TRowCtx {
+    key: string;
     expandProps: expdHandleType.IExpdBtnAttr;
+    commonProps: Record<string, any>;
+    rowColStyle?: Record<string, string | number>;
     classNames: {
         REG_ROW: string;
         NESTED_ROW: string;

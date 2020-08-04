@@ -40,28 +40,32 @@ export class DataGrid extends MemoComponent<IProps, IState> {
 
     render() {
         const { BASE_CLS, cssCls } = this;
-        const { isTb, thRowsCtx } = this.state;
-        const { paginate, component } = this.props;
-        const { pagination: UserPagination, header: UserHeader } = component;
+        const { isTb, headerCtx } = this.state;
+        const { type, paginate, component } = this.props;
 
-        const data: TDataOption = this.getSortedData();
-        const rowsElem: ReactElement[] = this.getRowsElem(data);
-        const Grid = isTb ? 'table' : 'ul';
-        const GRID_CLS: string = cssCls(`${BASE_CLS}__grid`, 'root');
-        const gridBody: ReactElement | ReactElement[] = isTb ? <tbody>{rowsElem}</tbody> : rowsElem;
+        const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, isTb ? 'table' : 'list');
+        const ROOT_CLS: string = cssCls(`${BASE_CLS}__body`, 'root');
+
+        const { pagination: UserPagination, header: UserHeader, commonProps } = component;
         const Pagination: TCmp = UserPagination ?? DefPagination;
-        const GridHeader: TCmp = UserHeader ?? DefGridHeader;
+        const Header: TCmp = UserHeader ?? DefGridHeader;
+        const data: TDataOption = this.getSortedData();
+        const sortBtnProps = (sortKey: string) => this.getSortCmpProps(data, sortKey);
+        const paginationProps = { commonProps, ...this.getPgnCmpProps(data) };
+        const headerProps = { type, commonProps, sortBtnProps, rows: headerCtx };
+        const rowsElem: ReactElement[] = this.getRowsElem(data);
 
         return (
-            <div className={BASE_CLS}>{ paginate &&
-                <Pagination {...this.getPgnCmpProps(data)} />}
-                <Grid className={GRID_CLS}>{ thRowsCtx &&
-                    <GridHeader
-                        rowsContext={thRowsCtx}
-                        sortBtnProps={(sortKey: string) => this.getSortCmpProps(data, sortKey)}
-                        />}
-                    {gridBody}
-                </Grid>
+            <div className={WRAPPER_CLS}>{ paginate &&
+                <Pagination {...paginationProps} />}{ isTb ?
+                <table>{ headerCtx &&
+                    <Header {...headerProps} />}
+                    <tbody className={ROOT_CLS}>{rowsElem}</tbody>
+                </table> :
+                <>{ headerCtx &&
+                    <Header {...headerProps} />}
+                    <ul className={ROOT_CLS}>{rowsElem}</ul>
+                </>}
             </div>
         );
     }
@@ -74,11 +78,16 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const sortOption = sort ? sortHandle.createOption(sort) : null;
         const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
         const isTb: boolean = type !== 'list' ? true : false;
+        const headerCtx = header ?
+            (isTb ?
+                headerGrpHandle.getCtxTbHeaders(header) :
+                headerGrpHandle.getCtxListHeaders(header)
+            ): null;
 
         // Note: data used to create paginate state doesnt have to be sorted, it can be generic
         const state: IState = {
             isTb,
-            thRowsCtx: header ? headerGrpHandle.getCtxHeaders(header, isTb) : null,
+            headerCtx,
             rowsOption: rows ? this.transformRowOption(rows) : null,
             sortOption,
             sortState: sort ? sortHandle.createState(data, sortOption) : null,
@@ -108,7 +117,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
      *
      * | Props Changes                     | States that need to be reset                                                                       |
      * |                                   |-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
-     * |                                   |   isTb    | thRowsCtx | rowsOption | sortOption | sortState | pgnOption | pgnState |  expdState    |
+     * |                                   |   isTb    | headerCtx | rowsOption | sortOption | sortState | pgnOption | pgnState |  expdState    |
      * |-----------------------------------|-----------|-----------|------------|------------|-----------|-----------|----------|---------------|
      * | data                              |     x     |     x     |      x     |      x     |     ✓     |     x     |     ✓    |       ✓       |
      * | type                              |     ✓     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
@@ -128,7 +137,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { data, type, header, component, sort, paginate, expand } = modProps;
         const isDiffData: boolean = data !== props.data;
         const isDiffGridType: boolean = type !== props.type;
-        const isDffHeader: boolean = header !== props.header;
+        const isDiffHeader: boolean = header !== props.header;
         const isDiffRows: boolean = component.rows !== props.component.rows;
         const isDiffSort: boolean = sort !== props.sort;
         const isDiffPgn: boolean = paginate !== props.paginate;
@@ -137,10 +146,10 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return {
             isTb: isDiffGridType,
             sortOption: isDiffSort,
-            sortState: isDiffSort || isDiffData || isDffHeader,
+            sortState: isDiffSort || isDiffData || isDiffHeader,
             pgnOption: isDiffPgn,
             pgnState: isDiffPgn || isDiffData,
-            thRowsCtx: isDffHeader,
+            headerCtx: isDiffHeader,
             rowsOption: isDiffRows || isDiffExpd,
             expdState: isDiffExpd || isDiffRows || isDiffData,
         };
@@ -151,28 +160,28 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
         return rows.map((row: TRowOption, idx: number) => {
             const isRootRowConfig: boolean = idx === 0;
-            const RowCmp: TCmp = isRootRowConfig ?
-                (row as TRootRowOption)[0] :
-                (row as TNestedRowOption)[1];
-            const transformFn: TFn = this.getCmpTransformFn(RowCmp);
+            const RowCmp: TCmp = isRootRowConfig ? (row as TRootRowOption)[0] : (row as TNestedRowOption)[1];
+            const transformFn: TFn = (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx)} />;
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 
-    getCmpTransformFn(RowCmp: TCmp): TFn {
+    getRowCmpProps(itemCtx: TRowCtx): IRowComponentProps {
         const { cssCls, BASE_CLS } = this;
-        return (itemCtx: TRowCtx) => {
-            const { itemId, itemLvl, nestedItems, rowType } = itemCtx;
-            const rowProps: IRowComponentProps = {
-                ...itemCtx,
-                expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
-                classNames:  {
-                    REG_ROW: cssCls(`${BASE_CLS}__row`, rowType),
-                    NESTED_ROW: nestedItems ? cssCls(`${BASE_CLS}__row`, 'nested') : '',
-                    NESTED_GRID: nestedItems ? cssCls(`${BASE_CLS}__grid`, `nested-${itemLvl+1}`) : '',
-                }
-            };
-            return <RowCmp key={itemId} {...rowProps} />;
+        const { commonProps } = this.props.component;
+        const { isTb, headerCtx } = this.state;
+        const { itemId, itemLvl, nestedItems, rowType } = itemCtx;
+        return {
+            ...itemCtx,
+            key: itemId,
+            commonProps,
+            expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
+            rowColStyle: isTb  ? null : { '--cols': headerCtx.colTotal },
+            classNames:  {
+                REG_ROW: cssCls(`${BASE_CLS}__row`, rowType),
+                NESTED_ROW: nestedItems ? cssCls(`${BASE_CLS}__row`, 'nested') : '',
+                NESTED_GRID: nestedItems ? cssCls(`${BASE_CLS}__body`, `nested-${itemLvl+1}`) : '',
+            },
         };
     }
 

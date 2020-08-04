@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { GridHeader as GridHeaderCmp } from '../../prsntn-grp/grid-header';
 import { Pagination as PaginationCmp } from '../../prsntn-grp/pagination';
 import { DataGrid } from './';
@@ -156,58 +156,74 @@ const sampleData: any[] = [
     }
 ];
 
-const TrCmp = ({ item, nestedItems , classNames, expandProps }: IRowComponentProps) => {
-    const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
-    const { isOpen, onClick }: any = nestedItems ? expandProps : {};
-    const { name, age, id } = item;
-
-    return <>
-        <tr className={REG_ROW}>
-            <td>{id}</td>
-            <td>{name}</td>
-            <td>{age}</td>
-            <td>{ nestedItems &&
-                <button type="button" style={defStyle.expdBtn} onClick={onClick}>
-                    {isOpen ? '-' : '+' }
-                </button>}
-            </td>
-        </tr>{ nestedItems && isOpen &&
-        <tr className={NESTED_ROW}>
-            {/* Customizable Cells and Column Span*/}
-            <td colSpan={4}>
-                <table className={NESTED_GRID}>
-                    {/* Customizable Header */}
-                    <tbody>
-                        {nestedItems}
-                    </tbody>
-                </table>
-            </td>
-        </tr>}
-    </>;
+const commonProps = {
+    data: sampleData,
+    rowKey: 'id',
+    header: [
+        { title: 'a', subHeader: [
+            {title: 'a-1', subHeader: [
+                {title: 'a-1-1'},
+                {title: 'a-1-2'}
+            ] },
+            {title: 'a-2'}
+        ]},
+        {title: 'b'},
+    ],
+    expand: {
+        // showAll: true,
+        onePerLevel: true
+    },
+    sort: {
+        key: 'name',
+        isAsc: true,
+        reset: true,
+    },
+    paginate: {
+        page: 0,
+        increment: [10, 5, 20],
+    },
+    callback: {
+        onPaginateChange: (modState) => console.log(modState),
+        onSortChange: (modState) => console.log(modState),
+        onExpandChange: (modState) => console.log(modState)
+    }
 };
 
-export const ViaInternalGeneratedCollapsibleState = () => {
-    const [ data, setData ] = useState(sampleData);
+export const TableGrid = () => {
+    const TrCmp = ({ item, nestedItems , classNames, expandProps }: IRowComponentProps) => {
+        const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
+        const { isOpen, onClick }: any = nestedItems ? expandProps : {};
+        const { name, age, id } = item;
 
-/*     useEffect(() => {
-        const id = setTimeout(() => {
-            setData([
-                ...sampleData,
-                {
-                    name: 'Tom',
-                    age: '22',
-                    id: 'A4'
-                }
-            ]);
-        }, 3000);
-        return () => clearTimeout(id);
-    }, []) */
+        return <>
+            <tr className={REG_ROW}>
+                <td>{id}</td>
+                <td>{name}</td>
+                <td>{age}</td>
+                <td>{ nestedItems &&
+                    <button type="button" style={defStyle.expdBtn} onClick={onClick}>
+                        {isOpen ? '-' : '+' }
+                    </button>}
+                </td>
+            </tr>{ nestedItems && isOpen &&
+            <tr className={NESTED_ROW}>
+                {/* Customizable Cells and Column Span*/}
+                <td colSpan={4}>
+                    <table className={NESTED_GRID}>
+                        {/* Customizable Header */}
+                        <tbody>
+                            {nestedItems}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>}
+        </>;
+    };
 
     return <div style={defStyle.wrapper}>
         <DataGrid
-            data={data}
+            {...commonProps}
             type="table"
-            rowKey="id"
             header={[
                 { title: 'id', sortKey: 'id' },
                 { title: 'name', sortKey: 'name' },
@@ -225,24 +241,52 @@ export const ViaInternalGeneratedCollapsibleState = () => {
                     ['lvl4key', TrCmp]
                 ]
             }}
-            expand={{
-                // showAll: true,
-                onePerLevel: true
-            }}
-            sort={{
-                key: 'name',
-                isAsc: true,
-                reset: true,
-            }}
-            paginate={{
-                page: 0,
-                increment: [10, 5, 20],
-            }}
-            callback={{
-                onPaginateChange: (modState) => console.log(modState),
-                onSortChange: (modState) => console.log(modState),
-                onExpandChange: (modState) => console.log(modState)
-            }}
             />
-    </div>
+    </div>;
+};
+
+export const ListGrid = () => {
+    const ListCmp = ({ item, nestedItems, rowColStyle, classNames, expandProps }) => {
+        const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
+        const { isOpen, onClick }: any = nestedItems ? expandProps : {};
+        const { name, age, id } = item;
+
+        return <>
+            <li style={rowColStyle} className={REG_ROW}>
+                <span data-header="id">{id}</span>
+                <span data-header="name">{name}</span>
+                <span data-header="age">{age}</span>
+                <span>{ nestedItems &&
+                    <button type="button" style={defStyle.expdBtn} onClick={onClick}>
+                        {isOpen ? '-' : '+' }
+                    </button>}
+                </span>
+            </li>{ nestedItems && isOpen &&
+            <li className={NESTED_ROW}>
+                {/* Customizable Cells and Column Span*/}
+                <ul className={NESTED_GRID}>
+                    {/* Customizable Header */}
+                    {nestedItems}
+                </ul>
+            </li>}
+        </>;
+    };
+
+    return <div style={defStyle.wrapper}>
+        <DataGrid
+            type="list"
+            component={{
+                header: GridHeaderCmp,
+                pagination: PaginationCmp,
+                rows: [
+                    [ListCmp],
+                    ['lvl1key', ListCmp],
+                    ['lvl2key', ListCmp],
+                    ['lvl3key', ListCmp],
+                    ['lvl4key', ListCmp]
+                ]
+            }}
+            {...commonProps}
+            />
+    </div>;
 };
