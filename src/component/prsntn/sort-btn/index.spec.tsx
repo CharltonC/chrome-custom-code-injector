@@ -1,7 +1,7 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { SortBtn } from './';
 
-describe('Component - TODO: Component Name', () => {
+describe('Component - Sort Button', () => {
     let $elem: HTMLElement;
     let $btn: HTMLButtonElement;
 
