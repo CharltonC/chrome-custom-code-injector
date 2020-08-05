@@ -83,6 +83,7 @@
     "jest": "25.5.3",
     "minify-stream": "2.0.1",
     "pug": "2.0.4",
+    "react-test-renderer": "16.13.1",
     "tinyify": "2.5.2",
     "tree-cli": "0.4.12",
     "ts-loader": "7.0.4",
