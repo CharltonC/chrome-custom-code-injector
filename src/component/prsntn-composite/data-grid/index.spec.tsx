@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import TestRenderer from 'react-test-renderer';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/ui-handle/util/index';
@@ -10,12 +11,10 @@ import { HeaderGrpHandle } from '../../../service/ui-handle/header-group';
 import { DataGrid } from './';
 import { IProps, IState, TShallResetState } from './type';
 
-
 const mockPaginationElem = <div className="pagination"/>;
 const mockGridHeaderElem = <div className="header" />;
 jest.mock('../../prsntn-grp/pagination', () => ({ Pagination: () => mockPaginationElem }));
 jest.mock('../../prsntn-grp/grid-header', () => ({ GridHeader: () => mockGridHeaderElem }));
-
 
 describe('Component - Data Grid', () => {
     let cmp: DataGrid;
@@ -297,16 +296,31 @@ describe('Component - Data Grid', () => {
     describe('Row and Row Transform related', () => {
         describe('Method - transformRowOption: Transform the Row to return User Provided Row component', () => {
             it('should return transform row option', () => {
-                const mockRowOption: any = [
-                    [ 'h1' ],
-                    [ 'lorem', 'h2' ]
-                ];
-                spy.getRowCmpProps.mockReturnValue({});
-                const [ itemOne, itemTwo ]: any = cmp.transformRowOption(mockRowOption);
+                const mockRtnFn: jest.Mock = jest.fn();
+                const mockCmp: jest.Mock = jest.fn();
+                spy.getRowTransformFn.mockReturnValue(mockRtnFn);
 
-                expect(itemOne[0]()).toEqual(<h1 />);
-                expect(itemTwo[0]).toBe('lorem');
-                expect(itemTwo[1]()).toEqual(<h2 />);
+                expect(cmp.transformRowOption([
+                    [ mockCmp ],
+                    [ 'lorem', mockCmp ]
+                ])).toEqual([
+                    [ mockRtnFn ],
+                    [ 'lorem', mockRtnFn ]
+                ]);
+            });
+        });
+
+        describe('Method - getRowTransformFn: Get the Transform Function which returns a Row Component', () => {
+            it('should return the function', () => {
+                const mockProps = {} as IProps;
+                const mockState = {} as IState;
+                const MockCmp = () => <h1>lorem</h1>;
+
+                spy.getRowCmpProps.mockReturnValue({});
+                const cmpTransformFn = cmp.getRowTransformFn(MockCmp, mockProps, mockState);
+                const { type, children } = TestRenderer.create(cmpTransformFn()).toJSON();
+                expect(type).toBe('h1');
+                expect(children[0]).toBe('lorem');
             });
         });
 
