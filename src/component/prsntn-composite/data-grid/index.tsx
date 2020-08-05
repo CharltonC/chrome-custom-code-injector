@@ -41,9 +41,9 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     render(): ReactElement {
-        const { BASE_CLS, cssCls } = this;
-        const { isTb, headerCtx, pgnState } = this.state;
-        const { type, component } = this.props;
+        const { BASE_CLS, cssCls, props, state } = this;
+        const { isTb, headerCtx, pgnState } = state;
+        const { type, component } = props;
         const { commonProps } = component;
 
         const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
@@ -178,23 +178,13 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    getRowElems(sortedData: TDataOption): ReactElement[] {
-        const { rowKey: rowIdKey, expand } = this.props;
-        const { pgnState, rowsOption: rows } = this.state;
+    getRowElems(sortedData: TDataOption, props: IProps, state: IState): ReactElement[] {
+        const { rowKey: rowIdKey, expand } = props;
+        const { pgnState, rowsOption: rows } = state;
         const { startIdx, endIdx } = pgnState ?? {};
         const { showAll } = expand ?? {};
         const data: TDataOption = pgnState ? sortedData.slice(startIdx, endIdx) : sortedData;
         return this.rowHandle.createCtxRows<ReactElement>({ data, rows, rowIdKey, showAll });
-    }
-
-    getHeaderProps(data: TDataOption): gridHeaderType.IProps {
-        const { headerCtx } = this.state;
-        const { type } = this.props;
-        return {
-            type,
-            sortBtnProps: (sortKey: string) => this.getSortCmpProps(data, sortKey),
-            rows: headerCtx
-        };
     }
 
     //// Get/Wrap Conditional Components
@@ -219,6 +209,16 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     //// Sort, Expand, Pagination
     getSortedData(): TDataOption {
         return this.state.sortState?.data || this.props.data;
+    }
+
+    getHeaderProps(data: TDataOption): gridHeaderType.IProps {
+        const { headerCtx } = this.state;
+        const { type } = this.props;
+        return {
+            type,
+            sortBtnProps: (sortKey: string) => this.getSortCmpProps(data, sortKey),
+            rows: headerCtx
+        };
     }
 
     getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
