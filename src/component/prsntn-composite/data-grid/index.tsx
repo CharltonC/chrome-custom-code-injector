@@ -12,7 +12,7 @@ import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
     TCmp, TFn, TRowCtx, IRowComponentProps,
-    rowHandleType, expdHandleType, paginationType, sortBtnType
+    rowHandleType, expdHandleType, paginationType, sortBtnType, gridHeaderType
 } from './type';
 
 
@@ -40,34 +40,25 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         this.setState({ ...this.state, ...modState });
     }
 
-    render() {
+    render(): ReactElement {
         const { BASE_CLS, cssCls } = this;
-        const { isTb, headerCtx } = this.state;
-        const { type, paginate, component } = this.props;
+        const { isTb, headerCtx, pgnState } = this.state;
+        const { type, component } = this.props;
+        const { commonProps } = component;
 
-        const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, isTb ? 'table' : 'list');
-        const ROOT_CLS: string = cssCls(`${BASE_CLS}__body`, 'root');
-
-        const { pagination: UserPagination, header: UserHeader, commonProps } = component;
-        const Pagination: TCmp = UserPagination ?? DefPagination;
-        const Header: TCmp = UserHeader ?? DefGridHeader;
-        const data: TDataOption = this.getSortedData();
-        const sortBtnProps = (sortKey: string) => this.getSortCmpProps(data, sortKey);
-        const paginationProps = { commonProps, ...this.getPgnCmpProps(data) };
-        const headerProps = { type, commonProps, sortBtnProps, rows: headerCtx };
-        const rowsElem: ReactElement[] = this.getRowsElem(data);
+        const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
+        const sortedData: TDataOption = this.getSortedData();
+        const headerProps = { commonProps, ...this.getHeaderProps(sortedData) };
+        const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
+        const { Header, Pagination } = this.getPreferredCmp();
+        const headElem: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
+        const rowElems: ReactElement[] = this.getRowElems(sortedData);
+        const bodyElem: ReactElement = this.getGridBodyElem(isTb, headElem, rowElems);
 
         return (
-            <div className={WRAPPER_CLS}>{ paginate &&
-                <Pagination {...paginationProps} />}{ isTb ?
-                <table>{ headerCtx &&
-                    <Header {...headerProps} />}
-                    <tbody className={ROOT_CLS}>{rowsElem}</tbody>
-                </table> :
-                <>{ headerCtx &&
-                    <Header {...headerProps} />}
-                    <ul className={ROOT_CLS}>{rowsElem}</ul>
-                </>}
+            <div className={WRAPPER_CLS}>
+                { pgnState && <Pagination {...paginationProps} />}
+                { isTb ? <table>{bodyElem}</table> : bodyElem }
             </div>
         );
     }
@@ -187,16 +178,42 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    getRowsElem(data: TDataOption): ReactElement[] {
-        const { rowKey, expand } = this.props;
-        const { pgnOption, pgnState, rowsOption } = this.state;
-        const { startIdx, endIdx } = pgnOption ? pgnState : {} as any;
-        return this.rowHandle.createCtxRows<ReactElement>({
-            data: pgnOption ? data.slice(startIdx, endIdx) : data,
-            rows: rowsOption,
-            rowIdKey: rowKey,
-            showAll: expand?.showAll ?? false
-        });
+    getRowElems(sortedData: TDataOption): ReactElement[] {
+        const { rowKey: rowIdKey, expand } = this.props;
+        const { pgnState, rowsOption: rows } = this.state;
+        const { startIdx, endIdx } = pgnState ?? {};
+        const { showAll } = expand ?? {};
+        const data: TDataOption = pgnState ? sortedData.slice(startIdx, endIdx) : sortedData;
+        return this.rowHandle.createCtxRows<ReactElement>({ data, rows, rowIdKey, showAll });
+    }
+
+    getHeaderProps(data: TDataOption): gridHeaderType.IProps {
+        const { headerCtx } = this.state;
+        const { type } = this.props;
+        return {
+            type,
+            sortBtnProps: (sortKey: string) => this.getSortCmpProps(data, sortKey),
+            rows: headerCtx
+        };
+    }
+
+    //// Get/Wrap Conditional Components
+    getGridBodyElem(isTb: boolean, headElem: ReactElement, rowsElem: ReactElement[]): ReactElement {
+        const { BASE_CLS, cssCls } = this;
+        const ROOT_CLS: string = cssCls(`${BASE_CLS}__body`, 'root');
+        const Body = isTb ? 'tbody' : 'ul';
+        return (<>
+            {headElem}
+            <Body className={ROOT_CLS}>{rowsElem}</Body>
+        </>);
+    }
+
+    getPreferredCmp(): { Header: TCmp, Pagination: TCmp } {
+        const { pagination, header } = this.props.component;
+        return {
+            Header: header ?? DefGridHeader,
+            Pagination: pagination ?? DefPagination
+        };
     }
 
     //// Sort, Expand, Pagination
