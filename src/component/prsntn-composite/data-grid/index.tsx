@@ -27,6 +27,8 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     readonly BASE_CLS: string = 'kz-datagrid';
 
     //// Builtin API
+    static defaultProps = { type: 'table' };
+
     constructor(props: IProps) {
         super(props);
         this.state = this.createState(props);
