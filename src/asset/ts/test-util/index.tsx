@@ -62,14 +62,21 @@ export const TestUtil = {
         return $spy;
     },
 
-    spyProtoMethods(target: {new(...args: any[]): any}): Record<string, jest.SpyInstance> {
+    spyProtoMethods(target: {new(...args: any[]): any}, extraKeys: string[] = []): Record<string, jest.SpyInstance> {
         const $spy: Record<string, jest.SpyInstance> = {};
+
         Object
             .getOwnPropertyNames(target.prototype)
             .filter((name: string) => name !== 'constructor')   // Dont mock the constructor as it will cause problem with `this` context
             .forEach((name: string) => {
                 $spy[name] = jest.spyOn(target.prototype, name);
             });
+
+
+        extraKeys.forEach((name: string) => {
+            $spy[name] = jest.spyOn(target.prototype, name);
+        });
+
         return $spy;
     }
 
