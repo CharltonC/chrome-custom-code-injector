@@ -87,3 +87,4 @@ export { sortHandleType as sortHandleType };
 export { headerGrpHandleType as headerGrpHandleType };
 export * as sortBtnType from '../../prsntn/sort-btn/type';
 export * as paginationType from '../../prsntn-grp/pagination/type';
+export * as gridHeaderType from '../../prsntn-grp/grid-header/type';
