@@ -52,7 +52,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
         const { Header, Pagination } = this.getPreferredCmp();
         const headElem: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
-        const rowElems: ReactElement[] = this.getRowElems(sortedData);
+        const rowElems: ReactElement[] = this.getRowElems(sortedData, props, state);
         const bodyElem: ReactElement = this.getGridBodyElem(isTb, headElem, rowElems);
 
         return (
@@ -86,7 +86,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             sortState: sort ? sortHandle.createState(data, sortOption) : null,
             pgnOption,
             pgnState: paginate ? pgnHandle.createState(data, pgnOption) : null,
-            expdState: rows.length > 1 && expand ? expdHandle.createState() : null
+            expdState: rows?.length > 1 && expand ? expdHandle.createState() : null
         };
 
         // If Reset is need, we filter out the state properties to get partial state to be merged later
@@ -152,17 +152,18 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
     transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
         return rows.map((row: TRowOption, idx: number) => {
+            const { props, state } = this;
             const isRootRowConfig: boolean = idx === 0;
             const RowCmp: TCmp = isRootRowConfig ? (row as TRootRowOption)[0] : (row as TNestedRowOption)[1];
-            const transformFn: TFn = (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx)} />;
+            const transformFn: TFn = (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx, props, state)} />;
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 
-    getRowCmpProps(itemCtx: TRowCtx): IRowComponentProps {
+    getRowCmpProps(itemCtx: TRowCtx, props: IProps, state: IState): IRowComponentProps {
         const { cssCls, BASE_CLS } = this;
-        const { commonProps } = this.props.component;
-        const { isTb, headerCtx } = this.state;
+        const { commonProps } = props.component;
+        const { isTb, headerCtx } = state;
         const { itemId, itemLvl, nestedItems, rowType } = itemCtx;
         return {
             ...itemCtx,
