@@ -433,14 +433,14 @@ describe('Component - Data Grid', () => {
     });
 
     describe('Get Conditional Components', () => {
-        const mockElem = null;
-        const MOCK_CLS: string = 'lorem';
-
-        beforeEach(() => {
-            utilHandleSpy.cssCls.mockReturnValue(MOCK_CLS)
-        });
-
         describe('Method getGridBodyElem: Get the wrapped body element for grid', () => {
+            const mockElem = null;
+            const MOCK_CLS: string = 'lorem';
+
+            beforeEach(() => {
+                utilHandleSpy.cssCls.mockReturnValue(MOCK_CLS)
+            });
+
             it('should return wrapped element when it is table', () => {
                 const { props }: ReactElement = cmp.getGridBodyElem(true, mockElem, mockElem);
                 const bodyElem: ReactElement = props.children[1];
