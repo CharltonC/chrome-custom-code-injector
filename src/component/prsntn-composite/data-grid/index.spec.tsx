@@ -11,10 +11,10 @@ import { HeaderGrpHandle } from '../../../service/ui-handle/header-group';
 import { DataGrid } from './';
 import { IProps, IState, TShallResetState } from './type';
 
-const mockPaginationElem = <div className="pagination"/>;
-const mockGridHeaderElem = <div className="header" />;
-jest.mock('../../prsntn-grp/pagination', () => ({ Pagination: () => mockPaginationElem }));
-jest.mock('../../prsntn-grp/grid-header', () => ({ GridHeader: () => mockGridHeaderElem }));
+const MockPagination = () => <div className="pagination"/>;
+const MockGridHeader = () => <div className="header"/>;
+jest.mock('../../prsntn-grp/pagination', () => ({ Pagination: MockPagination }));
+jest.mock('../../prsntn-grp/grid-header', () => ({ GridHeader: MockGridHeader }));
 
 describe('Component - Data Grid', () => {
     let cmp: DataGrid;
@@ -80,8 +80,8 @@ describe('Component - Data Grid', () => {
                 spy.getRowElems.mockReturnValue([]);
                 spy.getGridBodyElem.mockReturnValue(null);
                 spy.getPreferredCmp.mockReturnValue({
-                    Header: () => mockGridHeaderElem,
-                    Pagination: () => mockPaginationElem,
+                    Header: MockGridHeader,
+                    Pagination: MockPagination,
                 });
             });
 
