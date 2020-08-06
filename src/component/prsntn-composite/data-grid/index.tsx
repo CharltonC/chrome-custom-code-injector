@@ -160,11 +160,11 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         });
     }
 
-    getRowTransformFn(RowCmp: TCmp, props: IProps, state: IState): TFn {
+    getRowTransformFn(RowCmp: TCmp, props: Partial<IProps>, state: Partial<IState>): TFn {
         return (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx, props, state)} />;
     }
 
-    getRowCmpProps(itemCtx: TRowCtx, props: IProps, state: IState): IRowComponentProps {
+    getRowCmpProps(itemCtx: TRowCtx, props: Partial<IProps>, state: Partial<IState>): IRowComponentProps {
         const { cssCls, BASE_CLS } = this;
         const { commonProps } = props.component;
         const { isTb, headerCtx } = state;
@@ -183,7 +183,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    getRowElems(sortedData: TDataOption, props: IProps, state: IState): ReactElement[] {
+    getRowElems(sortedData: TDataOption, props: Partial<IProps>, state: Partial<IState>): ReactElement[] {
         const { rowKey: rowIdKey, expand } = props;
         const { pgnState, rowsOption: rows } = state;
         const { startIdx, endIdx } = pgnState ?? {};
