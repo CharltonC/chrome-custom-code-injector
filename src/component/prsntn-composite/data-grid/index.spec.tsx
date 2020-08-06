@@ -293,7 +293,7 @@ describe('Component - Data Grid', () => {
         });
     });
 
-    describe('Row and Row Transform related', () => {
+    describe('Row and Row Transform', () => {
         describe('Method - transformRowOption: Transform the Row to return User Provided Row component', () => {
             it('should return transform row option', () => {
                 const mockRtnFn: jest.Mock = jest.fn();
@@ -363,7 +363,7 @@ describe('Component - Data Grid', () => {
                     NESTED_ROW: MOCK_CLS,
                     NESTED_GRID: MOCK_CLS
                 })
-                expect(spy.getRowCmpExpdProps).toHaveBeenCalledWith(mockItemCtx);
+                expect(spy.getRowCmpExpdProps).toHaveBeenCalledWith(mockItemCtx, mockBaseProps);
             });
 
             it('should return props when there is no nested items', () => {

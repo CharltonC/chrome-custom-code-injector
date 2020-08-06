@@ -173,7 +173,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             ...itemCtx,
             key: itemId,
             commonProps,
-            expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
+            expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx, props) : null,
             rowColStyle: isTb  ? null : { '--cols': headerCtx.colTotal },
             classNames:  {
                 REG_ROW: cssCls(`${BASE_CLS}__row`, rowType),
@@ -238,8 +238,8 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return sortBtnAttr;
     }
 
-    getRowCmpExpdProps(itemCtx: TRowCtx) {
-        const { expand, callback } = this.props;
+    getRowCmpExpdProps(itemCtx: TRowCtx, props: Partial<IProps>) {
+        const { expand, callback } = props;
         const { onExpandChange } = callback ?? {};
 
         return this.expdHandle.getExpdBtnAttr({
