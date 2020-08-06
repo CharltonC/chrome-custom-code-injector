@@ -8,6 +8,8 @@ import { RowHandle } from '../../../service/ui-handle/row';
 import { SortHandle } from '../../../service/ui-handle/sort';
 import { PgnHandle } from '../../../service/ui-handle/pagination';
 import { HeaderGrpHandle } from '../../../service/ui-handle/header-group';
+import { Pagination } from '../../prsntn-grp/pagination';
+import { GridHeader } from '../../prsntn-grp/grid-header';
 import { DataGrid } from './';
 import { IProps, IState, TShallResetState } from './type';
 
@@ -454,8 +456,21 @@ describe('Component - Data Grid', () => {
             });
         });
 
-        describe('Method - getPreferredCmp: Get User provided component or Default builtin component', () => {
+        describe('Method - getPreferredCmp: Get User provided component or Default builtin component for header and pagination', () => {
+            it('should return builtin components when there is no User provided components', () => {
+                expect(cmp.getPreferredCmp({})).toEqual({
+                    Header: GridHeader,
+                    Pagination,
+                });
+            });
 
+            it('should return User provided components when there is any', () => {
+                const mockUserCmp = {
+                    Header: jest.fn(),
+                    Pagination: jest.fn()
+                };
+                expect(cmp.getPreferredCmp(mockUserCmp)).toEqual({ ...mockUserCmp });
+            });
         });
     });
 
