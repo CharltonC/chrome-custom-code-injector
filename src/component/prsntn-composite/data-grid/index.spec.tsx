@@ -11,12 +11,10 @@ import { HeaderGrpHandle } from '../../../service/ui-handle/header-group';
 import { DataGrid } from './';
 import { IProps, IState, TShallResetState } from './type';
 
-const MockPagination = () => <div className="pagination"/>;
-const MockGridHeader = () => <div className="header"/>;
-jest.mock('../../prsntn-grp/pagination', () => ({ Pagination: MockPagination }));
-jest.mock('../../prsntn-grp/grid-header', () => ({ GridHeader: MockGridHeader }));
 
 describe('Component - Data Grid', () => {
+    const MockPagination = () => <div className="pagination"/>;
+    const MockGridHeader = () => <div className="header"/>;
     let cmp: DataGrid;
     let spy: TMethodSpy<DataGrid>;
     let utilHandleSpy: TMethodSpy<UtilHandle>;
