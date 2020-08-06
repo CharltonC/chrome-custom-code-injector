@@ -107,6 +107,6 @@ export class SortHandle implements IUiHandle {
             const sortOption: IOption = this.createOption(modOption, option);
             const sortState: IState = this.createState(data, sortOption);
             if (callback) callback({ sortOption, sortState });
-        }).bind(this);
+        });
     }
 }

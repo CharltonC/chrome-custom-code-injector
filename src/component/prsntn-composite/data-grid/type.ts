@@ -91,11 +91,11 @@ export type TSortCmpPropsQuery = {
 };
 
 //// Reexport
-export { pgnHandleType as pgnHandleType };
-export { rowHandleType as rowHandleType };
-export { expdHandleType as expdHandleType };
-export { sortHandleType as sortHandleType };
-export { headerGrpHandleType as headerGrpHandleType };
+export { pgnHandleType };
+export { rowHandleType };
+export { expdHandleType };
+export { sortHandleType };
+export { headerGrpHandleType };
 export * as sortBtnType from '../../prsntn/sort-btn/type';
 export * as paginationType from '../../prsntn-grp/pagination/type';
 export * as gridHeaderType from '../../prsntn-grp/grid-header/type';

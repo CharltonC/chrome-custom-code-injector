@@ -412,17 +412,14 @@ describe('Handle Service - Default Sorter', () => {
             const mockCallback: jest.Mock = jest.fn();
             const mockRtnOption = 'option';
             const mockRtnState = 'state';
-            let spyBind: jest.SpyInstance;
 
             beforeEach(() => {
-                spyBind = jest.spyOn(Function.prototype, 'bind');
                 spy.createOption.mockReturnValue(mockRtnOption);
                 spy.createState.mockReturnValue(mockRtnState);
             });
 
             it('should return an binded event handler when callback is provied', () => {
                 const evtHandler = handle.getGenericCmpEvtHandler(mockData, mockOption, mockCallback);
-                expect(spyBind).toHaveBeenCalledWith(handle);
 
                 evtHandler(mockModOption);
                 expect(spy.createOption).toHaveBeenCalledWith(mockModOption, mockOption);

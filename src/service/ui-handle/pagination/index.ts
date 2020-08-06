@@ -371,7 +371,7 @@ export class PgnHandle implements IUiHandle {
             const pgnOption: IOption = this.createOption(modOption, option);
             const pgnState: IState = this.createState(data, pgnOption);
             if (callback) callback({ pgnOption, pgnState });
-        }).bind(this);
+        });
     }
 
     getTargetPageIdxByPos(state: IState, pages: TPageList, [currPos, activePos]: [number, number]): number {

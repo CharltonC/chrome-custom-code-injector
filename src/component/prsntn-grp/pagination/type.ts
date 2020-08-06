@@ -22,4 +22,4 @@ export interface ISelectProps extends dropdownType.IProps {
 }
 
 //// Reexport
-export { pgnHandleType as pgnHandleType };
+export { pgnHandleType };

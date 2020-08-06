@@ -8,10 +8,6 @@ export class GridHeader extends MemoComponent<IProps> {
     readonly BASE_CLS: string = 'kz-datagrid__head';
     readonly cssCls = new UtilHandle().cssCls;
 
-    constructor(props: IProps) {
-        super(props);
-    }
-
     render() {
         const TB: string = 'table';
         const isTb: boolean = (this.props.type ?? TB) === TB;

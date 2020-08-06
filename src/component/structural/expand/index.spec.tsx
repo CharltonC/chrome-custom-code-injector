@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, IState } from './type';
+import { IProps } from './type';
 import { _ExpandWrapper, ExpandWrapper } from '.';
 
 describe('Component - Visible Wrapper', () => {

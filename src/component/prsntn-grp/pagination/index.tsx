@@ -13,10 +13,6 @@ const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
 const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
 
 export class _Pagination extends Component<IProps> {
-    constructor(props: IProps) {
-        super(props);
-    }
-
     render() {
         const {
             startRecord, endRecord, totalRecord,

@@ -62,7 +62,7 @@ export class ExpdHandle {
                     this.rmvRowInExpdState(modExpdState, itemId);
                 }
 
-                callback?.({ expdState: { ... modExpdState} });
+                callback?.({ expdState: { ...modExpdState } });
             }
         };
     }
@@ -89,7 +89,7 @@ export class ExpdHandle {
                     modExpdState[itemId] = itemLvl;
                 }
 
-                callback?.({ expdState: { ... modExpdState} });
+                callback?.({ expdState: { ...modExpdState } });
             }
         };
     }
