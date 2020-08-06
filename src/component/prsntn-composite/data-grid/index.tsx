@@ -11,7 +11,7 @@ import { GridHeader as DefGridHeader } from '../../prsntn-grp/grid-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
-    TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp,
+    TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp, TSortCmpPropsQuery,
     rowHandleType, expdHandleType, paginationType, sortBtnType, gridHeaderType
 } from './type';
 
@@ -47,8 +47,8 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { commonProps, rows, ...defCmp } = component;
 
         const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
-        const sortedData: TDataOption = this.getSortedData();
-        const headerProps = { commonProps, ...this.getHeaderProps(sortedData) };
+        const sortedData: TDataOption = this.getSortedData(props, state);
+        const headerProps = { commonProps, ...this.getHeaderProps(sortedData, props, state) };
         const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
         const { Header, Pagination } = this.getPreferredCmp(defCmp);
         const headElem: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
@@ -211,30 +211,30 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     //// Sort, Expand, Pagination
-    getSortedData(): TDataOption {
-        return this.state.sortState?.data || this.props.data;
+    getSortedData(props: Partial<IProps>, state: Partial<IState>): TDataOption {
+        return state.sortState?.data || props.data;
     }
 
-    getHeaderProps(data: TDataOption): gridHeaderType.IProps {
-        const { headerCtx } = this.state;
-        const { type } = this.props;
+    getHeaderProps(data: TDataOption, props: Partial<IProps>, state: Partial<IState>): gridHeaderType.IProps {
+        const { type, callback } = props;
+        const { headerCtx, sortOption } = state;
+        const { onSortChange } = callback ?? {};
         return {
             type,
-            sortBtnProps: (sortKey: string) => this.getSortCmpProps(data, sortKey),
-            rows: headerCtx
+            rows: headerCtx,
+            sortBtnProps: (sortKey: string) => this.getSortCmpProps({ data, sortKey, sortOption, onSortChange })
         };
     }
 
-    getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
-        const { sortOption } = this.state;
+    getSortCmpProps({ data, sortKey, sortOption, onSortChange }: TSortCmpPropsQuery): sortBtnType.IProps {
         if (!sortOption) return null;
 
-        const { onSortChange } = this.props.callback ?? {};
         const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
             data,
-            callback: (modState: TModSortState) => this.onStateChange(modState, onSortChange),
-            option: sortOption
+            option: sortOption,
+            callback: this.getOnStateChangeHandler(onSortChange)
         }, sortKey);
+
         return sortBtnAttr;
     }
 
@@ -246,7 +246,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             itemCtx: itemCtx as expdHandleType.TItemCtx,
             expdState: this.state.expdState,
             option: expand,
-            callback: (modState: TModExpdState) => this.onStateChange(modState, onExpandChange),
+            callback: this.getOnStateChangeHandler(onExpandChange),
         });
     }
 
@@ -259,15 +259,17 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
                 data,
-                callback: (modState: Partial<IState>) => this.onStateChange(modState, onPaginateChange),
+                callback: this.getOnStateChangeHandler(onPaginateChange),
                 option: pgnOption,
                 state: pgnState
             })
         };
     }
 
-    onStateChange(modState: Partial<IState>, userCallback: TFn): void {
-        this.setState({ ...this.state, ...modState });
-        userCallback?.(modState);
+    getOnStateChangeHandler(userCallback: TFn): TFn {
+        return (modState: Partial<IState>): void => {
+            this.setState({ ...this.state, ...modState });
+            userCallback?.(modState);
+        };
     }
 }
