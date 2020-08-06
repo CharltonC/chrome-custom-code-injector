@@ -49,7 +49,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
         const sortedData: TDataOption = this.getSortedData(props, state);
         const headerProps = { commonProps, ...this.getHeaderProps(sortedData, props, state) };
-        const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
+        const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData, props, state) };
         const { Header, Pagination } = this.getPreferredCmp(defCmp);
         const headElem: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
         const rowElems: ReactElement[] = this.getRowElems(sortedData, props, state);
@@ -173,7 +173,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             ...itemCtx,
             key: itemId,
             commonProps,
-            expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx, props) : null,
+            expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx, props, state) : null,
             rowColStyle: isTb  ? null : { '--cols': headerCtx.colTotal },
             classNames:  {
                 REG_ROW: cssCls(`${BASE_CLS}__row`, rowType),
@@ -238,21 +238,21 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return sortBtnAttr;
     }
 
-    getRowCmpExpdProps(itemCtx: TRowCtx, props: Partial<IProps>) {
+    getRowCmpExpdProps(itemCtx: TRowCtx, props: Partial<IProps>, state: Partial<IState>) {
+        const { expdState } = state;
         const { expand, callback } = props;
         const { onExpandChange } = callback ?? {};
-
         return this.expdHandle.getExpdBtnAttr({
             itemCtx: itemCtx as expdHandleType.TItemCtx,
-            expdState: this.state.expdState,
+            expdState,
             option: expand,
             callback: this.getOnStateChangeHandler(onExpandChange),
         });
     }
 
-    getPgnCmpProps(data: TDataOption): paginationType.IProps {
-        const { onPaginateChange } = this.props.callback ?? {};
-        const { pgnOption, pgnState } = this.state;
+    getPgnCmpProps(data: TDataOption, props: Partial<IProps>, state: Partial<IState>): paginationType.IProps {
+        const { onPaginateChange } = props.callback ?? {};
+        const { pgnOption, pgnState } = state;
         if (!pgnOption) return null;
 
         return {

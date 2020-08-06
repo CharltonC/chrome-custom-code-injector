@@ -11,7 +11,7 @@ import { HeaderGrpHandle } from '../../../service/ui-handle/header-group';
 import { Pagination } from '../../prsntn-grp/pagination';
 import { GridHeader } from '../../prsntn-grp/grid-header';
 import { DataGrid } from './';
-import { IProps, IState, TShallResetState } from './type';
+import { IProps, IState, TShallResetState, TSortCmpPropsQuery } from './type';
 
 
 describe('Component - Data Grid', () => {
@@ -363,7 +363,7 @@ describe('Component - Data Grid', () => {
                     NESTED_ROW: MOCK_CLS,
                     NESTED_GRID: MOCK_CLS
                 })
-                expect(spy.getRowCmpExpdProps).toHaveBeenCalledWith(mockItemCtx, mockBaseProps);
+                expect(spy.getRowCmpExpdProps).toHaveBeenCalledWith(mockItemCtx, mockBaseProps, mockBaseState);
             });
 
             it('should return props when there is no nested items', () => {
@@ -475,25 +475,160 @@ describe('Component - Data Grid', () => {
     });
 
 
-    describe('Sort, Expand, Pagination related', () => {
-        describe('Method - getSortedData: Get either the raw or sorted data', () => {
+    describe('Header, Sort, Expand, Pagination', () => {
+        let mockRtnHandler: jest.Mock;
 
+        beforeEach(() => {
+            mockRtnHandler = jest.fn();
         });
 
-        describe('Method - getSortCmpProps: Get the sorting related props for Grid Header Component', () => {
+        describe('Method - getSortedData: Get either the raw or sorted data', () => {
+            const mockRawData = [];
+            const mockProps = { data: mockRawData };
 
+            it('should return sorted data if exists', () => {
+                const sortedData = [ {} ];
+                const mockState = { sortState: { data: sortedData } };
+                expect(cmp.getSortedData(mockProps, mockState)).toBe(sortedData);
+            });
+
+            it('should return raw data if sorted data doesnt exist', () => {
+                expect(cmp.getSortedData(mockProps, {})).toBe(mockRawData);
+            });
+        });
+
+        describe('Method - getHeaderProps: Get Props for Grid Header component', () => {
+            const mockData = [];
+            const mockProps = { type: 'table' } as IProps;
+            const mockState = { headerCtx: {} } as IState;
+            const mockRtnSortBtnProps = {};
+
+            it('should return props', () => {
+                spy.getSortCmpProps.mockReturnValue(mockRtnSortBtnProps);
+                const { sortBtnProps, ...props } = cmp.getHeaderProps(mockData, mockProps, mockState);
+
+                expect(props).toEqual({ type: mockProps.type, rows: mockState.headerCtx });
+                expect(sortBtnProps('lorem')).toBe(mockRtnSortBtnProps);
+            });
+        });
+
+        describe('Method - getSortCmpProps: Get the sorting related props used in Grid Header Component', () => {
+            const mockRtnSortBtnAttr = {};
+            const mockQuery: any = {
+                sortKey: '',
+                data: [],
+                sortOption: {},
+                onSortChange: jest.fn()
+            };
+
+            beforeEach(() => {
+                spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
+                sortHandleSpy.createGenericCmpAttr.mockReturnValue({ sortBtnAttr: mockRtnSortBtnAttr });
+            });
+
+            it('should return props when there is sort option', () => {
+                expect(cmp.getSortCmpProps(mockQuery)).toBe(mockRtnSortBtnAttr);
+            });
+
+            it('should return null when there isnt sort option', () => {
+                expect(cmp.getSortCmpProps({...mockQuery, sortOption: null})).toBe(null);
+            });
         });
 
         describe('Method - getRowCmpExpdProps: Get the expand related props for Row Component', () => {
+            const mockItemCtx: any = {};
+            const mockState = { expdState: {} };
+            const mockRtnProps = {};
+            let mockProps: any;
+            let mockCallback: jest.Mock;
 
+            beforeEach(() => {
+                mockCallback = jest.fn();
+                mockProps = { expand: {}, callback: { onExpandChange: mockCallback } };
+                spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
+                expdHandleSpy.getExpdBtnAttr.mockReturnValue(mockRtnProps);
+            });
+
+            it('should return props when user callback exists', () => {
+                expect(cmp.getRowCmpExpdProps(mockItemCtx, mockProps, mockState)).toEqual(mockRtnProps);
+                expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(mockCallback);
+            });
+
+            it('should return props when user callback doesnt exists', () => {
+                mockProps = {};
+                expect(cmp.getRowCmpExpdProps(mockItemCtx, mockProps, mockState)).toEqual(mockRtnProps);
+                expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(undefined);
+            });
         });
 
         describe('Method - getPgnCmpProps: Get the props for Pagination Component', () => {
+            const mockData = [];
+            const mockState: any = { pgnOption: {}, pgnState: { lorem: 1 } };
+            const mockRtnProps = { sum: 2 };
+            let mockProps: any;
+            let mockCallback: jest.Mock;
 
+            beforeEach(() => {
+                mockCallback = jest.fn();
+                mockProps = { callback: { onPaginateChange: mockCallback } };
+                spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
+                pgnHandleSpy.createGenericCmpAttr.mockReturnValue(mockRtnProps);
+            });
+
+            it('should return props when there is paginate option and user callback exists', () => {
+                expect(cmp.getPgnCmpProps(mockData, mockProps, mockState)).toEqual({
+                    ...mockState.pgnState,
+                    ...mockRtnProps
+                });
+                expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(mockCallback);
+            });
+
+            it('should return props when there is paginate option and user callback doenst exist', () => {
+                mockProps = {};
+                expect(cmp.getPgnCmpProps(mockData, mockProps, mockState)).toEqual({
+                    ...mockState.pgnState,
+                    ...mockRtnProps
+                });
+                expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(undefined);
+            });
+
+            it('should return null when there isnt paginate option', () => {
+                expect(cmp.getPgnCmpProps(mockData, mockProps, {...mockState, pgnOption: null})).toBe(null);
+            });
         });
 
-        describe('Method - onStateChange: Common Handler for state changes', () => {
+        describe('Method - getOnStateChangeHandler: Get Handler for state changes', () => {
+            const mockState = { isTb: true, rowsOption: [] } as IState;
+            const mockModState = { isTb: false };
+            let mockUserCallback: jest.Mock;
 
+            beforeEach(() => {
+                mockUserCallback = jest.fn();
+                spy.setState.mockImplementation(() => {});
+                cmp.state = mockState;
+            });
+
+            it('should return the handler when provided user callback', () => {
+                const handler = cmp.getOnStateChangeHandler(mockUserCallback);
+
+                handler(mockModState);
+                expect(spy.setState).toHaveBeenCalledWith({
+                    ...mockState,
+                    ...mockModState
+                });
+                expect(mockUserCallback).toHaveBeenCalledWith(mockModState);
+            });
+
+            it('should return the handler when not provided user callback', () => {
+                const handler = cmp.getOnStateChangeHandler(null);
+
+                handler(mockModState);
+                expect(spy.setState).toHaveBeenCalledWith({
+                    ...mockState,
+                    ...mockModState
+                });
+                expect(mockUserCallback).not.toHaveBeenCalled();
+            });
         });
     });
 });
