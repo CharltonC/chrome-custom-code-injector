@@ -231,8 +231,8 @@ export const TableGrid = () => {
                 { title: '' },
             ]}
             component={{
-                header: GridHeaderCmp,
-                pagination: PaginationCmp,
+                Header: GridHeaderCmp,
+                Pagination: PaginationCmp,
                 rows: [
                     [TrCmp],
                     ['lvl1key', TrCmp],
@@ -276,8 +276,8 @@ export const ListGrid = () => {
         <DataGrid
             type="list"
             component={{
-                header: GridHeaderCmp,
-                pagination: PaginationCmp,
+                Header: GridHeaderCmp,
+                Pagination: PaginationCmp,
                 rows: [
                     [ListCmp],
                     ['lvl1key', ListCmp],

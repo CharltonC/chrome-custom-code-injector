@@ -26,11 +26,14 @@ export type TRowOption = TRootRowOption | TNestedRowOption;
 export type TRootRowOption = [ TFn ];
 export type TNestedRowOption = [ string, TFn ];
 
-interface IComponentOption {
+export interface IComponentOption extends IPreferredCmp {
     rows: TRowsOption;
-    header?: TCmp;
-    pagination?: TCmp;
     commonProps?: Record<string, any>;
+}
+
+export interface IPreferredCmp {
+    Header?: TCmp;
+    Pagination?: TCmp;
 }
 
 interface ICallbackOption {
