@@ -45,7 +45,7 @@ interface ICallbackOption {
 //// State
 export interface IState {
     isTb: boolean;
-    headerCtx: TTbHeaderCtx | TListHeaderCtx;
+    headerCtx: THeaderCtx;
     rowsOption: rowHandleType.IRawRowsOption[];
     expdState: expdHandleType.IState;
     sortOption: sortHandleType.IOption;
@@ -61,6 +61,7 @@ export type TShallResetState = {
     [K in keyof IState]: boolean;
 }
 
+export type THeaderCtx = TTbHeaderCtx | TListHeaderCtx
 type TTbHeaderCtx = headerGrpHandleType.ICtxTbHeader;
 type TListHeaderCtx = headerGrpHandleType.ICtxListHeader;
 
@@ -81,6 +82,13 @@ export interface IRowComponentProps extends TRowCtx {
         NESTED_GRID: string;
     }
 }
+
+export type TSortCmpPropsQuery = {
+    data: TDataOption;
+    sortKey: string,
+    sortOption: sortHandleType.IOption,
+    onSortChange: TFn;
+};
 
 //// Reexport
 export { pgnHandleType as pgnHandleType };
