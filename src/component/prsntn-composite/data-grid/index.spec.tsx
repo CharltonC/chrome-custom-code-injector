@@ -11,7 +11,7 @@ import { HeaderGrpHandle } from '../../../service/ui-handle/header-group';
 import { Pagination } from '../../prsntn-grp/pagination';
 import { GridHeader } from '../../prsntn-grp/grid-header';
 import { DataGrid } from './';
-import { IProps, IState, TShallResetState, TSortCmpPropsQuery } from './type';
+import { IProps, IState, TShallResetState } from './type';
 
 
 describe('Component - Data Grid', () => {
@@ -313,11 +313,10 @@ describe('Component - Data Grid', () => {
         describe('Method - getRowTransformFn: Get the Transform Function which returns a Row Component', () => {
             it('should return the function', () => {
                 const mockProps = {} as IProps;
-                const mockState = {} as IState;
                 const MockCmp = () => <h1>lorem</h1>;
 
                 spy.getRowCmpProps.mockReturnValue({});
-                const cmpTransformFn = cmp.getRowTransformFn(MockCmp, mockProps, mockState);
+                const cmpTransformFn = cmp.getRowTransformFn(MockCmp, mockProps);
                 const { type, children } = TestRenderer.create(cmpTransformFn()).toJSON();
                 expect(type).toBe('h1');
                 expect(children[0]).toBe('lorem');

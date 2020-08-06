@@ -10,7 +10,7 @@ import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { GridHeader as DefGridHeader } from '../../prsntn-grp/grid-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
-    IState, TModExpdState, TModSortState, TShallResetState,
+    IState, TShallResetState,
     TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp, TSortCmpPropsQuery,
     rowHandleType, expdHandleType, paginationType, sortBtnType, gridHeaderType
 } from './type';
@@ -150,18 +150,20 @@ export class DataGrid extends MemoComponent<IProps, IState> {
 
     //// Altering Rows Option (so that it renders the corresponding Row Template Component)
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
+    // - component state is not yet ready until `transformFn` is executed
     transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
         const { props } = this;
         return rows.map((row: TRowOption, idx: number) => {
+
             const isRootRowConfig: boolean = idx === 0;
             const RowCmp: TCmp = isRootRowConfig ? (row as TRootRowOption)[0] : (row as TNestedRowOption)[1];
-            const transformFn: TFn = this.getRowTransformFn(RowCmp, props, this.state);
+            const transformFn: TFn = this.getRowTransformFn(RowCmp, props);
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 
-    getRowTransformFn(RowCmp: TCmp, props: Partial<IProps>, state: Partial<IState>): TFn {
-        return (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx, props, state)} />;
+    getRowTransformFn(RowCmp: TCmp, props: Partial<IProps>): TFn {
+        return (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx, props, this.state)} />;
     }
 
     getRowCmpProps(itemCtx: TRowCtx, props: Partial<IProps>, state: Partial<IState>): IRowComponentProps {
