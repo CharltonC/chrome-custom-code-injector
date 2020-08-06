@@ -11,7 +11,7 @@ import { GridHeader as DefGridHeader } from '../../prsntn-grp/grid-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TModExpdState, TModSortState, TShallResetState,
-    TCmp, TFn, TRowCtx, IRowComponentProps,
+    TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp,
     rowHandleType, expdHandleType, paginationType, sortBtnType, gridHeaderType
 } from './type';
 
@@ -44,13 +44,13 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { BASE_CLS, cssCls, props, state } = this;
         const { isTb, headerCtx, pgnState } = state;
         const { type, component } = props;
-        const { commonProps } = component;
+        const { commonProps, rows, ...defCmp } = component;
 
         const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
         const sortedData: TDataOption = this.getSortedData();
         const headerProps = { commonProps, ...this.getHeaderProps(sortedData) };
         const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
-        const { Header, Pagination } = this.getPreferredCmp();
+        const { Header, Pagination } = this.getPreferredCmp(defCmp);
         const headElem: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
         const rowElems: ReactElement[] = this.getRowElems(sortedData, props, state);
         const bodyElem: ReactElement = this.getGridBodyElem(isTb, headElem, rowElems);
@@ -203,11 +203,10 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         </>);
     }
 
-    getPreferredCmp(): { Header: TCmp, Pagination: TCmp } {
-        const { pagination, header } = this.props.component;
+    getPreferredCmp({ Pagination, Header } : IPreferredCmp): IPreferredCmp {
         return {
-            Header: header ?? DefGridHeader,
-            Pagination: pagination ?? DefPagination
+            Header: Header ?? DefGridHeader,
+            Pagination: Pagination ?? DefPagination
         };
     }
 
