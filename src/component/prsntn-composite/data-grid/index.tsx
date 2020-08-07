@@ -152,17 +152,15 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
     // - component state is not yet ready until `transformFn` is executed
     transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
-        const { props } = this;
         return rows.map((row: TRowOption, idx: number) => {
-
             const isRootRowConfig: boolean = idx === 0;
             const RowCmp: TCmp = isRootRowConfig ? (row as TRootRowOption)[0] : (row as TNestedRowOption)[1];
-            const transformFn: TFn = this.getRowTransformFn(RowCmp, props);
+            const transformFn: TFn = this.getRowTransformFn(RowCmp);
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
         });
     }
 
-    getRowTransformFn(RowCmp: TCmp, props: Partial<IProps>): TFn {
+    getRowTransformFn(RowCmp: TCmp): TFn {
         return (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx)} />;
     }
 
