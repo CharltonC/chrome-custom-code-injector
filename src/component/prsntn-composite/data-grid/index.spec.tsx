@@ -17,8 +17,6 @@ import { IProps, IState, TShallResetState } from './type';
 describe('Component - Data Grid', () => {
     const MockPagination = () => <div className="pagination"/>;
     const MockGridHeader = () => <div className="header"/>;
-    const mockBaseProps: any = { type: 'table' };
-    const mockBaseState: any = {};
     let mockProps: any;
     let mockState: any;
     let cmp: DataGrid;
@@ -32,17 +30,18 @@ describe('Component - Data Grid', () => {
     let mockStateProps: (...args: any[]) => void;
 
     beforeEach(() => {
-        spy = TestUtil.spyProtoMethods(DataGrid, ['setState']);
+        mockProps = { type: 'table' };
+        mockState = { isTb: true };
+
         utilHandleSpy = TestUtil.spyProtoMethods(UtilHandle);
         rowHandleSpy = TestUtil.spyProtoMethods(RowHandle);
         expdHandleSpy = TestUtil.spyProtoMethods(ExpdHandle);
         sortHandleSpy = TestUtil.spyProtoMethods(SortHandle);
         pgnHandleSpy = TestUtil.spyProtoMethods(PgnHandle);
         headerGrpHandleSpy = TestUtil.spyProtoMethods(HeaderGrpHandle);
-
-        spy.createState.mockReturnValue(mockBaseState);
-        cmp = new DataGrid(mockBaseProps);
-
+        spy = TestUtil.spyProtoMethods(DataGrid, ['setState']);
+        spy.createState.mockReturnValue(mockState);
+        cmp = new DataGrid(mockProps);
         mockStateProps = TestUtil.getStatePropsMocker(cmp);
     });
 
@@ -55,8 +54,8 @@ describe('Component - Data Grid', () => {
     describe('Buildin API', () => {
         describe('constructor', () => {
             it('should initialize', () => {
-                expect(cmp.state).toEqual(mockBaseState);
-                expect(spy.createState).toHaveBeenCalledWith(mockBaseProps);
+                expect(cmp.state).toEqual(mockState);
+                expect(spy.createState).toHaveBeenCalledWith(mockProps);
             });
         });
 
@@ -66,7 +65,7 @@ describe('Component - Data Grid', () => {
             const mockModState = { isTb: true } as IState;
 
             beforeEach(() => {
-                mockStateProps(mockBaseProps, mockBaseState);
+                mockStateProps(mockProps, mockState);
                 spy.shallResetState.mockReturnValue(mockShallResetState);
                 spy.createState.mockReturnValue(mockModState);
                 spy.setState.mockImplementation(() => {});
@@ -74,9 +73,9 @@ describe('Component - Data Grid', () => {
 
             it('should check and set state based on the modified props', () => {
                 cmp.UNSAFE_componentWillReceiveProps(mockModProps);
-                expect(spy.shallResetState).toHaveBeenCalledWith(mockModProps, mockBaseProps);
+                expect(spy.shallResetState).toHaveBeenCalledWith(mockModProps, mockProps);
                 expect(spy.createState).toHaveBeenCalledWith(mockModProps, mockShallResetState);
-                expect(spy.setState).toHaveBeenCalledWith({ ...mockBaseState, ...mockModState });
+                expect(spy.setState).toHaveBeenCalledWith({ ...mockState, ...mockModState });
             });
         });
 
@@ -91,7 +90,7 @@ describe('Component - Data Grid', () => {
                     expand: {},
                     component: {},
                     rowKey: 'id'
-                } as IProps;
+                };
 
                 utilHandleSpy.cssCls.mockReturnValue('lorem');
                 spy.getSortedData.mockReturnValue(mockSortedData);
@@ -134,7 +133,7 @@ describe('Component - Data Grid', () => {
             });
 
             it('should triggers calls', () => {
-                mockStateProps(mockProps, mockBaseState);
+                mockStateProps(mockProps, mockState);
                 $elem = cmp.render();
 
                 expect(utilHandleSpy.cssCls).toHaveBeenCalledWith(cmp.BASE_CLS, mockProps.type);
@@ -143,7 +142,7 @@ describe('Component - Data Grid', () => {
                 expect(spy.getPgnCmpProps).toHaveBeenCalledWith(mockSortedData);
                 expect(spy.getPreferredCmp).toHaveBeenCalledWith(mockProps.component);
                 expect(spy.getRowElems).toHaveBeenCalledWith(mockSortedData);
-                expect(spy.getGridBodyElem).toHaveBeenCalledWith(undefined, null, mockElem);
+                expect(spy.getGridBodyElem).toHaveBeenCalledWith(mockState.isTb, null, mockElem);
             });
         });
     });
@@ -572,14 +571,23 @@ describe('Component - Data Grid', () => {
 
             beforeEach(() => {
                 mockCallback = jest.fn();
-                mockProps = { callback: { onSortChange: mockCallback }}
+                mockProps = {
+                    callback: { onSortChange: mockCallback }
+                };
                 spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
                 sortHandleSpy.createGenericCmpAttr.mockReturnValue({ sortBtnAttr: mockRtnSortBtnAttr });
             });
 
-            it('should return props when there is sort option', () => {
+            it('should return props when there is sort option and user callback exists', () => {
                 mockStateProps(mockProps, { sortOption: {}})
                 expect(cmp.getSortCmpProps(mockData, mockSortKey)).toBe(mockRtnSortBtnAttr);
+                expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(mockCallback);
+            });
+
+            it('should return props when there is sort option and user callback doesnt exists', () => {
+                mockStateProps({}, { sortOption: {}})
+                expect(cmp.getSortCmpProps(mockData, mockSortKey)).toBe(mockRtnSortBtnAttr);
+                expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(undefined);
             });
 
             it('should return null when there isnt sort option', () => {
