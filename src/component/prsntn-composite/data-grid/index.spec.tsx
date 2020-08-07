@@ -356,7 +356,7 @@ describe('Component - Data Grid', () => {
                 const MockCmp = () => <h1>lorem</h1>;
 
                 spy.getRowCmpProps.mockReturnValue({});
-                const cmpTransformFn = cmp.getRowTransformFn(MockCmp, mockProps);
+                const cmpTransformFn = cmp.getRowTransformFn(MockCmp);
                 const { type, children } = TestRenderer.create(cmpTransformFn()).toJSON();
                 expect(type).toBe('h1');
                 expect(children[0]).toBe('lorem');
