@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-
-import { IEvtCls, TCmpCls, TCmpProps } from './type';
+import { IEvtCls, ICmpInst, TCmpCls, TCmpProps, TStateProps, TFn } from './type';
 
 export const TestUtil = {
     setupElem(tagName: string = 'div'): HTMLElement {
@@ -78,6 +77,18 @@ export const TestUtil = {
         });
 
         return $spy;
+    },
+
+    getStatePropsMocker(cmpInstance: ICmpInst): TFn {
+        return (props: TStateProps, state: TStateProps): void => {
+            if (typeof props !== 'undefined') {
+                (cmpInstance as any).props = props;
+            }
+
+            if (typeof state !== 'undefined') {
+                cmpInstance.state = state;
+            }
+        }
     }
 
 }
