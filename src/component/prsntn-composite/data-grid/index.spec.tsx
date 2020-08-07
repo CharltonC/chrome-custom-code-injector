@@ -17,8 +17,10 @@ import { IProps, IState, TShallResetState } from './type';
 describe('Component - Data Grid', () => {
     const MockPagination = () => <div className="pagination"/>;
     const MockGridHeader = () => <div className="header"/>;
-    let mockBaseProps: any = { type: 'table' };
-    let mockBaseState: any = {};
+    const mockBaseProps: any = { type: 'table' };
+    const mockBaseState: any = {};
+    let mockProps: any;
+    let mockState: any;
     let cmp: DataGrid;
     let spy: TMethodSpy<DataGrid>;
     let utilHandleSpy: TMethodSpy<UtilHandle>;
@@ -79,8 +81,12 @@ describe('Component - Data Grid', () => {
         });
 
         describe('render', () => {
+            const mockSortedData = ['a', 'b'];
+            const mockElem = null;
+            let $elem: ReactElement;
+
             beforeEach(() => {
-                mockBaseProps = {
+                mockProps = {
                     type: 'table',
                     expand: {},
                     component: {},
@@ -88,12 +94,11 @@ describe('Component - Data Grid', () => {
                 } as IProps;
 
                 utilHandleSpy.cssCls.mockReturnValue('lorem');
-                spy.getSortedData.mockReturnValue(['a', 'b']);
+                spy.getSortedData.mockReturnValue(mockSortedData);
                 spy.getPgnCmpProps.mockReturnValue({ pgn: '' });
                 spy.getHeaderProps.mockReturnValue({});
-
-                spy.getRowElems.mockReturnValue([]);
-                spy.getGridBodyElem.mockReturnValue(null);
+                spy.getRowElems.mockReturnValue(mockElem);
+                spy.getGridBodyElem.mockReturnValue(mockElem);
                 spy.getPreferredCmp.mockReturnValue({
                     Header: MockGridHeader,
                     Pagination: MockPagination,
@@ -101,27 +106,44 @@ describe('Component - Data Grid', () => {
             });
 
             it('should render table if it is table', () => {
-                spy.createState.mockReturnValue({ isTb: true });
-                const $elem: ReactElement = new DataGrid(mockBaseProps).render();
+                mockStateProps(mockProps, { isTb: true });
+                $elem = cmp.render();
+
                 expect($elem.props.children[1].type).toBe('table');
             });
 
             it('should render list if it is list ', () => {
-                spy.createState.mockReturnValue({ isTb: false });
-                const $elem: ReactElement = new DataGrid(mockBaseProps).render();
+                mockStateProps(mockProps, { isTb: false });
+                $elem = cmp.render();
+
                 expect($elem.props.children[1]).toBeFalsy();
             });
 
             it('should render header if there is contextual headers', () => {
-                spy.createState.mockReturnValue({ headerCtx: true });
-                new DataGrid(mockBaseProps).render();
+                mockStateProps(mockProps, { headerCtx: true });
+                $elem = cmp.render();
+
                 expect(spy.getGridBodyElem.mock.calls[0][1]).toBeTruthy();
             });
 
             it('should render pagination if pagination option is provided', () => {
-                spy.createState.mockReturnValue({ pgnState: true });
-                const $elem: ReactElement = new DataGrid(mockBaseProps).render();
+                mockStateProps(mockProps, { pgnState: true });
+                $elem = cmp.render();
+
                 expect($elem.props.children.length).toBe(2);
+            });
+
+            it('should triggers calls', () => {
+                mockStateProps(mockProps, mockBaseState);
+                $elem = cmp.render();
+
+                expect(utilHandleSpy.cssCls).toHaveBeenCalledWith(cmp.BASE_CLS, mockProps.type);
+                expect(spy.getSortedData).toHaveBeenCalled();
+                expect(spy.getHeaderProps).toHaveBeenCalledWith(mockSortedData);
+                expect(spy.getPgnCmpProps).toHaveBeenCalledWith(mockSortedData);
+                expect(spy.getPreferredCmp).toHaveBeenCalledWith(mockProps.component);
+                expect(spy.getRowElems).toHaveBeenCalledWith(mockSortedData);
+                expect(spy.getGridBodyElem).toHaveBeenCalledWith(undefined, null, mockElem);
             });
         });
     });
@@ -138,7 +160,7 @@ describe('Component - Data Grid', () => {
             };
 
             beforeEach(() => {
-                mockBaseProps = {
+                mockProps = {
                     header: [],
                     component: {
                         rows: [...Array(2)]
@@ -162,7 +184,7 @@ describe('Component - Data Grid', () => {
 
             it('should return state for table when all options are provided', () => {
                 expect(cmp.createState({
-                    ...mockBaseProps,
+                    ...mockProps,
                     type: 'table',
                 })).toEqual({
                     ...mockBaseResultState,
@@ -174,7 +196,7 @@ describe('Component - Data Grid', () => {
 
             it('should return state for list when all options are provided', () => {
                 expect(cmp.createState({
-                    ...mockBaseProps,
+                    ...mockProps,
                     type: 'list',
                 })).toEqual({
                     ...mockBaseResultState,
@@ -200,9 +222,11 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return filtered state when provided which part of state should be reset', () => {
-                const mockProps: IProps = { ...mockBaseProps, type: 'table' };
                 const mockShallResetState = { isTb: true, headerCtx: false } as TShallResetState;
-                expect(cmp.createState(mockProps, mockShallResetState)).toEqual({ isTb: true });
+                expect(cmp.createState(
+                    { ...mockProps, type: 'table' },
+                     mockShallResetState
+                )).toEqual({ isTb: true });
             });
         });
 
@@ -210,7 +234,7 @@ describe('Component - Data Grid', () => {
             const { shallResetState } = DataGrid.prototype;
 
             beforeEach(() => {
-                mockBaseProps = {
+                mockProps = {
                     type: '',
                     header: [],
                     data: [],
@@ -222,89 +246,89 @@ describe('Component - Data Grid', () => {
             });
 
             it('should check if need to reset expand state', () => {
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     expand: false,
                 }).expdState).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     component: { rows: [1, 2]},
                 }).expdState).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     data: [1, 2]
                 }).expdState).toEqual(true);
             });
 
             it('should check if need to reset sort option/state', () => {
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     sort: false,
                 }).sortState).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     data: [1, 2]
                 }).sortState).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     header: [1, 2]
                 }).sortState).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     sort: false,
                 }).sortOption).toEqual(true);
             });
 
             it('should check if need to reset paginate option/state', () => {
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     paginate: false,
                 }).pgnState).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     data: [1, 2]
                 }).pgnState).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     paginate: false,
                 }).pgnOption).toEqual(true);
             });
 
             it('should check if need to reset rows option', () => {
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     component: { rows: [1, 2]},
                 }).rowsOption).toEqual(true);
 
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     expand: false
                 }).rowsOption).toEqual(true);
             });
 
             it('should check if need to reset table type', () => {
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     type: 'list'
                 }).isTb).toEqual(true);
             });
 
             it('should check if need to reset header context', () => {
-                expect(shallResetState(mockBaseProps, {
-                    ...mockBaseProps,
+                expect(shallResetState(mockProps, {
+                    ...mockProps,
                     header: [1, 2]
                 }).headerCtx).toEqual(true);
             });
 
-            it('should not reset', () => {
-                const isFalsy = Object.entries(shallResetState(mockBaseProps, mockBaseProps)).every(([key, val]) => !val);
+            it('should not reset when props are the same', () => {
+                const isFalsy = Object.entries(shallResetState(mockProps, {...mockProps})).every(([key, val]) => !val);
                 expect(isFalsy).toBe(true);
             });
         });
@@ -329,7 +353,7 @@ describe('Component - Data Grid', () => {
 
         describe('Method - getRowTransformFn: Get the Transform Function which returns a Row Component', () => {
             it('should return the function', () => {
-                const mockProps = {} as IProps;
+                mockProps = {} as IProps;
                 const MockCmp = () => <h1>lorem</h1>;
 
                 spy.getRowCmpProps.mockReturnValue({});
@@ -346,33 +370,32 @@ describe('Component - Data Grid', () => {
             const mockExpdProps: string = 'expd';
 
             beforeEach(() => {
-                mockBaseProps = { component: {} } as IProps;
-                mockBaseState = { isTb: true, headerCtx: { colTotal: 1 }} as IState;
+                mockProps = { component: {} } as IProps;
+                mockState = { isTb: true, headerCtx: { colTotal: 1 }} as IState;
 
                 spy.getRowCmpExpdProps.mockReturnValue(mockExpdProps);
                 utilHandleSpy.cssCls.mockReturnValue(MOCK_CLS);
             });
 
             it('should return props when it is table', () => {
-                const mockState = {
-                    ...mockBaseState,
+                mockStateProps(mockProps, {
+                    ...mockState,
                     isTb: false,
                     headerCtx: { colTotal: 1 }
-                } as IState;
-                mockStateProps(mockBaseProps, mockState);
+                });
                 const { rowColStyle } = cmp.getRowCmpProps(mockBaseItemCtx);
 
                 expect(rowColStyle).toEqual({ '--cols': 1 });
             });
 
             it('should return props when it is not table', () => {
-                mockStateProps(mockBaseProps, mockBaseState);
+                mockStateProps(mockProps, mockState);
                 const { rowColStyle } = cmp.getRowCmpProps(mockBaseItemCtx);
                 expect(rowColStyle).toBeFalsy();
             });
 
             it('should return props when there are nested items', () => {
-                mockStateProps( mockBaseProps, mockBaseState);
+                mockStateProps( mockProps, mockState);
                 const mockItemCtx = { ...mockBaseItemCtx, nestedItems: [] };
                 const { expandProps, nestedItems, classNames } = cmp.getRowCmpProps(mockItemCtx);
 
@@ -387,7 +410,7 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return props when there is no nested items', () => {
-                mockStateProps( mockBaseProps, mockBaseState);
+                mockStateProps( mockProps, mockState);
                 const { expandProps, nestedItems, classNames, ...rest } = cmp.getRowCmpProps(mockBaseItemCtx);
 
                 expect(expandProps).toBeFalsy();
@@ -413,12 +436,12 @@ describe('Component - Data Grid', () => {
             let sliceSpy: jest.SpyInstance;
 
             beforeEach(() => {
-                mockBaseProps = {
+                mockProps = {
                     rowKey: 'lorem',
                     expand: { showAll: true }
                 } as IProps;
 
-                mockBaseState = {
+                mockState = {
                     rowsOption: [ [''] ],
                     pgnState: { startIdx: 0, endIdx: 1}
                 } as IState;
@@ -429,23 +452,23 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return row elements when there is paginate state', () => {
-                mockStateProps(mockBaseProps, mockBaseState);
+                mockStateProps(mockProps, mockState);
                 expect(cmp.getRowElems(mockSortedData)).toEqual(mockRtnRows);
                 expect(rowHandleSpy.createCtxRows).toHaveBeenCalledWith({
                     data: mockSlicedData,
-                    rows: mockBaseState.rowsOption,
-                    rowIdKey: mockBaseProps.rowKey,
-                    showAll: mockBaseProps.expand.showAll
+                    rows: mockState.rowsOption,
+                    rowIdKey: mockProps.rowKey,
+                    showAll: mockProps.expand.showAll
                 });
             });
 
             it('should return row elements when there is no paginate state', () => {
-                mockStateProps({ ...mockBaseProps, expand: null }, { ...mockBaseState, pgnState: null });
+                mockStateProps({ ...mockProps, expand: null }, { ...mockState, pgnState: null });
                 expect(cmp.getRowElems(mockSortedData)).toEqual(mockRtnRows);
                 expect(rowHandleSpy.createCtxRows).toHaveBeenCalledWith({
                     data: mockSortedData,
-                    rows: mockBaseState.rowsOption,
-                    rowIdKey: mockBaseProps.rowKey,
+                    rows: mockState.rowsOption,
+                    rowIdKey: mockProps.rowKey,
                     showAll: undefined
                 });
             });
@@ -504,11 +527,14 @@ describe('Component - Data Grid', () => {
 
         describe('Method - getSortedData: Get either the raw or sorted data', () => {
             const mockRawData = [];
-            const mockProps = { data: mockRawData };
+            const sortedData = [ {} ];
+
+            beforeEach(() => {
+                mockProps = { data: mockRawData };
+                mockState = { sortState: { data: sortedData } };
+            });
 
             it('should return sorted data if exists', () => {
-                const sortedData = [ {} ];
-                const mockState = { sortState: { data: sortedData } };
                 mockStateProps(mockProps, mockState);
                 expect(cmp.getSortedData()).toBe(sortedData);
             });
@@ -521,9 +547,12 @@ describe('Component - Data Grid', () => {
 
         describe('Method - getHeaderProps: Get Props for Grid Header component', () => {
             const mockData = [];
-            const mockProps = { type: 'table' } as IProps;
-            const mockState = { headerCtx: {} } as IState;
             const mockRtnSortBtnProps = {};
+
+            beforeEach(() => {
+                mockProps = { type: 'table' };
+                mockState = { headerCtx: {} };
+            });
 
             it('should return props', () => {
                 mockStateProps(mockProps, mockState);
@@ -539,7 +568,6 @@ describe('Component - Data Grid', () => {
             const mockRtnSortBtnAttr = {};
             const mockSortKey = '';
             const mockData = [];
-            let mockProps;
             let mockCallback: jest.Mock;
 
             beforeEach(() => {
@@ -562,12 +590,11 @@ describe('Component - Data Grid', () => {
 
         describe('Method - getRowCmpExpdProps: Get the expand related props for Row Component', () => {
             const mockItemCtx: any = {};
-            const mockState = { expdState: {} };
             const mockRtnProps = {};
-            let mockProps: any;
             let mockCallback: jest.Mock;
 
             beforeEach(() => {
+                mockState = { expdState: {} };
                 mockCallback = jest.fn();
                 mockProps = { expand: {}, callback: { onExpandChange: mockCallback } };
                 spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
@@ -589,12 +616,11 @@ describe('Component - Data Grid', () => {
 
         describe('Method - getPgnCmpProps: Get the props for Pagination Component', () => {
             const mockData = [];
-            const mockState: any = { pgnOption: {}, pgnState: { lorem: 1 } };
             const mockRtnProps = { sum: 2 };
-            let mockProps: any;
             let mockCallback: jest.Mock;
 
             beforeEach(() => {
+                mockState = { pgnOption: {}, pgnState: { lorem: 1 } };
                 mockCallback = jest.fn();
                 mockProps = { callback: { onPaginateChange: mockCallback } };
                 spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
@@ -626,11 +652,11 @@ describe('Component - Data Grid', () => {
         });
 
         describe('Method - getOnStateChangeHandler: Get Handler for state changes', () => {
-            const mockState = { isTb: true, rowsOption: [] } as IState;
             const mockModState = { isTb: false };
             let mockUserCallback: jest.Mock;
 
             beforeEach(() => {
+                mockState = { isTb: true, rowsOption: [] };
                 mockUserCallback = jest.fn();
                 spy.setState.mockImplementation(() => {});
                 cmp.state = mockState;
