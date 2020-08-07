@@ -79,8 +79,8 @@ export const TestUtil = {
         return $spy;
     },
 
-    getStatePropsMocker(cmpInstance: ICmpInst): TFn {
-        return (props: TStateProps, state: TStateProps): void => {
+    getStatePropsMocker<P = TStateProps, S = TStateProps>(cmpInstance: ICmpInst): TFn {
+        return (props: P, state: S): void => {
             if (typeof props !== 'undefined') {
                 (cmpInstance as any).props = props;
             }
