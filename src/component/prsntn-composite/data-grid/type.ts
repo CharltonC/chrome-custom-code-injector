@@ -83,13 +83,6 @@ export interface IRowComponentProps extends TRowCtx {
     }
 }
 
-export type TSortCmpPropsQuery = {
-    data: TDataOption;
-    sortKey: string,
-    sortOption: sortHandleType.IOption,
-    onSortChange: TFn;
-};
-
 //// Reexport
 export { pgnHandleType };
 export { rowHandleType };

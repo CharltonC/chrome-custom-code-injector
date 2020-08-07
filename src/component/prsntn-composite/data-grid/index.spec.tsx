@@ -17,6 +17,7 @@ import { IProps, IState, TShallResetState } from './type';
 describe('Component - Data Grid', () => {
     const MockPagination = () => <div className="pagination"/>;
     const MockGridHeader = () => <div className="header"/>;
+    const mockEmptyState  = {};
     let cmp: DataGrid;
     let spy: TMethodSpy<DataGrid>;
     let utilHandleSpy: TMethodSpy<UtilHandle>;
@@ -25,6 +26,7 @@ describe('Component - Data Grid', () => {
     let sortHandleSpy: TMethodSpy<SortHandle>;
     let pgnHandleSpy: TMethodSpy<PgnHandle>;
     let headerGrpHandleSpy: TMethodSpy<HeaderGrpHandle>;
+    let mockStateProps: (...args: any[]) => void;
 
     beforeEach(() => {
         spy = TestUtil.spyProtoMethods(DataGrid, ['setState']);
@@ -35,19 +37,23 @@ describe('Component - Data Grid', () => {
         pgnHandleSpy = TestUtil.spyProtoMethods(PgnHandle);
         headerGrpHandleSpy = TestUtil.spyProtoMethods(HeaderGrpHandle);
 
-        spy.createState.mockReturnValue({});
+        spy.createState.mockReturnValue(mockEmptyState);
         cmp = new DataGrid({} as IProps);
+
+        mockStateProps = TestUtil.getStatePropsMocker(cmp);
     });
 
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        mockStateProps(null, null);
     });
 
     describe('Buildin API', () => {
         describe('constructor', () => {
             it('should initialize', () => {
-                expect(cmp.state).toEqual({});
+                expect(cmp.state).toEqual(mockEmptyState);
+                expect(spy.createState).toHaveBeenCalledWith(mockEmptyState);
             });
         });
 
@@ -135,7 +141,6 @@ describe('Component - Data Grid', () => {
 
             beforeEach(() => {
                 spy.createState.mockRestore();
-
                 spy.transformRowOption.mockReturnValue('rows');
                 sortHandleSpy.createOption.mockReturnValue('sort-option');
                 sortHandleSpy.createState.mockReturnValue('sort-state');
@@ -341,19 +346,22 @@ describe('Component - Data Grid', () => {
                     isTb: false,
                     headerCtx: { colTotal: 1 }
                 } as IState;
-                const { rowColStyle } = cmp.getRowCmpProps(mockBaseItemCtx, mockBaseProps, mockState);
+                mockStateProps(mockBaseProps, mockState);
+                const { rowColStyle } = cmp.getRowCmpProps(mockBaseItemCtx);
 
                 expect(rowColStyle).toEqual({ '--cols': 1 });
             });
 
             it('should return props when it is not table', () => {
-                const { rowColStyle } = cmp.getRowCmpProps(mockBaseItemCtx, mockBaseProps, mockBaseState);
+                mockStateProps(mockBaseProps, mockBaseState);
+                const { rowColStyle } = cmp.getRowCmpProps(mockBaseItemCtx);
                 expect(rowColStyle).toBeFalsy();
             });
 
             it('should return props when there are nested items', () => {
+                mockStateProps( mockBaseProps, mockBaseState);
                 const mockItemCtx = { ...mockBaseItemCtx, nestedItems: [] };
-                const { expandProps, nestedItems, classNames } = cmp.getRowCmpProps(mockItemCtx, mockBaseProps, mockBaseState);
+                const { expandProps, nestedItems, classNames } = cmp.getRowCmpProps(mockItemCtx);
 
                 expect(expandProps).toEqual(mockExpdProps)
                 expect(nestedItems).toEqual([]);
@@ -362,11 +370,12 @@ describe('Component - Data Grid', () => {
                     NESTED_ROW: MOCK_CLS,
                     NESTED_GRID: MOCK_CLS
                 })
-                expect(spy.getRowCmpExpdProps).toHaveBeenCalledWith(mockItemCtx, mockBaseProps, mockBaseState);
+                expect(spy.getRowCmpExpdProps).toHaveBeenCalledWith(mockItemCtx);
             });
 
             it('should return props when there is no nested items', () => {
-                const { expandProps, nestedItems, classNames, ...rest } = cmp.getRowCmpProps(mockBaseItemCtx, mockBaseProps, mockBaseState);
+                mockStateProps( mockBaseProps, mockBaseState);
+                const { expandProps, nestedItems, classNames, ...rest } = cmp.getRowCmpProps(mockBaseItemCtx);
 
                 expect(expandProps).toBeFalsy();
                 expect(nestedItems).toBeFalsy();
@@ -407,7 +416,8 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return row elements when there is paginate state', () => {
-                expect(cmp.getRowElems(mockSortedData, mockBaseProps, mockBaseState)).toEqual(mockRtnRows);
+                mockStateProps(mockBaseProps, mockBaseState);
+                expect(cmp.getRowElems(mockSortedData)).toEqual(mockRtnRows);
                 expect(rowHandleSpy.createCtxRows).toHaveBeenCalledWith({
                     data: mockSlicedData,
                     rows: mockBaseState.rowsOption,
@@ -417,10 +427,8 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return row elements when there is no paginate state', () => {
-                const mockState = { ...mockBaseState, pgnState: null };
-                const mockProps = { ...mockBaseProps, expand: null };
-
-                expect(cmp.getRowElems(mockSortedData, mockProps, mockState)).toEqual(mockRtnRows);
+                mockStateProps({ ...mockBaseProps, expand: null }, { ...mockBaseState, pgnState: null });
+                expect(cmp.getRowElems(mockSortedData)).toEqual(mockRtnRows);
                 expect(rowHandleSpy.createCtxRows).toHaveBeenCalledWith({
                     data: mockSortedData,
                     rows: mockBaseState.rowsOption,
@@ -488,11 +496,13 @@ describe('Component - Data Grid', () => {
             it('should return sorted data if exists', () => {
                 const sortedData = [ {} ];
                 const mockState = { sortState: { data: sortedData } };
-                expect(cmp.getSortedData(mockProps, mockState)).toBe(sortedData);
+                mockStateProps(mockProps, mockState);
+                expect(cmp.getSortedData()).toBe(sortedData);
             });
 
             it('should return raw data if sorted data doesnt exist', () => {
-                expect(cmp.getSortedData(mockProps, {})).toBe(mockRawData);
+                mockStateProps(mockProps, {});
+                expect(cmp.getSortedData()).toBe(mockRawData);
             });
         });
 
@@ -503,8 +513,9 @@ describe('Component - Data Grid', () => {
             const mockRtnSortBtnProps = {};
 
             it('should return props', () => {
+                mockStateProps(mockProps, mockState);
                 spy.getSortCmpProps.mockReturnValue(mockRtnSortBtnProps);
-                const { sortBtnProps, ...props } = cmp.getHeaderProps(mockData, mockProps, mockState);
+                const { sortBtnProps, ...props } = cmp.getHeaderProps(mockData);
 
                 expect(props).toEqual({ type: mockProps.type, rows: mockState.headerCtx });
                 expect(sortBtnProps('lorem')).toBe(mockRtnSortBtnProps);
@@ -513,24 +524,26 @@ describe('Component - Data Grid', () => {
 
         describe('Method - getSortCmpProps: Get the sorting related props used in Grid Header Component', () => {
             const mockRtnSortBtnAttr = {};
-            const mockQuery: any = {
-                sortKey: '',
-                data: [],
-                sortOption: {},
-                onSortChange: jest.fn()
-            };
+            const mockSortKey = '';
+            const mockData = [];
+            let mockProps;
+            let mockCallback: jest.Mock;
 
             beforeEach(() => {
+                mockCallback = jest.fn();
+                mockProps = { callback: { onSortChange: mockCallback }}
                 spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
                 sortHandleSpy.createGenericCmpAttr.mockReturnValue({ sortBtnAttr: mockRtnSortBtnAttr });
             });
 
             it('should return props when there is sort option', () => {
-                expect(cmp.getSortCmpProps(mockQuery)).toBe(mockRtnSortBtnAttr);
+                mockStateProps(mockProps, { sortOption: {}})
+                expect(cmp.getSortCmpProps(mockData, mockSortKey)).toBe(mockRtnSortBtnAttr);
             });
 
             it('should return null when there isnt sort option', () => {
-                expect(cmp.getSortCmpProps({...mockQuery, sortOption: null})).toBe(null);
+                mockStateProps(mockProps, { sortOption: null})
+                expect(cmp.getSortCmpProps(mockData, mockSortKey)).toBe(null);
             });
         });
 
@@ -549,13 +562,14 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return props when user callback exists', () => {
-                expect(cmp.getRowCmpExpdProps(mockItemCtx, mockProps, mockState)).toEqual(mockRtnProps);
+                mockStateProps(mockProps, mockState);
+                expect(cmp.getRowCmpExpdProps(mockItemCtx)).toEqual(mockRtnProps);
                 expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(mockCallback);
             });
 
             it('should return props when user callback doesnt exists', () => {
-                mockProps = {};
-                expect(cmp.getRowCmpExpdProps(mockItemCtx, mockProps, mockState)).toEqual(mockRtnProps);
+                mockStateProps({}, mockState);
+                expect(cmp.getRowCmpExpdProps(mockItemCtx)).toEqual(mockRtnProps);
                 expect(spy.getOnStateChangeHandler).toHaveBeenCalledWith(undefined);
             });
         });
@@ -575,7 +589,8 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return props when there is paginate option and user callback exists', () => {
-                expect(cmp.getPgnCmpProps(mockData, mockProps, mockState)).toEqual({
+                mockStateProps(mockProps, mockState);
+                expect(cmp.getPgnCmpProps(mockData)).toEqual({
                     ...mockState.pgnState,
                     ...mockRtnProps
                 });
@@ -583,8 +598,8 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return props when there is paginate option and user callback doenst exist', () => {
-                mockProps = {};
-                expect(cmp.getPgnCmpProps(mockData, mockProps, mockState)).toEqual({
+                mockStateProps({}, mockState);
+                expect(cmp.getPgnCmpProps(mockData)).toEqual({
                     ...mockState.pgnState,
                     ...mockRtnProps
                 });
@@ -592,7 +607,8 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return null when there isnt paginate option', () => {
-                expect(cmp.getPgnCmpProps(mockData, mockProps, {...mockState, pgnOption: null})).toBe(null);
+                mockStateProps(mockProps, {...mockState, pgnOption: null});
+                expect(cmp.getPgnCmpProps(mockData)).toBe(null);
             });
         });
 

@@ -11,7 +11,7 @@ import { GridHeader as DefGridHeader } from '../../prsntn-grp/grid-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TShallResetState,
-    TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp, TSortCmpPropsQuery,
+    TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp,
     rowHandleType, expdHandleType, paginationType, sortBtnType, gridHeaderType
 } from './type';
 
@@ -47,12 +47,12 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { commonProps, rows, ...defCmp } = component;
 
         const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
-        const sortedData: TDataOption = this.getSortedData(props, state);
-        const headerProps = { commonProps, ...this.getHeaderProps(sortedData, props, state) };
-        const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData, props, state) };
+        const sortedData: TDataOption = this.getSortedData();
+        const headerProps = { commonProps, ...this.getHeaderProps(sortedData) };
+        const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
         const { Header, Pagination } = this.getPreferredCmp(defCmp);
         const headElem: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
-        const rowElems: ReactElement[] = this.getRowElems(sortedData, props, state);
+        const rowElems: ReactElement[] = this.getRowElems(sortedData);
         const bodyElem: ReactElement = this.getGridBodyElem(isTb, headElem, rowElems);
 
         return (
@@ -163,19 +163,19 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     getRowTransformFn(RowCmp: TCmp, props: Partial<IProps>): TFn {
-        return (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx, props, this.state)} />;
+        return (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx)} />;
     }
 
-    getRowCmpProps(itemCtx: TRowCtx, props: Partial<IProps>, state: Partial<IState>): IRowComponentProps {
+    getRowCmpProps(itemCtx: TRowCtx): IRowComponentProps {
         const { cssCls, BASE_CLS } = this;
-        const { commonProps } = props.component;
-        const { isTb, headerCtx } = state;
+        const { commonProps } = this.props.component;
+        const { isTb, headerCtx } = this.state;
         const { itemId, itemLvl, nestedItems, rowType } = itemCtx;
         return {
             ...itemCtx,
             key: itemId,
             commonProps,
-            expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx, props, state) : null,
+            expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
             rowColStyle: isTb  ? null : { '--cols': headerCtx.colTotal },
             classNames:  {
                 REG_ROW: cssCls(`${BASE_CLS}__row`, rowType),
@@ -185,9 +185,9 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    getRowElems(sortedData: TDataOption, props: Partial<IProps>, state: Partial<IState>): ReactElement[] {
-        const { rowKey: rowIdKey, expand } = props;
-        const { pgnState, rowsOption: rows } = state;
+    getRowElems(sortedData: TDataOption): ReactElement[] {
+        const { rowKey: rowIdKey, expand } = this.props;
+        const { pgnState, rowsOption: rows } = this.state;
         const { startIdx, endIdx } = pgnState ?? {};
         const { showAll } = expand ?? {};
         const data: TDataOption = pgnState ? sortedData.slice(startIdx, endIdx) : sortedData;
@@ -213,24 +213,25 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     //// Sort, Expand, Pagination
-    getSortedData(props: Partial<IProps>, state: Partial<IState>): TDataOption {
-        return state.sortState?.data || props.data;
+    getSortedData(): TDataOption {
+        return this.state.sortState?.data || this.props.data;
     }
 
-    getHeaderProps(data: TDataOption, props: Partial<IProps>, state: Partial<IState>): gridHeaderType.IProps {
-        const { type, callback } = props;
-        const { headerCtx, sortOption } = state;
-        const { onSortChange } = callback ?? {};
+    getHeaderProps(data: TDataOption): gridHeaderType.IProps {
+        const { type } = this.props;
+        const { headerCtx } = this.state;
         return {
             type,
             rows: headerCtx,
-            sortBtnProps: (sortKey: string) => this.getSortCmpProps({ data, sortKey, sortOption, onSortChange })
+            sortBtnProps: (sortKey: string) => this.getSortCmpProps(data, sortKey)
         };
     }
 
-    getSortCmpProps({ data, sortKey, sortOption, onSortChange }: TSortCmpPropsQuery): sortBtnType.IProps {
+    getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
+        const { sortOption } = this.state;
         if (!sortOption) return null;
 
+        const { onSortChange } = this.props.callback ?? {};
         const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
             data,
             option: sortOption,
@@ -240,9 +241,9 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return sortBtnAttr;
     }
 
-    getRowCmpExpdProps(itemCtx: TRowCtx, props: Partial<IProps>, state: Partial<IState>) {
-        const { expdState } = state;
-        const { expand, callback } = props;
+    getRowCmpExpdProps(itemCtx: TRowCtx) {
+        const { expdState } = this.state;
+        const { expand, callback } = this.props;
         const { onExpandChange } = callback ?? {};
         return this.expdHandle.getExpdBtnAttr({
             itemCtx: itemCtx as expdHandleType.TItemCtx,
@@ -252,11 +253,11 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         });
     }
 
-    getPgnCmpProps(data: TDataOption, props: Partial<IProps>, state: Partial<IState>): paginationType.IProps {
-        const { onPaginateChange } = props.callback ?? {};
-        const { pgnOption, pgnState } = state;
+    getPgnCmpProps(data: TDataOption): paginationType.IProps {
+        const { pgnOption, pgnState } = this.state;
         if (!pgnOption) return null;
 
+        const { onPaginateChange } = this.props.callback ?? {};
         return {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
