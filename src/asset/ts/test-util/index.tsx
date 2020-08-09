@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { render, unmountComponentAtNode } from "react-dom";
-import { act } from "react-dom/test-utils";
+import React, { Component } from 'react';
+import { render, unmountComponentAtNode } from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import { IEvtCls, ICmpInst, TCmpCls, TCmpProps, TStateProps, TFn } from './type';
 
 export const TestUtil = {
