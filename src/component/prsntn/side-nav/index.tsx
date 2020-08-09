@@ -97,7 +97,7 @@ export class _SideNav extends Component<IProps, IState> {
             atvNestLsIdx
         });
 
-        if (onAtvListChange) onAtvListChange(list, atvLsIdx, atvNestLsIdx);
+        onAtvListChange?.(list, atvLsIdx, atvNestLsIdx);
     }
 
     render() {

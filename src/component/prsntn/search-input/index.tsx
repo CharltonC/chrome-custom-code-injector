@@ -33,8 +33,7 @@ export class _SearchInput extends Component<IProps, IState> {
         this.setState({hsText: !!text});
 
         // run any external callback (incl. sync external state if needed)
-        const { onChange } = this.props;
-        if (onChange) onChange(evt, text, lt3Char);
+        this.props.onChange?.(evt, text, lt3Char);
     }
 
     onBtnClick(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
@@ -44,8 +43,7 @@ export class _SearchInput extends Component<IProps, IState> {
         this.inputElem.focus();
 
         // run any external callback (incl. sync external state if needed)
-        const { onClear } = this.props;
-        if (onClear) onClear(evt);
+        this.props.onClear?.(evt);
     }
 
     render() {

@@ -31,10 +31,9 @@ export class _Dropdown extends Component<IProps, IState> {
     }
 
     onSelect(evt: React.ChangeEvent<HTMLSelectElement>): void {
-        const { onSelect } = this.props;
         // this is the actual index of the list item or `<option>`
         const selectValueAttrVal: string = evt.target.value;
-        if (onSelect) onSelect(evt, selectValueAttrVal);
+        this.props.onSelect?.(evt, selectValueAttrVal);
     }
 
     render() {

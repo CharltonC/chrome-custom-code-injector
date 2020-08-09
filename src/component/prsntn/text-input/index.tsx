@@ -58,8 +58,10 @@ export class _TextInput extends Component<IProps, IState> {
 
             if (!isValid) errMsg.push(msg);
         });
-        const isValid: boolean = !errMsg.length;
-        return { isValid, errMsg };
+        return {
+            isValid: !errMsg.length,
+            errMsg
+        };
     }
 
     setValidState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (...args: any[]) => void, charLimit: number): void {
@@ -77,7 +79,7 @@ export class _TextInput extends Component<IProps, IState> {
         if (isFitForValidation) this.setState({...this.state, ...validState});
 
         // handle two way binding internally if needed for external state
-        if (evtCbFn) evtCbFn({
+        evtCbFn?.({
             evt,
             val,
             isGte3: val.length >= 3,

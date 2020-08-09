@@ -9,14 +9,12 @@ export class _SymbolBtn extends Component<IProps, {}> {
 
         const { isChecked } = props;
         this.hsExtState = typeof isChecked !== 'undefined';
-
         this.onChange = this.onChange.bind(this);
     }
 
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
-        const { onChecked } = this.props;
         const checked: boolean = evt.target.checked;
-        if (onChecked) onChecked(evt, checked);
+        this.props.onChecked?.(evt, checked);
     }
 
     render() {

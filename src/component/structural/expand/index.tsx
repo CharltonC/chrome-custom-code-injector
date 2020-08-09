@@ -23,7 +23,7 @@ export class _ExpandWrapper extends Component<IProps, IState> {
                 isOpen,
                 onClick: () => {
                     this.setState({isOpen: !isOpen})
-                    if (callback) callback(!isOpen);
+                    callback?.(!isOpen);
                 }
             } as any
         };
