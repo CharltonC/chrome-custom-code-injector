@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { _SymbolBtn, SymbolBtn } from './';
+import { SymbolBtn } from './';
 import { IProps} from './type';
 
 describe('Component - Symbol Button', () => {
@@ -8,30 +8,30 @@ describe('Component - Symbol Button', () => {
     describe('Component Class', () => {
         const mockEvt: any = { target: { checked: true}};
         let mockCbFn: jest.Mock;
-        let symbolBtn: _SymbolBtn;
+        let symbolBtn: SymbolBtn;
 
         beforeEach(() => {
             mockCbFn = jest.fn();
         });
 
         it('constructor - should not have external state if checked state is not passed', () => {
-            symbolBtn = new _SymbolBtn({...mockBaseProps});
+            symbolBtn = new SymbolBtn({...mockBaseProps});
             expect(symbolBtn.hsExtState).toBe(false);
         });
 
         it('constructor - should have external state if checked state is passed', () => {
-            symbolBtn = new _SymbolBtn({...mockBaseProps, isChecked: true});
+            symbolBtn = new SymbolBtn({...mockBaseProps, isChecked: true});
             expect(symbolBtn.hsExtState).toBe(true);
         });
 
         it('method - should not call the passed callback `onChecked` if not provided', () => {
-            symbolBtn = new _SymbolBtn(mockBaseProps);
+            symbolBtn = new SymbolBtn(mockBaseProps);
             symbolBtn.onChange(mockEvt);
             expect(mockCbFn).not.toHaveBeenCalled();
         });
 
         it('method - should call the passed callback `onChecked` if provided', () => {
-            symbolBtn = new _SymbolBtn({...mockBaseProps, onChecked: mockCbFn});
+            symbolBtn = new SymbolBtn({...mockBaseProps, onChecked: mockCbFn});
             symbolBtn.onChange(mockEvt);
             expect(mockCbFn).toHaveBeenCalledWith(mockEvt, mockEvt.target.checked);
         });
@@ -52,7 +52,7 @@ describe('Component - Symbol Button', () => {
 
         beforeEach(() => {
             $elem = TestUtil.setupElem();
-            spyOnChange = jest.spyOn(_SymbolBtn.prototype, 'onChange');
+            spyOnChange = jest.spyOn(SymbolBtn.prototype, 'onChange');
         });
 
         afterEach(() => {

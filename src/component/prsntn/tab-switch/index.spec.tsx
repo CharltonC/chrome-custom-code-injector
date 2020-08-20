@@ -1,12 +1,12 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, ITabItem  } from './type';
-import { _TabSwitch, TabSwitch } from './';
+import { TabSwitch } from './';
 
 describe('Component - Tab Switch', () => {
     const mockBaseProps: IProps = {id: 'id', list: []};
     let mockListProps: IProps;
     let mockList: ITabItem[];
-    let tabSwitch: _TabSwitch;
+    let tabSwitch: TabSwitch;
     let spyOnRdoChecked: jest.SpyInstance;
     let spyOnCbChanged: jest.SpyInstance;
     let spySetState: jest.SpyInstance;
@@ -19,10 +19,10 @@ describe('Component - Tab Switch', () => {
         ];
         mockListProps = {...mockBaseProps, list: mockList};
 
-        spyOnRdoChecked = jest.spyOn(_TabSwitch.prototype, 'onRdoChecked');
-        spyOnCbChanged = jest.spyOn(_TabSwitch.prototype, 'onCheckboxChanged');
-        spySetState = jest.spyOn(_TabSwitch.prototype, 'setState');
-        spyGetInitialState = jest.spyOn(_TabSwitch.prototype, 'getInitialState');
+        spyOnRdoChecked = jest.spyOn(TabSwitch.prototype, 'onRdoChecked');
+        spyOnCbChanged = jest.spyOn(TabSwitch.prototype, 'onCheckboxChanged');
+        spySetState = jest.spyOn(TabSwitch.prototype, 'setState');
+        spyGetInitialState = jest.spyOn(TabSwitch.prototype, 'getInitialState');
     });
 
     afterEach(() => {
@@ -35,7 +35,7 @@ describe('Component - Tab Switch', () => {
             it('should initialize', () => {
                 const mockInitialState: any = {};
                 spyGetInitialState.mockReturnValue(mockInitialState);
-                tabSwitch = new _TabSwitch(mockBaseProps);
+                tabSwitch = new TabSwitch(mockBaseProps);
 
                 expect(spyGetInitialState).toHaveBeenCalledWith(mockBaseProps.list, undefined);
                 expect(tabSwitch.state).toBe(mockInitialState);
@@ -44,7 +44,7 @@ describe('Component - Tab Switch', () => {
 
         describe('Method - getIntiialState', () => {
             beforeEach(() => {
-                tabSwitch = new _TabSwitch(mockBaseProps);
+                tabSwitch = new TabSwitch(mockBaseProps);
             });
 
             it('should get initial state when list is not provided', () => {
@@ -100,7 +100,7 @@ describe('Component - Tab Switch', () => {
             it('should not update state if tab is currently active', () => {
                 mockCheckedTabIdx = 0;
                 mockCheckedTab = mockList[mockCheckedTabIdx];
-                tabSwitch = new _TabSwitch(mockListProps);
+                tabSwitch = new TabSwitch(mockListProps);
                 tabSwitch.onRdoChecked(mockEvt, mockCheckedTab, mockCheckedTabIdx);
 
                 expect(spySetState).not.toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe('Component - Tab Switch', () => {
             it('should update state if tab is not currently active', () => {
                 mockCheckedTabIdx = 1;
                 mockCheckedTab = mockList[mockCheckedTabIdx];
-                tabSwitch = new _TabSwitch(mockListProps);
+                tabSwitch = new TabSwitch(mockListProps);
                 tabSwitch.onRdoChecked(mockEvt, mockCheckedTab, mockCheckedTabIdx);
 
                 expect(spySetState).toHaveBeenCalledWith({activeTab: mockCheckedTab});
@@ -119,7 +119,7 @@ describe('Component - Tab Switch', () => {
                 const mockOnTabAtv: jest.Mock = jest.fn();
                 mockCheckedTabIdx = 1;
                 mockCheckedTab = mockList[mockCheckedTabIdx];
-                tabSwitch = new _TabSwitch({...mockListProps, onTabActive: mockOnTabAtv});
+                tabSwitch = new TabSwitch({...mockListProps, onTabActive: mockOnTabAtv});
                 tabSwitch.onRdoChecked(mockEvt, mockCheckedTab, mockCheckedTabIdx);
 
                 expect(mockOnTabAtv).toHaveBeenCalledWith({
@@ -140,7 +140,7 @@ describe('Component - Tab Switch', () => {
                 const mockEnabledTab: ITabItem = mockList[mockEnabledTabIdx];
                 const mockEnabledTabEnable: boolean = !mockEnabledTab.isEnable;
 
-                tabSwitch = new _TabSwitch({...mockListProps, onTabEnable: mockOnTabEnable});
+                tabSwitch = new TabSwitch({...mockListProps, onTabEnable: mockOnTabEnable});
                 tabSwitch.onCheckboxChanged(mockEvt, mockEnabledTab, mockEnabledTabIdx);
 
                 expect(mockOnTabEnable).toHaveBeenCalledWith({

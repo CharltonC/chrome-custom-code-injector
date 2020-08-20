@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, IState, INestList, IList } from './type';
-import { _SideNav, SideNav } from './';
+import { SideNav } from './';
 import { ReactElement } from 'react';
 
 describe('Component - Side Nav', () => {
@@ -18,10 +18,10 @@ describe('Component - Side Nav', () => {
     let getLsClsSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        onClickSpy = jest.spyOn(_SideNav.prototype, 'onClick');
-        getIntitalStateSpy = jest.spyOn(_SideNav.prototype, 'getIntitalState');
-        setStateSpy = jest.spyOn(_SideNav.prototype, 'setState');
-        getLsClsSpy = jest.spyOn(_SideNav.prototype, 'getLsCls');
+        onClickSpy = jest.spyOn(SideNav.prototype, 'onClick');
+        getIntitalStateSpy = jest.spyOn(SideNav.prototype, 'getIntitalState');
+        setStateSpy = jest.spyOn(SideNav.prototype, 'setState');
+        getLsClsSpy = jest.spyOn(SideNav.prototype, 'getLsCls');
     });
 
     afterEach(() => {
@@ -32,12 +32,12 @@ describe('Component - Side Nav', () => {
     describe('Component Class', () => {
         const mockRtnNullState: IState = {atvLsIdx: null, atvNestLsIdx: null};
         const mockRtnDefState: IState = {atvLsIdx: 0, atvNestLsIdx: null};
-        let sideNav: _SideNav;
+        let sideNav: SideNav;
 
         describe('Constructor', () => {
             it('should init', () => {
                 getIntitalStateSpy.mockReturnValue(mockRtnNullState);
-                sideNav = new _SideNav(mockNullProps);
+                sideNav = new SideNav(mockNullProps);
 
                 expect(getIntitalStateSpy).toHaveBeenCalledWith(mockNullProps.list);
                 expect(sideNav.state).toBe(mockRtnNullState);
@@ -48,10 +48,10 @@ describe('Component - Side Nav', () => {
             beforeEach(() => {
                 jest.restoreAllMocks();
 
-                sideNav = new _SideNav(mockDefProps);
+                sideNav = new SideNav(mockDefProps);
 
-                getIntitalStateSpy = jest.spyOn(_SideNav.prototype, 'getIntitalState');
-                setStateSpy = jest.spyOn(_SideNav.prototype, 'setState').mockImplementation(() => {});
+                getIntitalStateSpy = jest.spyOn(SideNav.prototype, 'getIntitalState');
+                setStateSpy = jest.spyOn(SideNav.prototype, 'setState').mockImplementation(() => {});
             });
 
             it('should not update active state if new/passed list is the same', () => {
@@ -98,7 +98,7 @@ describe('Component - Side Nav', () => {
         });
 
         describe('Method - getLsCls', () => {
-            const { getLsCls } = _SideNav.prototype;
+            const { getLsCls } = SideNav.prototype;
             const mockCls: string = 'x';
 
             it('should return class based on the active flag', () => {
@@ -113,7 +113,7 @@ describe('Component - Side Nav', () => {
 
             beforeEach(() => {
                 getLsClsSpy.mockReturnValue(mockNestedLsItemCls);
-                sideNav = new _SideNav(mockDefProps);
+                sideNav = new SideNav(mockDefProps);
             });
 
             it('should return nested list items', () => {
@@ -133,7 +133,7 @@ describe('Component - Side Nav', () => {
         });
 
         describe('Method - getInitialState', () => {
-            const { getIntitalState } = _SideNav.prototype;
+            const { getIntitalState } = SideNav.prototype;
             const mockList: INestList[] = [{id: ''}];
 
             it('should return initial state when list is not provided or empty', () => {
@@ -153,7 +153,7 @@ describe('Component - Side Nav', () => {
                 getIntitalStateSpy.mockReturnValue(mockRtnDefState);
                 setStateSpy.mockImplementation(() => {});
                 mockEvt = { stopPropagation: jest.fn() };
-                sideNav = new _SideNav(mockDefProps);
+                sideNav = new SideNav(mockDefProps);
             });
 
             it('should stop propagation for event', () => {
@@ -164,7 +164,7 @@ describe('Component - Side Nav', () => {
             it('should trigger callback if provided', () => {
                 const mockOnAtvListChange: jest.Mock = jest.fn();
                 const mockLsIdx: number = 0;
-                sideNav = new _SideNav({...mockDefProps, onAtvListChange: mockOnAtvListChange});
+                sideNav = new SideNav({...mockDefProps, onAtvListChange: mockOnAtvListChange});
                 sideNav.onClick(mockEvt, mockLsIdx);
 
                 expect(mockOnAtvListChange).toHaveBeenCalledWith(mockDefProps.list, mockLsIdx, null);
@@ -197,7 +197,7 @@ describe('Component - Side Nav', () => {
 
             it('should set state when nested list item is clicked, it has the same parent list item and it is different to the current active nested list item', () => {
                 const mockAtvNestedLsIdx: number = 1;
-                sideNav = new _SideNav(mockDefProps);
+                sideNav = new SideNav(mockDefProps);
                 sideNav.onClick(mockEvt, 0, mockAtvNestedLsIdx);
 
                 expect(setStateSpy).toHaveBeenCalledTimes(1);

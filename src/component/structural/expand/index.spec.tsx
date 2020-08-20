@@ -2,15 +2,15 @@ import React, { ReactElement } from 'react';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps } from './type';
-import { _ExpandWrapper, ExpandWrapper } from '.';
+import { ExpandWrapper } from '.';
 
 describe('Component - Visible Wrapper', () => {
-    let cmp: _ExpandWrapper;
-    let spy: TMethodSpy<_ExpandWrapper>;
+    let cmp: ExpandWrapper;
+    let spy: TMethodSpy<ExpandWrapper>;
     let setStateSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        spy = TestUtil.spyProtoMethods(_ExpandWrapper);
+        spy = TestUtil.spyProtoMethods(ExpandWrapper);
     });
 
     afterEach(() => {
@@ -24,7 +24,7 @@ describe('Component - Visible Wrapper', () => {
 
         describe('constructor', () => {
             beforeEach(() => {
-                cmp = new _ExpandWrapper(mockProps);
+                cmp = new ExpandWrapper(mockProps);
             });
 
             it('should init without input props', () => {
@@ -36,7 +36,7 @@ describe('Component - Visible Wrapper', () => {
             const mockIsOpen: boolean = true;
 
             beforeEach(() => {
-                cmp = new _ExpandWrapper(mockProps);
+                cmp = new ExpandWrapper(mockProps);
                 setStateSpy = jest.spyOn(cmp, 'setState');
                 setStateSpy.mockImplementation(() => {});
             });

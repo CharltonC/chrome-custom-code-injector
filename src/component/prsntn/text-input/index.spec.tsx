@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, IState , IValidationConfig } from './type';
-import { _TextInput, TextInput } from './';
+import { TextInput } from './';
 
 describe('Component - Text Input', () => {
     beforeEach(() => {
@@ -16,8 +16,8 @@ describe('Component - Text Input', () => {
             it('should init', () => {
                 const mockInitialState: any = {};
                 const mockProps: IProps = {id: '', text: 'abc'};
-                let spyGetInitialState: jest.SpyInstance = jest.spyOn(_TextInput.prototype, 'getInitialState').mockReturnValue(mockInitialState);
-                const cmpInst: any = new _TextInput(mockProps);
+                let spyGetInitialState: jest.SpyInstance = jest.spyOn(TextInput.prototype, 'getInitialState').mockReturnValue(mockInitialState);
+                const cmpInst: any = new TextInput(mockProps);
 
                 expect(spyGetInitialState).toHaveBeenCalledWith(mockProps.text, undefined);
                 expect(cmpInst.state).toEqual(mockInitialState);
@@ -33,18 +33,18 @@ describe('Component - Text Input', () => {
             let spyGetInitialState: jest.SpyInstance;
             let spyGetValidState: jest.SpyInstance;
             let spySetState: jest.SpyInstance;
-            let cmpWithText: _TextInput;
-            let cmpWithoutText: _TextInput;
+            let cmpWithText: TextInput;
+            let cmpWithoutText: TextInput;
 
             beforeEach(() => {
                 jest.clearAllMocks();
 
-                cmpWithText = new _TextInput({...mockBaseProps, text: mockText});
-                cmpWithoutText = new _TextInput(mockBaseProps);
+                cmpWithText = new TextInput({...mockBaseProps, text: mockText});
+                cmpWithoutText = new TextInput(mockBaseProps);
 
-                spyGetInitialState = jest.spyOn(_TextInput.prototype, 'getInitialState')
-                spyGetValidState = jest.spyOn(_TextInput.prototype, 'getValidState').mockReturnValue(mockValidState);
-                spySetState = jest.spyOn(_TextInput.prototype, 'setState').mockImplementation(() => {});
+                spyGetInitialState = jest.spyOn(TextInput.prototype, 'getInitialState')
+                spyGetValidState = jest.spyOn(TextInput.prototype, 'getValidState').mockReturnValue(mockValidState);
+                spySetState = jest.spyOn(TextInput.prototype, 'setState').mockImplementation(() => {});
             });
 
             it('should revalidate using passed text if text is passed and validation rules have changed', () => {
@@ -101,7 +101,7 @@ describe('Component - Text Input', () => {
         describe('Method - getInitialState', () => {
             const mockInitialBaseState: Partial<IState> = {isValid: null, errMsg: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
-            const { getInitialState } = _TextInput.prototype;
+            const { getInitialState } = TextInput.prototype;
 
             it('should get Initial state when text is not provided', () => {
                 expect(getInitialState(undefined, undefined)).toEqual({
@@ -134,7 +134,7 @@ describe('Component - Text Input', () => {
 
         describe('Method - Get Valid State', () => {
             const mockTextVal: string = 'lorem';
-            const getValidState = _TextInput.prototype.getValidState;
+            const getValidState = TextInput.prototype.getValidState;
             let mockFnRule: jest.Mock;
             let mockRegexRule: RegExp;
             let spyStrSearch: jest.SpyInstance;
@@ -203,12 +203,12 @@ describe('Component - Text Input', () => {
             const mockCharLimit: number = 3;
 
             let spySetState: jest.SpyInstance;
-            let cmpInst: _TextInput;
+            let cmpInst: TextInput;
 
             beforeEach(() => {
-                jest.spyOn(_TextInput.prototype, 'getValidState').mockReturnValue(mockRtnState);
-                spySetState = jest.spyOn(_TextInput.prototype, 'setState').mockImplementation(() => {});
-                cmpInst = new _TextInput(mockProps);
+                jest.spyOn(TextInput.prototype, 'getValidState').mockReturnValue(mockRtnState);
+                spySetState = jest.spyOn(TextInput.prototype, 'setState').mockImplementation(() => {});
+                cmpInst = new TextInput(mockProps);
             });
 
             it('should trigger callback if provided', () => {
@@ -255,13 +255,13 @@ describe('Component - Text Input', () => {
 
         describe('Method - Event handlers', () => {
             let spySetValidState: jest.SpyInstance;
-            let cmpInst: _TextInput;
+            let cmpInst: TextInput;
             const mockEvt: any = {};
             const mockProps: IProps = {id: '', onInputChange: jest.fn(), onInputBlur: jest.fn() };
 
             beforeEach(() => {
-                spySetValidState = jest.spyOn(_TextInput.prototype, 'setValidState').mockImplementation(() => {});
-                cmpInst = new _TextInput(mockProps);
+                spySetValidState = jest.spyOn(TextInput.prototype, 'setValidState').mockImplementation(() => {});
+                cmpInst = new TextInput(mockProps);
             });
 
             it('should call set valid state for `onChange`', () => {
@@ -373,8 +373,8 @@ describe('Component - Text Input', () => {
             let spyOnBlur: jest.SpyInstance;
 
             beforeEach(() => {
-                spyOnChange = jest.spyOn(_TextInput.prototype, 'onChange');
-                spyOnBlur = jest.spyOn(_TextInput.prototype, 'onBlur');
+                spyOnChange = jest.spyOn(TextInput.prototype, 'onChange');
+                spyOnBlur = jest.spyOn(TextInput.prototype, 'onBlur');
 
                 TestUtil.renderPlain(elem, TextInput, mockProps);
                 getChildElem();

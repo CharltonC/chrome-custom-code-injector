@@ -2,7 +2,7 @@ import React from 'react';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, pgnHandleType } from './type';
-import { _Pagination, Pagination } from './';
+import { Pagination } from './';
 
 jest.mock('../../prsntn/dropdown', () => {
     return {
@@ -13,7 +13,7 @@ jest.mock('../../prsntn/dropdown', () => {
 
 describe('Component - Pagination', () => {
     const CLS_PREFIX: string = 'kz-paginate';
-    let spy: TMethodSpy<_Pagination>;
+    let spy: TMethodSpy<Pagination>;
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -22,10 +22,10 @@ describe('Component - Pagination', () => {
 
     describe('Component Class', () => {
         const mockProps = {} as IProps;
-        let cmp: _Pagination;
+        let cmp: Pagination;
 
         beforeEach(() => {
-            cmp = new _Pagination(mockProps);
+            cmp = new Pagination(mockProps);
             spy = TestUtil.spyMethods(cmp);
         });
 
@@ -132,7 +132,7 @@ describe('Component - Pagination', () => {
         }
 
         beforeEach(() => {
-            spy = TestUtil.spyProtoMethods(_Pagination);
+            spy = TestUtil.spyProtoMethods(Pagination);
             spy.getMappedBtnProps.mockReturnValue(mockElemProps);
             spy.getMappedSelectProps.mockReturnValue(mockElemProps);
 

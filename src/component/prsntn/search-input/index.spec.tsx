@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, IState } from './type';
-import { _SearchInput, SearchInput } from './';
+import { SearchInput } from './';
 
 describe('Component - Search', () => {
     afterEach(() => {
@@ -12,7 +12,7 @@ describe('Component - Search', () => {
         const mockBaseProps: IProps = {id: 'id', text: 'text'};
         const mockNewText: string = 'diff text';
         const mockEvt: any = {target: {value: mockNewText}};
-        let searchInput: _SearchInput;
+        let searchInput: SearchInput;
         let intState: IState;
         let spyGetIntState: jest.SpyInstance;
         let spySetState: jest.SpyInstance;
@@ -20,9 +20,9 @@ describe('Component - Search', () => {
 
         beforeEach(() => {
             mockCbFn = jest.fn();
-            spySetState  = jest.spyOn(_SearchInput.prototype, 'setState').mockImplementation(() => {});
-            spyGetIntState = jest.spyOn(_SearchInput.prototype, 'getIntState');
-            searchInput = new _SearchInput(mockBaseProps);
+            spySetState  = jest.spyOn(SearchInput.prototype, 'setState').mockImplementation(() => {});
+            spyGetIntState = jest.spyOn(SearchInput.prototype, 'getIntState');
+            searchInput = new SearchInput(mockBaseProps);
         });
 
         describe('Constructor', () => {
@@ -231,8 +231,8 @@ describe('Component - Search', () => {
             let spyOnBtnClick: jest.SpyInstance
 
             beforeEach(() => {
-                spyOnInputChange = jest.spyOn(_SearchInput.prototype, 'onInputChange');
-                spyOnBtnClick = jest.spyOn(_SearchInput.prototype, 'onBtnClick');
+                spyOnInputChange = jest.spyOn(SearchInput.prototype, 'onInputChange');
+                spyOnBtnClick = jest.spyOn(SearchInput.prototype, 'onBtnClick');
 
                 TestUtil.renderPlain(elem, SearchInput, {...mockProps});
                 helper.assignChildrenElem();

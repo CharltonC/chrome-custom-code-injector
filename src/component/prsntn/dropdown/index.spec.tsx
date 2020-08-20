@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, IState } from './type';
-import { _Dropdown, Dropdown } from './';
+import { Dropdown } from './';
 
 describe('Component - Dropdown', () => {
     const mockBareProps: IProps = {id: 'id', list: []};
@@ -10,9 +10,9 @@ describe('Component - Dropdown', () => {
     let setStateSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        getInitialStateSpy = jest.spyOn(_Dropdown.prototype, 'getInitialState');
-        onSelectSpy = jest.spyOn(_Dropdown.prototype, 'onSelect');
-        setStateSpy = jest.spyOn(_Dropdown.prototype, 'setState');
+        getInitialStateSpy = jest.spyOn(Dropdown.prototype, 'getInitialState');
+        onSelectSpy = jest.spyOn(Dropdown.prototype, 'onSelect');
+        setStateSpy = jest.spyOn(Dropdown.prototype, 'setState');
     });
 
     afterEach(() => {
@@ -22,12 +22,12 @@ describe('Component - Dropdown', () => {
 
     describe('Component Class', () => {
         const mockRtnState = {} as IState;
-        let cmp: _Dropdown;
+        let cmp: Dropdown;
 
         describe('constructor', () => {
             it("should init ", () => {
                 getInitialStateSpy.mockReturnValue(mockRtnState);
-                cmp = new _Dropdown(mockBareProps);
+                cmp = new Dropdown(mockBareProps);
 
                 expect(cmp.state).toEqual(mockRtnState);
             });
@@ -37,18 +37,18 @@ describe('Component - Dropdown', () => {
             const mockPropsWithInitialSelectIdx: IProps = {...mockDefProps, selectIdx: 0};
             const mockPropsWithSameSelectIdx = {selectIdx: 0} as IProps;
             const mockPropsWithDiffSelectIdx = {selectIdx: 1} as IProps;
-            let cmpWithSelectIdx: _Dropdown;
-            let cmpWithoutSelectIdx: _Dropdown;
+            let cmpWithSelectIdx: Dropdown;
+            let cmpWithoutSelectIdx: Dropdown;
 
             beforeEach(() => {
                 // Override/Clear all the spies set in the parent so that Component Methods called dont get recorded before they are instantiated
                 jest.restoreAllMocks();
 
-                cmpWithSelectIdx = new _Dropdown(mockPropsWithInitialSelectIdx);
-                cmpWithoutSelectIdx = new _Dropdown(mockDefProps);
+                cmpWithSelectIdx = new Dropdown(mockPropsWithInitialSelectIdx);
+                cmpWithoutSelectIdx = new Dropdown(mockDefProps);
 
-                getInitialStateSpy = jest.spyOn(_Dropdown.prototype, 'getInitialState').mockReturnValue(mockRtnState);
-                setStateSpy = jest.spyOn(_Dropdown.prototype, 'setState').mockImplementation(() => {});
+                getInitialStateSpy = jest.spyOn(Dropdown.prototype, 'getInitialState').mockReturnValue(mockRtnState);
+                setStateSpy = jest.spyOn(Dropdown.prototype, 'setState').mockImplementation(() => {});
             });
 
             it('should not set state and not proceed with update when select index is not provided in the first place', () => {
@@ -77,7 +77,7 @@ describe('Component - Dropdown', () => {
         });
 
         describe('Method - getInitialState', () => {
-            const { getInitialState} = _Dropdown.prototype;
+            const { getInitialState} = Dropdown.prototype;
 
             it('should return state when neither list nor select index are provided', () => {
                 const { hsList, hsSelectIdx }: IState = getInitialState(mockBareProps);
@@ -120,14 +120,14 @@ describe('Component - Dropdown', () => {
             });
 
             it('should not call the callback if not provided', () => {
-                cmp = new _Dropdown(mockBareProps);
+                cmp = new Dropdown(mockBareProps);
                 cmp.onSelect(mockEvt);
 
                 expect(mockOnSelect).not.toHaveBeenCalled();
             });
 
             it('should call the callback if provided', () => {
-                cmp = new _Dropdown({...mockBareProps, onSelect: mockOnSelect});
+                cmp = new Dropdown({...mockBareProps, onSelect: mockOnSelect});
                 cmp.onSelect(mockEvt);
 
                 expect(mockOnSelect).toHaveBeenCalledWith(mockEvt, mockOptionIdx);
