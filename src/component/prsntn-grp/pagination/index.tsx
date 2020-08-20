@@ -1,5 +1,5 @@
-import React, { ReactElement, memo, Component } from "react";
-
+import React, { ReactElement } from "react";
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { Dropdown } from '../../prsntn/dropdown';
 import { inclStaticIcon } from '../../static/icon';
 
@@ -12,7 +12,7 @@ const CLS_PREFIX: string = 'kz-paginate';
 const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
 const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
 
-export class _Pagination extends Component<IProps> {
+export class Pagination extends MemoComponent<IProps> {
     render() {
         const {
             startRecord, endRecord, totalRecord,
@@ -69,5 +69,3 @@ export class _Pagination extends Component<IProps> {
         };
     }
 }
-
-export const Pagination = memo(_Pagination);

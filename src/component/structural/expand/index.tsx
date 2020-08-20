@@ -1,7 +1,8 @@
-import { Component, memo, cloneElement, Children, ReactElement } from 'react';
+import { cloneElement, Children, ReactElement } from 'react';
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { IProps, IState, IChildExtraProps } from './type';
 
-export class _ExpandWrapper extends Component<IProps, IState> {
+export class _ExpandWrapper extends MemoComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         const { initial } = props;
@@ -29,5 +30,3 @@ export class _ExpandWrapper extends Component<IProps, IState> {
         };
     }
 }
-
-export const ExpandWrapper = memo(_ExpandWrapper);

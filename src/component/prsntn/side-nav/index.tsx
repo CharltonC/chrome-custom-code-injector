@@ -1,9 +1,10 @@
-import React, { Component, memo, ReactElement } from "react";
+import React, { ReactElement } from "react";
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { IProps, IState, INestList, IList } from './type';
 import { inclStaticIcon } from '../../static/icon/';
 import { inclStaticNumBadge } from '../../static/num-badge/';
 
-export class _SideNav extends Component<IProps, IState> {
+export class SideNav extends MemoComponent<IProps, IState> {
     //// Element class name constants: list, list items, list item contents (Row, Title Text, Dropdown Arrows)
     readonly baseCls: string = 'side-nav';
     readonly lsBaseCls: string = `${this.baseCls}__ls`;
@@ -139,5 +140,3 @@ export class _SideNav extends Component<IProps, IState> {
         );
     }
 }
-
-export const SideNav = memo(_SideNav);

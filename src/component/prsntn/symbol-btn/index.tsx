@@ -1,7 +1,8 @@
-import React, { memo, Component } from 'react';
+import React from 'react';
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { IProps } from './type';
 
-export class _SymbolBtn extends Component<IProps, {}> {
+export class SymbolBtn extends MemoComponent<IProps, {}> {
     hsExtState: boolean;
 
     constructor(props: IProps) {
@@ -42,5 +43,3 @@ export class _SymbolBtn extends Component<IProps, {}> {
         );
     }
 }
-
-export const SymbolBtn = memo(_SymbolBtn);

@@ -1,9 +1,9 @@
-import React, { Component, memo, ReactElement } from "react";
-
+import React, { ReactElement } from "react";
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { inclStaticIcon } from '../../static/icon/';
 import { IProps, IState, ITabItem } from './type';
 
-export class _TabSwitch extends Component<IProps, IState> {
+export class TabSwitch extends MemoComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         const { list, activeIdx } = props;
@@ -84,5 +84,3 @@ export class _TabSwitch extends Component<IProps, IState> {
             null;
     }
 }
-
-export const TabSwitch = memo(_TabSwitch);

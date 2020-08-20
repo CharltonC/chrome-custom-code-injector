@@ -1,9 +1,9 @@
-import React, { memo, ReactElement, Component } from 'react';
-
+import React, { ReactElement } from 'react';
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState } from './type';
 
-export class _SearchInput extends Component<IProps, IState> {
+export class SearchInput extends MemoComponent<IProps, IState> {
     inputElem: HTMLInputElement;
 
     constructor(props: IProps) {
@@ -91,5 +91,3 @@ export class _SearchInput extends Component<IProps, IState> {
         );
     }
 }
-
-export const SearchInput = memo(_SearchInput);

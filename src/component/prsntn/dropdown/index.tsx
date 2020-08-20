@@ -1,10 +1,11 @@
-import React, { Component, memo, ReactElement } from "react";
+import React, { ReactElement } from "react";
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState} from './type';
 
 const dnArrowElem: ReactElement = inclStaticIcon('arrow-dn');
 
-export class _Dropdown extends Component<IProps, IState> {
+export class Dropdown extends MemoComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
@@ -66,5 +67,3 @@ export class _Dropdown extends Component<IProps, IState> {
             null;
     }
 }
-
-export const Dropdown = memo(_Dropdown);

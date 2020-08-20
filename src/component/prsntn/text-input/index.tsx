@@ -1,9 +1,9 @@
-import React, { memo, Component } from 'react';
-
+import React from 'react';
+import { MemoComponent } from '../../../asset/ts/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState, IValidationConfig } from './type';
 
-export class _TextInput extends Component<IProps, IState> {
+export class TextInput extends MemoComponent<IProps, IState> {
     inputElem: HTMLInputElement;
 
     constructor(props: IProps) {
@@ -143,5 +143,3 @@ export class _TextInput extends Component<IProps, IState> {
         );
     }
 }
-
-export const TextInput = memo(_TextInput);
