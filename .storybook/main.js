@@ -6,7 +6,8 @@ module.exports = {
         './*.tsx',
 
         // all compoennt stories
-        '../src/component/**/**/*.story.tsx'
+        '../src/component/**/**/*.story.tsx',
+        '../src/service/**/**/*.story.tsx'
     ],
     webpackFinal: async config => {
         //// Parse Ts
