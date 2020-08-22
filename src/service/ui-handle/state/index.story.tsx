@@ -1,25 +1,26 @@
 import React from 'react';
-import { StateHandle } from './';
+import { StoreHandler, StateHandle } from './';
 
 export default {
     title: 'State Handle',
 };
 
 export const Example = () => {
-    const state = {
-        name: 'joe',
-        age: 20
-    };
+    class SampleStore {
+        name = 'joe';
+        age = 20;
+        gender = 'male';
+    }
 
-    const stateHandler = {
-        onNameChange(store, evt) {
+    class SampleStoreHandler extends StoreHandler {
+        onNameChange(store, evt?) {
             return {
                 ...store,
                 name: 'jane'
             };
-        },
+        }
 
-        onAgeChange(store, evt) {
+        onAgeChange(store, evt?) {
             const { name } = this.reflect.onNameChange(store);
             return {
                 ...store,
@@ -27,26 +28,40 @@ export const Example = () => {
                 age: 21
             };
         }
-    };
 
-    const DemoComponent = ({ store, storeHandle }) => {
-        const { name, age } = store;
-        const { onNameChange, onAgeChange } = storeHandle;
+        onGenderChange(store, evt?) {
+            const { name, age } = this.reflect.onAgeChange(store);
+            return {
+                ...store,
+                name,
+                age,
+                gender: 'female'
+            };
+        }
+    }
+
+    const SampleComponent = ({ store, storeHandler }) => {
+        const { name, age, gender } = store;
+        const { onNameChange, onAgeChange, onGenderChange } = storeHandler;
         return (
             <div>
                 <p>name: {name}</p>
                 <p>age: {age}</p>
+                <p>gender: {gender}</p>
                 <p>
                     <button type="button" onClick={onNameChange}>change name</button>
                 </p>
                 <p>
                     <button type="button" onClick={onAgeChange}>change age</button>
                 </p>
+                <p>
+                    <button type="button" onClick={onGenderChange}>change gender</button>
+                </p>
             </div>
         );
     };
 
-    const WrappedDemoComponent = StateHandle.init(DemoComponent, state, stateHandler);
+    const WrappedSampleComponent = StateHandle.init(SampleComponent, SampleStore, SampleStoreHandler);
 
-    return <WrappedDemoComponent />;
+    return <WrappedSampleComponent />;
 };
