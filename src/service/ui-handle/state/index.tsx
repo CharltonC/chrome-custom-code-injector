@@ -32,6 +32,7 @@ export class StateHandle {
             // Else return a wrapped method which includes setting the state
             const { state } = cmpCtx;
             return (...args: any[]) => {
+                // The reason we have to use `targetProxy` as `this` context is because in some methods of `storeHandle` object, it may uses `this.reflect` to get partial state prior to setting state
                 const modState = method.call(targetProxy, state, ...args);
                 cmpCtx.setState({ ...state, ...modState })
             }

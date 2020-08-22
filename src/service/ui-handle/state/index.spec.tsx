@@ -6,6 +6,7 @@ import { TStore, TStoreHandle } from './type';
 describe('State Handle', () => {
     describe('Proxy Get Handler', () => {
         const mockInitialState = { name: 'zoe' };
+        const mockModState = { name: 'frank' };
         let mockTarget: TStoreHandle;
         let mockCmpCtx: any;
         let handler: (...args: any[]) => any;
@@ -13,6 +14,7 @@ describe('State Handle', () => {
 
         beforeEach(() => {
             mockRtnModeState = jest.fn();
+            mockRtnModeState.mockReturnValue(mockModState);
             mockTarget = {
                 onEvt: mockRtnModeState
             };
@@ -33,9 +35,7 @@ describe('State Handle', () => {
 
         it('should return a wrapped function when property is a method that exists', () => {
             const mockTargetProxy = {};
-            const mockModState = { name: 'frank' };
             const mockParam = 'lorem';
-            mockRtnModeState.mockReturnValue(mockModState);
             const fn = handler(mockTarget, 'onEvt', mockTargetProxy);
             fn(mockParam);
 
