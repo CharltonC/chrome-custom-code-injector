@@ -13,38 +13,37 @@ describe('State Handle', () => {
     describe('Proxy Get Handler', () => {
         const mockInitialState = { name: 'zoe' };
         const mockModState = { name: 'frank' };
-        let mockTarget;
-        let mockCmpCtx: any;
         let handler: (...args: any[]) => any;
-        let mockRtnModeState: jest.Mock;
+        let mockStateSetter: jest.Mock;
+        let mockTarget;
 
         beforeEach(() => {
-            mockRtnModeState = jest.fn();
-            mockRtnModeState.mockReturnValue(mockModState);
-            mockTarget = {
-                lorem: 'sum',
-                onEvt: mockRtnModeState
-            };
-            mockCmpCtx = {
-                state: mockInitialState,
-                setState: jest.fn()
-            };
-            handler = StateHandle.getProxyGetHandler(mockCmpCtx);
+            mockStateSetter = jest.fn();
+            handler = StateHandle.getProxyGetHandler(
+                () => mockInitialState,
+                mockStateSetter
+            );
         });
 
         it('should return its default value when the property is not a method', () => {
+            mockTarget = { lorem: 'sum' };
             expect(handler(mockTarget, 'lorem')).toBe('sum');
+            expect(handler(mockTarget, 'xyz')).toBeFalsy();
         });
 
         it('should return a wrapped function when property is a method', () => {
+            const mockMethod: jest.Mock = jest.fn();
+            mockMethod.mockReturnValue(mockModState);
+            mockTarget = { mockMethod };
+
             const mockTargetProxy = {};
             const mockParam = 'lorem';
-            const fn = handler(mockTarget, 'onEvt', mockTargetProxy);
+            const fn = handler(mockTarget, 'mockMethod', mockTargetProxy);
             fn(mockParam);
 
             expect(typeof fn).toBe('function');
-            expect(mockTarget.onEvt).toHaveBeenCalledWith(mockInitialState, mockParam);
-            expect(mockCmpCtx.setState).toHaveBeenCalledWith({...mockCmpCtx.state, ...mockModState});
+            expect(mockTarget.mockMethod).toHaveBeenCalledWith(mockInitialState, mockParam);
+            expect(mockStateSetter).toHaveBeenCalledWith(mockModState);
         });
     });
 
