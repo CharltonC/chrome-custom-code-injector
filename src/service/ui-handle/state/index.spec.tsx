@@ -19,8 +19,25 @@ describe('State Handle', () => {
         });
 
         it('should return itself when property `reflect` is accessed', () => {
-            const storeHandler = new StoreHandler();
             expect(storeHandler.reflect).toBe(storeHandler);
+        });
+
+        it('should call subscribe', () => {
+            const mockCallback = () => {};
+            storeHandler.subscribe(mockCallback);
+            expect(mockPubSub.subscribe).toHaveBeenCalledWith('CHANGE', mockCallback);
+        });
+
+        it('should call publish', () => {
+            const mockStore = () => {};
+            storeHandler.publish(mockStore);
+            expect(mockPubSub.publish).toHaveBeenCalledWith('CHANGE', mockStore);
+        });
+
+        it('should call unsubscribe', () => {
+            const MOCK_TOKEN = 'token';
+            storeHandler.unsubscribe(MOCK_TOKEN);
+            expect(mockPubSub.unsubscribe).toHaveBeenCalledWith(MOCK_TOKEN);
         });
     });
 
