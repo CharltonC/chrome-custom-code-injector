@@ -28,9 +28,14 @@ describe('Base Store Handler', () => {
     });
 
     it('method - `publish`: should call publish', () => {
-        const mockStore = () => {};
-        baseStoreHandler.publish(mockStore);
-        expect(mockPubSub.publish).toHaveBeenCalledWith('CHANGE', mockStore);
+        const mockCurState = { name: 'john' };
+        const mockModState = { name: 'jane' };
+        baseStoreHandler.publish(mockCurState, mockModState);
+
+        expect(mockPubSub.publish).toHaveBeenCalledWith('CHANGE', {
+            curState: mockCurState,
+            modState: mockModState
+        });
     });
 
     it('method - `unsubscribe`: should call unsubscribe', () => {
@@ -77,7 +82,7 @@ describe('State Handle', () => {
 
             expect(typeof fn).toBe('function');
             expect(mockAllowMethod).toHaveBeenCalledWith(mockInitialState, mockParam);
-            expect(mockStateSetter).toHaveBeenCalledWith(mockModState);
+            expect(mockStateSetter).toHaveBeenCalledWith(mockInitialState, mockModState);
         });
     });
 
@@ -109,11 +114,12 @@ describe('State Handle', () => {
             const cmp = new WrappedCmp({});
             const [ stateGetter, stateSetter ] = getProxyGetHandlerSpy.mock.calls[0];
             const setStateSpy = jest.spyOn(cmp, 'setState').mockImplementation(() => {});
+            const mockCurrStore = { name: 'B' };
+            stateSetter(mockStore, mockCurrStore);
 
             expect(stateGetter()).toBe(mockStore);
-
-            stateSetter({});
-            expect(setStateSpy).toHaveBeenCalledWith({});
+            expect(setStateSpy).toHaveBeenCalled();
+            expect(setStateSpy.mock.calls[0][0]).toBe(mockCurrStore);
         });
 
         it('should render and update state', () => {

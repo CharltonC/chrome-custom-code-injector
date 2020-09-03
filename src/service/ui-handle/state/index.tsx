@@ -1,6 +1,6 @@
 import PubSub from 'pubsub-js';
 import React, { Component, ComponentClass } from 'react';
-import { TStore, TCmp, TProxyGetHandler } from './type';
+import { TStore, TStateGetter, TStateSetter, TCmp, TProxyGetHandler, TCallback } from './type';
 
 export class BaseStoreHandler {
     readonly CHANGE_EVT: string = 'CHANGE';
@@ -10,12 +10,12 @@ export class BaseStoreHandler {
         return this;
     }
 
-    subscribe(callback: (args: any[]) => any): string {
+    subscribe(callback: TCallback): string {
         return this.PubSub.subscribe(this.CHANGE_EVT, callback);
     }
 
-    publish(store: TStore): void {
-        this.PubSub.publish(this.CHANGE_EVT, store);
+    publish(curState: TStore, modState: TStore): void {
+        this.PubSub.publish(this.CHANGE_EVT, { curState, modState });
     }
 
     unsubscribe(token: string): void {
@@ -39,7 +39,7 @@ export const StateHandle = {
                 this.baseStoreHandler = new Proxy(handler, {
                     get: getProxyGetHandler(
                         () => this.state,
-                        (state: TStore) => this.setState(state),
+                        (curState: TStore, modState: TStore) => this.setState(modState, () => handler.publish(curState, modState)),
                         handlerMethods
                     )
                 });
@@ -51,7 +51,7 @@ export const StateHandle = {
         }
     },
 
-    getProxyGetHandler(stateGetter: () => TStore, stateSetter: (store: TStore) => void, handlerMethods: string[]): TProxyGetHandler {
+    getProxyGetHandler(stateGetter: TStateGetter, stateSetter: TStateSetter, handlerMethods: string[]): TProxyGetHandler {
         return (target: BaseStoreHandler, key: string, proxy: BaseStoreHandler) => {
             const prop = target[key];
             const isAllowed: boolean = handlerMethods.indexOf(key) !== -1;
@@ -62,9 +62,9 @@ export const StateHandle = {
 
             // If proxied method is called, then return a wrapped method which includes setting the state
             return (...args: any[]) => {
-                const currState: TStore = stateGetter();
-                const modState: TStore = prop.call(proxy, currState, ...args);
-                stateSetter({ ...currState, ...modState });
+                const curState: TStore = stateGetter();
+                const partialModState: TStore = prop.call(proxy, curState, ...args);
+                stateSetter(curState, { ...curState, ...partialModState });
             }
         }
     }

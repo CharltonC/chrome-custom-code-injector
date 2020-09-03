@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BaseStoreHandler, StateHandle } from './';
 
 export default {
@@ -68,6 +68,15 @@ export const Example = () => {
     };
 
     const sampleStoreHandler = new SampleStoreHandler();
+
+    useEffect(() => {
+        const token = sampleStoreHandler.subscribe((msg, data) => {
+            console.log(msg);
+            console.log(data);
+        });
+        return () => sampleStoreHandler.unsubscribe(token);
+    }, []);
+
     const WrappedSampleComponent = StateHandle.init(SampleComponent, sampleStore, sampleStoreHandler);
 
     return <WrappedSampleComponent />;
