@@ -42,7 +42,7 @@ export class StateHandle {
             return (...args: any[]) => {
                 const currState: TStore = stateGetter();
                 const modState: TStore = method.call(proxy, currState, ...args);
-                stateSetter(modState);
+                stateSetter({ ...currState, ...modState });
             }
         }
     }

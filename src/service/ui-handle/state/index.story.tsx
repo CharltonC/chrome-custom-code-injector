@@ -17,7 +17,6 @@ export const Example = () => {
         onNameChange(store, evt?) {
             // Setting state Directly
             return {
-                ...store,
                 name: 'jane'
             };
         }
@@ -26,18 +25,16 @@ export const Example = () => {
             // Consolidate Partial State (single level) prior to Setting state
             const { name } = this.reflect.onNameChange(store);
             return {
-                ...store,
                 name,
                 age: 21
             };
         }
 
         onGenderChange(store, evt?) {
-            // Consolidate Partial State (Recursive) prior to Setting state
+            // Dependent State and/or Consolidate Partial State (Recursive) prior to Setting state
             const { address } = this.reflect.onAddressChange(store);
             const { name, age } = this.reflect.onAgeChange(store);
             return {
-                ...store,
                 name,
                 age,
                 address,
