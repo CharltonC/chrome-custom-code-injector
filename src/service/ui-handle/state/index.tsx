@@ -26,6 +26,9 @@ export class StoreHandler {
 export class StateHandle {
     static init(Cmp: TCmp, store: TStore, handler: StoreHandler): ComponentClass {
         const { getProxyGetHandler } = this;
+        const ownMethodNames: string[] = Object
+            .getOwnPropertyNames(Object.getPrototypeOf(handler))
+            .filter(key => key !== 'constructor');
 
         return class extends Component<any, TStore> {
             storeHandler: StoreHandler;
@@ -36,7 +39,8 @@ export class StateHandle {
                 this.storeHandler = new Proxy(handler, {
                     get: getProxyGetHandler(
                         () => this.state,
-                        (state: TStore) => this.setState(state)
+                        (state: TStore) => this.setState(state),
+                        ownMethodNames
                     )
                 });
             }
@@ -47,17 +51,18 @@ export class StateHandle {
         }
     }
 
-    static getProxyGetHandler(stateGetter: () => TStore, stateSetter: (store: TStore) => void): TProxyGetHandler {
+    static getProxyGetHandler(stateGetter: () => TStore, stateSetter: (store: TStore) => void, ownMethodNames: string[]): TProxyGetHandler {
         return (target: StoreHandler, key: string, proxy: StoreHandler) => {
-            const method = target[key];
+            const prop = target[key];
+            const isAllowed: boolean = ownMethodNames.indexOf(key) !== -1;
 
-            // For `reflect` property and properties that dont exist
-            if (typeof method !== 'function') return method;
+            // Filter out non-methods, `constructor`, all props/methods from `StoreHandle`, non-exist methods etc
+            if (!isAllowed || typeof prop !== 'function') return prop;
 
             // If proxied method is called, then return a wrapped method which includes setting the state
             return (...args: any[]) => {
                 const currState: TStore = stateGetter();
-                const modState: TStore = method.call(proxy, currState, ...args);
+                const modState: TStore = prop.call(proxy, currState, ...args);
                 stateSetter({ ...currState, ...modState });
             }
         }
