@@ -38,13 +38,15 @@ export const Example = () => {
                 name,
                 age,
                 address,
-                gender: 'female'
+                gender: age === 20 ? 'female' : 'n/a'
             };
         }
 
         onAddressChange(store, evt?) {
             // Setting state Directly
-            return { ...store, address: '20 Joseph Street' };
+            return {
+                address: '20 Joseph Street'
+            };
         }
     }
 
