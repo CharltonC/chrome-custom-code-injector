@@ -6,11 +6,11 @@ export default {
 };
 
 export const Example = () => {
-    class SampleStore {
-        name = 'joe';
-        age = 20;
-        gender = 'male';
-        address = '100 Railway Street';
+    const sampleStore = {
+        name: 'joe',
+        age: 20,
+        gender: 'male',
+        address: '100 Railway Street',
     }
 
     class SampleStoreHandler extends StoreHandler {
@@ -65,7 +65,8 @@ export const Example = () => {
         );
     };
 
-    const WrappedSampleComponent = StateHandle.init(SampleComponent, SampleStore, SampleStoreHandler);
+    const sampleStoreHandler = new SampleStoreHandler();
+    const WrappedSampleComponent = StateHandle.init(SampleComponent, sampleStore, sampleStoreHandler);
 
     return <WrappedSampleComponent />;
 };

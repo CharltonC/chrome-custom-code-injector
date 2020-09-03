@@ -1,5 +1,5 @@
 import React, { Component, ComponentClass } from 'react';
-import { TStore, TCmp, TProxyGetHandler, IClass } from './type';
+import { TStore, TCmp, TProxyGetHandler } from './type';
 
 export class StoreHandler {
     get reflect() {
@@ -8,7 +8,7 @@ export class StoreHandler {
 }
 
 export class StateHandle {
-    static init(Cmp: TCmp, Store: IClass<TStore>, Handler: IClass<StoreHandler>): ComponentClass {
+    static init(Cmp: TCmp, store: TStore, handler: StoreHandler): ComponentClass {
         const { getProxyGetHandler } = this;
 
         return class extends Component<any, TStore> {
@@ -16,8 +16,8 @@ export class StateHandle {
 
             constructor(props: Record<string, any>) {
                 super(props);
-                this.state = new Store();
-                this.storeHandler = new Proxy(new Handler(), {
+                this.state = store;
+                this.storeHandler = new Proxy(handler, {
                     get: getProxyGetHandler(
                         () => this.state,
                         (state: TStore) => this.setState(state)

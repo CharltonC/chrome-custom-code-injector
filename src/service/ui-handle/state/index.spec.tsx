@@ -52,19 +52,16 @@ describe('State Handle', () => {
         let $child: HTMLHeadingElement;
 
         beforeEach(() => {
+            const mockStore = { name: 'A' };
+
             mockOnClick = jest.fn();
-
-            class MockStore {
-                name = 'A';
-            }
-
             class MockStoreHandler extends StoreHandler {
                 onClick = mockOnClick;
             }
 
-            const MockCmp = ({ store, storeHandler}) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
+            const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
 
-            const WrappedCmp: ComponentClass = StateHandle.init(MockCmp, MockStore, MockStoreHandler);
+            const WrappedCmp: ComponentClass = StateHandle.init(MockCmp, mockStore, new MockStoreHandler());
             const $elem: HTMLElement = TestUtil.setupElem();
             TestUtil.renderPlain($elem, WrappedCmp);
             $child = $elem.querySelector('h1');
