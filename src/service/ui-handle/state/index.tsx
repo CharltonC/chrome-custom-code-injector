@@ -1,9 +1,25 @@
+import PubSub from 'pubsub-js';
 import React, { Component, ComponentClass } from 'react';
 import { TStore, TCmp, TProxyGetHandler } from './type';
 
 export class StoreHandler {
+    readonly CHANGE_EVT: string = 'CHANGE';
+    readonly PubSub: PubSub = PubSub;
+
     get reflect() {
         return this;
+    }
+
+    subscribe(callback: (args: any[]) => any): string {
+        return this.PubSub.subscribe(this.CHANGE_EVT, callback);
+    }
+
+    publish(store: TStore): void {
+        this.PubSub.publish(this.CHANGE_EVT, store);
+    }
+
+    unsubscribe(token: string): void {
+        this.PubSub.unsubscribe(token);
     }
 }
 

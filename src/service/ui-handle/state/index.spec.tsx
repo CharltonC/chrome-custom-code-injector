@@ -1,9 +1,23 @@
+import PubSub from 'pubsub-js';
 import React, { ComponentClass } from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { StoreHandler, StateHandle } from './';
 
 describe('State Handle', () => {
     describe('Base Store Handler', () => {
+        let mockPubSub: Partial<PubSub>;
+        let storeHandler: StoreHandler;
+
+        beforeEach(() => {
+            mockPubSub = {
+                subscribe: jest.fn(),
+                unsubscribe: jest.fn(),
+                publish: jest.fn(),
+            };
+            storeHandler = new StoreHandler();
+            (storeHandler as any).PubSub = mockPubSub;
+        });
+
         it('should return itself when property `reflect` is accessed', () => {
             const storeHandler = new StoreHandler();
             expect(storeHandler.reflect).toBe(storeHandler);
