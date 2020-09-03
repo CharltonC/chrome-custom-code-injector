@@ -26,7 +26,7 @@ export class BaseStoreHandler {
 export const StateHandle = {
     init(Cmp: TCmp, store: TStore, handler: BaseStoreHandler): ComponentClass {
         const { getProxyGetHandler } = this;
-        const ownMethodNames: string[] = Object
+        const handlerMethods: string[] = Object
             .getOwnPropertyNames(Object.getPrototypeOf(handler))
             .filter(key => key !== 'constructor');
 
@@ -40,7 +40,7 @@ export const StateHandle = {
                     get: getProxyGetHandler(
                         () => this.state,
                         (state: TStore) => this.setState(state),
-                        ownMethodNames
+                        handlerMethods
                     )
                 });
             }
@@ -51,10 +51,10 @@ export const StateHandle = {
         }
     },
 
-    getProxyGetHandler(stateGetter: () => TStore, stateSetter: (store: TStore) => void, ownMethodNames: string[]): TProxyGetHandler {
+    getProxyGetHandler(stateGetter: () => TStore, stateSetter: (store: TStore) => void, handlerMethods: string[]): TProxyGetHandler {
         return (target: BaseStoreHandler, key: string, proxy: BaseStoreHandler) => {
             const prop = target[key];
-            const isAllowed: boolean = ownMethodNames.indexOf(key) !== -1;
+            const isAllowed: boolean = handlerMethods.indexOf(key) !== -1;
 
             // Only allow own prototype methods
             // - i.e. Filter out non-methods, `constructor`, all props/methods from `StoreHandle`, non-exist methods etc
