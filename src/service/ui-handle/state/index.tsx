@@ -2,7 +2,7 @@ import PubSub from 'pubsub-js';
 import React, { Component, ComponentClass } from 'react';
 import { TStore, TCmp, TProxyGetHandler } from './type';
 
-export class StoreHandler {
+export class BaseStoreHandler {
     readonly CHANGE_EVT: string = 'CHANGE';
     readonly PubSub: PubSub = PubSub;
 
@@ -24,19 +24,19 @@ export class StoreHandler {
 }
 
 export const StateHandle = {
-    init(Cmp: TCmp, store: TStore, handler: StoreHandler): ComponentClass {
+    init(Cmp: TCmp, store: TStore, handler: BaseStoreHandler): ComponentClass {
         const { getProxyGetHandler } = this;
         const ownMethodNames: string[] = Object
             .getOwnPropertyNames(Object.getPrototypeOf(handler))
             .filter(key => key !== 'constructor');
 
         return class extends Component<any, TStore> {
-            storeHandler: StoreHandler;
+            baseStoreHandler: BaseStoreHandler;
 
             constructor(props: Record<string, any>) {
                 super(props);
                 this.state = store;
-                this.storeHandler = new Proxy(handler, {
+                this.baseStoreHandler = new Proxy(handler, {
                     get: getProxyGetHandler(
                         () => this.state,
                         (state: TStore) => this.setState(state),
@@ -46,13 +46,13 @@ export const StateHandle = {
             }
 
             render() {
-                return <Cmp store={this.state} storeHandler={this.storeHandler} />;
+                return <Cmp store={this.state} baseStoreHandler={this.baseStoreHandler} />;
             }
         }
     },
 
     getProxyGetHandler(stateGetter: () => TStore, stateSetter: (store: TStore) => void, ownMethodNames: string[]): TProxyGetHandler {
-        return (target: StoreHandler, key: string, proxy: StoreHandler) => {
+        return (target: BaseStoreHandler, key: string, proxy: BaseStoreHandler) => {
             const prop = target[key];
             const isAllowed: boolean = ownMethodNames.indexOf(key) !== -1;
 

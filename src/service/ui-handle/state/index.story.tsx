@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoreHandler, StateHandle } from './';
+import { BaseStoreHandler, StateHandle } from './';
 
 export default {
     title: 'State Handle',
@@ -13,7 +13,7 @@ export const Example = () => {
         address: '100 Railway Street',
     }
 
-    class SampleStoreHandler extends StoreHandler {
+    class SampleStoreHandler extends BaseStoreHandler {
         onNameChange(store, evt?) {
             // Setting state Directly
             return {
@@ -48,9 +48,9 @@ export const Example = () => {
         }
     }
 
-    const SampleComponent = ({ store, storeHandler }) => {
+    const SampleComponent = ({ store, baseStoreHandler }) => {
         const { name, age, gender, address } = store;
-        const { onNameChange, onAgeChange, onGenderChange, onAddressChange } = storeHandler;
+        const { onNameChange, onAgeChange, onGenderChange, onAddressChange } = baseStoreHandler;
         return (
             <div>
                 <p>name: {name}</p>

@@ -1,11 +1,11 @@
 import PubSub from 'pubsub-js';
 import React, { ComponentClass } from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { StoreHandler, StateHandle } from './';
+import { BaseStoreHandler, StateHandle } from './';
 
 describe('Base Store Handler', () => {
     let mockPubSub: Partial<PubSub>;
-    let storeHandler: StoreHandler;
+    let baseStoreHandler: BaseStoreHandler;
 
     beforeEach(() => {
         mockPubSub = {
@@ -13,29 +13,29 @@ describe('Base Store Handler', () => {
             unsubscribe: jest.fn(),
             publish: jest.fn(),
         };
-        storeHandler = new StoreHandler();
-        (storeHandler as any).PubSub = mockPubSub;
+        baseStoreHandler = new BaseStoreHandler();
+        (baseStoreHandler as any).PubSub = mockPubSub;
     });
 
     it('getter - `reflect`: should return itself when property `reflect` is accessed', () => {
-        expect(storeHandler.reflect).toBe(storeHandler);
+        expect(baseStoreHandler.reflect).toBe(baseStoreHandler);
     });
 
     it('method - `subscribe`: should call subscribe', () => {
         const mockCallback = () => {};
-        storeHandler.subscribe(mockCallback);
+        baseStoreHandler.subscribe(mockCallback);
         expect(mockPubSub.subscribe).toHaveBeenCalledWith('CHANGE', mockCallback);
     });
 
     it('method - `publish`: should call publish', () => {
         const mockStore = () => {};
-        storeHandler.publish(mockStore);
+        baseStoreHandler.publish(mockStore);
         expect(mockPubSub.publish).toHaveBeenCalledWith('CHANGE', mockStore);
     });
 
     it('method - `unsubscribe`: should call unsubscribe', () => {
         const MOCK_TOKEN = 'token';
-        storeHandler.unsubscribe(MOCK_TOKEN);
+        baseStoreHandler.unsubscribe(MOCK_TOKEN);
         expect(mockPubSub.unsubscribe).toHaveBeenCalledWith(MOCK_TOKEN);
     });
 });
@@ -87,8 +87,8 @@ describe('State Handle', () => {
         let onClickSpy: jest.SpyInstance;
         let $elem: HTMLElement;
         const mockStore = { name: 'A' };
-        const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
-        class MockStoreHandler extends StoreHandler {
+        const MockCmp = ({ store, baseStoreHandler }) => <h1 onClick={baseStoreHandler.onClick}>{store.name}</h1>;
+        class MockStoreHandler extends BaseStoreHandler {
             onClick() {}
         }
 
