@@ -1,7 +1,7 @@
 import PubSub from 'pubsub-js';
 import React, { ComponentClass } from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { BaseStoreHandler, StateHandle } from './';
+import { BaseStoreHandler, StateHandle } from '.';
 
 describe('Base Store Handler', () => {
     let mockPubSub: Partial<PubSub>;

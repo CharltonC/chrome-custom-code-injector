@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../../asset/ts/memo-component';
-import { UtilHandle } from '../../../service/ui-handle/util';
+import { UtilHandle } from '../../../service/handle/util';
 import { SortBtn } from '../../prsntn/sort-btn';
 import { IProps, TTbHeaderRows, TListHeaderRows } from './type';
 

@@ -1,11 +1,11 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../../asset/ts/memo-component';
-import { UtilHandle } from '../../../service/ui-handle/util';
-import { HeaderGrpHandle } from '../../../service/ui-handle/header-group';
-import { RowHandle } from '../../../service/ui-handle/row'
-import { ExpdHandle } from '../../../service/ui-handle/expand'
-import { SortHandle } from '../../../service/ui-handle/sort';
-import { PgnHandle } from '../../../service/ui-handle/pagination';
+import { UtilHandle } from '../../../service/handle/util';
+import { HeaderGrpHandle } from '../../../service/handle/header-group';
+import { RowHandle } from '../../../service/handle/row'
+import { ExpdHandle } from '../../../service/handle/expand'
+import { SortHandle } from '../../../service/handle/sort';
+import { PgnHandle } from '../../../service/handle/pagination';
 import { Pagination as DefPagination } from '../../prsntn-grp/pagination';
 import { GridHeader as DefGridHeader } from '../../prsntn-grp/grid-header';
 import {

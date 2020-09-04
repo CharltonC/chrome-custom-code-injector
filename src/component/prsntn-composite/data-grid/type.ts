@@ -1,8 +1,8 @@
-import * as sortHandleType from '../../../service/ui-handle/sort/type';
-import * as rowHandleType from '../../../service/ui-handle/row/type';
-import * as expdHandleType from '../../../service/ui-handle/expand/type';
-import * as pgnHandleType from '../../../service/ui-handle/pagination/type';
-import * as headerGrpHandleType from '../../../service/ui-handle/header-group/type';
+import * as sortHandleType from '../../../service/handle/sort/type';
+import * as rowHandleType from '../../../service/handle/row/type';
+import * as expdHandleType from '../../../service/handle/expand/type';
+import * as pgnHandleType from '../../../service/handle/pagination/type';
+import * as headerGrpHandleType from '../../../service/handle/header-group/type';
 import { ReactElement } from 'react';
 
 //// Props

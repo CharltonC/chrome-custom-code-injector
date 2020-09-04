@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import * as pgnHandleType from '../../../service/ui-handle/pagination/type';
+import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as dropdownType from '../../prsntn/dropdown/type';
 
 

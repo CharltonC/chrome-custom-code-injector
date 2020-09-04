@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BaseStoreHandler, StateHandle } from './';
+import { BaseStoreHandler, StateHandle } from '.';
 
 export default {
     title: 'State Handle',
