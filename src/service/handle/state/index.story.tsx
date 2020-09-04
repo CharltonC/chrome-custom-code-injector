@@ -83,3 +83,52 @@ export const Example = () => {
 };
 
 // TODO: multiple state modules example
+export const MultipleStatesExample = () => {
+    const sampleStore1 = {
+        name: 'joe',
+    };
+
+    const sampleStore2 = {
+        project: 'VsCode',
+        license: 'MIT'
+    };
+
+    class SampleStoreHandler1 extends BaseStoreHandler {
+        onNameChange(store, evt?) {
+            const { root, name, local } = store;
+            console.log(name);
+            console.log(root);
+            console.log(local);
+
+            return { name: 'jane' };
+        }
+    }
+
+    class SampleStoreHandler2 extends BaseStoreHandler {
+        onProjectChange({ root, name, local }, evt?) {
+            return { project: 'Apache' };
+        }
+    }
+
+    const SampleComponent = ({ store, storeHandler }) => {
+        const { storeOne, storeTwo } = store;
+        const { storeOne: storeOneHandler, storeTwo: storeTwoHandler } = storeHandler;
+
+        return (
+            <div>
+                <p>Name: {storeOne.name}</p>
+                <p><button type="button" onClick={storeOneHandler.onNameChange}>change name from store 1</button></p>
+                <br/>
+                <p>Project: {storeTwo.project}</p>
+                <p><button type="button" onClick={storeTwoHandler.onProjectChange}>change project from store 2</button></p>
+            </div>
+        );
+    };
+
+    const WrappedSampleComponent = StateHandle.init2(SampleComponent, {
+        storeOne: [sampleStore1, new SampleStoreHandler1()],
+        storeTwo: [sampleStore2, new SampleStoreHandler2()],
+    });
+
+    return <WrappedSampleComponent />;
+};

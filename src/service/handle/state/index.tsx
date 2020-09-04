@@ -75,5 +75,95 @@ export const StateHandle = {
                 stateSetter(curState, { ...curState, ...partialModState });
             }
         }
+    },
+
+    init2(Cmp: TCmp, storeConfig): ComponentClass {
+        const createStateManager = this.createStateManager.bind(this);
+
+        return class extends Component<any, TStore> {
+            storeHandler: BaseStoreHandler;
+
+            constructor(props: Record<string, any>) {
+                super(props);
+                const { state, stateHandler } = createStateManager(this, storeConfig);
+                this.state = state;
+                this.storeHandler = stateHandler;
+            }
+
+            render() {
+                return <Cmp store={this.state} storeHandler={this.storeHandler} />;
+            }
+        }
+    },
+
+    createStateManager(reactCmp, storeConfig) {
+        const state = {};
+        const stateHandler = {};
+
+        Object
+            .entries(storeConfig)
+            .forEach(([ storeName, config ]: [ string, any[]]) => {
+                const [ store, storeHandler ] = config;
+
+                if (storeName in state) throw new Error(`${storeName} already exists in store`);
+                if (storeName in stateHandler) throw new Error(`${storeName} already exists in store handler`);
+
+                const stateGetter = this.getStateGetter(reactCmp, storeName);   // TODL: global state?? or local state or both e.g. `{ root, local }`
+                const stateSetter = this.getStateSetter(reactCmp, storeHandler);
+                const handlerMethodNames = this.getHandlerOwnMethodNames(storeHandler);
+
+                state[storeName] = store;       // set state prop
+                stateHandler[storeName] = new Proxy(storeHandler, {
+                    get: this.getProxyGetHandler2(stateGetter, stateSetter, handlerMethodNames)
+                });
+            });
+
+        return { state, stateHandler };
+    },
+
+    getProxyGetHandler2(stateGetter: TStateGetter, stateSetter: TStateSetter, handlerMethods: string[]): TProxyGetHandler {
+        return (target: BaseStoreHandler, key: string, proxy: BaseStoreHandler) => {
+            const prop = target[key];
+            const isAllowed: boolean = handlerMethods.indexOf(key) !== -1;
+
+            // Only allow own prototype methods
+            // - i.e. Filter out non-methods, `constructor`, all props/methods from `StoreHandle`, non-exist methods etc
+            if (!isAllowed || typeof prop !== 'function') return prop;
+
+            // If proxied method is called, then return a wrapped method which includes setting the state
+            return (...args: any[]) => {
+                const state = stateGetter();
+                const { local, root, name } = state;
+                const partialModLocalState = prop.call(proxy, state, ...args);
+                const modLocalState = { ...local, ...partialModLocalState };
+                const modState = {[name]: modLocalState };
+                stateSetter(root, { ...root, ...modState });
+            }
+        }
+    },
+
+    getStateGetter(reactCmp, storeName) {
+        return () => {
+            const { state } = reactCmp;
+            return {
+                root: state,
+                name: storeName,
+                local: state[storeName],
+            };
+        }
+    },
+
+    getStateSetter(reactCmp, storeHandler) {
+        return (curState: TStore, modState: TStore) => {
+            // TODO: subscribe data add `storeName`
+            reactCmp.setState(modState, () => storeHandler.publish(curState, modState));
+        }
+    },
+
+    getHandlerOwnMethodNames(storeHandler): string[] {
+        const proto = Object.getPrototypeOf(storeHandler);
+        return Object
+            .getOwnPropertyNames(proto)
+            .filter(key => key !== 'constructor');
     }
 }
