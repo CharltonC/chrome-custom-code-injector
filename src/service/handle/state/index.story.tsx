@@ -50,9 +50,9 @@ export const Example = () => {
         }
     }
 
-    const SampleComponent = ({ store, baseStoreHandler }) => {
+    const SampleComponent = ({ store, storeHandler }) => {
         const { name, age, gender, address } = store;
-        const { onNameChange, onAgeChange, onGenderChange, onAddressChange } = baseStoreHandler;
+        const { onNameChange, onAgeChange, onGenderChange, onAddressChange } = storeHandler;
         return (
             <div>
                 <p>name: {name}</p>

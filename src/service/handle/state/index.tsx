@@ -31,12 +31,13 @@ export const StateHandle = {
             .filter(key => key !== 'constructor');
 
         return class extends Component<any, TStore> {
-            baseStoreHandler: BaseStoreHandler;
+            storeHandler: BaseStoreHandler;
 
             constructor(props: Record<string, any>) {
                 super(props);
                 this.state = store;
-                this.baseStoreHandler = new Proxy(handler, {
+
+                this.storeHandler = new Proxy(handler, {
                     get: getProxyGetHandler(
                         () => this.state,
                         (curState: TStore, modState: TStore) => this.setState(modState, () => handler.publish(curState, modState)),
@@ -46,7 +47,7 @@ export const StateHandle = {
             }
 
             render() {
-                return <Cmp store={this.state} baseStoreHandler={this.baseStoreHandler} />;
+                return <Cmp store={this.state} storeHandler={this.storeHandler} />;
             }
         }
     },

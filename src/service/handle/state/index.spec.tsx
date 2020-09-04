@@ -92,7 +92,7 @@ describe('State Handle', () => {
         let onClickSpy: jest.SpyInstance;
         let $elem: HTMLElement;
         const mockStore = { name: 'A' };
-        const MockCmp = ({ store, baseStoreHandler }) => <h1 onClick={baseStoreHandler.onClick}>{store.name}</h1>;
+        const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
         class MockStoreHandler extends BaseStoreHandler {
             onClick() {}
         }
