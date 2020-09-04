@@ -26,6 +26,8 @@ export class BaseStoreHandler {
 export const StateHandle = {
     init(Cmp: TCmp, store: TStore, handler: BaseStoreHandler): ComponentClass {
         const { getProxyGetHandler } = this;
+
+        // TOOD: get the methods for each store handler
         const handlerMethods: string[] = Object
             .getOwnPropertyNames(Object.getPrototypeOf(handler))
             .filter(key => key !== 'constructor');
@@ -35,8 +37,13 @@ export const StateHandle = {
 
             constructor(props: Record<string, any>) {
                 super(props);
+
+                // TODO: merge all store
                 this.state = store;
 
+                // TODO: loop all stores
+                // 1. create proxy for each store with corresp. handler
+                // 2. merge all store handler
                 this.storeHandler = new Proxy(handler, {
                     get: getProxyGetHandler(
                         () => this.state,

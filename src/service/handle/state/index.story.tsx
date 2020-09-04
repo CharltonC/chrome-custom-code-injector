@@ -81,3 +81,5 @@ export const Example = () => {
 
     return <WrappedSampleComponent />;
 };
+
+// TODO: multiple state modules example
