@@ -17,6 +17,12 @@ describe('Base Store Handler', () => {
         (baseStoreHandler as any).PubSub = mockPubSub;
     });
 
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
     it('getter - `reflect`: should return itself when property `reflect` is accessed', () => {
         expect(baseStoreHandler.reflect).toBe(baseStoreHandler);
     });
@@ -105,8 +111,6 @@ describe('State Handle', () => {
         });
 
         afterEach(() => {
-            jest.clearAllMocks();
-            jest.restoreAllMocks();
             TestUtil.teardown($elem);
         });
 
