@@ -1,7 +1,10 @@
 import { Component } from 'react';
 import { IStoreConfigs, ITransfmStoreConfigs, TStoreConfig, TFn, TObj } from './type';
+import { BaseStoreHandler } from './base-store-handler';
 
 export class BaseStoreComponent extends Component<any, TObj> {
+    readonly STORE_NAME_ERR: string = 'already exists in store or store handler';
+
     transformStoreConfigs(storeConfigs: IStoreConfigs): ITransfmStoreConfigs {
         // For single store and store handler
         const { root } = storeConfigs;
@@ -10,9 +13,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
             const [ store, storeHandler ] = root;
             return {
                 store,
-                storeHandler: new Proxy(storeHandler, {
-                    get: this.getProxyHandler(storeHandler)
-                })
+                storeHandler: this.getProxyStoreHandler(storeHandler)
             };
         }
 
@@ -25,9 +26,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
 
                 const [ subStore, subStoreHandler ] = subStoreConfig;
                 store[storeName] = subStore;
-                storeHandler[storeName] = new Proxy(subStoreHandler, {
-                    get: this.getProxyHandler(subStoreHandler, storeName)
-                });
+                storeHandler[storeName] = this.getProxyStoreHandler(subStoreHandler, storeName);
                 return container;
             }, {
                 store: {},
@@ -35,31 +34,27 @@ export class BaseStoreComponent extends Component<any, TObj> {
             });
     }
 
-    getProxyHandler(storeHandler: TObj, storeName?: string): TFn {
+    // TODO: `storeHandler` type
+    getProxyStoreHandler(storeHandler: TObj, storeName?: string) {
         const methodNames: string[] = this.getProtoMethodNames(storeHandler);
         const cmp = this;
+        const updateState = this.updateState.bind(this);
 
-        return (target: TObj, key: string, proxy: TObj) => {
-            const value: any = target[key];
-            const isAllowed: boolean = methodNames.indexOf(key) !== -1;
+        return new Proxy(storeHandler, {
+            get: (target: TObj, key: string, proxy: TObj) => {
+                const method: any = target[key];
 
-            // Only allow own prototype methods
-            // - i.e. Filter out non-methods, `constructor`, all props/methods from `StoreHandle`, non-exist methods etc
-            if (!isAllowed || typeof value !== 'function') return value;
+                // Filter out non-own prototype methods
+                const isAllowed: boolean = methodNames.indexOf(key) !== -1;
+                if (!isAllowed || typeof method !== 'function') return method;
 
-            // If proxied method is called, then return a wrapped method which includes setting the state
-            return (...args: any[]) => {
-                const { state } = cmp;
-                const modPartialState = value.call(proxy, state, ...args);
-                const modState = storeName ?
-                    { ...state, [storeName]: { ...state[storeName] , ...modPartialState } } :
-                    { ...state, ...modPartialState };
-
-                cmp.setState(modState, () => {
-                    storeHandler.pub({ prev: state, curr: modState }, storeName);
-                });
+                // If proxied method is called, then return a wrapped method which includes setting the state
+                return (...args: any[]) => {
+                    const modPartialState = method.call(proxy, cmp.state, ...args);
+                    updateState(modPartialState, storeHandler, storeName);
+                };
             }
-        }
+        });
     }
 
     getProtoMethodNames(obj: TObj): string[] {
@@ -69,9 +64,18 @@ export class BaseStoreComponent extends Component<any, TObj> {
             .filter(key => key !== 'constructor');
     }
 
+    updateState(modPartialState, storeHandler, storeName: string) {
+        const { state } = this;
+        const modState = storeName ?
+            { ...state, [storeName]: { ...state[storeName] , ...modPartialState } } :
+            { ...state, ...modPartialState };
+        const diffState = { prev: state, curr: modState };
+        this.setState(modState, () => storeHandler.pub(diffState, storeName));
+    }
+
     checkStoreName(storeName: string, store: TObj, storeHandler: TObj): void {
         const isInStore: boolean = storeName in store;
         const isInHandler: boolean = storeName in storeHandler;
-        if (isInStore || isInHandler) throw new Error(`${storeName} already exists in store or store handler`);
+        if (isInStore || isInHandler) throw new Error(`${storeName} ${this.STORE_NAME_ERR}`);
     }
 }
