@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { BaseStoreHandler, StateHandle } from '.';
+import { StateHandle } from '.';
 
 export default {
     title: 'State Handle',
 };
 
-export const Example = () => {
+export const SingleStateExample = () => {
     const sampleStore = {
         name: 'joe',
         age: 20,
@@ -13,7 +13,7 @@ export const Example = () => {
         address: '100 Railway Street',
     }
 
-    class SampleStoreHandler extends BaseStoreHandler {
+    class SampleStoreHandler extends StateHandle.BaseStoreHandler {
         onNameChange(store, evt?) {
             // Setting state Directly
             return {
@@ -70,19 +70,21 @@ export const Example = () => {
     const sampleStoreHandler = new SampleStoreHandler();
 
     useEffect(() => {
-        const token = sampleStoreHandler.subscribe((msg, data) => {
+        const token = sampleStoreHandler.sub((msg, data) => {
             console.log(msg);
             console.log(data);
         });
-        return () => sampleStoreHandler.unsubscribe(token);
+        return () => sampleStoreHandler.unsub(token);
     }, []);
 
-    const WrappedSampleComponent = StateHandle.init(SampleComponent, sampleStore, sampleStoreHandler);
+    const WrappedSampleComponent = StateHandle.init(SampleComponent, {
+        root: [ sampleStore, sampleStoreHandler ]
+    });
 
     return <WrappedSampleComponent />;
 };
 
-// TODO: multiple state modules example
+
 export const MultipleStatesExample = () => {
     const sampleStore1 = {
         name: 'joe',
@@ -93,19 +95,14 @@ export const MultipleStatesExample = () => {
         license: 'MIT'
     };
 
-    class SampleStoreHandler1 extends BaseStoreHandler {
+    class SampleStoreHandler1 extends StateHandle.BaseStoreHandler {
         onNameChange(store, evt?) {
-            const { root, name, local } = store;
-            console.log(name);
-            console.log(root);
-            console.log(local);
-
             return { name: 'jane' };
         }
     }
 
-    class SampleStoreHandler2 extends BaseStoreHandler {
-        onProjectChange({ root, name, local }, evt?) {
+    class SampleStoreHandler2 extends StateHandle.BaseStoreHandler {
+        onProjectChange(store, evt?) {
             return { project: 'Apache' };
         }
     }
@@ -125,9 +122,22 @@ export const MultipleStatesExample = () => {
         );
     };
 
-    const WrappedSampleComponent = StateHandle.init2(SampleComponent, {
-        storeOne: [sampleStore1, new SampleStoreHandler1()],
-        storeTwo: [sampleStore2, new SampleStoreHandler2()],
+    const sampleStoreHandler1 = new SampleStoreHandler1();
+    const sampleStoreHandler2 = new SampleStoreHandler2();
+    const log = (msg, data) => console.log(msg, data);
+
+    useEffect(() => {
+        const token1 = sampleStoreHandler1.sub(log, 'storeOne');
+        const token2 = sampleStoreHandler2.sub(log, 'storeTwo');
+        return () => {
+            sampleStoreHandler1.unsub(token1);
+            sampleStoreHandler2.unsub(token2);
+        };
+    }, []);
+
+    const WrappedSampleComponent = StateHandle.init(SampleComponent, {
+        storeOne: [sampleStore1, sampleStoreHandler1],
+        storeTwo: [sampleStore2, sampleStoreHandler2],
     });
 
     return <WrappedSampleComponent />;
