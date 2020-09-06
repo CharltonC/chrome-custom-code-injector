@@ -1,10 +1,6 @@
-import React, { ComponentClass } from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { BaseStoreComponent } from './base-store-component';
-
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
-import { compilation } from 'webpack';
-import { CoverageSummary } from 'istanbul-lib-coverage';
 
 describe('Base Store Component', () => {
     let cmp: BaseStoreComponent;
