@@ -1,90 +1,94 @@
-// import PubSub from 'pubsub-js';
-// import React, { ComponentClass } from 'react';
-// import { TestUtil } from '../../../asset/ts/test-util';
-// import { StateHandle } from './';
+import React from 'react';
+import { TestUtil } from '../../../asset/ts/test-util';
+import { StateHandle } from './';
+import { BaseStoreHandler } from './base-store-handler';
 
-// // describe('State Handle', () => {
-// //     describe('Method - `getProxyGetHandler`: Proxy Get Handler', () => {
-// //         const mockInitialState = { name: 'zoe' };
-// //         const mockAllowedKeys = ['mockAllowMethod'];
-// //         let handler: (...args: any[]) => any;
-// //         let mockStateSetter: jest.Mock;
-// //         let mockTarget;
+describe('State Handle', () => {
+    let $elem: HTMLElement;
 
-// //         beforeEach(() => {
-// //             mockStateSetter = jest.fn();
-// //             handler = StateHandle.getProxyGetHandler(
-// //                 () => mockInitialState,
-// //                 mockStateSetter,
-// //                 mockAllowedKeys
-// //             );
-// //         });
+    beforeEach(() => {
+        $elem = TestUtil.setupElem();
+    });
 
-// //         it('should return its default value when the property is not direct prototype methods of the handler', () => {
-// //             mockTarget = { lorem: 'sum' };
+    afterEach(() => {
+        TestUtil.teardown($elem);
+    });
 
-// //             expect(handler(mockTarget, 'lorem')).toBe('sum');
-// //             expect(handler(mockTarget, 'xyz')).toBeFalsy();
-// //         });
+    describe('Single Store and Store Handler', () => {
+        const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
+        const mockStore = { name: 'john' };
+        class MockStoreHandler extends BaseStoreHandler {
+            onClick(store) {
+                return { name: 'jane' }
+            }
+        }
+        let $h1: HTMLHeadingElement;
 
-// //         it('should return a wrapped function when property is a method', () => {
-// //             const mockModState = { name: 'frank' };
-// //             const mockAllowMethod: jest.Mock = jest.fn();
-// //             mockAllowMethod.mockReturnValue(mockModState);
-// //             mockTarget = { mockAllowMethod };
+        beforeEach(() => {
+            const WrappedMockCmp = StateHandle.init(MockCmp, {
+                root: [ mockStore, new MockStoreHandler() ]
+            });
+            TestUtil.renderPlain($elem, WrappedMockCmp);
+            $h1 = $elem.querySelector('h1');
+        });
 
-// //             const mockTargetProxy = {};
-// //             const mockParam = 'lorem';
-// //             const fn = handler(mockTarget, 'mockAllowMethod', mockTargetProxy);
-// //             fn(mockParam);
+        it('should render and update', () => {
+            expect($h1.textContent).toBe('john');
+        });
 
-// //             expect(typeof fn).toBe('function');
-// //             expect(mockAllowMethod).toHaveBeenCalledWith(mockInitialState, mockParam);
-// //             expect(mockStateSetter).toHaveBeenCalledWith(mockInitialState, mockModState);
-// //         });
-// //     });
+        it('should update state', () => {
+            TestUtil.triggerEvt($h1, 'click');
+            expect($h1.textContent).toBe('jane');
+        });
+    });
 
-// //     describe('Method - `init`: Initialize Component with Store and Store Handle', () => {
-// //         let WrappedCmp: ComponentClass;
-// //         let getProxyGetHandlerSpy: jest.SpyInstance;
-// //         let onClickSpy: jest.SpyInstance;
-// //         let $elem: HTMLElement;
-// //         const mockStore = { name: 'A' };
-// //         const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
-// //         class MockStoreHandler extends BaseStoreHandler {
-// //             onClick() {}
-// //         }
+    describe('Multiple Stores and Store Handlers', () => {
+        const MOCK_STORE_ONE = 'store1';
+        const MOCK_STORE_TWO = 'store2';
+        const MockCmp = ({ store, storeHandler }) => (
+            <>
+                <h1 onClick={storeHandler[MOCK_STORE_ONE].onClick}>{store[MOCK_STORE_ONE].name}</h1>
+                <h2 onClick={storeHandler[MOCK_STORE_TWO].onClick}>{store[MOCK_STORE_TWO].name}</h2>
+            </>
+        );
+        const mockStore1 = { name: 'john1' };
+        const mockStore2 = { name: 'john2' };
+        class MockStoreHandler1 extends BaseStoreHandler {
+            onClick(store) {
+                return { name: 'jane1' }
+            }
+        }
+        class MockStoreHandler2 extends BaseStoreHandler {
+            onClick(store) {
+                return { name: 'jane2' }
+            }
+        }
+        let $h1: HTMLHeadingElement;
+        let $h2: HTMLHeadingElement;
 
-// //         beforeEach(() => {
-// //             getProxyGetHandlerSpy = jest.spyOn(StateHandle, 'getProxyGetHandler');
-// //             onClickSpy = jest.spyOn(MockStoreHandler.prototype, 'onClick');
-// //             WrappedCmp = StateHandle.init(MockCmp, mockStore, new MockStoreHandler());
-// //             $elem = TestUtil.setupElem();
-// //         });
+        beforeEach(() => {
+            const WrappedMockCmp = StateHandle.init(MockCmp, {
+                [MOCK_STORE_ONE]: [ mockStore1, new MockStoreHandler1() ],
+                [MOCK_STORE_TWO]: [ mockStore2, new MockStoreHandler2() ]
+            });
+            TestUtil.renderPlain($elem, WrappedMockCmp);
+            $h1 = $elem.querySelector('h1');
+            $h2 = $elem.querySelector('h2');
+        });
 
-// //         afterEach(() => {
-// //             TestUtil.teardown($elem);
-// //         });
+        it('should render and update', () => {
+            expect($h1.textContent).toBe('john1');
+            expect($h2.textContent).toBe('john2');
+        });
 
-// //         it('should pass props to `getProxyGetHandler`', () => {
-// //             const cmp = new WrappedCmp({});
-// //             const [ stateGetter, stateSetter ] = getProxyGetHandlerSpy.mock.calls[0];
-// //             const setStateSpy = jest.spyOn(cmp, 'setState').mockImplementation(() => {});
-// //             const mockCurrStore = { name: 'B' };
-// //             stateSetter(mockStore, mockCurrStore);
+        it('should update state', () => {
+            TestUtil.triggerEvt($h1, 'click');
+            expect($h1.textContent).toBe('jane1');
+            expect($h2.textContent).toBe('john2');
 
-// //             expect(stateGetter()).toBe(mockStore);
-// //             expect(setStateSpy).toHaveBeenCalled();
-// //             expect(setStateSpy.mock.calls[0][0]).toBe(mockCurrStore);
-// //         });
-
-// //         it('should render and update state', () => {
-// //             TestUtil.renderPlain($elem, WrappedCmp);
-// //             const $root: HTMLHeadingElement = $elem.querySelector('h1');
-
-// //             expect($root.textContent).toBe('A');
-// //             TestUtil.triggerEvt($root, 'click');
-// //             expect(onClickSpy).toHaveBeenCalled();
-// //         });
-// //     });
-// // });
+            TestUtil.triggerEvt($h2, 'click');
+            expect($h1.textContent).toBe('jane1');
+            expect($h2.textContent).toBe('jane2');
+        });
+    });
+});
