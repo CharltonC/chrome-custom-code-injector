@@ -74,7 +74,7 @@ describe('Base Store Component', () => {
 
         beforeEach(() => {
             mockHandler = new MockHandler();
-            spy.getProtoMethodNames.mockReturnValue(mockAllowedMethodNames);
+            spy.getAllowedMethodNames.mockReturnValue(mockAllowedMethodNames);
             spy.updateState.mockImplementation(() => {});
             getModPartialStateSpy = jest.spyOn(cmp, 'getModPartialState');
             getModPartialStateSpy.mockReturnValue(mockModPartialState);
@@ -99,16 +99,17 @@ describe('Base Store Component', () => {
         });
     });
 
-    describe('Method - getProtoMethodNames: Get all method names for an object prorotype', () => {
+    describe('Method - getAllowedMethodNames: Get allowed method names for an object', () => {
         const MOCK_METHOD_NAME = 'sayHello';
         class MockClass {
+            prop = 'lorem';
             set setHello(param) {}
             get getHello() { return 123; }
             [MOCK_METHOD_NAME]() {}
         }
 
-        it('should return all prototype method names excluding constructor, getter or setter', () => {
-            expect(cmp.getProtoMethodNames(new MockClass())).toEqual([ MOCK_METHOD_NAME ]);
+        it('should return allowed method names excluding constructor, getter, setter and non-method properties', () => {
+            expect(cmp.getAllowedMethodNames(new MockClass())).toEqual([ MOCK_METHOD_NAME ]);
         });
     });
 

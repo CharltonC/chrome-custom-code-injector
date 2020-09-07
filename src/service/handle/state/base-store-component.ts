@@ -34,7 +34,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
     }
 
     getProxyStoreHandler(storeHandler: BaseStoreHandler, storeName?: string): BaseStoreHandler {
-        const methodNames: string[] = this.getProtoMethodNames(storeHandler);
+        const allowedMethodNames: string[] = this.getAllowedMethodNames(storeHandler);
         const getModPartialState = this.getModPartialState.bind(this);
         const updateState = this.updateState.bind(this);
 
@@ -43,8 +43,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
                 const method: any = target[key];
 
                 // Filter out non-own prototype methods
-                const isAllowed: boolean = methodNames.indexOf(key) !== -1;
-                if (!isAllowed || typeof method !== 'function') return method;
+                if (allowedMethodNames.indexOf(key) === -1) return method;
 
                 // If proxied method is called, then return a wrapped method which includes setting the state
                 return (...args: any[]) => {
@@ -55,13 +54,13 @@ export class BaseStoreComponent extends Component<any, TObj> {
         });
     }
 
-    getProtoMethodNames(obj: TObj): string[] {
+    getAllowedMethodNames(obj: TObj): string[] {
         const proto = Object.getPrototypeOf(obj);
         return Object
             .getOwnPropertyNames(proto)
             .filter((key: string) => {
-                const { get, set } = Object.getOwnPropertyDescriptor(proto, key);
-                return key !== 'constructor' && !get && !set;
+                const { get, set, value } = Object.getOwnPropertyDescriptor(proto, key);
+                return key !== 'constructor' && typeof value === 'function' && !get && !set;
             });
     }
 
