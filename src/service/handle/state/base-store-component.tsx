@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import { IStoreConfigs, ITransfmStoreConfigs, TStoreConfig, TFn, TObj } from './type';
 import { BaseStoreHandler } from './base-store-handler';
+import { IStoreConfigs, ITransfmStoreConfigs, TObj, TFn } from './type';
 
 export class BaseStoreComponent extends Component<any, TObj> {
     readonly STORE_NAME_ERR: string = 'already exists in store or store handler';
@@ -8,7 +8,6 @@ export class BaseStoreComponent extends Component<any, TObj> {
     transformStoreConfigs(storeConfigs: IStoreConfigs): ITransfmStoreConfigs {
         // For single store and store handler
         const { root } = storeConfigs;
-
         if (root) {
             const [ store, storeHandler ] = root;
             return {
@@ -20,7 +19,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
         // For more than one stores and store handlers
         return Object
             .entries(storeConfigs)
-            .reduce((container, [ storeName, subStoreConfig ]: [ string, TStoreConfig ]) => {
+            .reduce((container, [ storeName, subStoreConfig ]) => {
                 const { store, storeHandler } = container;
                 this.checkStoreName(storeName, store, storeHandler);
 
@@ -34,14 +33,13 @@ export class BaseStoreComponent extends Component<any, TObj> {
             });
     }
 
-    // TODO: `storeHandler` type
-    getProxyStoreHandler(storeHandler: TObj, storeName?: string) {
+    getProxyStoreHandler(storeHandler: BaseStoreHandler, storeName?: string): BaseStoreHandler {
         const methodNames: string[] = this.getProtoMethodNames(storeHandler);
-        const cmp = this;
+        const getModPartialState = this.getModPartialState.bind(this);
         const updateState = this.updateState.bind(this);
 
         return new Proxy(storeHandler, {
-            get: (target: TObj, key: string, proxy: TObj) => {
+            get: (target: BaseStoreHandler, key: string, proxy: BaseStoreHandler) => {
                 const method: any = target[key];
 
                 // Filter out non-own prototype methods
@@ -50,7 +48,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
 
                 // If proxied method is called, then return a wrapped method which includes setting the state
                 return (...args: any[]) => {
-                    const modPartialState = method.call(proxy, cmp.state, ...args);
+                    const modPartialState: TObj = getModPartialState(method, proxy, args);
                     updateState(modPartialState, storeHandler, storeName);
                 };
             }
@@ -64,7 +62,11 @@ export class BaseStoreComponent extends Component<any, TObj> {
             .filter(key => key !== 'constructor');
     }
 
-    updateState(modPartialState, storeHandler, storeName: string) {
+    getModPartialState(fn: TFn, proxy: BaseStoreHandler, args: any[]): TObj {
+        return fn.apply(proxy, [this.state, ...args]);
+    }
+
+    updateState(modPartialState: TObj, storeHandler: BaseStoreHandler, storeName?: string): void {
         const { state } = this;
         const modState = storeName ?
             { ...state, [storeName]: { ...state[storeName] , ...modPartialState } } :

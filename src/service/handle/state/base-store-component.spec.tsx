@@ -1,5 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { BaseStoreComponent } from './base-store-component';
+import { BaseStoreHandler } from './base-store-handler';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 
 describe('Base Store Component', () => {
@@ -25,9 +26,11 @@ describe('Base Store Component', () => {
 
         it('should return transformed config if root store and store handler are provided', () => {
             const mockStore = { name: 'john' };
-            const mockStoreHandler = { sayHello() { return 'hello'; } };
+            class MockStoreHandler extends BaseStoreHandler {
+                sayHello() { return 'hello'; }
+            }
             const { store, storeHandler } = cmp.transformStoreConfigs({
-                root: [ mockStore, mockStoreHandler ]
+                root: [ mockStore, new MockStoreHandler() ]
             });
 
             expect(store).toBe(mockStore);
@@ -36,39 +39,45 @@ describe('Base Store Component', () => {
 
         it('should return transformed config if multiple non-root stores and store handlers are provied', () => {
             const mockStore1 = { name: 'john' };
-            const mockStoreHandler1 = { sayHello1() { return 'hello1'; } };
             const mockStore2 = { name: 'jane' };
-            const mockStoreHandler2 = { sayHello2() { return 'hello2'; } };
-
+            class MockStoreHandler1 extends BaseStoreHandler {
+                sayHello1() { return 'hello1'; }
+            }
+            class MockStoreHandler2 extends BaseStoreHandler {
+                sayHello2() { return 'hello2'; }
+            }
             const { store, storeHandler } = cmp.transformStoreConfigs({
-                store1: [ mockStore1, mockStoreHandler1 ],
-                store2: [ mockStore2, mockStoreHandler2 ]
+                store1: [ mockStore1, new MockStoreHandler1() ],
+                store2: [ mockStore2, new MockStoreHandler2() ]
             });
 
             expect(store.store1).toBe(mockStore1);
             expect(store.store2).toBe(mockStore2);
-            expect(storeHandler.store1).toBe(getProxyStoreHandler);
-            expect(storeHandler.store2).toBe(getProxyStoreHandler);
+            expect(storeHandler['store1']).toBe(getProxyStoreHandler);
+            expect(storeHandler['store2']).toBe(getProxyStoreHandler);
         });
     });
 
-    describe('Method - getProxyHandler: Get proxy `get` handler function for a store handler', () => {
+    describe('Method - getProxyStoreHandler: Get proxy `get` handler function for a store handler', () => {
         const MOCK_METHOD_NAME = 'sayHello';
         const mockAllowedMethodNames = [ MOCK_METHOD_NAME ];
-        const mockHandler = { age: 10, [MOCK_METHOD_NAME]() {} };
-
         const MOCK_STORE_NAME = 'store_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
-
-        let fnCallSpy: jest.SpyInstance;
+        class MockHandler extends BaseStoreHandler {
+            age = 10;
+            [MOCK_METHOD_NAME]() {}
+        }
+        let getModPartialStateSpy: jest.SpyInstance;
+        let mockHandler: MockHandler;
         let proxyHandler;
 
         beforeEach(() => {
+            mockHandler = new MockHandler();
             spy.getProtoMethodNames.mockReturnValue(mockAllowedMethodNames);
             spy.updateState.mockImplementation(() => {});
-            fnCallSpy = jest.spyOn(mockHandler[MOCK_METHOD_NAME] as Function, 'call');
-            fnCallSpy.mockReturnValue(mockModPartialState);
+            getModPartialStateSpy = jest.spyOn(cmp, 'getModPartialState');
+            getModPartialStateSpy.mockReturnValue(mockModPartialState);
 
             cmp.state = mockState;
             proxyHandler = cmp.getProxyStoreHandler(mockHandler, MOCK_STORE_NAME);
@@ -82,10 +91,10 @@ describe('Base Store Component', () => {
         it('should return a wrapped function if the key is allowed and is a method', () => {
             const method = proxyHandler[MOCK_METHOD_NAME];
             const mockArgs = [1,2];
-            method(mockArgs);
+            method(...mockArgs);
 
             expect(typeof method).toBe('function');
-            expect(fnCallSpy).toHaveBeenCalledWith(proxyHandler, mockState, mockArgs);
+            expect(getModPartialStateSpy).toHaveBeenCalledWith(mockHandler[MOCK_METHOD_NAME], proxyHandler, mockArgs);
             expect(spy.updateState).toHaveBeenCalledWith(mockModPartialState, mockHandler, MOCK_STORE_NAME);
         });
     });
@@ -101,23 +110,64 @@ describe('Base Store Component', () => {
         });
     });
 
+    describe('Method - getModPartialState: Get the partial modified state (used for merging later)', () => {
+        const mockFn = () => {};
+        const mockProxy: any = {};
+        const mockArgs = [ 1, 2 ];
+        const mockState = { name: 'john' };
+        const mockRtnVal = 'lorem';
+
+        it('should return modified partial state', () => {
+            const fnCallSpy: jest.SpyInstance = jest.spyOn(mockFn as Function, 'apply');
+            fnCallSpy.mockReturnValue(mockRtnVal);
+            cmp.state = mockState;
+
+            expect(cmp.getModPartialState(mockFn, mockProxy, mockArgs)).toBe(mockRtnVal);
+            expect(fnCallSpy).toHaveBeenCalledWith(mockProxy, [mockState, ...mockArgs]);
+        });
+    });
+
     describe('Method - updateState', () => {
         const MOCK_STORE_NAME = 'store_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
-        const mockHandler = { };
+        const mockHandler: any = { pub: null };
         let setStateSpy: jest.SpyInstance;
 
         beforeEach(() => {
             cmp.state = mockState;
+            mockHandler.pub = jest.fn();
             setStateSpy = jest.spyOn(cmp, 'setState');
             setStateSpy.mockImplementation(() => {});
         });
 
-        it('should update state', () => {
+        it('should update state when given a store name', () => {
+            const expectedCurrState = {
+                'age': 11,
+                [MOCK_STORE_NAME]: { 'age': 99 }
+            };
             cmp.updateState(mockModPartialState, mockHandler, MOCK_STORE_NAME);
-            expect(setStateSpy).toHaveBeenCalled();
-            expect(typeof setStateSpy.mock.calls[0][1]).toBe('function');
+            const [ modState, callback ] = setStateSpy.mock.calls[0];
+            callback();
+
+            expect(modState).toEqual(expectedCurrState);
+            expect(mockHandler.pub).toHaveBeenCalledWith({
+                prev: mockState,
+                curr: expectedCurrState
+            }, MOCK_STORE_NAME);
+        });
+
+        it('should update state when not given a store name', () => {
+            const expectedCurrState = { 'age': 99 };
+            cmp.updateState(mockModPartialState, mockHandler);
+            const [ modState, callback ] = setStateSpy.mock.calls[0];
+            callback();
+
+            expect(modState).toEqual(expectedCurrState);
+            expect(mockHandler.pub).toHaveBeenCalledWith({
+                prev: mockState,
+                curr: expectedCurrState
+            }, undefined);
         });
     });
 
