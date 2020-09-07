@@ -59,7 +59,10 @@ export class BaseStoreComponent extends Component<any, TObj> {
         const proto = Object.getPrototypeOf(obj);
         return Object
             .getOwnPropertyNames(proto)
-            .filter(key => key !== 'constructor');
+            .filter((key: string) => {
+                const { get, set } = Object.getOwnPropertyDescriptor(proto, key);
+                return key !== 'constructor' && !get && !set;
+            });
     }
 
     getModPartialState(fn: TFn, proxy: BaseStoreHandler, args: any[]): TObj {

@@ -102,10 +102,12 @@ describe('Base Store Component', () => {
     describe('Method - getProtoMethodNames: Get all method names for an object prorotype', () => {
         const MOCK_METHOD_NAME = 'sayHello';
         class MockClass {
+            set setHello(param) {}
+            get getHello() { return 123; }
             [MOCK_METHOD_NAME]() {}
         }
 
-        it('should return all prototype method names', () => {
+        it('should return all prototype method names excluding constructor, getter or setter', () => {
             expect(cmp.getProtoMethodNames(new MockClass())).toEqual([ MOCK_METHOD_NAME ]);
         });
     });
