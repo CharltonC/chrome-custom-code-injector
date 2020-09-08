@@ -108,16 +108,18 @@ export const MultipleStatesExample = () => {
     }
 
     const SampleComponent = ({ store, storeHandler }) => {
-        const { storeOne, storeTwo } = store;
-        const { storeOne: storeOneHandler, storeTwo: storeTwoHandler } = storeHandler;
+        const { name } = store.storeOne;
+        const { project } = store.storeTwo;
+        const { onNameChange } = storeHandler.storeOne;
+        const { onProjectChange } = storeHandler.storeTwo;
 
         return (
             <div>
-                <p>Name: {storeOne.name}</p>
-                <p><button type="button" onClick={storeOneHandler.onNameChange}>change name from store 1</button></p>
+                <p>Name: {name}</p>
+                <p><button type="button" onClick={onNameChange}>change name from store 1</button></p>
                 <br/>
-                <p>Project: {storeTwo.project}</p>
-                <p><button type="button" onClick={storeTwoHandler.onProjectChange}>change project from store 2</button></p>
+                <p>Project: {project}</p>
+                <p><button type="button" onClick={onProjectChange}>change project from store 2</button></p>
             </div>
         );
     };
