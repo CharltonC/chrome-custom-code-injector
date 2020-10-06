@@ -75,7 +75,7 @@ export const SingleStateExample = () => {
             console.log(data);
         });
         return () => sampleStoreHandler.unsub(token);
-    }, []);
+    }, [sampleStoreHandler]);
 
     const WrappedSampleComponent = StateHandle.init(SampleComponent, {
         root: [ sampleStore, sampleStoreHandler ]
@@ -135,7 +135,7 @@ export const MultipleStatesExample = () => {
             sampleStoreHandler1.unsub(token1);
             sampleStoreHandler2.unsub(token2);
         };
-    }, []);
+    }, [sampleStoreHandler1, sampleStoreHandler2]);
 
     const WrappedSampleComponent = StateHandle.init(SampleComponent, {
         storeOne: [sampleStore1, sampleStoreHandler1],
