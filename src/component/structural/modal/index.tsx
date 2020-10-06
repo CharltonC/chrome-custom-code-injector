@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../../asset/ts/memo-component';
+import { inclStaticIcon } from '../../static/icon';
+
+const closeIconElem: ReactElement = inclStaticIcon('close');
 
 export class Modal extends MemoComponent {
     closeHandler: (...args: any[]) => any;
-    $elem: HTMLElement;
+    $modalElem: HTMLElement;
     evt = {
         CLICK: 'click',
         KEYUP: 'keyup'
@@ -19,11 +22,12 @@ export class Modal extends MemoComponent {
         this.onClose();
     }
 
+    // Open Modal
     onOpen() {
         const { CLICK, KEYUP } = this.evt;
         this.setState({ isOpen: true }, () => {
             // One-off binding
-            this.closeHandler = this.onDismiss.bind(this);
+            this.closeHandler = this.onDismiss.bind(this);      // temp value to be stored so it can be removed later
             document.body.addEventListener(CLICK, this.closeHandler);
             document.addEventListener(KEYUP, this.closeHandler);
         });
@@ -33,6 +37,7 @@ export class Modal extends MemoComponent {
     onClose() {
         const { CLICK, KEYUP } = this.evt;
         this.setState({ isOpen: false }, () => {
+            if (!this.closeHandler) return;
             document.body.removeEventListener(CLICK, this.closeHandler);
             document.removeEventListener(KEYUP, this.closeHandler);
             this.closeHandler = null;
@@ -40,13 +45,16 @@ export class Modal extends MemoComponent {
     }
 
     // Close Modal - For use where Modal is closed by either ESC key or Clicking outside of Modal region
+    // * Check if it is Click or ESC Key
+    // - If click: if its modal contain itself or contains the evt.target
+    // - If keyup: check if its ESC key
     onDismiss(evt: Event) {
-        // Check if it is Click or ESC Key
-        // - If click: if its modal contain itself or contains the evt.target
-        // - If keyup: check if its ESC key
+        // If modal element is not ready, then dont handle the event
+        if (!this.$modalElem) return;
+
         const { CLICK, KEYUP } = this.evt;
         const { type, target } = evt;
-        const isClickOutsideModal: boolean = type === CLICK && (this.$elem !== target && !this.$elem.contains(target as Node));
+        const isClickOutsideModal: boolean = type === CLICK && (this.$modalElem !== target && !this.$modalElem.contains(target as Node));
         const isEscKey: boolean = type === KEYUP && (evt as KeyboardEvent).which === 27;
         const isValidTrigger: boolean = isClickOutsideModal || isEscKey;
         if (!isValidTrigger) return;
@@ -54,12 +62,41 @@ export class Modal extends MemoComponent {
     }
 
     render() {
+        // TODO: Style
         // TODO: overlay, overflow: hidden; , class
         // TODO: remove inline style
         // TODO: modal animation
+        // TODO: Test
+        // TODO: props: cancel, confirm m(def props)
+        const { cancel, confirm, header } = this.props;
         return this.state.isOpen && (
-            <div ref={elem => this.$elem = elem} style={{width: 100, height: 100, backgroundColor: 'blue'}}>
-                { this.props.children }
+            <div
+                className="kz-modal"
+                ref={elem => this.$modalElem = elem}
+                >
+                <div className="kz-modal__header">
+                    <h3>{header}lorem</h3>
+                    <button type="button" onClick={this.onClose.bind(this)}>{ closeIconElem }</button>
+                </div>
+                <div className="kz-modal__body">
+                    { this.props.children }
+                </div>
+                <div className="kz-modal__footer">
+                    <button
+                        type="button"
+                        className="kz-modal__btn kz-modal__btn--cancel"
+                        onClick={this.onClose.bind(this)}
+                        >
+                        {cancel}Cancel
+                    </button>
+                    <button
+                        type="button"
+                        className="kz-modal__btn kz-modal__btn--confirm"
+                        onClick={this.onClose.bind(this)}
+                        >
+                        {confirm}Confirm
+                    </button>
+                </div>
             </div>
         );
     }
