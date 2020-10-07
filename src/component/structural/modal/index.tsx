@@ -30,12 +30,12 @@ export class Modal extends MemoComponent<IProps, IState> {
         return this.state.isOpen && (
             <div className="kz-modal">
                 <div className="kz-modal__content">
-                    <div className="kz-modal__header">
+                    <header>
                         <h3>{headerText}</h3>{ subHeaderText &&
                         <h4>{subHeaderText}</h4>}
                         <button type="button" onClick={onClose}>{closeIconElem}</button>
-                    </div>
-                    <div className="kz-modal__body">{children}</div>
+                    </header>
+                    <main>{children}</main>
                 </div>
                 <div className="kz-modal__overlay" onClick={onClose}></div>
             </div>
