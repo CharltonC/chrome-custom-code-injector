@@ -8,7 +8,7 @@ export default {
 
 export const Default = () => (
     <>
-        <TextBtn outline title="outline" />
-        <TextBtn title="filled" style={{marginLeft: 20}}/>
+        <TextBtn text="outline" outline />
+        <TextBtn text="filled" style={{marginLeft: 20}}/>
     </>
 );
