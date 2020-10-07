@@ -1,0 +1,55 @@
+.kz-modal {
+    position: relative;
+    padding: 25px;
+    border-radius: 2px;
+    background-color: white;
+    box-shadow: 0px 10px 20px -10px gray;
+
+    &__header {
+        h3 {
+            font-family: $roboto-bld;
+            font-weight: 20px;
+            color: black;
+            text-transform: capitalize;
+        }
+
+        button {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            color: #737373;
+
+            &,
+            .icon {
+                width: 14px;
+                height: 14px;
+            }
+        }
+    }
+
+    &__body {
+        margin-top: 40px;
+    }
+
+    &__footer {
+        margin-top: 40px;
+    }
+
+    // Refactor as base component
+    &__btn {
+        width: 92px;
+        height: 36px;
+        border-radius: 5px;
+
+        &--cancel {
+            border: 1px solid #9D9D9D;
+            color: #9D9D9D;
+        }
+
+        &--confirm {
+            margin-left: 20px;
+            background-color: $teal;
+            color: white;
+        }
+    }
+}
