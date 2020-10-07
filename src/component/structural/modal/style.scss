@@ -1,23 +1,78 @@
+body.kz-modal-open {
+    overflow: hidden;
+}
+
 .kz-modal {
-    position: relative;
-    padding: 25px;
-    border-radius: 2px;
-    background-color: white;
-    box-shadow: 0px 10px 20px -10px gray;
+    --spacing: 25px;
+
+    @keyframes slide-down-content {
+        from {
+            opacity: .3;
+            transform: translate3d(0, 0, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 30px, 0);
+        }
+    }
+
+    @keyframes slide-down-overlay {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: .5;
+        }
+    }
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    &__content {
+        position: absolute;
+        z-index: 9999;
+        padding: var(--spacing);
+        border-radius: 2px;
+        background-color: $white;
+        box-shadow: 0px 10px 20px -20px $black;
+        width: 640px;
+        animation: slide-down-content .1s ease-in-out;
+        animation-fill-mode: forwards;
+        will-change: opacity transform;
+    }
+
+    &__overlay {
+        position: absolute;
+        z-index: 9000;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        background-color: $black;
+        transform: translateZ(0);
+        animation: slide-down-overlay .2s ease-in;
+        animation-fill-mode: forwards;
+        will-change: opacity;
+    }
 
     &__header {
         h3 {
-            font-family: $roboto-bld;
-            font-weight: 20px;
-            color: black;
+            font: 20px $roboto-bld;
+            color: $black;
             text-transform: capitalize;
         }
 
         button {
             position: absolute;
-            top: 25px;
-            right: 25px;
-            color: #737373;
+            top: var(--spacing);
+            right: var(--spacing);
+            color: $gray;
 
             &,
             .icon {
@@ -29,27 +84,5 @@
 
     &__body {
         margin-top: 40px;
-    }
-
-    &__footer {
-        margin-top: 40px;
-    }
-
-    // Refactor as base component
-    &__btn {
-        width: 92px;
-        height: 36px;
-        border-radius: 5px;
-
-        &--cancel {
-            border: 1px solid #9D9D9D;
-            color: #9D9D9D;
-        }
-
-        &--confirm {
-            margin-left: 20px;
-            background-color: $teal;
-            color: white;
-        }
     }
 }

@@ -1,18 +1,19 @@
 import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../../asset/ts/memo-component';
 import { inclStaticIcon } from '../../static/icon';
+import { DomHandle } from '../../../service/handle/dom';
+import { IGlobalEvtConfig } from '../../../service/handle/dom/type';
+import { IProps, IState, TFn } from './type';
+
+export const BODY_CLS: string = 'kz-modal-open';     // class to added to <body> when modal is on
 
 const closeIconElem: ReactElement = inclStaticIcon('close');
 
-export class Modal extends MemoComponent {
-    closeHandler: (...args: any[]) => any;
-    $modalElem: HTMLElement;
-    evt = {
-        CLICK: 'click',
-        KEYUP: 'keyup'
-    };
+export class Modal extends MemoComponent<IProps, IState> {
+    domHandle = new DomHandle();
+    keyupHandler: TFn;                      // temp value to store keyup handler so it can be removed later
 
-    constructor(props) {
+    constructor(props: IProps) {
         super(props);
         this.state = { isOpen: false };
     }
@@ -22,82 +23,62 @@ export class Modal extends MemoComponent {
         this.onClose();
     }
 
+    render() {
+        const { headerText, subHeaderText, children } = this.props;
+        const onClose = () => this.onClose();
+
+        return this.state.isOpen && (
+            <div className="kz-modal">
+                <div className="kz-modal__content">
+                    <div className="kz-modal__header">
+                        <h3>{headerText}</h3>{ subHeaderText &&
+                        <h4>{subHeaderText}</h4>}
+                        <button type="button" onClick={onClose}>{closeIconElem}</button>
+                    </div>
+                    <div className="kz-modal__body">{children}</div>
+                </div>
+                <div className="kz-modal__overlay" onClick={onClose}></div>
+            </div>
+        );
+    }
+
+    //// Open/Close Modal & state related
     // Open Modal
     onOpen() {
-        const { CLICK, KEYUP } = this.evt;
-        this.setState({ isOpen: true }, () => {
-            // One-off binding
-            this.closeHandler = this.onDismiss.bind(this);      // temp value to be stored so it can be removed later
-            document.body.addEventListener(CLICK, this.closeHandler);
-            document.addEventListener(KEYUP, this.closeHandler);
-        });
+        if (this.state.isOpen) return;
+        this.setState({ isOpen: true }, this.addEvt);
     }
 
     // Close Modal - For use where User specifically close within Modal, e.g. click the close button
     onClose() {
-        const { CLICK, KEYUP } = this.evt;
-        this.setState({ isOpen: false }, () => {
-            if (!this.closeHandler) return;
-            document.body.removeEventListener(CLICK, this.closeHandler);
-            document.removeEventListener(KEYUP, this.closeHandler);
-            this.closeHandler = null;
-        });
+        if (!this.state.isOpen) return;
+        this.setState({ isOpen: false }, this.rmvEvt);
     }
 
-    // Close Modal - For use where Modal is closed by either ESC key or Clicking outside of Modal region
-    // * Check if it is Click or ESC Key
-    // - If click: if its modal contain itself or contains the evt.target
-    // - If keyup: check if its ESC key
-    onDismiss(evt: Event) {
-        // If modal element is not ready, then dont handle the event
-        if (!this.$modalElem) return;
-
-        const { CLICK, KEYUP } = this.evt;
-        const { type, target } = evt;
-        const isClickOutsideModal: boolean = type === CLICK && (this.$modalElem !== target && !this.$modalElem.contains(target as Node));
-        const isEscKey: boolean = type === KEYUP && (evt as KeyboardEvent).which === 27;
-        const isValidTrigger: boolean = isClickOutsideModal || isEscKey;
-        if (!isValidTrigger) return;
+    // Close Modal - For use where Modal is closed by either ESC key
+    onKeyup({ which }: KeyboardEvent) {
+        if (which !== 27) return;
         this.onClose();
     }
 
-    render() {
-        // TODO: Style
-        // TODO: overlay, overflow: hidden; , class
-        // TODO: remove inline style
-        // TODO: modal animation
-        // TODO: Test
-        // TODO: props: cancel, confirm m(def props)
-        const { cancel, confirm, header } = this.props;
-        return this.state.isOpen && (
-            <div
-                className="kz-modal"
-                ref={elem => this.$modalElem = elem}
-                >
-                <div className="kz-modal__header">
-                    <h3>{header}lorem</h3>
-                    <button type="button" onClick={this.onClose.bind(this)}>{ closeIconElem }</button>
-                </div>
-                <div className="kz-modal__body">
-                    { this.props.children }
-                </div>
-                <div className="kz-modal__footer">
-                    <button
-                        type="button"
-                        className="kz-modal__btn kz-modal__btn--cancel"
-                        onClick={this.onClose.bind(this)}
-                        >
-                        {cancel}Cancel
-                    </button>
-                    <button
-                        type="button"
-                        className="kz-modal__btn kz-modal__btn--confirm"
-                        onClick={this.onClose.bind(this)}
-                        >
-                        {confirm}Confirm
-                    </button>
-                </div>
-            </div>
-        );
+    //// Non-Component Scope related (Global Event)
+    addEvt(): void {
+        this.keyupHandler = this.onKeyup.bind(this);            // must be set prior to `domHandle.addGlobalEvt`
+        this.domHandle.addGlobalEvt(this.getEvtConfig());       // One-off binding which is removed upon keyup
+        this.domHandle.addBodyCls(BODY_CLS);
+    }
+
+    rmvEvt(): void {
+        this.domHandle.addGlobalEvt(this.getEvtConfig(), false);
+        this.domHandle.addBodyCls(BODY_CLS, false);
+        this.keyupHandler = null;
+    }
+
+    getEvtConfig(): IGlobalEvtConfig {
+        return {
+            targetType: 'doc',
+            evtType: 'keyup',
+            handler: this.keyupHandler
+        }
     }
 }

@@ -1,14 +1,22 @@
-import { TestUtil } from '../../../asset/ts/test-util/';
-// import { IProps, IState } from './type';
-// import { CmpCls } from './';
+import React from 'react';
+import { TestUtil } from '../../../asset/ts/test-util';
+import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { DomHandle } from '../../../service/handle/dom';
+import { Modal, BODY_CLS } from './';
 
-describe('Component - TODO: Component Name', () => {
-    // const mockBareProps: IProps = {};
-    // const mockDefProps: IProps = {};
-    // let methodSpy: jest.SpyInstance;
+describe('Component - Modal', () => {
+    let modal: Modal;
+    let modalMethodSpy: TMethodSpy<Modal>;
+    let domHandleMethodSpy: TMethodSpy<DomHandle>;
+    let setStateSpy: jest.SpyInstance;
+    const enableModal = () => (modal.state as any).isOpen = true;
 
     beforeEach(() => {
-        // methodSpy = jest.spyOn(_CmpCls.prototype, 'method');
+        modal = new Modal({headerText: 'title'});
+        modalMethodSpy = TestUtil.spyMethods(modal);
+        domHandleMethodSpy = TestUtil.spyMethods(modal.domHandle);
+        setStateSpy = jest.spyOn(modal, 'setState');
+        setStateSpy.mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -16,49 +24,106 @@ describe('Component - TODO: Component Name', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Component Class', () => {
-        // let cmp: _CmpCls;
-
-        describe('constructor', () => {
-            it('should init', () => {
-                expect(true).toBe(true);
-            });
+    describe('Render', () => {
+        it('constructor', () => {
+            expect(modal.state.isOpen).toBe(false);
         });
 
-        describe('Lifecycle - TODO: Name', () => {
+        // TODO: render method
+    });
 
+    describe('Lifecycle - componentWillUnmount', () => {
+        beforeEach(() => {
+            modalMethodSpy.onClose.mockImplementation(() => {});
         });
 
-        describe('Method - TODO: Name', () => {
+        it('should not close modal if it is not open', () => {
+            modal.componentWillUnmount();
+            expect(modalMethodSpy.onClose).not.toHaveBeenCalled();
+        });
 
+        it('should not close modal if it is not open', () => {
+            enableModal();
+            modal.componentWillUnmount();
+            expect(modalMethodSpy.onClose).toHaveBeenCalled();
         });
     });
 
-    describe('Render/DOM', () => {
-        let $elem: HTMLElement;
-        // let $childElem: HTMLElement;
+    describe('Method - onOpen: open modal', () => {
+        it('should not open modal if it is already open', () => {
+            enableModal();
+            modal.onOpen();
+            expect(setStateSpy).not.toHaveBeenCalled();
+        });
 
-        function syncChildElem() {
-            // $childElem = $elem.querySelector('');
-        }
+        it('should open modal if it is closed', () => {
+            modal.onOpen();
+            expect(setStateSpy).toHaveBeenCalledWith({isOpen: true}, modal.addEvt);
+        });
+    });
+
+    describe('Method - onClose: close modal', () => {
+        it('should not close modal if it is already closed', () => {
+            modal.onClose();
+            expect(setStateSpy).not.toHaveBeenCalled();
+        });
+
+        it('should close modal if it is open', () => {
+            enableModal();
+            modal.onClose();
+            expect(setStateSpy).toHaveBeenCalledWith({isOpen: false}, modal.rmvEvt);
+        });
+    });
+
+    describe('Method - onKeyup: check keyboard event and close modal', () => {
+        beforeEach(() => {
+            modalMethodSpy.onClose.mockImplementation(() => {});
+        });
+
+        it('should not close modal if it is not ESC key', () => {
+            modal.onKeyup({ which: 10 } as KeyboardEvent);
+            expect(modalMethodSpy.onClose).not.toHaveBeenCalled();
+        });
+
+        it('should close modal if it is ESC key', () => {
+            modal.onKeyup({ which: 27 } as KeyboardEvent);
+            expect(modalMethodSpy.onClose).toHaveBeenCalled();
+        });
+    });
+
+    describe('Method - addEvt/rmvEvt: setup/remove global Keyboard event', () => {
+        const mockEvtConfig = {};
 
         beforeEach(() => {
-            $elem = TestUtil.setupElem();
-            syncChildElem();
+            const mockFn = () => {};
+            domHandleMethodSpy.addGlobalEvt.mockImplementation(mockFn);
+            domHandleMethodSpy.addBodyCls.mockImplementation(mockFn);
+            modalMethodSpy.getEvtConfig.mockReturnValue(mockEvtConfig);
         });
 
-        afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+        it('should setup', () => {
+            modal.addEvt();
+            expect(domHandleMethodSpy.addGlobalEvt).toHaveBeenCalledWith(mockEvtConfig);
+            expect(domHandleMethodSpy.addBodyCls).toHaveBeenCalledWith(BODY_CLS);
+            expect(typeof modal.keyupHandler).toBe('function');
         });
 
-        describe('default render', () => {
-            it('should render ..', () => {});
+        it('should remove', () => {
+            modal.rmvEvt();
+            expect(domHandleMethodSpy.addGlobalEvt).toHaveBeenCalledWith(mockEvtConfig, false);
+            expect(domHandleMethodSpy.addBodyCls).toHaveBeenCalledWith(BODY_CLS, false);
+            expect(modal.keyupHandler).toBeFalsy();
         });
+    });
 
-        describe('interaction', () => {
-
+    describe('Method - getEvtConfig: get event config', () => {
+        it('should return config', () => {
+            const config = modal.getEvtConfig();
+            expect(config).toEqual({
+                targetType: 'doc',
+                evtType: 'keyup',
+                handler: undefined
+            });
         });
     });
 });
-

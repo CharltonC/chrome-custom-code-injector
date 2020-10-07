@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { TextBtn } from '../../base/text-btn';
 import { Modal } from '.';
 
 export default {
@@ -20,15 +21,13 @@ export const ForClassComponent = () => {
                 <div style={defStyle}>
                     {/* Example 1 - using `this.refs` */}
                     <button type="button" onClick={e => (this.refs.demoModalA as any).onOpen(e)}>Open modal A</button>
-                    <Modal ref="demoModalA">
-                        {/* <button type="button" onClick={e => (this.refs.demoModalA as any).onClose(e)}>close modal</button> */}
+                    <Modal headerText="title" ref="demoModalA">
                         <h1>Modal A content</h1>
                     </Modal>
                     <br/>
                     {/* Example 2 - using class property `modal2Ctrl` */}
                     <button type="button" onClick={() => this.modal2Ctrl.onOpen()}>Open modal B</button>
-                    <Modal ref={ ctrl => this.modal2Ctrl = ctrl }>
-                        {/* <button type="button" onClick={() => this.modal2Ctrl.onClose()}>close modal</button> */}
+                    <Modal headerText="title" ref={ ctrl => this.modal2Ctrl = ctrl }>
                         <h1>Modal B content</h1>
                     </Modal>
                 </div>
@@ -43,20 +42,19 @@ export const ForFunctionalComponent = () => {
     let demoModalCtrlA;
     let demoModalCtrlB;
     const openModalB = () => demoModalCtrlB?.onOpen();
-    const closeModalB = () => demoModalCtrlB?.onClose();
 
     return (
         <div style={defStyle}>
             <button type="button" onClick={e => demoModalCtrlA.onOpen(e)}>Open modal A</button>
-            <Modal ref={ modalCtrl => demoModalCtrlA = modalCtrl }>
-                {/* <button type="button" onClick={e => demoModalCtrlA.onClose(e)}>Close modal A</button> */}
+            <Modal headerText="title" ref={ modalCtrl => demoModalCtrlA = modalCtrl }>
                 <h1>Modal A content</h1>
             </Modal>
             <br/>
             <button type="button" onClick={openModalB}>Open modal B</button>
-            <Modal ref={ modalCtrl => demoModalCtrlB = modalCtrl }>
-                {/* <button type="button" onClick={closeModalB}>Close modal B</button> */}
+            <Modal headerText="title" ref={ modalCtrl => demoModalCtrlB = modalCtrl }>
                 <h1>Modal B content</h1>
+                <TextBtn text="cancel" outline />
+                <TextBtn text="confirm" />
             </Modal>
         </div>
     );
