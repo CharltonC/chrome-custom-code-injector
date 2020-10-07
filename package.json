@@ -17,7 +17,8 @@
     "doc": "./node_modules/.bin/esdoc",
     "typedoc": "node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, doc, coverage'",
-    "build": "gulp build --prod"
+    "build": "gulp build --prod",
+    "test": "gulp build-ts:test"
   },
   "private": true,
   "dependencies": {
