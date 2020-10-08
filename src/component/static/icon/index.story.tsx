@@ -31,7 +31,8 @@ const icons: string[] = [
     'edit',
     'delete',
     'save',
-    'doc'
+    'doc',
+    'option'
 ];
 
 export const PlainModeWithoutHoverState = () => (

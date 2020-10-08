@@ -29,7 +29,8 @@ const icons: string[] = [
     'edit',
     'delete',
     'save',
-    'doc'
+    'doc',
+    'option',
 ];
 
 const darkMode: boolean = true;
