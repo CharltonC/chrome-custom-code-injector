@@ -59,3 +59,19 @@ export const ForFunctionalComponent = () => {
         </div>
     );
 };
+
+export const ShowModalInitially = () => {
+    let demoModalCtrlA;
+
+    return (
+        <div style={defStyle}>
+            <button type="button" onClick={e => demoModalCtrlA.onOpen(e)}>Open modal A</button>
+            <Modal
+                headerText="title"
+                initialShow={true}
+                ref={ modalCtrl => demoModalCtrlA = modalCtrl }>
+                <h1>Modal A content</h1>
+            </Modal>
+        </div>
+    );
+};

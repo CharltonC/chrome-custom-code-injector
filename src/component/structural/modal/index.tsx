@@ -18,6 +18,11 @@ export class Modal extends MemoComponent<IProps, IState> {
         this.state = { isOpen: false };
     }
 
+    componentDidMount() {
+        if (!this.props.initialShow) return;
+        this.onOpen();
+    }
+
     componentWillUnmount(){
         if (!this.state.isOpen) return;
         this.onClose();

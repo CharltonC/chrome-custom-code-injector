@@ -1,6 +1,7 @@
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     headerText: string;
     subHeaderText?: string;
+    initialShow?: boolean;
 }
 
 export interface IState {

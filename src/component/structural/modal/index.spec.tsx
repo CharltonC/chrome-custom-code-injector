@@ -1,4 +1,3 @@
-import React from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { DomHandle } from '../../../service/handle/dom';
@@ -25,11 +24,76 @@ describe('Component - Modal', () => {
     });
 
     describe('Render', () => {
-        it('constructor', () => {
-            expect(modal.state.isOpen).toBe(false);
+        let $elem: HTMLElement;
+        let $modal: HTMLElement;
+        let $subHeader: HTMLElement;
+        let $overlay: HTMLElement;
+        let $closeBtn: HTMLElement;
+
+        const syncElems = () => {
+            $modal = $elem.querySelector('.kz-modal');
+            $overlay = $elem.querySelector('.kz-modal__overlay');
+            $closeBtn = $elem.querySelector('button');
+            $subHeader = $elem.querySelector('h4');
+        }
+
+        describe('default', () => {
+            beforeEach(() => {
+                $elem = TestUtil.setupElem();
+                TestUtil.renderPlain($elem, Modal, { headerText: 'lorem' });
+                syncElems();
+            });
+
+            it('should not show modal', () => {
+                expect($modal).toBeFalsy();
+            });
         });
 
-        // TODO: render method
+        describe('initiallly enabled modal', () => {
+            beforeEach(() => {
+                $elem = TestUtil.setupElem();
+                TestUtil.renderPlain($elem, Modal, {
+                    initialShow: true,
+                    headerText: 'lorem',
+                    subHeaderText: 'sum'
+                });
+                syncElems();
+            });
+
+            it('should show the modal initially', () => {
+                expect($modal).toBeTruthy();
+                expect($subHeader).toBeTruthy();
+            });
+
+            it('should close the modal when overlay is clicked', () => {
+                TestUtil.triggerEvt($overlay, 'click');
+                syncElems();
+                expect($modal).toBeFalsy();
+            });
+
+            it('should close the modal when close button is clicked', () => {
+                TestUtil.triggerEvt($closeBtn, 'click');
+                syncElems();
+                expect($modal).toBeFalsy();
+            });
+        });
+    });
+
+    describe('Lifecycle - componentWillMount', () => {
+        beforeEach(() => {
+            modalMethodSpy.onOpen.mockImplementation(() => {});
+        });
+
+        it('should not open modal if initial show is off', () => {
+            modal.componentDidMount();
+            expect(modalMethodSpy.onOpen).not.toHaveBeenCalled();
+        });
+
+        it('should open modal if initial show is on', () => {
+            (modal.props as any).initialShow = true;
+            modal.componentDidMount();
+            expect(modalMethodSpy.onOpen).toHaveBeenCalled();
+        });
     });
 
     describe('Lifecycle - componentWillUnmount', () => {
@@ -118,8 +182,7 @@ describe('Component - Modal', () => {
 
     describe('Method - getEvtConfig: get event config', () => {
         it('should return config', () => {
-            const config = modal.getEvtConfig();
-            expect(config).toEqual({
+            expect(modal.getEvtConfig()).toEqual({
                 targetType: 'doc',
                 evtType: 'keyup',
                 handler: undefined
