@@ -22,7 +22,8 @@ export type TIcon =
     'edit' |
     'delete' |
     'save' |
-    'doc';
+    'doc' |
+    'option';
 
 export interface IProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
