@@ -84,6 +84,7 @@ export const ShowModalInitially = () => {
             <button type="button" onClick={e => demoModalCtrlA.onOpen(e)}>Open modal A</button>
             <Modal
                 headerText="title"
+                subHeaderText="lorem sum"
                 initialShow={true}
                 ref={ modalCtrl => demoModalCtrlA = modalCtrl }>
                 <h1>Modal A content</h1>

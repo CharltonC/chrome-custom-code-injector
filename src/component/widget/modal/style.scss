@@ -53,6 +53,12 @@ body.kz-modal-open {
             text-transform: capitalize;
         }
 
+        h4 {
+            margin-top: 20px;
+            font: 16px $roboto-reg;
+            color: $dark-gray;
+        }
+
         button {
             position: absolute;
             top: var(--spacing);
