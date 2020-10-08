@@ -1,7 +1,7 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { DomHandle } from '../../../service/handle/dom';
-import { Modal, BODY_CLS } from './';
+import { Modal, BODY_CLS } from '.';
 
 describe('Component - Modal', () => {
     let modal: Modal;
