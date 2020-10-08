@@ -1,7 +1,8 @@
-import React, { Component, memo } from 'react';
+import React from 'react';
+import { MemoComponent } from '../../../asset/ts/memo-component';
 
 // TODO: Update Class name
-export class _CmpCls extends Component {
+export class CmpCls extends MemoComponent {
     constructor(props) {
         super(props);
     }
@@ -14,5 +15,3 @@ export class _CmpCls extends Component {
         );
     }
 }
-
-export const CmpCls = memo(_CmpCls);

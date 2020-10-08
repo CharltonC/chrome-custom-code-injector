@@ -1,6 +1,9 @@
+import React from 'react';
 import { TestUtil } from '../../../asset/ts/test-util/';
-// import { IProps, IState } from './type';
+import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import ShallowRenderer  from 'react-test-renderer/shallow';
 // import { CmpCls } from './';
+// import { IProps, IState } from './type';
 
 describe('Component - TODO: Component Name', () => {
     // const mockBareProps: IProps = {};
