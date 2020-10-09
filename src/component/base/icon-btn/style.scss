@@ -1,1 +1,19 @@
-.kz-icon-btn {}
+// Allow style ONLY IF directly within a non-disabled button
+@mixin hover-icon-state($fontColor, $bgColor) {
+    color: $fontColor;
+    background-color: $bgColor;
+}
+
+.kz-icon-btn {
+    &:not(:disabled):hover {
+        .icon {
+            &--white {
+                @include hover-icon-state($teal, $white);
+            }
+
+            &--gray {
+                @include hover-icon-state($white, $teal);
+            }
+        }
+    }
+}
