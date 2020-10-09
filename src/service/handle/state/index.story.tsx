@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { StateHandle } from '.';
 
 export default {
-    title: 'State Handle',
+    title: 'Service - State Handle',
 };
 
 export const SingleStateExample = () => {
