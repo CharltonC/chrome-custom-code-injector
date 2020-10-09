@@ -1,18 +1,18 @@
 import React from 'react';
-import { PopupView } from '.';
+import { PopupApp } from '.';
 
 export default {
     title: 'View - Popup',
-    component: PopupView
+    component: PopupApp
 };
 
 const defStyle = {
 };
 
-export const DefaultComponent = () => {
+export const Default = () => {
     return (
         <div style={defStyle} >
-            <PopupView />
+            <PopupApp />
         </div>
     )
 };
