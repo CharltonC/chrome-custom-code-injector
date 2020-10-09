@@ -31,21 +31,21 @@ describe('Component - Sort Button', () => {
         TestUtil.renderPlain($elem, SortBtn, {});
         syncChildElem();
 
-        expect($btn.className).toBe('kz-sort-btn');
+        expect($btn.className).toBe('sort-btn');
     });
 
     it('should reflect ascending sort order', () => {
         TestUtil.renderPlain($elem, SortBtn, {isAsc: true});
         syncChildElem();
 
-        expect($btn.className).toContain('kz-sort-btn--asc');
+        expect($btn.className).toContain('sort-btn--asc');
     });
 
     it('should reflect descending sort order', () => {
         TestUtil.renderPlain($elem, SortBtn, {isAsc: false});
         syncChildElem();
 
-        expect($btn.className).toContain('kz-sort-btn--dsc');
+        expect($btn.className).toContain('sort-btn--dsc');
     });
 
     it('should trigger the callback when clicked', () => {

@@ -1,7 +1,7 @@
 import React, {  memo } from 'react';
 import { IProps } from './type';
 
-const BASE_CLS: string = 'kz-text-btn';
+const BASE_CLS: string = 'text-btn';
 
 export const TextBtn = memo(({ text, outline, ...props }: IProps) => {
     const BTN_CLS: string = `${BASE_CLS} ${BASE_CLS}--` + (outline ? 'outline' : 'fill')

@@ -12,7 +12,7 @@ jest.mock('../../base/dropdown', () => {
 });
 
 describe('Component - Pagination', () => {
-    const CLS_PREFIX: string = 'kz-paginate';
+    const CLS_PREFIX: string = 'paginate';
     let spy: TMethodSpy<Pagination>;
 
     afterEach(() => {

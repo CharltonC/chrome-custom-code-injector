@@ -13,7 +13,7 @@ export class PopupView extends MemoComponent<IProps, IState> {
         // const {} = this.props;
 
         return (
-            <div className="kz-view kz-view--popup">
+            <div className="view view--popup">
                 <nav>
                     <IconBtn icon="doc" theme="white" />
                     <IconBtn icon="option" theme="white" />

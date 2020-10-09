@@ -1,8 +1,8 @@
-body.kz-modal-open {
+body.modal-open {
     overflow: hidden;
 }
 
-.kz-modal {
+.modal {
     --spacing: 25px;
 
     @keyframes slide-down-content {

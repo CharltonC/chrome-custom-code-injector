@@ -1,16 +1,16 @@
-.kz-datagrid__head {
+.datagrid__head {
     background: $light-gray-300;
     text-transform: uppercase;
     font: 14px $roboto-bld;
     text-align: left;
 
     // Grid (Desktop only, Responsive not part of current Scope for now)
-    .kz-datagrid--list & {
+    .datagrid--list & {
         display: grid;
         grid-template-rows: var(--gridTemplateRows);
         grid-template-columns: var(--gridTemplateColumns);
 
-        .kz-datagrid__head-cell {
+        .datagrid__head-cell {
             grid-column: var(--gridColumn);
             grid-row: var(--gridRow);
         }
@@ -21,12 +21,12 @@
         padding: 20px;
         color: $dark-gray-100;
 
-        span, .kz-sort-btn {
+        span, .sort-btn {
             vertical-align: middle;
         }
     }
 
-    .kz-sort-btn {
+    .sort-btn {
         margin-left: 10px;
         vertical-align: middle;
     }

@@ -31,8 +31,8 @@ describe('Component - Modal', () => {
         let $closeBtn: HTMLElement;
 
         const syncElems = () => {
-            $modal = $elem.querySelector('.kz-modal');
-            $overlay = $elem.querySelector('.kz-modal__overlay');
+            $modal = $elem.querySelector('.modal');
+            $overlay = $elem.querySelector('.modal__overlay');
             $closeBtn = $elem.querySelector('button');
             $subHeader = $elem.querySelector('h4');
         }

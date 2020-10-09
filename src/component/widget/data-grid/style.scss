@@ -1,4 +1,4 @@
-.kz-datagrid {
+.datagrid {
     &--table {
         table {
             width: 100%;
@@ -7,7 +7,7 @@
 
     &--list {
         // Grid (Responsive NOT part of current Scope for now)
-        .kz-datagrid__row {
+        .datagrid__row {
             display: grid;
             grid-template-columns: repeat(var(--cols), 1fr);
 
@@ -20,11 +20,11 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
 
-            .kz-datagrid__head {
+            .datagrid__head {
                 display: none;
             }
 
-            .kz-datagrid__row {
+            .datagrid__row {
                 grid-template-columns: repeat(1fr, var(--cols));
 
                 span {
@@ -46,14 +46,14 @@
         }
 
         @include mq('d') {
-            .kz-datagrid__row {
+            .datagrid__row {
                 grid-template-columns: repeat(var(--cols), 1fr);
             }
         } */
         // - END Grid Specific
     }
 
-    .kz-paginate {
+    .paginate {
         margin-bottom: 15px;
     }
 
@@ -64,7 +64,7 @@
         &--root {
             background: transparent;
 
-            > .kz-datagrid__row {
+            > .datagrid__row {
                 &--odd,
                 &--even {
                     border-top: 1px solid $light-gray-500;

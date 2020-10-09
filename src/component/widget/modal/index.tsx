@@ -5,7 +5,7 @@ import { DomHandle } from '../../../service/handle/dom';
 import { IGlobalEvtConfig } from '../../../service/handle/dom/type';
 import { IProps, IState, TFn } from './type';
 
-export const BODY_CLS: string = 'kz-modal-open';     // class to added to <body> when modal is on
+export const BODY_CLS: string = 'modal-open';     // class to added to <body> when modal is on
 
 const closeIconElem: ReactElement = inclStaticIcon('close');
 
@@ -33,8 +33,8 @@ export class Modal extends MemoComponent<IProps, IState> {
         const onClose = () => this.onClose();
 
         return this.state.isOpen && (
-            <div className="kz-modal">
-                <div className="kz-modal__content">
+            <div className="modal">
+                <div className="modal__content">
                     <header>
                         <h3>{header}</h3>{ subHeader &&
                         <h4>{subHeader}</h4>}
@@ -42,7 +42,7 @@ export class Modal extends MemoComponent<IProps, IState> {
                     </header>
                     <main>{children}</main>
                 </div>
-                <div className="kz-modal__overlay" onClick={onClose}></div>
+                <div className="modal__overlay" onClick={onClose}></div>
             </div>
         );
     }

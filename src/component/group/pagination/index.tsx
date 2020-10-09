@@ -8,7 +8,7 @@ import {
     pgnHandleType
  } from './type';
 
-const CLS_PREFIX: string = 'kz-paginate';
+const CLS_PREFIX: string = 'paginate';
 const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
 const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
 
