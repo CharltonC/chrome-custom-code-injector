@@ -29,15 +29,15 @@ export class Modal extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { headerText, subHeaderText, children } = this.props;
+        const { header, subHeader, children } = this.props;
         const onClose = () => this.onClose();
 
         return this.state.isOpen && (
             <div className="kz-modal">
                 <div className="kz-modal__content">
                     <header>
-                        <h3>{headerText}</h3>{ subHeaderText &&
-                        <h4>{subHeaderText}</h4>}
+                        <h3>{header}</h3>{ subHeader &&
+                        <h4>{subHeader}</h4>}
                         <button type="button" onClick={onClose}>{closeIconElem}</button>
                     </header>
                     <main>{children}</main>

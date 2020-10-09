@@ -11,7 +11,7 @@ describe('Component - Modal', () => {
     const enableModal = () => (modal.state as any).isOpen = true;
 
     beforeEach(() => {
-        modal = new Modal({headerText: 'title'});
+        modal = new Modal({header: 'title'});
         modalMethodSpy = TestUtil.spyMethods(modal);
         domHandleMethodSpy = TestUtil.spyMethods(modal.domHandle);
         setStateSpy = jest.spyOn(modal, 'setState');
@@ -40,7 +40,7 @@ describe('Component - Modal', () => {
         describe('default', () => {
             beforeEach(() => {
                 $elem = TestUtil.setupElem();
-                TestUtil.renderPlain($elem, Modal, { headerText: 'lorem' });
+                TestUtil.renderPlain($elem, Modal, { header: 'lorem' });
                 syncElems();
             });
 
@@ -54,8 +54,8 @@ describe('Component - Modal', () => {
                 $elem = TestUtil.setupElem();
                 TestUtil.renderPlain($elem, Modal, {
                     initialShow: true,
-                    headerText: 'lorem',
-                    subHeaderText: 'sum'
+                    header: 'lorem',
+                    subHeader: 'sum'
                 });
                 syncElems();
             });
