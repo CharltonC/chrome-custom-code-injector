@@ -18,12 +18,12 @@
     border-radius: 15px;
     font-size: 20px;
 
-    &--light {
+    &--white {
         @include state-hover_in-btn($teal, $white);
         color: $white;
     }
 
-    &--dark {
+    &--gray {
         @include state-hover_in-btn($white, $teal);
         color: $gray;
     }

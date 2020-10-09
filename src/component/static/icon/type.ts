@@ -1,4 +1,5 @@
-export type TTheme = 'light' | 'dark' | 'plain';
+// export type TTheme = 'light' | 'dark' | 'plain';
+export type TTheme = 'white' | 'gray' | 'black';
 
 export type TIcon =
     'setting' |

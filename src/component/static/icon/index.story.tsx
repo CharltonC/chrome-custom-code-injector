@@ -1,8 +1,6 @@
 import React from 'react';
-
-import { TIcon } from './type';
 import { inclStaticIcon } from '.';
-
+import { TIcon } from './type';
 
 export default {
     title: 'Static Icon',
@@ -35,21 +33,21 @@ const icons: string[] = [
     'option'
 ];
 
-export const PlainModeWithoutHoverState = () => (
+export const DefaultBlackTheme = () => (
     <ul>
         { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon)}</li>)}
     </ul>
 );
 
-export const LightMode = () => (
+export const WhiteTheme = () => (
     <ul style={{ backgroundColor: '#5AB3AD' }}>
         {/* `id` is the html attr. not specified however still passed here */}
-        { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, false)}</li>)}
+        { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, 'white')}</li>)}
     </ul>
 );
 
-export const DarkMode = () => (
+export const GrayTheme = () => (
     <ul>
-        { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, true)}</li>)}
+        { icons.map((icon: TIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, 'gray')}</li>)}
     </ul>
 );
