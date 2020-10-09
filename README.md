@@ -132,6 +132,7 @@ gulp build-ts:test [--watch]?
             structural/         // structural wrapper component only
             static/             // static component (fixed html)
             view/               // view (for used with router)
+            app/                // app root (i.e. multiple apps)
 
         page/
             <page-name>/        // bg-script (background script), ct-script (context script), option page, popup page
