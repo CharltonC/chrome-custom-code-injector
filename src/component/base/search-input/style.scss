@@ -17,6 +17,8 @@
         @extend %blank-input;
         z-index: 0;
         transition: width 0.2s ease;
+        transform: translateZ(0);
+        will-change: width;
         width: 250px;
         height: 36px;
         padding: 0 10px 0 20px;
