@@ -40,7 +40,8 @@ export const Light = () => (
         { icons.map((name: any) =>
             <IconBtn
                 key={`light-${name}`}
-                icon={{ name, darkMode: false }}
+                icon={name}
+                theme="white"
                 onClick={() => { console.log('click'); }}       // `onClick` being an "unknown" prop here
                 />
         )}
@@ -52,7 +53,8 @@ export const LightDisabled = () => (
         { icons.map((name: any) =>
             <IconBtn
                 key={`light-disabled-${name}`}
-                icon={{ name, darkMode: false }}
+                icon={name}
+                theme="white"
                 disabled        // `disabled` being an "unknown" prop here
                 />
         )}
@@ -64,7 +66,9 @@ export const Dark = () => (
         { icons.map((name: any) =>
             <IconBtn
                 key={`dark-${name}`}
-                icon={{ name, darkMode }} />
+                icon={name}
+                theme="gray"
+                />
         )}
     </div>
 );
@@ -74,7 +78,8 @@ export const DarkDisabled = () => (
         { icons.map((name: any) =>
             <IconBtn
                 key={`dark-disabled-${name}`}
-                icon={{ name, darkMode }}
+                icon={name}
+                theme="gray"
                 disabled
                 />
         )}

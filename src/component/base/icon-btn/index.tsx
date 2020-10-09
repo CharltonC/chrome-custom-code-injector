@@ -1,15 +1,11 @@
-import React, { memo, FC } from 'react';
-
+import React, { memo } from 'react';
 import { inclStaticIcon } from '../../static/icon';
-import * as NIconBtn from './type';
+import { IProps } from './type';
 
-const _IconBtn: FC<NIconBtn.IProps> = ({icon, ...props}) => {
-    const { name, darkMode } = icon;
+export const IconBtn = memo(({icon, theme, ...props}: IProps) => {
     return (
-        <button type="button" className="icon-btn" {...props}>
-            { inclStaticIcon(name, darkMode) }
+        <button type="button" className="kz-icon-btn" {...props}>
+            { inclStaticIcon(icon, theme) }
         </button>
     );
-};
-
-export const IconBtn = memo(_IconBtn);
+});

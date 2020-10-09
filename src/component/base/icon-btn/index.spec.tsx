@@ -9,7 +9,10 @@ describe('Component - Icon Button', () => {
     beforeEach(() => {
         mockOnClick = jest.fn();
         elem = TestUtil.setupElem();
-        TestUtil.renderPlain(elem, IconBtn, {icon: {name: 'setting'}, onClick: mockOnClick});
+        TestUtil.renderPlain(elem, IconBtn, {
+            icon: 'setting',
+            onClick: mockOnClick
+        });
         btnElem = elem.children[0] as HTMLElement;
     });
 
@@ -23,7 +26,7 @@ describe('Component - Icon Button', () => {
         const iconElem: HTMLElement = iconElems[0];
 
         expect(iconElems.length).toBe(1);
-        expect(iconElem.className).toBe('icon icon--setting icon--plain');
+        expect(iconElem.className).toBe('icon icon--setting');
     });
 
     it('should trigger callback fn when clicked', () => {
