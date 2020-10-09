@@ -5,7 +5,7 @@ import { IProps } from './type';
 
 export const PopupApp: React.FC<IProps> = memo((props: IProps) => {
     return (
-        <div className="view view--popup">
+        <div className="app-popup">
             <nav>
                 <IconBtn icon="doc" theme="white" />
                 <IconBtn icon="option" theme="white" />
