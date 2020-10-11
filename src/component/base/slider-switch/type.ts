@@ -3,8 +3,4 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
 }
 
-export interface IState {
-
-}
-
 type TFn = (...args: any[]) => void;
