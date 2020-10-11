@@ -1,0 +1,41 @@
+.nav-header {
+    --offset-x: 10px;
+    --offset-y: 8px;
+
+    @media (-webkit-min-device-pixel-ratio: 1.5) {
+        background-image: url("img/app-logo-2x.png");
+    }
+
+    @media (-webkit-device-pixel-ratio: 1) {
+        background-image: url("img/app-logo-1x.png");
+    }
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: var(--offset-y);
+    height: 60px;
+    background-color: $teal;
+    background-size: 190px 45px;
+    background-repeat: no-repeat;
+    background-position: var(--offset-x) center;
+
+    .search {
+        margin-right: 10px;
+    }
+
+    .icon-btn {
+        margin-left: var(--offset-x);
+
+        // override data-grid def. styling for <span>
+        .icon {
+            font-size: 20px;
+        }
+
+        &--upload {
+            .icon {
+                transform: rotate(180deg) translateZ(0);
+            }
+        }
+    }
+}
