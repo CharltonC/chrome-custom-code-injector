@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridHeader as GridHeaderCmp } from '../../group/grid-header';
+import { DefGridHeader } from '../../group/def-grid-header';
 import { Pagination as PaginationCmp } from '../../group/pagination';
 import { DataGrid } from '.';
 import { IRowComponentProps } from './type';
@@ -231,7 +231,7 @@ export const TableGrid = () => {
                 { title: '' },
             ]}
             component={{
-                Header: GridHeaderCmp,
+                Header: DefGridHeader,
                 Pagination: PaginationCmp,
                 rows: [
                     [TrCmp],
@@ -276,7 +276,7 @@ export const ListGrid = () => {
         <DataGrid
             type="list"
             component={{
-                Header: GridHeaderCmp,
+                Header: DefGridHeader,
                 Pagination: PaginationCmp,
                 rows: [
                     [ListCmp],

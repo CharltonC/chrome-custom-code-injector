@@ -4,7 +4,7 @@ import { UtilHandle } from '../../../service/handle/util';
 import { SortBtn } from '../../base/sort-btn';
 import { IProps, TTbHeaderRows, TListHeaderRows } from './type';
 
-export class GridHeader extends MemoComponent<IProps> {
+export class DefGridHeader extends MemoComponent<IProps> {
     readonly BASE_CLS: string = 'datagrid__head';
     readonly cssCls = new UtilHandle().cssCls;
 

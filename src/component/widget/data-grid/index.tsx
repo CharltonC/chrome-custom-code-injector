@@ -7,12 +7,12 @@ import { ExpdHandle } from '../../../service/handle/expand'
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
 import { Pagination as DefPagination } from '../../group/pagination';
-import { GridHeader as DefGridHeader } from '../../group/grid-header';
+import { DefGridHeader } from '../../group/def-grid-header';
 import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TShallResetState,
     TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp,
-    rowHandleType, expdHandleType, paginationType, sortBtnType, gridHeaderType
+    rowHandleType, expdHandleType, paginationType, sortBtnType, defGridHeaderType
 } from './type';
 
 
@@ -215,7 +215,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return this.state.sortState?.data || this.props.data;
     }
 
-    getHeaderProps(data: TDataOption): gridHeaderType.IProps {
+    getHeaderProps(data: TDataOption): defGridHeaderType.IProps {
         const { type } = this.props;
         const { headerCtx } = this.state;
         return {

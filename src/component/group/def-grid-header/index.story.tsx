@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { GridHeader } from '.';
+import { DefGridHeader } from '.';
 
 export default {
     title: 'Table Header',
-    component: GridHeader,
+    component: DefGridHeader,
 };
 
 const defStyle = {};
@@ -20,7 +20,7 @@ export const TableHeaderGroup = () => {
 
     return (
         <table style={defStyle} >
-            <GridHeader rows={rows} />
+            <DefGridHeader rows={rows} />
         </table>
     );
 };
@@ -56,7 +56,7 @@ export const ListHeaderGroup = () => {
 
     return (
         <table style={defStyle} >
-            <GridHeader
+            <DefGridHeader
                 type="list"
                 rows={rows}
                 sortBtnProps={sortBtnProps}
