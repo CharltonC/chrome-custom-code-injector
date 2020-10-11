@@ -1,0 +1,32 @@
+.app-option {
+    --offset-x: 10px;
+    --offset-y: 8px;
+
+    min-width: 1024px;
+
+    .datagrid {
+        padding: var(--offset-x);
+
+        .dropdown {
+            select {
+                background-color: transparent;
+            }
+        }
+
+        &__row {
+            td:nth-child(1) {
+                width: 100px;
+            }
+
+            td:nth-child(2) {
+                width: 100px;
+            }
+
+            &--nested {
+                td:nth-child(3) {
+                    text-indent: 15px;
+                }
+            }
+        }
+    }
+}
