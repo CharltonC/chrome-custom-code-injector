@@ -24,7 +24,7 @@ export const ExternalState = () => {
             id="sum"
             label="sum"
             checked={checked}
-            onChange={() => setChecked(!checked)}
+            onClick={() => setChecked(!checked)}
             />
     )
 };
