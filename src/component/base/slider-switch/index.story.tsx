@@ -23,7 +23,7 @@ export const ExternalState = () => {
         <SliderSwitch
             id="sum"
             label="sum"
-            checked={checked}
+            defaultChecked={checked}
             onClick={() => setChecked(!checked)}
             />
     )

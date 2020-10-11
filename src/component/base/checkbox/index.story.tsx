@@ -32,7 +32,7 @@ export const ExternalState = () => {
             <Checkbox
                 id="lorem"
                 label="checkbox"
-                checked={checked}
+                defaultChecked={checked}
                 onClick={() => setChecked(!checked)}
                 />
         </div>
