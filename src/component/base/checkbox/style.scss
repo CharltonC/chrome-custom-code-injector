@@ -1,0 +1,44 @@
+.checkbox {
+    display: flex;
+    align-items: center;
+
+    input {
+        -webkit-appearance: none;
+        position: relative;
+        outline: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 3px;
+        transform: translateZ(0);
+        transition: background-color .2s ease;
+        will-change: background-color;
+
+        &:before {
+            @include checkbox-input-tick(2px, $white);
+        }
+
+        &:disabled {
+            &,
+            & + span {
+                opacity: .4;
+            }
+        }
+
+        &:checked {
+            background-color: $teal;
+            border: 1px solid $teal;
+        }
+
+        &:not(:checked) {
+            background-color: $white;
+            border: 1px solid $gray;
+        }
+    }
+
+    span {
+        display: inline-block;
+        margin-left: 5px;
+        font: 14px $roboto-reg;
+        color: $gray;
+    }
+}
