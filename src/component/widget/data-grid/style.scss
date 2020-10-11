@@ -79,7 +79,7 @@
 
     &__row:not(&__row--nested) {
         > td,
-        span {
+        .cell {
             padding: 20px;
             font: 14px Helvetica;
             color: $gray;

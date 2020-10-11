@@ -253,10 +253,10 @@ export const ListGrid = () => {
 
         return <>
             <li style={rowColStyle} className={REG_ROW}>
-                <span data-header="id">{id}</span>
-                <span data-header="name">{name}</span>
-                <span data-header="age">{age}</span>
-                <span>{ nestedItems &&
+                <span className="cell" data-header="id">{id}</span>
+                <span className="cell" data-header="name">{name}</span>
+                <span className="cell" data-header="age">{age}</span>
+                <span className="cell">{ nestedItems &&
                     <button type="button" style={defStyle.expdBtn} onClick={onClick}>
                         {isOpen ? '-' : '+' }
                     </button>}
