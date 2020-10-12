@@ -1,12 +1,12 @@
-.symbol-btn {
+.symbol-switch {
     display: inline-block;
 
-    &__checkbox {
+    input {
         -webkit-appearance: none;
         margin: 0;
 
         &:not(:checked) {
-            & + .symbol-btn__text:before {
+            & + span:before {
                 content: '';
                 position: absolute;
                 z-index: 100;
@@ -19,13 +19,13 @@
 
 
         &:not(:disabled) {
-            & + .symbol-btn__text:hover {
+            & + span:hover {
                 cursor: pointer;
             }
         }
 
         &:disabled {
-            & + .symbol-btn__text {
+            & + span {
                 opacity: 0.4;
                 color: $dark-gray;
                 border-color: $dark-gray;
@@ -37,7 +37,7 @@
         }
     }
 
-    &__text {
+    span {
         position: relative;
         z-index: 0;
         display: inline-flex;
