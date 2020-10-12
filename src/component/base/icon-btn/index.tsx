@@ -7,7 +7,7 @@ const { cssCls } = UtilHandle.prototype;
 const CSS_BASE_CLS: string = 'icon-btn';
 
 export const IconBtn = memo(({icon, theme, clsSuffix, ...props}: IProps) => {
-    const CSS_CLS: string = clsSuffix ? cssCls(CSS_BASE_CLS, clsSuffix) : CSS_BASE_CLS;
+    const CSS_CLS: string = cssCls(CSS_BASE_CLS, clsSuffix);
     return (
         <button type="button" className={CSS_CLS} {...props}>
             { inclStaticIcon(icon, theme) }
