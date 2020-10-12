@@ -22,7 +22,7 @@ export class DefGridHeader extends MemoComponent<IProps> {
         return (
             <thead className={BASE_CLS}>{ headers.map((thCtxs, trIdx: number) => (
                 <tr key={trIdx}>{ thCtxs.map( ({ title, sortKey, ...thProps }, thIdx: number) => (
-                <th
+                    <th
                         key={thIdx}
                         className={`${BASE_CLS}-cell`}
                         {...thProps}
