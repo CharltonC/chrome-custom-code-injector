@@ -11,7 +11,8 @@ describe('Component - Icon Button', () => {
         elem = TestUtil.setupElem();
         TestUtil.renderPlain(elem, IconBtn, {
             icon: 'setting',
-            onClick: mockOnClick
+            onClick: mockOnClick,
+            clsSuffix: [ 'suffix' ]
         });
         btnElem = elem.children[0] as HTMLElement;
     });
@@ -19,6 +20,10 @@ describe('Component - Icon Button', () => {
     afterEach(() => {
         TestUtil.teardown(elem);
         elem = null;
+    });
+
+    it('should pass class suffix to button', () => {
+        expect(btnElem.className).toContain('icon-btn--suffix');
     });
 
     it("should render with an icon", () => {
