@@ -250,3 +250,33 @@
     border-width: 0 $thickness $thickness 0;
     transform: translateZ(0) rotate(45deg);
 }
+
+/**
+ * Generate the width for <th>, <td> children from a list of width values
+ *
+ * Usage:
+ * $cells-width: (65, 80, (270, 2), 220, (75, 3), (50, 3));
+ *
+ * if item is a list, then it means it repeat the value no. of times for the following cell
+ * e.g. (270, 2) means repeat 270px twice
+ */
+@mixin gen-tb-cells-width($cells-width) {
+    @for $i from 1 through length($cells-width) {
+        $value: nth($cells-width, $i);
+        $start: $i !default;
+
+        @if length($value) == 2 {
+            $end: $start + nth($value, 2) - 1;
+            &:nth-child(n+#{$start}):nth-child(-n+#{$end}) {
+                width: nth($value, 1) + px;
+            }
+            $start: $end + 1;
+
+        } @else {
+            &:nth-child(#{$start}) {
+                width: nth($cells-width, $i) + px;
+            }
+            $start: $start + 1;
+        }
+    }
+}
