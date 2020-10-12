@@ -11,6 +11,10 @@
 
     &:not(:disabled):hover {
         .icon {
+            transition: color .15s, background-color .15s;
+            will-change: color background-color;
+            transform: translateZ(0);
+
             &--white {
                 @include hover-icon-state($teal, $white);
             }
