@@ -11,8 +11,7 @@ export const Checkbox: React.FC<IProps> = memo((props: IProps) => {
                 id={id}
                 name={id}
                 {...inputProps}
-                />
-                { label &&
+                />{ label &&
                 <span>{label}</span>}
         </label>
     );
