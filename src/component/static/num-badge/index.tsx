@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 
-export function inclStaticNumBadge(total: number = 0): ReactElement {
+export function NumBadge(total: number = 0): ReactElement {
     const isGt9: boolean = total > 9;
     const isLt0: boolean = total < 0;
 

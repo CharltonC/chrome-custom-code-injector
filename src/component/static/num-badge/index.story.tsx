@@ -1,10 +1,10 @@
-import { inclStaticNumBadge } from '.';
+import { NumBadge } from '.';
 
 export default {
     title: 'Static Number Badge'
 };
 
-export const NoNumber = () => inclStaticNumBadge();
-export const LessThan0 = () => inclStaticNumBadge(-1);
-export const LargerThan9 = () => inclStaticNumBadge(11);
-export const GreaterThan0AndLessThanEqualTo9 = () => inclStaticNumBadge(6);
+export const NoNumber = () => NumBadge();
+export const LessThan0 = () => NumBadge(-1);
+export const LargerThan9 = () => NumBadge(11);
+export const GreaterThan0AndLessThanEqualTo9 = () => NumBadge(6);
