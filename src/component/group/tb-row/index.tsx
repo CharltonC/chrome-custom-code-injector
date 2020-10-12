@@ -3,6 +3,7 @@ import { IconBtn } from '../../base/icon-btn';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/slider-switch';
 import { Dropdown } from '../../base/dropdown';
+import { NumBadge } from '../../static/num-badge';
 // import { IProps } from './type';
 
 // TODO: Move to def. value/state
@@ -14,31 +15,50 @@ const dropdownValues = [
 ];
 
 // TODO: Type for props
-export const TbRow: React.FC<any> = memo(({ item, nestedItems , classNames, expandProps }) => {
+export const TbRow: React.FC<any> = memo((props) => {
+    const { idx, itemLvl, item, nestedItems , classNames, expandProps } = props;
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
     const { isOpen, onClick }: any = nestedItems ? expandProps : {};
     // TODO: Renamed the state prop
     const { https, id, addr, script_exec, script_js, script_css, script_lib, paths } = item;
+    const ID_SUFFIX: string = `${itemLvl}-${idx}`;
 
     return <>
             {/* Index required for each id */}
             <tr className={REG_ROW}>
-                <td><Checkbox id="check" /></td>
-                <td>{ paths?.length &&
-                    <SliderSwitch id="https" defaultChecked={https} />}
+                <td><Checkbox id={`check-${ID_SUFFIX}`} /></td>
+                <td>{ nestedItems &&
+                    <SliderSwitch
+                        id={`https-${ID_SUFFIX}`}
+                        defaultChecked={https}
+                        />}
                 </td>
                 <td>
-                    <IconBtn icon="arrow-rt" onClick={onClick} />
-                    {id}
+                    <div>{ nestedItems && <>
+                        <IconBtn
+                            icon="arrow-rt"
+                            clsSuffix={isOpen ? 'open' : ''}
+                            onClick={onClick}
+                            />
+                        { NumBadge(paths.length) } </>}
+                        <span>{id}</span>
+                    </div>
                 </td>
                 <td>{addr}</td>
-                <td><Dropdown id="" list={dropdownValues} selectIdx={script_exec} /></td>
-                <td><SliderSwitch id="js" defaultChecked={script_js} /></td>
-                <td><SliderSwitch id="css" defaultChecked={script_css} /></td>
-                <td><SliderSwitch id="lib" defaultChecked={script_lib} /></td>
-                <td><IconBtn icon="add" /></td>
-                <td><IconBtn icon="edit" /></td>
-                <td><IconBtn icon="delete" /></td>
+                <td>
+                    <Dropdown
+                        id={`select-${ID_SUFFIX}`}
+                        list={dropdownValues}
+                        selectIdx={script_exec}
+                        className="dropdown__select--cell"
+                    />
+                </td>
+                <td><SliderSwitch id={`js-${ID_SUFFIX}`} defaultChecked={script_js} /></td>
+                <td><SliderSwitch id={`css-${ID_SUFFIX}`} defaultChecked={script_css} /></td>
+                <td><SliderSwitch id={`lib-${ID_SUFFIX}`} defaultChecked={script_lib} /></td>
+                <td><IconBtn icon="add" theme="gray" /></td>
+                <td><IconBtn icon="edit" theme="gray" /></td>
+                <td><IconBtn icon="delete" theme="gray" /></td>
             </tr>{ nestedItems && isOpen &&
             <tr className={NESTED_ROW}>
                 <td colSpan={11}>
