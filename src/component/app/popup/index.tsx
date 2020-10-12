@@ -6,10 +6,10 @@ import { IProps } from './type';
 export const PopupApp: React.FC<IProps> = memo((props: IProps) => {
     return (
         <div className="app-popup">
-            <nav>
+            <header>
                 <IconBtn icon="doc" theme="white" />
                 <IconBtn icon="option" theme="white" />
-            </nav>
+            </header>
             <main>
                 <section>
                     <h3>Host</h3>
