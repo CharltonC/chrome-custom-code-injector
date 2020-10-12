@@ -54,7 +54,7 @@
     }
 
     .paginate {
-        margin-bottom: 15px;
+        padding: 25px 20px 20px 20px;
     }
 
     &__body {
@@ -80,7 +80,7 @@
     &__row:not(&__row--nested) {
         > td,
         .cell {
-            padding: 20px;
+            vertical-align: middle;
             font: 14px Helvetica;
             color: $gray;
         }
