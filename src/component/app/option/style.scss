@@ -1,8 +1,9 @@
 .app-option {
     --offset-x: 10px;
     --offset-y: 8px;
+    --logo-width: 190px;
 
-    min-width: 1024px;
+    min-width: 1280px;
 
     header {
         @media (-webkit-min-device-pixel-ratio: 1.5) {
@@ -14,21 +15,36 @@
         }
 
         display: flex;
-        justify-content: flex-end;
         align-items: center;
+        justify-content: flex-end;
         padding: var(--offset-y);
         height: 60px;
         background-color: $teal;
-        background-size: 190px 45px;
+        background-size: var(--logo-width) 45px;
         background-repeat: no-repeat;
         background-position: var(--offset-x) center;
+
+        &,
+        .ctrl {
+            display: flex;
+            align-items: center;
+        }
+
+        .ctrl {
+            &--edit {
+                flex: auto;
+                margin-left: calc(var(--logo-width) + 40px);
+            }
+        }
 
         .search {
             margin-right: 10px;
         }
 
         .icon-btn {
-            margin-left: var(--offset-x);
+            &:not(:first-child) {
+                margin-left: var(--offset-x);
+            }
 
             // override data-grid def. styling for <span>
             .icon {
@@ -44,28 +60,20 @@
     }
 
     .datagrid {
-        padding: var(--offset-x);
+        th,
+        td:not([colspan]) {
+            @include gen-tb-cells-width( (65, 80, (270, 2), 220, (75, 3), (50, 3)) );
 
-        .dropdown {
-            select {
-                background-color: transparent;
+            // Checkbox
+            &:first-child {
+                padding-left: 15px;
             }
         }
 
-        &__row {
-            td:nth-child(1) {
-                width: 100px;
-            }
-
-            td:nth-child(2) {
-                width: 100px;
-            }
-
-            &--nested {
-                td:nth-child(3) {
-                    text-indent: 15px;
-                }
-            }
+        // TODO: Move to head
+        th {
+            height: 50px;
+            font: bold 14px Arial;
         }
     }
 }

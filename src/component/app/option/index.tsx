@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import { DataGrid } from '../../widget/data-grid';
 import { IconBtn } from '../../base/icon-btn';
 import { SearchInput } from '../../base/search-input';
 import { TbHeader } from '../../group/tb-header';
 import { TbRow } from '../../group/tb-row';
+import { DataGrid } from '../../widget/data-grid';
 // import { IProps, IState } from './type';
 
 const mockData = [
@@ -58,22 +58,22 @@ export const ListView: React.FC<any> = memo((props) => {
     return (
         <div className="app-option">
             <header>
-                {/* For Edit */}
-                <IconBtn icon="arrow-lt" theme="white" />
-                <IconBtn icon="save" theme="white" />
-                <IconBtn icon="delete" theme="white" />
-                <IconBtn icon="add" theme="white" />
-
-                {/* For both Edit and List */}
-                <SearchInput id="search" />
-                <IconBtn icon="add-outline" theme="white" />
-                <IconBtn icon="setting" theme="white" />
-                <IconBtn icon="doc" theme="white" />
-                <IconBtn icon="download" theme="white" />
-                <IconBtn icon="download" theme="white" className="icon-btn icon-btn--upload" />
+                <div className="ctrl ctrl--edit">
+                    <IconBtn icon="arrow-lt" theme="white" />
+                    <IconBtn icon="save" theme="white" />
+                    <IconBtn icon="delete" theme="white" />
+                    <IconBtn icon="add" theme="white" />
+                </div>
+                <div className="ctrl ctrl--base">
+                    <SearchInput id="search" />
+                    <IconBtn icon="add-outline" theme="white" />
+                    <IconBtn icon="setting" theme="white" />
+                    <IconBtn icon="doc" theme="white" />
+                    <IconBtn icon="download" theme="white" />
+                    <IconBtn icon="download" theme="white" clsSuffix="upload" />
+                </div>
             </header>
             {/* TODO: Router */}
-            {/* TODO: Fixed getter config */}
             <DataGrid
                 type="table"
                 component={{
