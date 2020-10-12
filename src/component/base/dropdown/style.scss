@@ -6,7 +6,6 @@
 
     select {
         -webkit-appearance: none;
-        transition: border 0.2s ease;
         width: 100%;
         height: 36px;
         padding: 0 35px 0 20px;
@@ -40,15 +39,14 @@
     &--plain {
         select {
             border: 1px solid transparent;
-
-            &:not(:disabled):hover {
-                border: 1px solid $light-gray;
-            }
         }
     }
 
     &--border {
         select {
+            transition: border 0.2s ease;
+            transform: translateZ(0);
+            will-change: border;
             border: 1px solid $light-gray;
 
             &:not(:disabled):hover {
