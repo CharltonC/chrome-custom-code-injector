@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { DataGrid } from '../../widget/data-grid';
-import { NavHeader } from '../../group/nav-header';
+import { IconBtn } from '../../base/icon-btn';
+import { SearchInput } from '../../base/search-input';
 import { TbHeader } from '../../group/tb-header';
 import { TbRow } from '../../group/tb-row';
 // import { IProps, IState } from './type';
@@ -56,8 +57,21 @@ export const ListView: React.FC<any> = memo((props) => {
     // view init logic (if any)
     return (
         <div className="app-option">
-            {/* Common Nav */}
-            <NavHeader />
+            <header>
+                {/* For Edit */}
+                <IconBtn icon="arrow-lt" theme="white" />
+                <IconBtn icon="save" theme="white" />
+                <IconBtn icon="delete" theme="white" />
+                <IconBtn icon="add" theme="white" />
+
+                {/* For both Edit and List */}
+                <SearchInput id="search" />
+                <IconBtn icon="add-outline" theme="white" />
+                <IconBtn icon="setting" theme="white" />
+                <IconBtn icon="doc" theme="white" />
+                <IconBtn icon="download" theme="white" />
+                <IconBtn icon="download" theme="white" className="icon-btn icon-btn--upload" />
+            </header>
             {/* TODO: Router */}
             {/* TODO: Fixed getter config */}
             <DataGrid
