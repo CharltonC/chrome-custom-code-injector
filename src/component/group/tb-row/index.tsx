@@ -3,7 +3,7 @@ import { IconBtn } from '../../base/icon-btn';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/slider-switch';
 import { Dropdown } from '../../base/dropdown';
-import { NumBadge } from '../../static/num-badge';
+import { InclStaticNumBadge } from '../../static/num-badge';
 // import { IProps } from './type';
 
 // TODO: Move to def. value/state
@@ -40,7 +40,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                             clsSuffix={isOpen ? 'open' : ''}
                             onClick={onClick}
                             />
-                        { NumBadge(paths.length) } </>}
+                        { InclStaticNumBadge(paths.length) } </>}
                         <span>{id}</span>
                     </div>
                 </td>

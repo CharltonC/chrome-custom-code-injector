@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { MemoComponent } from '../../../asset/ts/memo-component';
 import { IProps, IState, INestList, IList } from './type';
 import { inclStaticIcon } from '../../static/icon';
-import { NumBadge } from '../../static/num-badge';
+import { InclStaticNumBadge } from '../../static/num-badge';
 
 export class SideNav extends MemoComponent<IProps, IState> {
     //// Element class name constants: list, list items, list item contents (Row, Title Text, Dropdown Arrows)
@@ -125,7 +125,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                         <p className={lsTierCls}>
                             { isAtvIdx ? dnIconElem : rtIconElem }
                             <span className={titleCls}>{id}</span>
-                            { NumBadge(lsTotal) }
+                            { InclStaticNumBadge(lsTotal) }
                         </p>
                         <ul className={nstLsBaseCls} style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
                             {
