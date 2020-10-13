@@ -37,7 +37,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <div>{ nestedItems && <>
                         <IconBtn
                             icon="arrow-rt"
-                            clsSuffix={isOpen ? 'open' : ''}
+                            clsSuffix={['arrow-rt', isOpen ? 'open' : '']}
                             onClick={onClick}
                             />
                         { InclStaticNumBadge(paths.length) } </>}

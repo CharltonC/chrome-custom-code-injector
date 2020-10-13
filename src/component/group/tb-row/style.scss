@@ -23,10 +23,17 @@
     }
 
     .icon-btn {
-        .icon--arrow-rt {
-            margin-left: -8px;
-            transition: transform .1s;
-            will-change: transform;
+        &--arrow-rt {
+            &,
+            .icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            .icon {
+                transition: transform .1s;
+                will-change: transform;
+            }
         }
 
         &--open {
@@ -37,7 +44,7 @@
     }
 
     .badge {
-        margin-right: 10px;
+        margin: 0 10px 0 3px;
         background-color: $light-gray-700;
         color: $white;
     }
