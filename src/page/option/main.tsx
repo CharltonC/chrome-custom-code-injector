@@ -6,12 +6,8 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-// import Button from 'antd/lib/button';
+import { OptionApp } from '../../component/app/option';
 
-// export const Hello = () => <Button>lorem sum</Button>;
 const containerElem = document.createElement('div');
-// document.body.appendChild(containerElem);
-// render(<Button>lorem sum</Button>, containerElem);
-
-
-render(<div />, containerElem);
+document.body.appendChild(containerElem);
+render(<OptionApp />, containerElem);
