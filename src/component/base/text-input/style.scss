@@ -23,16 +23,13 @@
         font: 14px $roboto-reg;
         color: $dark-gray-100;
 
-        &:not(:focus) {
-            outline: none;
-        }
-
         &::-webkit-input-placeholder {
             font: 14px $roboto-reg;
             color: $light-gray;
         }
 
-        &:focus {
+        &:not(:disabled):focus {
+            outline: none;
             border-bottom: 1px solid $teal;
         }
     }
@@ -55,7 +52,7 @@
     }
 
     &--invalid {
-        .text-ipt__input:focus {
+        .text-ipt__input:not(:disabled):focus {
             border-bottom: 1px solid $red;
         }
 
@@ -65,7 +62,7 @@
     }
 
     &--valid {
-        .text-ipt__input:focus ~ .icon {
+        .text-ipt__input:not(:disabled):focus ~ .icon {
             display: inline-flex;
         }
     }
