@@ -1,9 +1,9 @@
 import React from 'react';
-import { ListView } from '.';
+import { OptionApp } from '.';
 
 export default {
     title: 'App - Option',
-    component: ListView,
+    component: OptionApp,
 };
 
 const defStyle = {};
@@ -11,7 +11,7 @@ const defStyle = {};
 export const Default = () => {
     return (
         <div style={defStyle} >
-            <ListView />
+            <OptionApp />
         </div>
     )
 };

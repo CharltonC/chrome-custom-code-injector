@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+// import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { IconBtn } from '../../base/icon-btn';
 import { SearchInput } from '../../base/search-input';
 import { TbHeader } from '../../group/tb-header';
@@ -91,7 +92,7 @@ const dataGridConfig: any = {
 };
 
 // TODO: Props type
-export const ListView: React.FC<any> = memo((props) => {
+export const OptionApp: React.FC<any> = memo((props) => {
     // view init logic (if any)
     return (
         <div className="app-option">
@@ -111,8 +112,13 @@ export const ListView: React.FC<any> = memo((props) => {
                     <IconBtn icon="download" theme="white" clsSuffix="upload" />
                 </div>
             </header>
-            {/* TODO: Router */}
             <DataGrid {...dataGridConfig} />
+            {/* TODO: Router */}
+           {/*  <Router>
+                <Link to="/edit" replace>edit</Link>
+                <Route exact path="/" render={() => <DataGrid {...dataGridConfig} />} />
+                <Route exact path="/edit" render={() => <h1>lorem</h1> } />
+            </Router> */}
         </div>
     );
 });
