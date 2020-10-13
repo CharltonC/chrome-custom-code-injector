@@ -115,7 +115,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                 <ul className={lsBaseCls}>{list.map((ls: INestList, lsIdx: number) => {
                     const { id, nestList } = ls;
                     const isAtvIdx: boolean = atvLsIdx === lsIdx;
-                    const lsTotal: number = nestList.length;
+                    const lsTotal: number = nestList?.length;
                     const isAtvWithChildLs: boolean = isAtvIdx && !!lsTotal;
                     const lsCls: string = this.getLsCls(lsItemBaseCls, (isAtvIdx && atvNestLsIdx === null));
                     const lsKey: string = `${lsItemBaseCls}-${lsIdx}`;

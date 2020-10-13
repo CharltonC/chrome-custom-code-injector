@@ -34,13 +34,18 @@
             }
 
             .side-nav__nls {
-                transition: max-height 0.2s linear;
+                transition: max-height 0.2s ease-out;
+                transform: translateZ(0);
+                will-change: max-height;
             }
         }
 
         &:not(&--atv) {
             .side-nav__tier:hover {
                 @include side-nav__tier($teal-200, true);
+                transition: background-color .15s ease;
+                transform: translateZ(0);
+                will-change: background-color;
 
                 .badge {
                     color: $white;
@@ -48,7 +53,9 @@
             }
 
             .side-nav__nls {
-                transition: max-height 0.1s linear;
+                transition: max-height 0.1s ease-out;
+                transform: translateZ(0);
+                will-change: max-height;
             }
         }
     }
@@ -64,6 +71,9 @@
 
         &:not(&--atv):hover {
             @include side-nav__tier($teal-200, true);
+            transition: background-color .15s ease;
+            transform: translateZ(0);
+            will-change: background-color;
         }
     }
 
