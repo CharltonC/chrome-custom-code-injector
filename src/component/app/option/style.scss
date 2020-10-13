@@ -6,7 +6,7 @@
     min-width: 1280px;
 
     header {
-        @include mq-retina-bg-img($logo-path-1x, $logo-path-2x);
+        @include bg-img-retina($logo-path-1x, $logo-path-2x);
 
         display: flex;
         align-items: center;
