@@ -6,13 +6,7 @@
     min-width: 1280px;
 
     header {
-        @media (-webkit-min-device-pixel-ratio: 1.5) {
-            background-image: url("img/app-logo-2x.png");
-        }
-
-        @media (-webkit-device-pixel-ratio: 1) {
-            background-image: url("img/app-logo-1x.png");
-        }
+        @include mq-retina-bg-img($logo-path-1x, $logo-path-2x);
 
         display: flex;
         align-items: center;
