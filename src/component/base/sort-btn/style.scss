@@ -1,8 +1,13 @@
 .sort-btn {
     display: inline-block;
 
-    &:focus {
+    &:not(:focus) {
         outline: none;
+    }
+
+    &:focus {
+        outline: 2px solid $light-blue-200;
+        outline-offset: 2px;
     }
 
     &:before,

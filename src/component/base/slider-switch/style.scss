@@ -18,8 +18,12 @@
             cursor: pointer;
         }
 
-        &:focus {
+        &:not(:focus) {
             outline: none;
+        }
+
+        &:focus {
+            outline-color: $light-blue-200;
         }
 
         &:disabled {

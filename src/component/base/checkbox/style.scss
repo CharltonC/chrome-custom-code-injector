@@ -5,13 +5,20 @@
     input {
         -webkit-appearance: none;
         position: relative;
-        outline: none;
         width: 18px;
         height: 18px;
         border-radius: 3px;
         transform: translateZ(0);
         transition: background-color .2s ease;
         will-change: background-color;
+
+        &:not(:focus){
+            outline: none;
+        }
+
+        &:focus {
+            outline: 2px solid $light-blue-200;
+        }
 
         &:before {
             @include checkbox-input-tick(2px, $white);
