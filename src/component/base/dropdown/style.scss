@@ -19,9 +19,16 @@
             }
         }
 
-        // &:not(:disabled):hover {
-        //     cursor: pointer;
-        // }
+        &:focus {
+            outline: none;
+        }
+
+        &:not(:disabled) {
+            &:focus,
+            &:hover {
+                border: 1px solid $teal;
+            }
+        }
     }
 
     option {
@@ -49,11 +56,11 @@
             will-change: border;
             border: 1px solid $light-gray;
 
-            &:not(:disabled):hover {
-                border: 1px solid $teal;
-
-                ~ .icon {
-                    color: $teal;
+            &:not(:disabled) {
+                &:hover {
+                    ~ .icon {
+                        color: $teal;
+                    }
                 }
             }
         }
