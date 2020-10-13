@@ -5,22 +5,24 @@
 }
 
 .icon-btn {
-    &:not(:focus) {
+    &:focus {
         outline: none;
     }
 
-    &:focus {
-        outline: 2px solid $light-blue-200;
-    }
+    &:not(:disabled) {
+        &:focus {
+            outline: 2px solid $light-blue-200;
+        }
 
-    &:not(:disabled):hover {
-        .icon {
-            &--white {
-                @include hover-icon-state($teal, $white);
-            }
+        &:hover {
+            .icon {
+                &--white {
+                    @include hover-icon-state($teal, $white);
+                }
 
-            &--gray {
-                @include hover-icon-state($white, $teal);
+                &--gray {
+                    @include hover-icon-state($white, $teal);
+                }
             }
         }
     }
