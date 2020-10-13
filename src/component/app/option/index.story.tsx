@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter as Router, Link } from "react-router-dom";
+
 import { OptionApp } from '.';
 
 export default {
@@ -10,8 +12,11 @@ const defStyle = {};
 
 export const Default = () => {
     return (
-        <div style={defStyle} >
+        /* `Router` wrapper needs to be root lvl */
+        <Router>
+            <Link to="/edit" replace>edit</Link>
+            <Link to="/" replace>home</Link>
             <OptionApp />
-        </div>
+        </Router>
     )
 };

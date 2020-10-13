@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
-// import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 import { IconBtn } from '../../base/icon-btn';
 import { SearchInput } from '../../base/search-input';
 import { TbHeader } from '../../group/tb-header';
 import { TbRow } from '../../group/tb-row';
 import { DataGrid } from '../../widget/data-grid';
-// import { IProps, IState } from './type';
+import { IProps } from './type';
 
 const mockData = [
     {
@@ -92,17 +92,18 @@ const dataGridConfig: any = {
 };
 
 // TODO: Props type
-export const OptionApp: React.FC<any> = memo((props) => {
-    // view init logic (if any)
+export const OptionApp: React.FC<any> = memo((props: IProps) => {
+    let isEditView = useRouteMatch('/edit');
+
     return (
         <div className="app-option">
-            <header>
+            <header>{ isEditView &&
                 <div className="ctrl ctrl--edit">
                     <IconBtn icon="arrow-lt" theme="white" />
                     <IconBtn icon="save" theme="white" />
                     <IconBtn icon="delete" theme="white" />
                     <IconBtn icon="add" theme="white" />
-                </div>
+                </div>}
                 <div className="ctrl ctrl--base">
                     <SearchInput id="search" />
                     <IconBtn icon="add-outline" theme="white" />
@@ -112,13 +113,15 @@ export const OptionApp: React.FC<any> = memo((props) => {
                     <IconBtn icon="download" theme="white" clsSuffix="upload" />
                 </div>
             </header>
-            <DataGrid {...dataGridConfig} />
-            {/* TODO: Router */}
-           {/*  <Router>
-                <Link to="/edit" replace>edit</Link>
-                <Route exact path="/" render={() => <DataGrid {...dataGridConfig} />} />
-                <Route exact path="/edit" render={() => <h1>lorem</h1> } />
-            </Router> */}
+            <Switch>
+                <Route path="/edit">
+                    <h1>lorem</h1>
+                </Route>
+                <Route path="/">
+                    <DataGrid {...dataGridConfig} />
+                </Route>
+            </Switch>
+            {/* TODO: Modals */}
         </div>
     );
 });
