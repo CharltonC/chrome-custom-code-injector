@@ -61,7 +61,7 @@
     }
 
     &__nls-item  {
-        padding-left: 50px;
+        padding-left: 45px;
         line-height: 40px;
         height: 40px;
 
@@ -75,20 +75,37 @@
             transform: translateZ(0);
             will-change: background-color;
         }
+
+        .side-nav__title {
+            margin-left: -3px;
+        }
     }
 
     &__tier {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 15px 0 25px;
+        padding: 0 15px 0 15px;
         height: 40px;
         font: 16px $roboto-bld;
 
-        .icon--plain {
-            width: 12px;
-            height: 12px;
-            font-weight: 600;
+        .icon {
+            &--plain {
+                width: 12px;
+                height: 12px;
+                font-weight: 600;
+            }
+
+            &--arrow-dn,
+            &--arrow-rt {
+                &,
+                .icon {
+                    width: 20px;
+                    height: 20px;
+                }
+
+                font-weight: bold;
+            }
         }
     }
 
