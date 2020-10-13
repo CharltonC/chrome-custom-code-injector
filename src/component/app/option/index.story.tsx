@@ -2,7 +2,7 @@ import React from 'react';
 import { ListView } from '.';
 
 export default {
-    title: 'View - List',
+    title: 'App - Option',
     component: ListView,
 };
 
