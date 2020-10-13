@@ -51,7 +51,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                         list={dropdownValues}
                         selectIdx={script_exec}
                         className="dropdown__select--cell"
-                    />
+                        />
                 </td>
                 <td><SliderSwitch id={`js-${ID_SUFFIX}`} defaultChecked={script_js} /></td>
                 <td><SliderSwitch id={`css-${ID_SUFFIX}`} defaultChecked={script_css} /></td>
