@@ -111,7 +111,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
         const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
 
         return (
-            <nav className={baseCls}>
+            <aside className={baseCls}>
                 <ul className={lsBaseCls}>{list.map((ls: INestList, lsIdx: number) => {
                     const { id, nestList } = ls;
                     const isAtvIdx: boolean = atvLsIdx === lsIdx;
@@ -136,7 +136,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                     </li>
                     );
                 })}</ul>
-            </nav>
+            </aside>
         );
     }
 }
