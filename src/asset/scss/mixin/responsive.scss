@@ -48,17 +48,3 @@
         @media screen and (min-width: 300px) and (max-width: 1024px) { @content; }
     }
 }
-
-
-/* Background Image with Non-Retina & Retina Support
- - No responsive support yet
- */
- @mixin mq-retina-bg-img($img-url-normal, $img-url-retina) {
-    @media (-webkit-min-device-pixel-ratio: 1.5) {
-        background-image: url($img-url-retina);
-    }
-
-    @media (-webkit-device-pixel-ratio: 1) {
-        background-image: url($img-url-normal);
-    }
-}
