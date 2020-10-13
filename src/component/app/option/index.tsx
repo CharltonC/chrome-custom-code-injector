@@ -52,6 +52,44 @@ const mockData = [
     }
 ];
 
+const dataGridConfig: any = {
+    type: "table",
+    component: {
+        Header: TbHeader,
+        rows: [
+            [ TbRow ],
+            [ 'paths', TbRow ]
+        ]
+    },
+    data: mockData,
+    rowKey: "id",
+    header: [
+        { title: '' },
+        { title: 'HTTPS' },
+        { title: 'ID', sortKey: 'id' },
+        { title: 'ADDRESS', sortKey: 'addr' },
+        { title: 'SCRIPT EXECUTION' },
+        { title: 'JS' },
+        { title: 'CSS' },
+        { title: 'LIBRARY' },
+        { title: '' },
+        { title: '' },
+        { title: '' }
+    ],
+    expand:{
+        onePerLevel: true
+    },
+    sort: {
+        key: 'name',
+        isAsc: true,
+        reset: true,
+    },
+    paginate:{
+        page: 0,
+        increment: [10, 25, 50],
+    }
+};
+
 // TODO: Props type
 export const ListView: React.FC<any> = memo((props) => {
     // view init logic (if any)
@@ -74,43 +112,7 @@ export const ListView: React.FC<any> = memo((props) => {
                 </div>
             </header>
             {/* TODO: Router */}
-            <DataGrid
-                type="table"
-                component={{
-                    Header: TbHeader,
-                    rows: [
-                        [ TbRow ],
-                        [ 'paths', TbRow ]
-                    ]
-                }}
-                data={mockData}
-                rowKey="id"
-                header={[
-                    { title: '' },
-                    { title: 'HTTPS' },
-                    { title: 'ID', sortKey: 'id' },
-                    { title: 'ADDRESS', sortKey: 'addr' },
-                    { title: 'SCRIPT EXECUTION' },
-                    { title: 'JS' },
-                    { title: 'CSS' },
-                    { title: 'LIBRARY' },
-                    { title: '' },
-                    { title: '' },
-                    { title: '' }
-                ]}
-                expand={{
-                    onePerLevel: true
-                }}
-                sort={{
-                    key: 'name',
-                    isAsc: true,
-                    reset: true,
-                }}
-                paginate={{
-                    page: 0,
-                    increment: [10, 25, 50],
-                }}
-                />
+            <DataGrid {...dataGridConfig} />
         </div>
     );
 });
