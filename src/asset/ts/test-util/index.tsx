@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, ReactElement } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
+import { ShallowRenderer, createRenderer } from 'react-test-renderer/shallow';
 import { IEvtCls, ICmpInst, TCmpCls, TCmpProps, TStateProps, TFn } from './type';
 
 export const TestUtil = {
@@ -21,6 +22,12 @@ export const TestUtil = {
         const ntvProto = isInputElem ? HTMLInputElement.prototype : HTMLTextAreaElement.prototype;
         const ntvSetter = Object.getOwnPropertyDescriptor(ntvProto, 'value').set;
         ntvSetter.call(inputElem, val);
+    },
+
+    renderShallow(reactElem: ReactElement): ReactElement {
+        const shallow: ShallowRenderer = createRenderer();
+        shallow.render(reactElem);
+        return shallow.getRenderOutput();
     },
 
     renderPlain(elem: HTMLElement, Cmp: TCmpCls, stateProps: TCmpProps = {}): void {
