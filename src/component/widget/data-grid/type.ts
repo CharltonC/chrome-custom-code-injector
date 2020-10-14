@@ -91,4 +91,4 @@ export { sortHandleType };
 export { headerGrpHandleType };
 export * as sortBtnType from '../../base/sort-btn/type';
 export * as paginationType from '../../group/pagination/type';
-export * as defGridHeaderType from '../../group/def-grid-header/type';
+export * as GridHeaderType from '../../group/grid-header/type';

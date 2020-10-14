@@ -8,7 +8,7 @@ import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
 import { HeaderGrpHandle } from '../../../service/handle/header-group';
 import { Pagination } from '../../group/pagination';
-import { DefGridHeader } from '../../group/def-grid-header';
+import { GridHeader } from '../../group/grid-header';
 import { DataGrid } from '.';
 import { IProps, IState, TShallResetState } from './type';
 
@@ -500,7 +500,7 @@ describe('Component - Data Grid', () => {
         describe('Method - getPreferredCmp: Get User provided component or Default builtin component for header and pagination', () => {
             it('should return builtin components when there is no User provided components', () => {
                 expect(cmp.getPreferredCmp({})).toEqual({
-                    Header: DefGridHeader,
+                    Header: GridHeader,
                     Pagination,
                 });
             });

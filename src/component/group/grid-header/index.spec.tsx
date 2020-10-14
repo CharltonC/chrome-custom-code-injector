@@ -1,9 +1,9 @@
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { DefGridHeader } from '.';
+import { GridHeader } from '.';
 
 describe('Component - Grid Header', () => {
-    let spy: TMethodSpy<DefGridHeader>;
+    let spy: TMethodSpy<GridHeader>;
     let mockSortBtnProps: jest.Mock;
     let $elem: HTMLElement;
     let $row: NodeListOf<HTMLElement>;
@@ -24,7 +24,7 @@ describe('Component - Grid Header', () => {
     describe('Render Table Header', () => {
         beforeEach(() => {
             $elem = TestUtil.setupElem('table');
-            TestUtil.renderPlain($elem, DefGridHeader, {
+            TestUtil.renderPlain($elem, GridHeader, {
                 type: 'table',
                 sortBtnProps: mockSortBtnProps,
                 rows: {
@@ -54,11 +54,11 @@ describe('Component - Grid Header', () => {
 
     describe('Render List Header', () => {
         beforeEach(() => {
-            spy = TestUtil.spyProtoMethods(DefGridHeader);
+            spy = TestUtil.spyProtoMethods(GridHeader);
             spy.getCssGridVar.mockReturnValue({});
 
             $elem = TestUtil.setupElem('div');
-            TestUtil.renderPlain($elem, DefGridHeader, {
+            TestUtil.renderPlain($elem, GridHeader, {
                 type: 'list',
                 sortBtnProps: mockSortBtnProps,
                 rows: {
@@ -84,11 +84,11 @@ describe('Component - Grid Header', () => {
     });
 
     describe('Methods', () => {
-        let cmp: DefGridHeader;
+        let cmp: GridHeader;
 
         beforeEach(() => {
-            cmp = new DefGridHeader({} as any);
-            spy = TestUtil.spyProtoMethods(DefGridHeader);
+            cmp = new GridHeader({} as any);
+            spy = TestUtil.spyProtoMethods(GridHeader);
         });
 
         it('should default to render table when header type is not specified', () => {
