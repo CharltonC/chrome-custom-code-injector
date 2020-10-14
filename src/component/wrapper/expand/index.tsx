@@ -1,5 +1,5 @@
 import { cloneElement, Children, ReactElement } from 'react';
-import { MemoComponent } from '../../../asset/ts/memo-component';
+import { MemoComponent } from '../../extendable/memo-component';
 import { IProps, IState, IChildExtraProps } from './type';
 
 export class ExpandWrapper extends MemoComponent<IProps, IState> {

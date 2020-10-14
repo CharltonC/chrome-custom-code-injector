@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { MemoComponent } from '../../../asset/ts/memo-component';
+import { MemoComponent } from '../../extendable/memo-component';
 import { UtilHandle } from '../../../service/handle/util';
 import { HeaderGrpHandle } from '../../../service/handle/header-group';
 import { RowHandle } from '../../../service/handle/row'

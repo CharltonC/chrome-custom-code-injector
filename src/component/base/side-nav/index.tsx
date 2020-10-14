@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { MemoComponent } from '../../../asset/ts/memo-component';
+import { MemoComponent } from '../../extendable/memo-component';
 import { IProps, IState, INestList, IList } from './type';
 import { inclStaticIcon } from '../../static/icon';
 import { InclStaticNumBadge } from '../../static/num-badge';

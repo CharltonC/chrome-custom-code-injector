@@ -1,4 +1,4 @@
-import { MemoComponent } from './';
+import { MemoComponent } from '.';
 
 describe('Memo Component', () => {
     let memoCmp: MemoComponent;
