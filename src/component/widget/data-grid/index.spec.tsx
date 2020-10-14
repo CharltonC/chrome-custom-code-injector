@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import TestRenderer from 'react-test-renderer';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/handle/util/index';
@@ -357,9 +356,9 @@ describe('Component - Data Grid', () => {
 
                 spy.getRowCmpProps.mockReturnValue({});
                 const cmpTransformFn = cmp.getRowTransformFn(MockCmp);
-                const { type, children } = TestRenderer.create(cmpTransformFn()).toJSON();
-                expect(type).toBe('h1');
-                expect(children[0]).toBe('lorem');
+                const { type: childType, props } = TestUtil.renderShallow(cmpTransformFn());
+                expect(childType).toBe('h1');
+                expect(props.children).toBe('lorem');
             });
         });
 
