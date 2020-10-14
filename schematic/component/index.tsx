@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoComponent } from '../../../asset/ts/memo-component';
+import { MemoComponent } from '../../extendable/memo-component';
 
 // TODO: Update Class name
 export class CmpCls extends MemoComponent {
