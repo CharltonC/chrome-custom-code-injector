@@ -1,30 +1,31 @@
-.app-option {
+.app--option {
     --offset-x: 10px;
     --offset-y: 8px;
     --logo-width: 190px;
+    --header-height: 60px;
 
-    min-width: 1280px;
+    width: 1280px;
 
-    header {
+    .header {
         @include bg-img-retina($logo-path-1x, $logo-path-2x);
 
         display: flex;
         align-items: center;
         justify-content: flex-end;
         padding: var(--offset-y);
-        height: 60px;
+        height: var(--header-height);
         background-color: $teal;
         background-size: var(--logo-width) 45px;
         background-repeat: no-repeat;
         background-position: var(--offset-x) center;
 
         &,
-        .ctrl {
+        &__ctrl {
             display: flex;
             align-items: center;
         }
 
-        .ctrl {
+        &__ctrl {
             &--edit {
                 flex: auto;
                 margin-left: calc(var(--logo-width) + 40px);
@@ -53,15 +54,87 @@
         }
     }
 
-    // TODO: Move to Option - List View
-    .datagrid {
-        th,
-        td:not([colspan]) {
-            @include gen-tb-cells-width( (65, 80, (270, 2), 220, (75, 3), (50, 3)) );
+    .main {
+        &--list {
+            .datagrid {
+                th,
+                td:not([colspan]) {
+                    @include gen-tb-cells-width( (65, 80, (270, 2), 220, (75, 3), (50, 3)) );
 
-            // Checkbox
-            &:first-child {
-                padding-left: 15px;
+                    // Checkbox
+                    &:first-child {
+                        padding-left: 15px;
+                    }
+                }
+            }
+        }
+
+        &--edit {
+            display: grid;
+            grid-template-columns: 220px auto;
+
+            .side-nav {
+                float: left;
+                height: calc(100vh - var(--header-height));
+            }
+
+            .text-ipt input {
+                padding-right: 70px;
+                background-color: transparent;
+            }
+
+            &__form {
+                padding: 40px 30px 40px 40px;
+
+                // Expand to remaining height
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+                .react-codemirror2 {
+                    flex: 1;
+                }
+
+                .CodeMirror {
+                    height: 100%;
+                }
+                // END- Expand
+
+                .fm-field {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 30px;
+
+                    &:nth-child(2) {
+                        position: relative;
+
+                        .fm-field__ctrl {
+                            display: inline-block;
+                            position: absolute;
+                            top: -3px;
+                            right: 0;
+                        }
+                    }
+
+                    &__label {
+                        width: 170px;
+                        font: bold 14px $arial;
+                        color: $dark-gray-100;
+                    }
+
+                    .text-ipt {
+                        width: 100%;
+                    }
+
+                    .dropdown {
+                        width: 180px;
+                    }
+                }
+
+                .tab-switch {
+                    margin: 20px 0;
+                }
             }
         }
     }
