@@ -216,9 +216,9 @@ describe('Component - Side Nav', () => {
         let $nestListItems: NodeListOf<HTMLElement>;
 
         function assignChildElem() {
-            $listItems = $elem.querySelectorAll('nav > ul > li');
-            $nestLists = $elem.querySelectorAll('nav li > ul');
-            $nestListItems = $elem.querySelectorAll('nav li > ul > li');
+            $listItems = $elem.querySelectorAll('aside > ul > li');
+            $nestLists = $elem.querySelectorAll('aside li > ul');
+            $nestListItems = $elem.querySelectorAll('aside li > ul > li');
         }
 
         beforeEach(() => {
