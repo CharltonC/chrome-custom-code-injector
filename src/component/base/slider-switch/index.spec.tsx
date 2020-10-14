@@ -1,31 +1,20 @@
 import React from 'react';
-import ShallowRenderer  from 'react-test-renderer/shallow';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { SliderSwitch } from './';
 
 describe('Component - Slider Switch', () => {
-    const shallow = new ShallowRenderer();
+    const MOCK_ID = 'id';
+    const MOCK_LABEL = 'label';
 
-    afterEach(() => {
-        jest.clearAllMocks();
-        jest.restoreAllMocks();
+    it('should render without label', () => {
+        const [ childOne, childTwo ] = TestUtil.renderShallow(<SliderSwitch id={MOCK_ID} />).props.children;
+        expect(childOne.props.id).toBe(MOCK_ID);
+        expect(childTwo).toBeFalsy();
     });
 
-    describe('Render/DOM', () => {
-        const MOCK_ID = 'id';
-        const MOCK_LABEL = 'label';
-
-        it('should render without label', () => {
-            shallow.render(<SliderSwitch id={MOCK_ID} />);
-            const [ childOne, childTwo ] = shallow.getRenderOutput().props.children;
-            expect(childOne.props.id).toBe(MOCK_ID);
-            expect(childTwo).toBeFalsy();
-        });
-
-        it('should render with label', () => {
-            shallow.render(<SliderSwitch id={MOCK_ID} label={MOCK_LABEL} />);
-            const { type } = shallow.getRenderOutput().props.children[1];
-            expect(type).toBe('span');
-        });
+    it('should render with label', () => {
+        const { type } = TestUtil.renderShallow(<SliderSwitch id={MOCK_ID} label={MOCK_LABEL} />).props.children[1];
+        expect(type).toBe('span');
     });
 });
 

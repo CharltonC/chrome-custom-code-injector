@@ -1,33 +1,23 @@
 import React from 'react';
-import ShallowRenderer  from 'react-test-renderer/shallow';
+import { TestUtil } from '../../../asset/ts/test-util';
 import { SymbolSwitch } from '.';
 
-describe('Component - SymbolSwitch', () => {
-    const shallow = new ShallowRenderer();
+describe('Component - Symbol Switch', () => {
+    const MOCK_ID = 'id';
+    const MOCK_LABEL = 'label';
 
-    afterEach(() => {
-        jest.clearAllMocks();
-        jest.restoreAllMocks();
-    });
+    it('should render', () => {
+        const { props: wrapperProps } = TestUtil.renderShallow(<SymbolSwitch
+            id={MOCK_ID}
+            label={MOCK_LABEL}
+            disabled
+            />);
+        const [ childOne, childTwo ] = wrapperProps.children;
 
-    describe('Render/DOM', () => {
-        const MOCK_ID = 'id';
-        const MOCK_LABEL = 'label';
-
-        it('should render', () => {
-            shallow.render(<SymbolSwitch
-                id={MOCK_ID}
-                label={MOCK_LABEL}
-                disabled
-                />);
-            const { props: wrapperProps } = shallow.getRenderOutput();
-            const [ childOne, childTwo ] = wrapperProps.children;
-
-            expect(wrapperProps.htmlFor).toBe(MOCK_ID);
-            expect(childOne.props.id).toBe(MOCK_ID);
-            expect(childOne.props.disabled).toBe(true);
-            expect(childTwo.props.children).toBe(MOCK_LABEL);
-        });
+        expect(wrapperProps.htmlFor).toBe(MOCK_ID);
+        expect(childOne.props.id).toBe(MOCK_ID);
+        expect(childOne.props.disabled).toBe(true);
+        expect(childTwo.props.children).toBe(MOCK_LABEL);
     });
 });
 
