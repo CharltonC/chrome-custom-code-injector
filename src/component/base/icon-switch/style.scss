@@ -1,0 +1,34 @@
+.icon-switch {
+    display: inline-block;
+
+    &__checkbox {
+        -webkit-appearance: none;
+        margin: 0;
+
+        &:focus {
+            outline: none;
+        }
+
+        &:checked {
+            & + .icon {
+                color: $teal;
+            }
+        }
+
+        &:not(:disabled) {
+            & + .icon:hover {
+                cursor: pointer;
+            }
+
+            &:focus + .icon {
+                outline: 2px solid $light-blue-200;
+            }
+        }
+
+        &:disabled {
+            & + .icon {
+                opacity: 0.4;
+            }
+        }
+    }
+}
