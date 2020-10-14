@@ -12,12 +12,13 @@ describe('Component - Icon Switch', () => {
 
     describe('Render/DOM', () => {
         const MOCK_ID = 'id';
-        const MOCK_ICON = 'add';
+        const MOCK_LABEL = 'add';
 
-        it('should render', () => {
+        it('should render icon switch', () => {
             shallow.render(<IconSwitch
                 id={MOCK_ID}
-                icon={MOCK_ICON}
+                label={MOCK_LABEL}
+                icon
                 disabled
                 />);
             const { props: wrapperProps } = shallow.getRenderOutput();
@@ -26,7 +27,17 @@ describe('Component - Icon Switch', () => {
             expect(wrapperProps.htmlFor).toBe(MOCK_ID);
             expect(childOne.props.id).toBe(MOCK_ID);
             expect(childOne.props.disabled).toBe(true);
-            expect(childTwo.props.className).toContain(MOCK_ICON);
+            expect(childTwo.props.className).toContain(MOCK_LABEL);
+        });
+
+        it('should render text switch', () => {
+            shallow.render(<IconSwitch
+                id={MOCK_ID}
+                label={MOCK_LABEL}
+                />);
+            const { props: wrapperProps } = shallow.getRenderOutput();
+            const { className } = wrapperProps.children[1].props;
+            expect(className).toBe('icon-switch__label');
         });
     });
 });

@@ -8,12 +8,34 @@ export default {
 
 const defStyle = { padding: 10 };
 
-export const Default = () => {
+export const ExternalStateIcon = () => {
     return (
         <div style={defStyle} >
-            <IconSwitch id="setting" icon="setting" defaultChecked theme="gray" />
-            <IconSwitch id="setting" icon="setting" theme="gray" />
-            <IconSwitch id="setting2" icon="setting" disabled />
+            <IconSwitch id="1" label="setting" icon defaultChecked />
+        </div>
+    )
+};
+
+export const InternalStateIcon = () => {
+    return (
+        <div style={defStyle} >
+            <IconSwitch id="2" label="setting" icon />
+        </div>
+    )
+};
+
+export const Text = () => {
+    return (
+        <div style={defStyle} >
+            <IconSwitch id="3" label="(.*)" />
+        </div>
+    )
+};
+
+export const Disabled = () => {
+    return (
+        <div style={defStyle} >
+            <IconSwitch id="4" label="setting" icon disabled />
         </div>
     )
 };
