@@ -19,9 +19,6 @@
             }
 
             td:not([colspan]) {
-                height: 60px;
-                vertical-align: middle;
-
                 // ID
                 &:nth-child(3) {
                     div {
@@ -66,6 +63,11 @@
                 background-color: transparent;
                 padding: 0 35px 0 8px;
             }
+        }
+
+        th,
+        td:not([colspan]) {
+            @include gen-tb-cells-width( (65, 80, (270, 2), 220, (75, 3), (50, 3)) );
         }
     }
 }

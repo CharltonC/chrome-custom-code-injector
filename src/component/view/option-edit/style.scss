@@ -1,0 +1,77 @@
+.main--edit {
+    display: grid;
+    grid-template-columns: 220px auto;
+
+    .side-nav {
+        float: left;
+        height: calc(100vh - var(--header-height));
+    }
+
+    .text-ipt input {
+        padding-right: 70px;
+        background-color: transparent;
+    }
+
+    &__form {
+        padding: 40px;
+
+        // Expand to remaining height
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .react-codemirror2,
+        .datagrid {
+            flex: 1;
+        }
+
+        .CodeMirror {
+            height: 100%;
+        }
+        // END- Expand
+
+        .fm-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+
+            &:nth-child(2) {
+                position: relative;
+
+                .fm-field__ctrl {
+                    display: inline-block;
+                    position: absolute;
+                    top: -3px;
+                    right: 0;
+                }
+            }
+
+            &__label {
+                width: 170px;
+                font: bold 14px $arial;
+                color: $dark-gray-100;
+            }
+
+            .text-ipt {
+                width: 100%;
+            }
+
+            .dropdown {
+                width: 180px;
+            }
+        }
+
+        .tab-switch {
+            margin: 20px 0;
+        }
+    }
+
+    .datagrid {
+        th,
+        td {
+            @include gen-tb-cells-width( (65, 175, 310, 130, (100, 2), (50, 2)) );   // total: 980px
+        }
+    }
+
+}

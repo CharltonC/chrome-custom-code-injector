@@ -55,85 +55,31 @@
     }
 
     .main {
-        &--list {
-            .datagrid {
-                th,
+        // Common for both edit and list views
+        .datagrid {
+            &__head {
+                th {
+                    height: 50px;
+                    font: bold 14px $arial;
+                }
+
+                .checkbox input:not(:checked) {
+                    border: 2px solid $dark-gray-100;
+                }
+            }
+
+            &__row {
                 td:not([colspan]) {
-                    @include gen-tb-cells-width( (65, 80, (270, 2), 220, (75, 3), (50, 3)) );
-
-                    // Checkbox
-                    &:first-child {
-                        padding-left: 15px;
-                    }
+                    height: 60px;
+                    vertical-align: middle;
                 }
             }
-        }
 
-        &--edit {
-            display: grid;
-            grid-template-columns: 220px auto;
-
-            .side-nav {
-                float: left;
-                height: calc(100vh - var(--header-height));
-            }
-
-            .text-ipt input {
-                padding-right: 70px;
-                background-color: transparent;
-            }
-
-            &__form {
-                padding: 40px 30px 40px 40px;
-
-                // Expand to remaining height
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-
-                .react-codemirror2 {
-                    flex: 1;
-                }
-
-                .CodeMirror {
-                    height: 100%;
-                }
-                // END- Expand
-
-                .fm-field {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 30px;
-
-                    &:nth-child(2) {
-                        position: relative;
-
-                        .fm-field__ctrl {
-                            display: inline-block;
-                            position: absolute;
-                            top: -3px;
-                            right: 0;
-                        }
-                    }
-
-                    &__label {
-                        width: 170px;
-                        font: bold 14px $arial;
-                        color: $dark-gray-100;
-                    }
-
-                    .text-ipt {
-                        width: 100%;
-                    }
-
-                    .dropdown {
-                        width: 180px;
-                    }
-                }
-
-                .tab-switch {
-                    margin: 20px 0;
+            th,
+            td:not([colspan]) {
+                // Checkbox
+                &:first-child {
+                    padding-left: 15px;
                 }
             }
         }
