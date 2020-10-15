@@ -5,6 +5,8 @@ import { TabSwitch } from '../../base/tab-switch';
 import { IconSwitch } from '../../base/icon-switch';
 import { Dropdown } from '../../base/dropdown';
 import { SideNav } from '../../base/side-nav';
+import { DataGrid } from '../../widget/data-grid';
+import { TbRow } from './tb-row';
 
 const tabSwitchList = [
     {name: 'js' , isEnable: true},
@@ -73,7 +75,8 @@ export const OptionEditView = memo(({ data }: any) => {
                 onTabActive={(evt, checkedTab, idx) => {}}
                 onTabEnable={(evt, tab, idx, isTabAtv, isEnable) => {}}
                 />
-            <CodeMirror
+            {/* TODO: Conditional CodeMirror */}
+{/*             <CodeMirror
                 value='console.log("done");'
                 options={{
                     mode: 'js',
@@ -81,13 +84,11 @@ export const OptionEditView = memo(({ data }: any) => {
                     lineNumbers: true
                 }}
                 onChange={(editor, data, value) => {}}
-                />
-            {/* TODO: DataGrid for Library */}
-            {/* <DataGrid
-                { ...dataGridConfig}
-                // data={}
+                /> */}
+            {/* TODO: Conditional DataGrid */}
+            <DataGrid
+                data={data}
                 component={{
-                    Header: TbHeader,
                     rows: [ [ TbRow ] ]
                 }}
                 rowKey="id"
@@ -95,13 +96,13 @@ export const OptionEditView = memo(({ data }: any) => {
                     { title: '' },
                     { title: 'ID', sortKey: 'id' },
                     { title: 'URL'},
-                    { title: 'SUBFRAME' },
-                    { title: 'ASYNC' },
-                    { title: 'ACTIVE' },
+                    { title: 'SUBFRAME', sortKey: 'isSubframe' },
+                    { title: 'ASYNC', sortKey: 'isAsync' },
+                    { title: 'ACTIVE', sortKey: 'isActive' },
                     { title: '' },
                     { title: '' }
                 ]}
-                /> */}
+                />
         </div>
     </>);
 });
