@@ -83,7 +83,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
     onClick(evt: React.MouseEvent<HTMLElement, MouseEvent>, atvLsIdx: number, atvNestLsIdx: number = null): void {
         evt.stopPropagation();
         const { state } = this;
-        const { list, onAtvListChange } = this.props;
+        const { list, onActiveItemChange } = this.props;
         const isAtvList: boolean = atvLsIdx === state.atvLsIdx;
         const isNotSameNestedList = atvNestLsIdx !== state.atvNestLsIdx;
 
@@ -98,7 +98,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
             atvNestLsIdx
         });
 
-        onAtvListChange?.(list, atvLsIdx, atvNestLsIdx);
+        onActiveItemChange?.(list, atvLsIdx, atvNestLsIdx);
     }
 
     render() {

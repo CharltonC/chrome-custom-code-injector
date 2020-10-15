@@ -162,12 +162,12 @@ describe('Component - Side Nav', () => {
             });
 
             it('should trigger callback if provided', () => {
-                const mockOnAtvListChange: jest.Mock = jest.fn();
+                const mockonActiveItemChange: jest.Mock = jest.fn();
                 const mockLsIdx: number = 0;
-                sideNav = new SideNav({...mockDefProps, onAtvListChange: mockOnAtvListChange});
+                sideNav = new SideNav({...mockDefProps, onActiveItemChange: mockonActiveItemChange});
                 sideNav.onClick(mockEvt, mockLsIdx);
 
-                expect(mockOnAtvListChange).toHaveBeenCalledWith(mockDefProps.list, mockLsIdx, null);
+                expect(mockonActiveItemChange).toHaveBeenCalledWith(mockDefProps.list, mockLsIdx, null);
             });
 
             it('should not set state when parent list item is clicked and it is same as current active parent list item', () => {
