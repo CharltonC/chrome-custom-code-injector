@@ -50,6 +50,46 @@ export class SideNav extends MemoComponent<IProps, IState> {
         }
     }
 
+    render() {
+        const { baseCls, lsBaseCls, nstLsBaseCls, lsItemBaseCls, lsTierCls, titleCls } = this;
+        const { list, itemKeys, childKey } = this.props;
+        const { atvLsIdx, atvNestLsIdx } = this.state;
+        const [ upperItemKey ] = itemKeys;
+
+        return (
+            <aside className={baseCls}>
+                <ul className={lsBaseCls}>{list.map((ls: IObj, lsIdx: number) => {
+                    const {
+                        [upperItemKey]: id,
+                        [childKey]: nestList
+                    } = ls;
+
+                    const isAtvIdx: boolean = atvLsIdx === lsIdx;
+                    const lsTotal: number = nestList?.length;
+                    const isAtvWithChildLs: boolean = isAtvIdx && !!lsTotal;
+                    const lsCls: string = this.getLsCls(lsItemBaseCls, (isAtvIdx && atvNestLsIdx === null));
+                    const lsKey: string = `${lsItemBaseCls}-${lsIdx}`;
+
+                    return (
+                    <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
+                        <p className={lsTierCls}>
+                            { isAtvIdx ? dnIconElem : rtIconElem }
+                            <span className={titleCls}>{id}</span>
+                            { InclStaticNumBadge(lsTotal) }
+                        </p>
+                        <ul className={nstLsBaseCls} style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
+                            {
+                                /* only render nested list under active list for performance */
+                                isAtvWithChildLs ? this.getNestedLsItems(nestList, lsIdx, atvNestLsIdx) : null
+                            }
+                        </ul>
+                    </li>
+                    );
+                })}</ul>
+            </aside>
+        );
+    }
+
     getLsCls(baseCls: string, isAtv: boolean): string {
         return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
     }
@@ -103,45 +143,5 @@ export class SideNav extends MemoComponent<IProps, IState> {
         });
 
         onActiveItemChange?.(list, atvLsIdx, atvNestLsIdx);
-    }
-
-    render() {
-        const { baseCls, lsBaseCls, nstLsBaseCls, lsItemBaseCls, lsTierCls, titleCls } = this;
-        const { list, itemKeys, childKey } = this.props;
-        const { atvLsIdx, atvNestLsIdx } = this.state;
-        const [ upperItemKey ] = itemKeys;
-
-        return (
-            <aside className={baseCls}>
-                <ul className={lsBaseCls}>{list.map((ls: IObj, lsIdx: number) => {
-                    const {
-                        [upperItemKey]: id,
-                        [childKey]: nestList
-                    } = ls;
-
-                    const isAtvIdx: boolean = atvLsIdx === lsIdx;
-                    const lsTotal: number = nestList?.length;
-                    const isAtvWithChildLs: boolean = isAtvIdx && !!lsTotal;
-                    const lsCls: string = this.getLsCls(lsItemBaseCls, (isAtvIdx && atvNestLsIdx === null));
-                    const lsKey: string = `${lsItemBaseCls}-${lsIdx}`;
-
-                    return (
-                    <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
-                        <p className={lsTierCls}>
-                            { isAtvIdx ? dnIconElem : rtIconElem }
-                            <span className={titleCls}>{id}</span>
-                            { InclStaticNumBadge(lsTotal) }
-                        </p>
-                        <ul className={nstLsBaseCls} style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
-                            {
-                                /* only render nested list under active list for performance */
-                                isAtvWithChildLs ? this.getNestedLsItems(nestList, lsIdx, atvNestLsIdx) : null
-                            }
-                        </ul>
-                    </li>
-                    );
-                })}</ul>
-            </aside>
-        );
     }
 }
