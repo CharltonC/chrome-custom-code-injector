@@ -22,14 +22,8 @@ const dropdownValues = [
 ];
 
 export const OptionEditView = memo(({ data }: any) => {
-    // Map to SideNav List
-    const sideNavList = data.map(({ id, paths }) => {
-        const nestList = paths?.map(({id: nestId}) => ({id: nestId}));
-        return { id, nestList };
-    });
-
     return (<>
-        <SideNav list={sideNavList} />
+        <SideNav list={data} itemKeys={['id', 'id']} childKey="paths" />
         <div className="main--edit__form">
             <section className="fm-field">
                 <p className="fm-field__label">ID</p>

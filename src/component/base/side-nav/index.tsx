@@ -1,8 +1,11 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
-import { IProps, IState, INestList, IList } from './type';
 import { inclStaticIcon } from '../../static/icon';
 import { InclStaticNumBadge } from '../../static/num-badge';
+import { IProps, IState, IObj } from './type';
+
+const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
+const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
 
 export class SideNav extends MemoComponent<IProps, IState> {
     //// Element class name constants: list, list items, list item contents (Row, Title Text, Dropdown Arrows)
@@ -51,10 +54,11 @@ export class SideNav extends MemoComponent<IProps, IState> {
         return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
     }
 
-    getNestedLsItems(nestList: IList[], lsIdx: number, atvNestLsIdx: number): ReactElement[] {
+    getNestedLsItems(nestList: IObj[], lsIdx: number, atvNestLsIdx: number): ReactElement[] {
         const { nstLsItemBaseCls, titleCls } = this;
+        const [ , lowerItemKey ] = this.props.itemKeys;
 
-        return nestList.map((nstLs: IList, nstLsIdx: number) => {
+        return nestList.map((nstLs: IObj, nstLsIdx: number) => {
             const nstLsCls: string = this.getLsCls(nstLsItemBaseCls, atvNestLsIdx === nstLsIdx);
             const nstLsKey: string = `${nstLsItemBaseCls}-${nstLsIdx}`;
 
@@ -63,7 +67,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                 key={nstLsKey}
                 onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}
                 >
-                <span className={titleCls}>{nstLs.id}</span>
+                <span className={titleCls}>{nstLs[lowerItemKey]}</span>
             </li>
             );
         })
@@ -72,7 +76,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
     /**
      * Config the active list when a new or diff. list is passed
      */
-    getIntitalState(list: INestList[]): IState {
+    getIntitalState(list: IObj[]): IState {
         const hsList: boolean = typeof list !== 'undefined' && list.length > 0;
         return {
             atvLsIdx: hsList ? 0 : null,
@@ -103,17 +107,18 @@ export class SideNav extends MemoComponent<IProps, IState> {
 
     render() {
         const { baseCls, lsBaseCls, nstLsBaseCls, lsItemBaseCls, lsTierCls, titleCls } = this;
-        const { list } = this.props;
+        const { list, itemKeys, childKey } = this.props;
         const { atvLsIdx, atvNestLsIdx } = this.state;
-
-        // Dropdown Arrows
-        const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
-        const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
+        const [ upperItemKey ] = itemKeys;
 
         return (
             <aside className={baseCls}>
-                <ul className={lsBaseCls}>{list.map((ls: INestList, lsIdx: number) => {
-                    const { id, nestList } = ls;
+                <ul className={lsBaseCls}>{list.map((ls: IObj, lsIdx: number) => {
+                    const {
+                        [upperItemKey]: id,
+                        [childKey]: nestList
+                    } = ls;
+
                     const isAtvIdx: boolean = atvLsIdx === lsIdx;
                     const lsTotal: number = nestList?.length;
                     const isAtvWithChildLs: boolean = isAtvIdx && !!lsTotal;

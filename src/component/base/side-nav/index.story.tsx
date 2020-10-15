@@ -32,7 +32,11 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     return (
         <div style={defStyle} >
             <button type="button" onClick={onClick}>change list</button>
-            <SideNav list={list} />
+            <SideNav
+                list={list}
+                itemKeys={[ 'id', 'id' ]}
+                childKey="nestList"
+                />
         </div>
     )
 };

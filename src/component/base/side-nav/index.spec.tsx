@@ -1,11 +1,21 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, IState, INestList, IList } from './type';
+import { IProps, IState, IObj } from './type';
 import { SideNav } from '.';
 import { ReactElement } from 'react';
 
 describe('Component - Side Nav', () => {
-    const mockNullProps: IProps = {list: []};
+    const mockBaseProps = {
+        childKey: 'nestList',
+        itemKeys: ['id', 'id'],
+    } as IProps;
+
+    const mockNullProps: IProps = {
+        ...mockBaseProps,
+        list: []
+    };
+
     const mockDefProps: IProps = {
+        ...mockBaseProps,
         list: [
             {id: '1', nestList: [{id: '1a'}, {id: '1b'}]},
             {id: '2', nestList: [{id: '2a'}, {id: '2b'}]}
@@ -71,8 +81,8 @@ describe('Component - Side Nav', () => {
 
             it('should update active state if current active list is in the new/passed list however in a different index', () => {
                 // By def. the active index is mockDefProps.list[0], which now should become 1
-                const mockNewList: INestList[] = [ {id: '0'}, ...mockDefProps.list ];
-                sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
+                const mockNewList: IObj[] = [ {id: '0'}, ...mockDefProps.list ];
+                sideNav.UNSAFE_componentWillReceiveProps({...mockBaseProps, list: mockNewList});
 
                 expect(getIntitalStateSpy).not.toHaveBeenCalled();
                 expect(setStateSpy).toHaveBeenCalledWith({atvLsIdx: 1});
@@ -80,17 +90,17 @@ describe('Component - Side Nav', () => {
 
             it('should not update active state if current active list is in the new/passed list however in a same index', () => {
                 // By def. the active index is mockDefProps.list[0], it remains the same
-                const mockNewList: INestList[] = [...mockDefProps.list, {id: '0'} ];
-                sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
+                const mockNewList: IObj[] = [...mockDefProps.list, {id: '0'} ];
+                sideNav.UNSAFE_componentWillReceiveProps({...mockBaseProps, list: mockNewList});
 
                 expect(getIntitalStateSpy).not.toHaveBeenCalled();
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
 
             it('should set 1st list item in the new/passed list as active by default if current active list item OR parent list item of active nested list is in no longer in the new/passed list', () => {
-                const mockNewList: INestList[] = [{id: 'a'}, {id: 'b'}];
+                const mockNewList: IObj[] = [{id: 'a'}, {id: 'b'}];
                 getIntitalStateSpy.mockReturnValue(mockRtnNullState);
-                sideNav.UNSAFE_componentWillReceiveProps({list: mockNewList});
+                sideNav.UNSAFE_componentWillReceiveProps({...mockBaseProps, list: mockNewList});
 
                 expect(getIntitalStateSpy).toHaveBeenCalledWith(mockNewList);
                 expect(setStateSpy).toHaveBeenCalledWith(mockRtnNullState);
@@ -108,7 +118,7 @@ describe('Component - Side Nav', () => {
         });
 
         describe('Method - getNestedLsItems', () => {
-            const mockLs: IList[] = [{id: 'a'}];
+            const mockLs: IObj[] = [{id: 'a'}];
             const mockNestedLsItemCls: string = 'nest-item';
 
             beforeEach(() => {
@@ -134,7 +144,7 @@ describe('Component - Side Nav', () => {
 
         describe('Method - getInitialState', () => {
             const { getIntitalState } = SideNav.prototype;
-            const mockList: INestList[] = [{id: ''}];
+            const mockList: IObj[] = [{id: ''}];
 
             it('should return initial state when list is not provided or empty', () => {
                 expect(getIntitalState(undefined)).toEqual(mockRtnNullState);
@@ -162,12 +172,12 @@ describe('Component - Side Nav', () => {
             });
 
             it('should trigger callback if provided', () => {
-                const mockonActiveItemChange: jest.Mock = jest.fn();
+                const mockOnActiveItemChange: jest.Mock = jest.fn();
                 const mockLsIdx: number = 0;
-                sideNav = new SideNav({...mockDefProps, onActiveItemChange: mockonActiveItemChange});
+                sideNav = new SideNav({...mockDefProps, onActiveItemChange: mockOnActiveItemChange});
                 sideNav.onClick(mockEvt, mockLsIdx);
 
-                expect(mockonActiveItemChange).toHaveBeenCalledWith(mockDefProps.list, mockLsIdx, null);
+                expect(mockOnActiveItemChange).toHaveBeenCalledWith(mockDefProps.list, mockLsIdx, null);
             });
 
             it('should not set state when parent list item is clicked and it is same as current active parent list item', () => {
