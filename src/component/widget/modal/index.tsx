@@ -7,7 +7,7 @@ export class Modal extends MemoComponent<IProps, IState> {
     closeIconElem: ReactElement = inclStaticIcon('close');
 
     componentWillUnmount() {
-        this.props.onHide?.();
+        this.props.onHide?.({ type: 'click'} );    // pass an object to mimic event (see story example)
     }
 
     render() {

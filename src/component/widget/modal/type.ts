@@ -3,7 +3,6 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     currModalId: string;
     id: string;
     onHide?: TFn;
-    bodyClass?: string;
 }
 
 export interface IState {
