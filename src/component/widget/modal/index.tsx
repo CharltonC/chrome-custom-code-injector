@@ -3,6 +3,17 @@ import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState } from './type';
 
+/**
+ * The reason this design approach is chosen is to mainly separate the concern of mixing global event inside the component
+ * where it is out of the component context (i.e. Press ESC key on document)
+ * - this focues on ID comparison to determine whether a specific modal should be shown
+ *
+ * The other design approach focuses on:
+ * - inclusive of global event add/removal
+ * - relies on exposing the "controller" aka Modal component instance via `ref`, hence using the `onOpen`, `onClose` outside of Modal
+ * - however disadvantage is the instance is async and only retrieved at `componentDidMount` so the instance value is not readily available
+ *   and, any method call would have to be `onClick={() => onOpen()}`, instead of `onClick={onOpen}` outside of Modal
+ */
 export class Modal extends MemoComponent<IProps, IState> {
     readonly closeIconElem: ReactElement = inclStaticIcon('close');
 
