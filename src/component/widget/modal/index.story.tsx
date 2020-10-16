@@ -27,8 +27,8 @@ export const ForClassComponent = () => {
         }
 
         onHide(evt) {
-            const { type } = evt;
-            if (type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
+            const { type } = evt ?? {};
+            if (evt && type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
             this.setState({currId: null});
             document.removeEventListener('keyup', this.onHide);
             domHandle.addBodyCls('modal-open', false);
@@ -62,11 +62,11 @@ export const ForClassComponent = () => {
 };
 
 export const ForFunctionalComponent = () => {
-    const [ currModalId, setCurrModalId ] = useState('lorem');
+    const [ currModalId, setCurrModalId ] = useState(null);
 
     const onHide = (evt: Event) => {
-        const { type } = evt;
-        if (type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
+        const { type } = evt ?? {};
+        if (evt && type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
         setCurrModalId(null);
         document.removeEventListener('keyup', onHide);
         domHandle.addBodyCls('modal-open', false);
