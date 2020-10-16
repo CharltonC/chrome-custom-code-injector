@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { TextBtn } from '../../base/text-btn';
 import { Modal } from '.';
 
@@ -14,10 +14,11 @@ const defStyle = {
 
 export const ForClassComponent = () => {
     class Demo extends Component {
+        modal1Ctrl: any = createRef();
         modal2Ctrl: any;
 
         openModalA() {
-            (this.refs.demoModalA as any).onOpen();
+            this.modal1Ctrl.current.onOpen();
         }
 
         closeModalA() {
@@ -29,7 +30,7 @@ export const ForClassComponent = () => {
                 <div style={defStyle}>
                     {/* Example 1 - using `this.refs` */}
                     <button type="button" onClick={this.openModalA.bind(this)}>Open modal A</button>
-                    <Modal header="title" ref="demoModalA">
+                    <Modal header="title" ref={this.modal1Ctrl}>
                         <h1>Modal A content</h1>
                         <TextBtn text="cancel" outline onClick={this.closeModalA.bind(this)} />
                         <TextBtn text="confirm" onClick={this.closeModalA.bind(this)} />
