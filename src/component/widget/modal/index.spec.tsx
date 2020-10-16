@@ -1,192 +1,113 @@
-// import { TestUtil } from '../../../asset/ts/test-util';
-// import { TMethodSpy } from '../../../asset/ts/test-util/type';
-// import { DomHandle } from '../../../service/handle/dom';
-// import { Modal, BODY_CLS } from '.';
+import { TestUtil } from '../../../asset/ts/test-util';
+import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { Modal } from '.';
+import { IProps } from './type';
 
-// describe('Component - Modal', () => {
-//     let modal: Modal;
-//     let modalMethodSpy: TMethodSpy<Modal>;
-//     let domHandleMethodSpy: TMethodSpy<DomHandle>;
-//     let setStateSpy: jest.SpyInstance;
-//     const enableModal = () => (modal.state as any).isOpen = true;
+describe('Component - Modal', () => {
+    const mockBaseProps: IProps = {
+        headers: [ 'main', 'sub' ],
+        currModalId: 'lorem',
+        id: 'sum',
+        onHide: null
+    };
+    let mockProps: IProps;
+    let mockOnHide: jest.Mock;
 
-//     beforeEach(() => {
-//         modal = new Modal({header: 'title'});
-//         modalMethodSpy = TestUtil.spyMethods(modal);
-//         domHandleMethodSpy = TestUtil.spyMethods(modal.domHandle);
-//         setStateSpy = jest.spyOn(modal, 'setState');
-//         setStateSpy.mockImplementation(() => {});
-//     });
+    beforeEach(() => {
+        mockOnHide = jest.fn();
+        mockProps = {
+            ...mockBaseProps,
+            onHide: mockOnHide
+        }
+    });
 
-//     afterEach(() => {
-//         jest.clearAllMocks();
-//         jest.restoreAllMocks();
-//     });
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
 
-//     describe('Render', () => {
-//         let $elem: HTMLElement;
-//         let $modal: HTMLElement;
-//         let $subHeader: HTMLElement;
-//         let $overlay: HTMLElement;
-//         let $closeBtn: HTMLElement;
+    describe('Component Class', () => {
+        let modal: Modal;
 
-//         const syncElems = () => {
-//             $modal = $elem.querySelector('.modal');
-//             $overlay = $elem.querySelector('.modal__overlay');
-//             $closeBtn = $elem.querySelector('button');
-//             $subHeader = $elem.querySelector('h4');
-//         }
+        beforeEach(() => {
+            modal = new Modal(mockProps);
+        });
 
-//         describe('default', () => {
-//             beforeEach(() => {
-//                 $elem = TestUtil.setupElem();
-//                 TestUtil.renderPlain($elem, Modal, { header: 'lorem' });
-//                 syncElems();
-//             });
+        describe('Lifecycle - componentWillUnmount', () => {
+            it('should trigger onHide', () => {
+                modal.componentWillUnmount();
+                expect(mockOnHide).toHaveBeenCalledWith({type: 'click'});
+            });
+        });
 
-//             it('should not show modal', () => {
-//                 expect($modal).toBeFalsy();
-//             });
-//         });
+        describe('Method - isVisible: Check if current visible modal id is same as modal id', () => {
+            it('should be visible when both are defined and equal', () => {
+                expect(modal.isVisible('a', 'a')).toBeTruthy();
+            });
 
-//         describe('initiallly enabled modal', () => {
-//             beforeEach(() => {
-//                 $elem = TestUtil.setupElem();
-//                 TestUtil.renderPlain($elem, Modal, {
-//                     initialShow: true,
-//                     header: 'lorem',
-//                     subHeader: 'sum'
-//                 });
-//                 syncElems();
-//             });
+            it('should not be visible when either one is undefined or not equal', () => {
+                expect(modal.isVisible('', '')).toBeFalsy();
+                expect(modal.isVisible('a', '')).toBeFalsy();
+                expect(modal.isVisible('', 'a')).toBeFalsy();
+                expect(modal.isVisible('a', '')).toBeFalsy();
+            });
+        });
 
-//             it('should show the modal initially', () => {
-//                 expect($modal).toBeTruthy();
-//                 expect($subHeader).toBeTruthy();
-//             });
+    });
 
-//             it('should close the modal when overlay is clicked', () => {
-//                 TestUtil.triggerEvt($overlay, 'click');
-//                 syncElems();
-//                 expect($modal).toBeFalsy();
-//             });
+    describe('Render', () => {
+        let modalMethodSpy: TMethodSpy<Modal>;
+        let $elem: HTMLElement;
+        let $modal: HTMLElement;
+        let $subHeader: HTMLElement;
+        let $overlay: HTMLElement;
+        let $closeBtn: HTMLElement;
 
-//             it('should close the modal when close button is clicked', () => {
-//                 TestUtil.triggerEvt($closeBtn, 'click');
-//                 syncElems();
-//                 expect($modal).toBeFalsy();
-//             });
-//         });
-//     });
+        const syncElems = () => {
+            $modal = $elem.querySelector('.modal');
+            $overlay = $elem.querySelector('.modal__overlay');
+            $closeBtn = $elem.querySelector('button');
+            $subHeader = $elem.querySelector('h4');
+        }
 
-//     describe('Lifecycle - componentWillMount', () => {
-//         beforeEach(() => {
-//             modalMethodSpy.onOpen.mockImplementation(() => {});
-//         });
+        beforeEach(() => {
+            $elem = TestUtil.setupElem();
+        });
 
-//         it('should not open modal if initial show is off', () => {
-//             modal.componentDidMount();
-//             expect(modalMethodSpy.onOpen).not.toHaveBeenCalled();
-//         });
+        afterEach(() => {
+            TestUtil.teardown($elem);
+            $elem = null;
+        });
 
-//         it('should open modal if initial show is on', () => {
-//             (modal.props as any).initialShow = true;
-//             modal.componentDidMount();
-//             expect(modalMethodSpy.onOpen).toHaveBeenCalled();
-//         });
-//     });
+        describe('default', () => {
+            it('should not show modal', () => {
+                TestUtil.renderPlain($elem, Modal, mockProps);
+                syncElems();
+                expect($modal).toBeFalsy();
+            });
+        });
 
-//     describe('Lifecycle - componentWillUnmount', () => {
-//         beforeEach(() => {
-//             modalMethodSpy.onClose.mockImplementation(() => {});
-//         });
+        describe('hide shown modal', () => {
+            beforeEach(() => {
+                modalMethodSpy = TestUtil.spyProtoMethods(Modal);
+                modalMethodSpy.isVisible.mockReturnValue(true);
+                TestUtil.renderPlain($elem, Modal, mockProps);
+                syncElems();
+            });
 
-//         it('should not close modal if it is not open', () => {
-//             modal.componentWillUnmount();
-//             expect(modalMethodSpy.onClose).not.toHaveBeenCalled();
-//         });
+            it('should show header & subheader', () => {
+                expect($subHeader).toBeTruthy();
+            });
 
-//         it('should not close modal if it is not open', () => {
-//             enableModal();
-//             modal.componentWillUnmount();
-//             expect(modalMethodSpy.onClose).toHaveBeenCalled();
-//         });
-//     });
+            it('should hide the modal when click overlay', () => {
+                TestUtil.triggerEvt($overlay, 'click');
+                expect(mockOnHide).toHaveBeenCalled();
+            });
 
-//     describe('Method - onOpen: open modal', () => {
-//         it('should not open modal if it is already open', () => {
-//             enableModal();
-//             modal.onOpen();
-//             expect(setStateSpy).not.toHaveBeenCalled();
-//         });
-
-//         it('should open modal if it is closed', () => {
-//             modal.onOpen();
-//             expect(setStateSpy).toHaveBeenCalledWith({isOpen: true}, modal.addEvt);
-//         });
-//     });
-
-//     describe('Method - onClose: close modal', () => {
-//         it('should not close modal if it is already closed', () => {
-//             modal.onClose();
-//             expect(setStateSpy).not.toHaveBeenCalled();
-//         });
-
-//         it('should close modal if it is open', () => {
-//             enableModal();
-//             modal.onClose();
-//             expect(setStateSpy).toHaveBeenCalledWith({isOpen: false}, modal.rmvEvt);
-//         });
-//     });
-
-//     describe('Method - onKeyup: check keyboard event and close modal', () => {
-//         beforeEach(() => {
-//             modalMethodSpy.onClose.mockImplementation(() => {});
-//         });
-
-//         it('should not close modal if it is not ESC key', () => {
-//             modal.onKeyup({ which: 10 } as KeyboardEvent);
-//             expect(modalMethodSpy.onClose).not.toHaveBeenCalled();
-//         });
-
-//         it('should close modal if it is ESC key', () => {
-//             modal.onKeyup({ which: 27 } as KeyboardEvent);
-//             expect(modalMethodSpy.onClose).toHaveBeenCalled();
-//         });
-//     });
-
-//     describe('Method - addEvt/rmvEvt: setup/remove global Keyboard event', () => {
-//         const mockEvtConfig = {};
-
-//         beforeEach(() => {
-//             const mockFn = () => {};
-//             domHandleMethodSpy.addGlobalEvt.mockImplementation(mockFn);
-//             domHandleMethodSpy.addBodyCls.mockImplementation(mockFn);
-//             modalMethodSpy.getEvtConfig.mockReturnValue(mockEvtConfig);
-//         });
-
-//         it('should setup', () => {
-//             modal.addEvt();
-//             expect(domHandleMethodSpy.addGlobalEvt).toHaveBeenCalledWith(mockEvtConfig);
-//             expect(domHandleMethodSpy.addBodyCls).toHaveBeenCalledWith(BODY_CLS);
-//             expect(typeof modal.keyupHandler).toBe('function');
-//         });
-
-//         it('should remove', () => {
-//             modal.rmvEvt();
-//             expect(domHandleMethodSpy.addGlobalEvt).toHaveBeenCalledWith(mockEvtConfig, false);
-//             expect(domHandleMethodSpy.addBodyCls).toHaveBeenCalledWith(BODY_CLS, false);
-//             expect(modal.keyupHandler).toBeFalsy();
-//         });
-//     });
-
-//     describe('Method - getEvtConfig: get event config', () => {
-//         it('should return config', () => {
-//             expect(modal.getEvtConfig()).toEqual({
-//                 targetType: 'doc',
-//                 evtType: 'keyup',
-//                 handler: undefined
-//             });
-//         });
-//     });
-// });
+            it('should hide the modal when click close button', () => {
+                TestUtil.triggerEvt($closeBtn, 'click');
+                expect(mockOnHide).toHaveBeenCalled();
+            });
+        });
+    });
+});

@@ -4,10 +4,10 @@ import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState } from './type';
 
 export class Modal extends MemoComponent<IProps, IState> {
-    closeIconElem: ReactElement = inclStaticIcon('close');
+    readonly closeIconElem: ReactElement = inclStaticIcon('close');
 
     componentWillUnmount() {
-        this.props.onHide?.({ type: 'click'} );    // pass an object to mimic event (see story example)
+        this.props.onHide({ type: 'click' } );    // pass an object to mimic event (see story example)
     }
 
     render() {
