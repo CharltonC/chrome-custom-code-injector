@@ -92,3 +92,23 @@ export const ForFunctionalComponent = () => {
         </div>
     );
 };
+
+export const WithoutEscKeyBinding = () => {
+    const [ currModalId, setCurrModalId ] = useState(null);
+    const onHide = () => setCurrModalId(null);
+    const onShow = () => setCurrModalId('demo');
+
+    return (
+        <div style={defStyle}>
+            <button type="button" onClick={onShow}>Open modal</button>
+            <Modal
+                currModalId={currModalId}
+                id="demo"
+                headers={['header', 'subheader']}
+                onHide={onHide}
+                >
+                <h1>Modal A content</h1>
+            </Modal>
+        </div>
+    );
+};
