@@ -1,4 +1,5 @@
-import React, { Component, createRef } from 'react';
+import React, { Component, useState } from 'react';
+import { DomHandle } from '../../../service/handle/dom';
 import { TextBtn } from '../../base/text-btn';
 import { Modal } from '.';
 
@@ -12,38 +13,46 @@ const defStyle = {
     border: '1px solid gray'
 };
 
+const domHandle = new DomHandle();
+
 export const ForClassComponent = () => {
     class Demo extends Component {
-        modal1Ctrl: any = createRef();
-        modal2Ctrl: any;
+        state: any;
 
-        openModalA() {
-            this.modal1Ctrl.current.onOpen();
+        constructor(props: any) {
+            super(props);
+            this.state = { currId: null };
+            this.onShow = this.onShow.bind(this);
+            this.onHide = this.onHide.bind(this);
         }
 
-        closeModalA() {
-            (this.refs.demoModalA as any).onClose();
+        onHide(evt) {
+            const { type } = evt;
+            if (type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
+            this.setState({currId: null});
+            document.removeEventListener('keyup', this.onHide);
+            domHandle.addBodyCls('modal-open', false);
+        }
+
+        onShow() {
+            this.setState({currId: 'demo'});
+            document.addEventListener('keyup', this.onHide);
+            domHandle.addBodyCls('modal-open');
         }
 
         render() {
             return (
                 <div style={defStyle}>
-                    {/* Example 1 - using `this.refs` */}
-                    <button type="button" onClick={this.openModalA.bind(this)}>Open modal A</button>
-                    <Modal header="title" ref={this.modal1Ctrl}>
+                    <button type="button" onClick={this.onShow}>Open modal</button>
+                    <Modal
+                        currModalId={this.state.currId}
+                        id="demo"
+                        headers={['title', '']}
+                        onHide={this.onHide}>
                         <h1>Modal A content</h1>
-                        <TextBtn text="cancel" outline onClick={this.closeModalA.bind(this)} />
-                        <TextBtn text="confirm" onClick={this.closeModalA.bind(this)} />
+                        <TextBtn text="cancel" outline onClick={this.onHide} />
+                        <TextBtn text="confirm" onClick={this.onHide} />
                     </Modal>
-                    <br/>
-                    {/* Example 2 - using class property `modal2Ctrl` */}
-                    <button type="button" onClick={() => this.modal2Ctrl.onOpen()}>Open modal B</button>
-                    <Modal header="title" ref={ ctrl => this.modal2Ctrl = ctrl }>
-                        <h1>Modal B content</h1>
-                        <TextBtn text="cancel" outline onClick={() => this.modal2Ctrl.onClose()} />
-                        <TextBtn text="confirm" onClick={() => this.modal2Ctrl.onClose()} />
-                    </Modal>
-
                 </div>
             );
         }
@@ -53,41 +62,31 @@ export const ForClassComponent = () => {
 };
 
 export const ForFunctionalComponent = () => {
-    let demoModalCtrlA;
-    let demoModalCtrlB;
-    const openModalB = () => demoModalCtrlB?.onOpen();
-    const closeModalB = () => demoModalCtrlB?.onClose();
+    const [ currModalId, setCurrModalId ] = useState('lorem');
+
+    const onHide = (evt: Event) => {
+        const { type } = evt;
+        if (type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
+        setCurrModalId(null);
+        document.removeEventListener('keyup', onHide);
+        domHandle.addBodyCls('modal-open', false);
+    }
+
+    const onShow = () => {
+        setCurrModalId('demo');
+        document.addEventListener('keyup', onHide);
+        domHandle.addBodyCls('modal-open');
+    }
 
     return (
         <div style={defStyle}>
-            <button type="button" onClick={() => demoModalCtrlA.onOpen()}>Open modal A</button>
-            <Modal header="title" ref={ modalCtrl => demoModalCtrlA = modalCtrl }>
-                <h1>Modal A content</h1>
-                <TextBtn text="cancel" outline onClick={() => demoModalCtrlA.onClose()} />
-                <TextBtn text="confirm" onClick={() => demoModalCtrlA.onClose()} />
-            </Modal>
-            <br/>
-            <button type="button" onClick={openModalB}>Open modal B</button>
-            <Modal header="title" ref={ modalCtrl => demoModalCtrlB = modalCtrl }>
-                <h1>Modal B content</h1>
-                <TextBtn text="cancel" outline onClick={closeModalB} />
-                <TextBtn text="confirm" onClick={closeModalB} />
-            </Modal>
-        </div>
-    );
-};
-
-export const ShowModalInitially = () => {
-    let demoModalCtrlA;
-
-    return (
-        <div style={defStyle}>
-            <button type="button" onClick={e => demoModalCtrlA.onOpen(e)}>Open modal A</button>
+            <button type="button" onClick={onShow}>Open modal</button>
             <Modal
-                header="title"
-                subHeader="lorem sum"
-                initialShow={true}
-                ref={ modalCtrl => demoModalCtrlA = modalCtrl }>
+                currModalId={currModalId}
+                id="demo"
+                headers={['header', 'subheader']}
+                onHide={onHide}
+                >
                 <h1>Modal A content</h1>
             </Modal>
         </div>

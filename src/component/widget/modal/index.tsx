@@ -1,89 +1,35 @@
 import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
-import { DomHandle } from '../../../service/handle/dom';
-import { IGlobalEvtConfig } from '../../../service/handle/dom/type';
-import { IProps, IState, TFn } from './type';
-
-export const BODY_CLS: string = 'modal-open';     // class to added to <body> when modal is on
-
-const closeIconElem: ReactElement = inclStaticIcon('close');
+import { IProps, IState } from './type';
 
 export class Modal extends MemoComponent<IProps, IState> {
-    domHandle = new DomHandle();
-    keyupHandler: TFn;                      // temp value to store keyup handler so it can be removed later
+    closeIconElem: ReactElement = inclStaticIcon('close');
 
-    constructor(props: IProps) {
-        super(props);
-        this.state = { isOpen: false };
-    }
-
-    componentDidMount() {
-        if (!this.props.initialShow) return;
-        this.onOpen();
-    }
-
-    componentWillUnmount(){
-        if (!this.state.isOpen) return;
-        this.onClose();
+    componentWillUnmount() {
+        this.props.onHide?.();
     }
 
     render() {
-        const { header, subHeader, children } = this.props;
-        const onClose = () => this.onClose();
+        const { headers, children, onHide, id, currModalId } = this.props;
+        const [ header, subHeader ] = headers;
 
-        return this.state.isOpen && (
+        return this.isVisible(id, currModalId) && (
             <div className="modal">
                 <div className="modal__content">
                     <header>
                         <h3>{header}</h3>{ subHeader &&
                         <h4>{subHeader}</h4>}
-                        <button type="button" onClick={onClose}>{closeIconElem}</button>
+                        <button type="button" onClick={onHide}>{this.closeIconElem}</button>
                     </header>
                     <main>{children}</main>
                 </div>
-                <div className="modal__overlay" onClick={onClose}></div>
+                <div className="modal__overlay" onClick={onHide}></div>
             </div>
         );
     }
 
-    //// Open/Close Modal & state related
-    // Open Modal
-    onOpen() {
-        if (this.state.isOpen) return;
-        this.setState({ isOpen: true }, this.addEvt);
-    }
-
-    // Close Modal - For use where User specifically close within Modal, e.g. click the close button
-    onClose() {
-        if (!this.state.isOpen) return;
-        this.setState({ isOpen: false }, this.rmvEvt);
-    }
-
-    // Close Modal - For use where Modal is closed by either ESC key
-    onKeyup({ which }: KeyboardEvent) {
-        if (which !== 27) return;
-        this.onClose();
-    }
-
-    //// Non-Component Scope related (Global Event)
-    addEvt(): void {
-        this.keyupHandler = this.onKeyup.bind(this);            // must be set prior to `domHandle.addGlobalEvt`
-        this.domHandle.addGlobalEvt(this.getEvtConfig());       // One-off binding which is removed upon keyup
-        this.domHandle.addBodyCls(BODY_CLS);
-    }
-
-    rmvEvt(): void {
-        this.domHandle.addGlobalEvt(this.getEvtConfig(), false);
-        this.domHandle.addBodyCls(BODY_CLS, false);
-        this.keyupHandler = null;
-    }
-
-    getEvtConfig(): IGlobalEvtConfig {
-        return {
-            targetType: 'doc',
-            evtType: 'keyup',
-            handler: this.keyupHandler
-        }
+    isVisible(id: string, currModalId: string): boolean {
+        return currModalId && id && currModalId === id;
     }
 }

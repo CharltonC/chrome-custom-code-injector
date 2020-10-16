@@ -1,11 +1,13 @@
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-    header: string;
-    subHeader?: string;
-    initialShow?: boolean;
+    headers: [ string, string? ];
+    currModalId: string;
+    id: string;
+    onHide?: TFn;
+    bodyClass?: string;
 }
 
 export interface IState {
-    isOpen: boolean;
+
 }
 
 export type TFn = (...args: any[]) => any;
