@@ -27,8 +27,8 @@ export class GridHeader extends MemoComponent<IProps> {
                         className={`${BASE_CLS}-cell`}
                         {...thProps}
                         >
-                        <span>{title}</span>{ sortKey && sortBtnProps &&
-                        <SortBtn {...sortBtnProps(sortKey)} />}
+                        { typeof title === 'string' ? <span>{title}</span> : title }
+                        { sortKey && sortBtnProps && <SortBtn {...sortBtnProps(sortKey)} />}
                     </th>))}
                 </tr>))}
             </thead>
@@ -51,8 +51,8 @@ export class GridHeader extends MemoComponent<IProps> {
                     className={`${BASE_CLS}-cell`}
                     style={this.getCssGridVar(cellCssGrid)}
                     >
-                    <span>{title}</span>{ sortKey && sortBtnProps &&
-                    <SortBtn {...sortBtnProps(sortKey)} />}
+                    { typeof title === 'string' ? <span>{title}</span> : title }
+                    { sortKey && sortBtnProps && <SortBtn {...sortBtnProps(sortKey)} />}
                 </li>))}
             </ul>
         );

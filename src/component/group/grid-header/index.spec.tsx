@@ -1,12 +1,15 @@
+import React, { ReactElement } from 'react';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { GridHeader } from '.';
 
 describe('Component - Grid Header', () => {
+    const MOCK_TEXT = 'mockth';
+    const mockThTitleElem: ReactElement = <span className="mock-th">{MOCK_TEXT}</span>;
     let spy: TMethodSpy<GridHeader>;
     let mockSortBtnProps: jest.Mock;
     let $elem: HTMLElement;
-    let $row: NodeListOf<HTMLElement>;
+    let $rows: NodeListOf<HTMLElement>;
 
     beforeEach(() => {
         mockSortBtnProps = jest.fn();
@@ -22,6 +25,9 @@ describe('Component - Grid Header', () => {
     });
 
     describe('Render Table Header', () => {
+        let $1stRowCells;
+        let $2ndRowCells;
+
         beforeEach(() => {
             $elem = TestUtil.setupElem('table');
             TestUtil.renderPlain($elem, GridHeader, {
@@ -35,24 +41,38 @@ describe('Component - Grid Header', () => {
                             { title: 'A', sortKey: 'name', rowSpan: 2 },
                             { title: 'B', sortKey: 'age' },
                         ], [
-                            { title: 'C' },
+                            { title: mockThTitleElem },
                         ]
                     ]
                 }
             });
-            $row = $elem.querySelectorAll('tr');
+            $rows = $elem.querySelectorAll('tr');
+            $1stRowCells = $rows[0].querySelectorAll('th');
+            $2ndRowCells = $rows[1].querySelectorAll('th');
         });
 
-        it('should render', () => {
-            expect($row.length).toBe(2);
-            expect($row[0].querySelectorAll('th').length).toBe(2);
-            expect($row[0].querySelector('th').rowSpan).toBe(2);
-            expect($row[1].querySelectorAll('th').length).toBe(1);
+        it('should render correct number of cells', () => {
+            expect($rows.length).toBe(2);
+            expect($1stRowCells.length).toBe(2);
+            expect($1stRowCells[0].rowSpan).toBe(2);
+            expect($2ndRowCells.length).toBe(1);
+        });
+
+        it('should render header cell title', () => {
+            expect($1stRowCells[0].textContent).toBe('A');
+            expect($1stRowCells[1].textContent).toBe('B');
+            expect($2ndRowCells[0].textContent).toBe(MOCK_TEXT);
+        });
+
+        it('should call the sort button props function `sortBtnProps`', () => {
             expect(mockSortBtnProps.mock.calls).toEqual([ ['name'], ['age'] ]);
         });
     });
 
     describe('Render List Header', () => {
+        let $1stRowCell;
+        let $3rdRowCell;
+
         beforeEach(() => {
             spy = TestUtil.spyProtoMethods(GridHeader);
             spy.getCssGridVar.mockReturnValue({});
@@ -69,41 +89,52 @@ describe('Component - Grid Header', () => {
                     headers: [
                         { title: 'A', sortKey: 'name', rowSpan: 2 },
                         { title: 'B', sortKey: 'age' },
-                        { title: 'C' },
+                        { title: mockThTitleElem },
                     ]
                 }
             });
-            $row = $elem.querySelectorAll('li');
+            $rows = $elem.querySelectorAll('li');
+            $1stRowCell = $rows[0];
+            $3rdRowCell = $rows[2];
         });
 
-        it('should render', () => {
-            expect($row.length).toBe(3);
-            expect($row[0].querySelectorAll('.sort').length).toBe(0);
+        it('should render correct number of cells', () => {
+            expect($rows.length).toBe(3);
+        });
+
+        it('should call the sort button props function `sortBtnProps`', () => {
             expect(mockSortBtnProps.mock.calls).toEqual([ ['name'], ['age'] ]);
+        });
+
+        it('should render header cell title', () => {
+            expect($1stRowCell.textContent).toBe('A');
+            expect($3rdRowCell.textContent).toBe(MOCK_TEXT);
         });
     });
 
     describe('Methods', () => {
-        let cmp: GridHeader;
+        describe('Method - render', () => {
+            let cmp: GridHeader;
 
-        beforeEach(() => {
-            cmp = new GridHeader({} as any);
-            spy = TestUtil.spyProtoMethods(GridHeader);
-        });
+            beforeEach(() => {
+                cmp = new GridHeader({} as any);
+                spy = TestUtil.spyProtoMethods(GridHeader);
+            });
 
-        it('should default to render table when header type is not specified', () => {
-            spy.renderTbHeader.mockReturnValue('table');
-            spy.renderListHeader.mockReturnValue('list');
-            expect(cmp.render()).toBe('table');
-        });
+            it('should default to render table when header type is not specified', () => {
+                spy.renderTbHeader.mockReturnValue('table');
+                spy.renderListHeader.mockReturnValue('list');
+                expect(cmp.render()).toBe('table');
+            });
 
-        it('should return the css related grid variables object', () => {
-            expect(cmp.getCssGridVar({
-                'a': '1',
-                'b': '2'
-            })).toEqual({
-                '--a': '1',
-                '--b': '2'
+            it('should return the css related grid variables object', () => {
+                expect(cmp.getCssGridVar({
+                    'a': '1',
+                    'b': '2'
+                })).toEqual({
+                    '--a': '1',
+                    '--b': '2'
+                });
             });
         });
     });
