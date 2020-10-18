@@ -6,8 +6,8 @@ export interface IOption {
 }
 
 //// Table Header
-export interface ICtxTbHeader extends IRowColTotal {
-    headers: IHeader[][];
+export interface ICtxTbHeader<T = string> extends IRowColTotal {
+    headers: IHeader<T>[][];
 }
 
 export interface IBaseTbHeader extends Pick<IOption, 'title'> {
@@ -44,8 +44,8 @@ export interface IListHeader extends IHeader {
 }
 
 //// Common
-export interface IHeader {
-    title: string;
+export interface IHeader<T = string> {
+    title: T;
     sortKey?: string;
     rowSpan?: number;
     colSpan?: number;
