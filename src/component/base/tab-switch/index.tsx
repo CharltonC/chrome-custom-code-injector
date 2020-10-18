@@ -3,7 +3,14 @@ import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState, ITabItem } from './type';
 
+
+
 export class TabSwitch extends MemoComponent<IProps, IState> {
+    readonly powerIcon: ReactElement = inclStaticIcon('power');
+    readonly liBaseCls: string = 'tab-switch__item';
+    readonly rdoCls: string = 'tab-switch__rdo';
+    readonly cbCls: string = 'tab-switch__checkbox';
+
     constructor(props: IProps) {
         super(props);
         const { list, activeIdx } = props;
@@ -13,19 +20,10 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
     }
 
     render() {
+        const { liBaseCls, rdoCls, cbCls, powerIcon } = this;
         const { id, list, activeIdx } = this.props;
         const { hsList, hsAtvIdx, activeTab } = this.state;
-
-        // List item
-        const liBaseCls: string = 'tab-switch__item';
         const liAtvCls: string = `${liBaseCls} ${liBaseCls}--active`;
-
-        // Radio & Checkbox
-        const rdoCls = 'tab-switch__rdo';
-        const cbCls = 'tab-switch__checkbox';
-
-        // Icon Elem
-        const powerIcon: ReactElement = inclStaticIcon('power');
 
         return hsList ?
             <ul className="tab-switch">
