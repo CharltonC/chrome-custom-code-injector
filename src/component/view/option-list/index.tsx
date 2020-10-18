@@ -1,58 +1,12 @@
 import React, { memo } from 'react';
-import { TbHeader } from './tb-header';
 import { TbRow } from './tb-row';
 import { DataGrid } from '../../widget/data-grid';
-
-const mockData = [
-    {
-        https: true,
-        id: 'Host ID 1',
-        addr: 'www.abc.com',
-        script_exec: 2,
-        script_js: true,
-        script_css: true,
-        script_lib: true,
-        paths: [
-            {
-                id: 'lorem1',
-                addr: 'lorem',
-                script_js: true,
-                script_css: true,
-                script_lib: true,
-            },
-            {
-                id: 'lorem2',
-                addr: 'lorem2',
-                script_js: true,
-                script_css: false,
-                script_lib: true,
-            }
-        ],
-    },
-    {
-        https: false,
-        id: 'Host ID 2',
-        addr: 'cnn.com',
-        script_exec: 1,
-        script_js: true,
-        script_css: true,
-        script_lib: false,
-        paths: [
-            {
-                id: 'sum1',
-                addr: 'sum',
-                script_js: false,
-                script_css: true,
-                script_lib: true,
-            }
-        ],
-    }
-];
+import { IconBtn } from '../../base/icon-btn';
+import { Checkbox } from '../../base/checkbox';
 
 const dataGridConfig: any = {
     type: "table",
     component: {
-        Header: TbHeader,
         rows: [
             [ TbRow ],
             [ 'paths', TbRow ]
@@ -60,7 +14,7 @@ const dataGridConfig: any = {
     },
     rowKey: "id",
     header: [
-        { title: '' },
+        { title: <Checkbox id="check-all" /> },
         { title: 'HTTPS' },
         { title: 'ID', sortKey: 'id' },
         { title: 'ADDRESS', sortKey: 'addr' },
@@ -70,7 +24,7 @@ const dataGridConfig: any = {
         { title: 'LIBRARY' },
         { title: '' },
         { title: '' },
-        { title: '' }
+        { title: <IconBtn icon="delete" theme="gray" /> }
     ],
     expand:{
         onePerLevel: true
