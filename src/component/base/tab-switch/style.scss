@@ -7,8 +7,17 @@
     input[type="checkbox"] {
         -webkit-appearance: none;
         margin: 0;
+
+        &:not(:disabled):focus + label {
+            outline: 2px solid $light-blue-200;
+        }
     }
 
+    input[type="radio"] + label {
+        outline-offset: -4px;
+    }
+
+    // List item
     &__item {
         transition: border 0.3s ease;
         position: relative;
@@ -51,6 +60,7 @@
         }
     }
 
+    // Labels
     &__rdo {
         display: flex;
         align-items: center;
@@ -65,7 +75,6 @@
     &__checkbox {
         position: absolute;
         right: 8px;
-
 
         &:hover {
             cursor: pointer;

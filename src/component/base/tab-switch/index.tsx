@@ -3,8 +3,6 @@ import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState, ITabItem } from './type';
 
-
-
 export class TabSwitch extends MemoComponent<IProps, IState> {
     readonly powerIcon: ReactElement = inclStaticIcon('power');
     readonly liBaseCls: string = 'tab-switch__item';
