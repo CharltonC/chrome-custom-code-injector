@@ -24,19 +24,6 @@ export class Dropdown extends MemoComponent<IProps, IState> {
         }
     }
 
-    getInitialState({list, selectIdx}: Partial<IProps>): IState {
-        return {
-            hsList: !!list.length,
-            hsSelectIdx: Number.isInteger(selectIdx) && typeof list[selectIdx] !== 'undefined'
-        };
-    }
-
-    onSelect(evt: React.ChangeEvent<HTMLSelectElement>): void {
-        // this is the actual index of the list item or `<option>`
-        const selectValueAttrVal: string = evt.target.value;
-        this.props.onSelect?.(evt, selectValueAttrVal);
-    }
-
     render() {
         const { wrapperCls, id, list, listTxtTransform, border, selectIdx, onSelect, ...props } = this.props;
         const { hsList, hsSelectIdx } = this.state;
@@ -48,6 +35,7 @@ export class Dropdown extends MemoComponent<IProps, IState> {
 
         return hsList ?
             <div className={WRAPPER_CLS}>
+                {/* TODO: span label */}
                 <select
                     {...selecteProps}
                     id={id}
@@ -65,5 +53,18 @@ export class Dropdown extends MemoComponent<IProps, IState> {
                 { dnArrowElem }
             </div> :
             null;
+    }
+
+    getInitialState({list, selectIdx}: Partial<IProps>): IState {
+        return {
+            hsList: !!list.length,
+            hsSelectIdx: Number.isInteger(selectIdx) && typeof list[selectIdx] !== 'undefined'
+        };
+    }
+
+    onSelect(evt: React.ChangeEvent<HTMLSelectElement>): void {
+        // this is the actual index of the list item or `<option>`
+        const selectValueAttrVal: string = evt.target.value;
+        this.props.onSelect?.(evt, selectValueAttrVal);
     }
 }
