@@ -1,0 +1,49 @@
+.file-input {
+    --wrapper-width: 590px;
+    --btn-width: 92px;
+    --gap: 15px;
+
+    position: relative;
+    display: inline-block;
+    width: var(--wrapper-width);
+    height: 36px;
+    outline-offset: 3px;
+    font: 12px $roboto-reg;
+    color: $light-gray-200;
+    vertical-align: middle;
+
+    &:disabled {
+        opacity: .4;
+    }
+
+    &:not(:disabled):hover {
+        cursor: pointer;
+    }
+
+    // 'Choose File' button (FF uses `::file-selector-button`
+    &::-webkit-file-upload-button {
+        width: var(--btn-width);
+        height: 100%;
+        margin-right: calc(var(--gap) * 2);
+        border: none;
+        outline-offset: -1px;
+        background-color: $teal;
+        color: $white;
+        text-align: center;
+    }
+
+    // File name Box
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: calc(var(--btn-width) + var(--gap));
+        z-index: -999;
+        box-sizing: border-box;
+        display: block;
+        height: 100%;
+        border: 1px solid $light-gray-200;
+        background-color: $light-gray-600;
+        width: calc(var(--wrapper-width) - var(--btn-width) - var(--gap));
+    }
+}
