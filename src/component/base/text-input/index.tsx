@@ -8,12 +8,8 @@ export class TextInput extends MemoComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props);
-
-        // Text input (either use internal or external)
         const { text, validate } = this.props;
         this.state = this.getInitialState(text, validate);
-
-        // handlers
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
@@ -36,12 +32,13 @@ export class TextInput extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
-        const { isValid, hsValidationRules, errMsg } = this.state;
+        const { id, label, text, onInputChange, onInputBlur, validate, ...props } = this.props;
+        const { isValid, hsValidationRules, hsExtState, errMsg } = this.state;
         const hsValidState: boolean = hsValidationRules && (isValid !== null);
         const baseCls: string = 'text-ipt';
         const validateCls: string = hsValidState ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
         const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
+        const inputProps = hsExtState ? {...props, value: text} : {...props};
 
         return (
             <div className={wrapperCls}>{ label &&
@@ -56,8 +53,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
                         {...inputProps}
                         />
                     { hsValidState && isValid && inclStaticIcon('valid') }
-                </div>
-                { hsValidState && !isValid &&
+                </div>{ hsValidState && !isValid &&
                 <ul className="text-ipt__err">{ errMsg.map((msg, idx) =>
                     <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>)}
                 </ul>}

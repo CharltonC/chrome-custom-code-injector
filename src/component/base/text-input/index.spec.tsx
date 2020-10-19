@@ -290,7 +290,7 @@ describe('Component - Text Input', () => {
         const mockValidationRules: IValidationConfig[] = [
             {rule: /abc/g, msg: 'should contain abc'}
         ];
-        const mockProps: IProps = {id: mockId};
+        const mockProps: IProps = { id: mockId, label: 'mock-label' };
 
         function getChildElem() {
             wrapperElem = elem.children[0] as HTMLElement;
@@ -361,7 +361,7 @@ describe('Component - Text Input', () => {
             });
 
             it('should render the passed text input', () => {
-                TestUtil.renderPlain(elem, TextInput, {...mockProps, text: mockTxtInput});
+                TestUtil.renderPlain(elem, TextInput, {...mockProps, defaultValue: mockTxtInput});
                 getChildElem();
 
                 expect(inputElem.value).toBe(mockTxtInput);
