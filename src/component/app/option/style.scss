@@ -84,4 +84,18 @@
             }
         }
     }
+
+    .modal {
+        &__footer {
+            display: flex;
+            margin-top: 40px;
+            justify-content: flex-end;
+
+            .text-btn {
+                &:last-child {
+                    margin-left: 25px;
+                }
+            }
+        }
+    }
 }

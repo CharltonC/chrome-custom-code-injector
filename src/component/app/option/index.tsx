@@ -1,6 +1,12 @@
 import React, { memo, useState } from 'react';
 import { IconBtn } from '../../base/icon-btn';
+import { TextInput } from '../../base/text-input';
 import { SearchInput } from '../../base/search-input';
+import { SliderSwitch } from '../../base/slider-switch';
+import { Dropdown } from '../../base/dropdown';
+import { TextBtn } from '../../base/text-btn';
+import { FileInput } from '../../base/file-input';
+import { Modal } from '../../widget/modal';
 import { OptionEditView } from '../../view/option-edit';
 import { OptionListView } from '../../view/option-list';
 import { IProps } from './type';
@@ -51,6 +57,8 @@ const mockData = [
     }
 ];
 
+const currModalId = 'demo';
+
 // TODO: Props type
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const [ isEditView, setView ] = useState(true);
@@ -83,6 +91,78 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 { isEditView ? <OptionEditView data={mockData}/> : <OptionListView data={mockData}/> }
             </main>
             {/* TODO: Modals */}
+            <div className="modals">
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-def-option"
+                    headers={['Default Options']}
+                    onHide={() => {}}>
+                    <button type="button">RESET ALL</button>
+                    <ul>
+                        <li>
+                            <h4>Read/Search</h4>
+                        </li>
+                        <li>
+                            <p>Show delete confirmation dialog</p>
+                            <SliderSwitch id="show-dialog" />
+                        </li>
+                        <li>
+                            <p>Results per page</p>
+                            <Dropdown id="result-per-page" list={['a', 'b']} border={true} />
+                        </li>
+                        <li>
+                            <h4>New Item</h4>
+                        </li>
+                        <li>
+                            <p>HTTPS</p>
+                            <SliderSwitch id="match-https" />
+                        </li>
+                        <li>
+                            <p>Regex</p>
+                            <SliderSwitch id="match-regex" />
+                        </li>
+                        <li>
+                            <p>Run Custom Js</p>
+                            <SliderSwitch id="run-js" />
+                        </li>
+                        <li>
+                            <p>Run Custom CSS</p>
+                            <SliderSwitch id="run-css" />
+                        </li>
+                        <li>
+                            <p>Run Libraries</p>
+                            <SliderSwitch id="run-library" />
+                        </li>
+                        <li>
+                            <p>Javascript Execution</p>
+                            <Dropdown id="js-exec-frame" list={['a', 'b']} border={true} />
+                            <Dropdown id="js-exec-order" list={['a', 'b']} border={true} />
+                        </li>
+                    </ul>
+                </Modal>
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-json-import"
+                    headers={['Import Configuration from a "*.json" file']}
+                    onHide={() => {}}>
+                    <FileInput id="json-import-input" fileType="application/JSON" />
+                    <div className="modal__footer">
+                        <TextBtn text="CANCEL" outline onClick={() => {}} />
+                        <TextBtn text="IMPORT" onClick={() => {}} />
+                    </div>
+                </Modal>
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-json-export"
+                    headers={['Export Configuration from a "*.json" file']}
+                    onHide={() => {}}>
+                    <TextInput id="" label="Filename" validate={[]}/>
+                    <div className="modal__footer">
+                        <TextBtn text="CANCEL" outline onClick={() => {}} />
+                        <TextBtn text="EXPORT" onClick={() => {}} />
+                    </div>
+                </Modal>
+            </div>
         </div>
     );
 });
