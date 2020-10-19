@@ -1,56 +1,58 @@
 .text-ipt {
     min-width: 300px;
-
-    label
-    input,
-    &__err {
-        width: 100%;
-    }
+    display: grid;
+    grid-template-areas: 'label input'
+                         'label error';
+    justify-content: start;
+    align-items: baseline;
 
     label {
-        display: flex;
-        align-items: center;
-        position: relative;
-    }
-
-    input {
-        -webkit-appearance: none;
-        border: none;
-        border-bottom: 1px solid $light-gray;
-        padding: 5px 30px 5px 10px;
-        clear: both;
-        font: 14px $roboto-reg;
-        color: $dark-gray-100;
-        transition: border 0.2s ease;
-        will-change: border;
-
-        &::-webkit-input-placeholder {
-            font: 14px $roboto-reg;
-            color: $light-gray;
-        }
-
-        &:not(:disabled):focus {
-            outline: none;
-            border-bottom: 1px solid $teal;
-        }
-    }
-
-    .icon {
-        position: absolute;
-        right: 0;
-        z-index: 100;
-        color: green;
-        display: none;
-    }
-
-    &__label {
+        grid-area: label;
         margin-right: 40px;
         font: 14px $roboto-bld;
         color: $gray-200;
     }
 
+    &__input {
+        grid-area: input;
+        position: relative;
+
+        input {
+            -webkit-appearance: none;
+            display: block;
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid $light-gray;
+            padding: 5px 30px 5px 10px;
+            clear: both;
+            font: 14px $roboto-reg;
+            color: $dark-gray-100;
+            transition: border 0.2s ease;
+            will-change: border;
+
+            &::-webkit-input-placeholder {
+                font: 14px $roboto-reg;
+                color: $light-gray;
+            }
+
+            &:not(:disabled):focus {
+                outline: none;
+                border-bottom: 1px solid $teal;
+            }
+        }
+
+        .icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 100;
+            color: $green;
+            display: none;
+        }
+    }
+
     &__err {
-        display: none;
+        grid-area: error;
         list-style-type: disc;
         list-style-position: inside;
         margin-top: 5px;

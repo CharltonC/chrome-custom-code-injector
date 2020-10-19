@@ -36,28 +36,17 @@ export class TextInput extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const {id, label, text, onInputChange, onInputBlur, validate, ...props} = this.props;
-        const { isValid, hsValidationRules, hsExtState } = this.state;
+        const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
+        const { isValid, hsValidationRules, errMsg } = this.state;
         const hsValidState: boolean = hsValidationRules && (isValid !== null);
-
-        // Wrapper
         const baseCls: string = 'text-ipt';
         const validateCls: string = hsValidState ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
         const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
 
-        // Input
-        const inputProps = hsExtState ? {...props, value: text} : {...props};
-
-        // Icon
-        const hsIcon: boolean = hsValidState && isValid;
-
-        // Error Msg
-        const hsErrMsg: boolean = hsValidState && !isValid;
-
         return (
-            <div className={wrapperCls}>
-                <label htmlFor={id}>
-                    { label && <span className="text-ipt__label">{label}</span> }
+            <div className={wrapperCls}>{ label &&
+                <label htmlFor={id}>{label}</label>}
+                <div className="text-ipt__input">
                     <input
                         id={id}
                         type="text"
@@ -66,13 +55,12 @@ export class TextInput extends MemoComponent<IProps, IState> {
                         onBlur={this.onBlur}
                         {...inputProps}
                         />
-                    { hsIcon ? inclStaticIcon('valid') : null }
-                </label>{ hsErrMsg ?
-                <ul className="text-ipt__err">
-                    { this.state.errMsg.map((msg, idx) => (
-                        <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>
-                    )) }
-                </ul> : null }
+                    { hsValidState && isValid && inclStaticIcon('valid') }
+                </div>
+                { hsValidState && !isValid &&
+                <ul className="text-ipt__err">{ errMsg.map((msg, idx) =>
+                    <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>)}
+                </ul>}
             </div>
         );
     }
