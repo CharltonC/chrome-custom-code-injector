@@ -3,8 +3,6 @@ body.modal-open {
 }
 
 .modal {
-    --spacing: 25px;
-
     @keyframes slide-down-content {
         from {
             opacity: .3;
@@ -36,39 +34,44 @@ body.modal-open {
     &__content {
         position: absolute;
         z-index: 9999;
-        padding: var(--spacing);
+        padding: 25px;
         border-radius: 2px;
         background-color: $white;
         box-shadow: 0px 10px 20px -20px $black;
         width: 640px;
         animation: slide-down-content .1s ease-in-out;
         animation-fill-mode: forwards;
-        will-change: opacity transform;
+        will-change: opacity, transform;
     }
 
     header {
+        display: grid;
+        grid-template-areas: "main-header close"
+                             "sub-header sub-header";
+        justify-content: space-between;
+        align-items: center;
+
         h3 {
+            grid-area: main-header;
             font: 20px $roboto-bld;
             color: $black;
-            text-transform: capitalize;
         }
 
         h4 {
+            grid-area: sub-header;
             margin-top: 20px;
             font: 16px $roboto-reg;
             color: $dark-gray;
         }
 
         button {
-            position: absolute;
-            top: var(--spacing);
-            right: var(--spacing);
+            grid-area: close;
             color: $gray;
 
             &,
             .icon {
-                width: 14px;
-                height: 14px;
+                width: 20px;
+                height: 20px;
             }
         }
     }
