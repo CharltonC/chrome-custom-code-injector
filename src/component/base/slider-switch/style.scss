@@ -44,7 +44,7 @@
             height: 16px;
             background: $white;
             transition: transform .15s ease, background-color .2s ease-out;
-            will-change: transform background-color;
+            will-change: transform, background-color;
         }
 
         // Checked States

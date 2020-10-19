@@ -29,7 +29,7 @@
 
     .icon {
         transition: color .15s, background-color .15s;
-        will-change: color background-color;
+        will-change: color, background-color;
         transform: translateZ(0);
     }
 }
