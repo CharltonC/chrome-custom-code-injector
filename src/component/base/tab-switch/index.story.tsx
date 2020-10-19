@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TabSwitch } from '.';
 
 export default {
-    title: 'Tab Switch',
+    title: 'Form Tab Switch',
     component: TabSwitch,
 };
 
