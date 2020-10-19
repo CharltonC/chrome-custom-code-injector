@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Checkbox } from '.';
 
 export default {
-    title: 'Checkbox',
+    title: 'Form Checkbox',
     component: Checkbox,
 };
 

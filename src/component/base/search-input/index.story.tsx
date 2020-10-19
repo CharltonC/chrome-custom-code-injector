@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SearchInput } from '.';
 
 export default {
-    title: 'Search Input',
+    title: 'Form Search Input',
     component: SearchInput,
 };
 
