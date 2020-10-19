@@ -35,6 +35,48 @@ export class TextInput extends MemoComponent<IProps, IState> {
         this.setState({...state, ...validState});
     }
 
+    render() {
+        const {id, label, text, onInputChange, onInputBlur, validate, ...props} = this.props;
+        const { isValid, hsValidationRules, hsExtState } = this.state;
+        const hsValidState: boolean = hsValidationRules && (isValid !== null);
+
+        // Wrapper
+        const baseCls: string = 'text-ipt';
+        const validateCls: string = hsValidState ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
+        const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
+
+        // Input
+        const inputProps = hsExtState ? {...props, value: text} : {...props};
+
+        // Icon
+        const hsIcon: boolean = hsValidState && isValid;
+
+        // Error Msg
+        const hsErrMsg: boolean = hsValidState && !isValid;
+
+        return (
+            <div className={wrapperCls}>
+                <label htmlFor={id}>
+                    { label && <span className="text-ipt__label">{label}</span> }
+                    <input
+                        id={id}
+                        type="text"
+                        ref={elem => this.inputElem = elem}
+                        onChange={this.onChange}
+                        onBlur={this.onBlur}
+                        {...inputProps}
+                        />
+                    { hsIcon ? inclStaticIcon('valid') : null }
+                </label>{ hsErrMsg ?
+                <ul className="text-ipt__err">
+                    { this.state.errMsg.map((msg, idx) => (
+                        <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>
+                    )) }
+                </ul> : null }
+            </div>
+        );
+    }
+
     getInitialState(text: string, validate: IValidationConfig[]): IState {
         return {
             hsExtState: typeof text !== 'undefined',
@@ -94,52 +136,5 @@ export class TextInput extends MemoComponent<IProps, IState> {
 
     onBlur(evt: React.ChangeEvent<HTMLInputElement>): void {
         this.setValidState(evt, this.props.onInputBlur, 0);
-    }
-
-    render() {
-        const {id, text, onInputChange, onInputBlur, validate, ...props} = this.props;
-        const { isValid, hsValidationRules, hsExtState } = this.state;
-        const hsValidState: boolean = hsValidationRules && (isValid !== null);
-
-        // Wrapper
-        const baseCls: string = 'text-ipt';
-        const validateCls: string = hsValidState ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
-        const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
-
-        // Input
-        const inputProps = hsExtState ? {...props, value: text} : {...props};
-
-        // Icon
-        const hsIcon: boolean = hsValidState && isValid;
-
-        // Error Msg
-        const hsErrMsg: boolean = hsValidState && !isValid;
-
-        return (
-            <div className={wrapperCls} >
-                <label className="text-ipt__label" htmlFor={id}>
-                    <input
-                        id={id}
-                        className="text-ipt__input"
-                        type="text"
-                        ref={elem => this.inputElem = elem}
-                        onChange={this.onChange}
-                        onBlur={this.onBlur}
-                        {...inputProps}
-                        >
-                    </input>
-                    { hsIcon ? inclStaticIcon('valid') : null }
-                </label>
-                {
-                    hsErrMsg ?
-                    <ul className="text-ipt__err">
-                        { this.state.errMsg.map((msg, idx) => (
-                            <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>
-                        )) }
-                    </ul> :
-                    null
-                }
-            </div>
-        );
     }
 }
