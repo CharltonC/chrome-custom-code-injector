@@ -79,7 +79,7 @@ describe('Component - Pagination', () => {
 
             it('should return props for Per Page Select', () => {
                 expect(cmp.getMappedSelectProps(mockSelectAttr, true)).toEqual({
-                    wrapperCls: `${CLS_PREFIX}__select ${CLS_PREFIX}__select--perpage`,
+                    clsSuffix: 'perpage',
                     border: true,
                     disabled: mockSelectAttr.disabled,
                     list: mockSelectAttr.options,
@@ -92,7 +92,7 @@ describe('Component - Pagination', () => {
 
             it('should return props for Page Select', () => {
                 expect(cmp.getMappedSelectProps(mockSelectAttr, false)).toEqual({
-                    wrapperCls: `${CLS_PREFIX}__select ${CLS_PREFIX}__select--page`,
+                    clsSuffix: 'page',
                     border: true,
                     disabled: mockSelectAttr.disabled,
                     list: mockSelectAttr.options,

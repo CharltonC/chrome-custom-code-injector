@@ -172,12 +172,11 @@ describe('Component - Dropdown', () => {
             expect($wrapper.className).toBe('dropdown dropdown--border');
         });
 
-        it('should add the wrapper class if provided', () => {
-            const mockWrapperCls: string = 'lorem';
-            TestUtil.renderPlain($elem, Dropdown, {...mockDefProps, wrapperCls: mockWrapperCls});
+        it('should add the class suffix to wrapper if provided', () => {
+            TestUtil.renderPlain($elem, Dropdown, {...mockDefProps, clsSuffix: 'demo'});
             syncChildElem();
 
-            expect($wrapper.className).toContain(mockWrapperCls);
+            expect($wrapper.className).toContain('dropdown--demo');
         });
 
         it('should not render if list is not provided', () => {

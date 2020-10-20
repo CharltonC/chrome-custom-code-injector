@@ -59,7 +59,7 @@ export class Pagination extends MemoComponent<IProps> {
     getMappedSelectProps(selectAttr: pgnHandleType.ICmpSelectAttr, isPerPage: boolean): ISelectProps {
         const { disabled, options, selectedOptionIdx, onSelect, } = selectAttr;
         return {
-            wrapperCls: `${CLS_PREFIX}__select ${CLS_PREFIX}__select--${isPerPage ? 'perpage' : 'page'}`,
+            clsSuffix: isPerPage ? 'perpage' : 'page',
             border: true,
             disabled,
             list: options,

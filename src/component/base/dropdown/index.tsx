@@ -6,9 +6,12 @@ import { IProps, IState} from './type';
 const dnArrowElem: ReactElement = inclStaticIcon('arrow-dn');
 
 export class Dropdown extends MemoComponent<IProps, IState> {
+    static DefaultProps: Partial<IProps> = {
+        clsSuffix: ''
+    };
+
     constructor(props: IProps) {
         super(props);
-
         this.state = this.getInitialState(props);
         this.onSelect = this.onSelect.bind(this);
     }
@@ -25,16 +28,14 @@ export class Dropdown extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { wrapperCls, id, list, listTxtTransform, border, selectIdx, onSelect, ...props } = this.props;
+        const { cssCls } = this;
+        const { id, list, listTxtTransform, border, selectIdx, onSelect, clsSuffix, ...props } = this.props;
         const { hsList, hsSelectIdx } = this.state;
-
-        const BASE_CLS: string = 'dropdown';
-        const BORDER_CLS: string = border ? `${BASE_CLS} ${BASE_CLS}--border` : `${BASE_CLS} ${BASE_CLS}--plain`;
-        const WRAPPER_CLS = wrapperCls ? `${wrapperCls} ${BORDER_CLS}` : BORDER_CLS;
+        const className: string = cssCls('dropdown', [ clsSuffix, border ? 'border' : 'plain' ]);
         const selecteProps = hsSelectIdx ? { ...props, value: selectIdx } : props;
 
-        return hsList ?
-            <div className={WRAPPER_CLS}>
+        return hsList && (
+            <div className={className}>
                 {/* TODO: span label */}
                 <select
                     {...selecteProps}
@@ -42,17 +43,14 @@ export class Dropdown extends MemoComponent<IProps, IState> {
                     onChange={this.onSelect}
                     >{ list.map((text: string | number, idx: number) =>
                         /* we use the list index as a generic value as we cant gurantee that the text is not empty or is diff. */
-                        <option
-                            key={`${id}-${idx}`}
-                            value={idx}
-                            >
-                            {listTxtTransform ? listTxtTransform(text) : text}
+                        <option key={`${id}-${idx}`} value={idx}>
+                            { listTxtTransform ? listTxtTransform(text) : text }
                         </option>
                     )}
                 </select>
                 { dnArrowElem }
-            </div> :
-            null;
+            </div>
+        );
     }
 
     getInitialState({list, selectIdx}: Partial<IProps>): IState {
