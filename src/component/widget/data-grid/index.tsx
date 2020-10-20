@@ -1,6 +1,5 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
-import { UtilHandle } from '../../../service/handle/util';
 import { HeaderGrpHandle } from '../../../service/handle/header-group';
 import { RowHandle } from '../../../service/handle/row'
 import { ExpdHandle } from '../../../service/handle/expand'
@@ -23,7 +22,6 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
     readonly expdHandle: ExpdHandle = new ExpdHandle();
-    readonly cssCls = new UtilHandle().cssCls;
     readonly BASE_CLS: string = 'datagrid';
 
     //// Builtin API

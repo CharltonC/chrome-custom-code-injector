@@ -1,10 +1,13 @@
 import { Component } from 'react';
+import { UtilHandle } from '../../../service/handle/util';
 import { TObj, TObjEntry } from './type';
 
 /**
  * Used for Component Class Inheritance only for React Component
  */
 export class MemoComponent<P = TObj, S = TObj> extends Component<P, S> {
+    readonly cssCls = (new UtilHandle()).cssCls;
+
     shouldComponentUpdate(modProps: TObj, modState: TObj) {
         // Check State 1st (since internal state changes should be prioritized)
         const modStateItems: TObjEntry[] = modState ? Object.entries(modState) : [];
