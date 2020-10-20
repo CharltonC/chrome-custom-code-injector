@@ -1,4 +1,5 @@
 export interface IProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+    label?: string;
     clsSuffix?: string;
     border?: boolean;
     list: (string | number)[];

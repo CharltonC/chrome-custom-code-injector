@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SliderSwitch } from '.';
 
 export default {
-    title: 'Form Slider Switch',
+    title: 'Form - Slider Switch',
     component: SliderSwitch,
 };
 

@@ -4,6 +4,12 @@
     align-items: center;
     min-width: 100px;
 
+    label {
+        margin-right: 10px;
+        font: 14px $roboto-reg;
+        color: $gray;
+    }
+
     select {
         -webkit-appearance: none;
         width: 100%;
@@ -15,7 +21,7 @@
         &:disabled {
             &,
             ~ .icon {
-                opacity: 0.4;
+                opacity: .4;
             }
         }
 
@@ -36,7 +42,7 @@
     }
 
     .icon {
-        transition: color 0.2s ease;
+        transition: color .2s ease;
         position: absolute;
         right: 0;
         pointer-events: none;
@@ -51,7 +57,7 @@
 
     &--border {
         select {
-            transition: border 0.2s ease;
+            transition: border .2s ease;
             transform: translateZ(0);
             will-change: border;
             border: 1px solid $light-gray;
