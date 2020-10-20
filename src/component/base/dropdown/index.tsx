@@ -28,17 +28,16 @@ export class Dropdown extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { cssCls } = this;
-        const { id, list, listTxtTransform, border, selectIdx, onSelect, clsSuffix, ...props } = this.props;
+        const { id, label, list, listTxtTransform, border, selectIdx, onSelect, clsSuffix, ...props } = this.props;
         const { hsList, hsSelectIdx } = this.state;
-        const className: string = cssCls('dropdown', [ clsSuffix, border ? 'border' : 'plain' ]);
-        const selecteProps = hsSelectIdx ? { ...props, value: selectIdx } : props;
+        const className: string = this.getClsName(clsSuffix, border);
+        const selectProps = hsSelectIdx ? { ...props, value: selectIdx } : props;
 
         return hsList && (
             <div className={className}>
-                {/* TODO: span label */}
+                { label && <label htmlFor={id}>{label}</label> }
                 <select
-                    {...selecteProps}
+                    {...selectProps}
                     id={id}
                     onChange={this.onSelect}
                     >{ list.map((text: string | number, idx: number) =>
@@ -64,5 +63,9 @@ export class Dropdown extends MemoComponent<IProps, IState> {
         // this is the actual index of the list item or `<option>`
         const selectValueAttrVal: string = evt.target.value;
         this.props.onSelect?.(evt, selectValueAttrVal);
+    }
+
+    getClsName(clsSuffix: string = '', border: boolean): string {
+        return this.cssCls('dropdown', clsSuffix + ` ${border ? 'border' : 'plain'}`);
     }
 }

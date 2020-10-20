@@ -26,12 +26,12 @@ export class Modal extends MemoComponent<IProps, IState> {
         const {
             header, subHeader,
             children,
-            id, currModalId,
+            id, currModalId, clsSuffix,
             cancel, confirm, onCancel, onConfirm, onHide
         } = this.props;
 
         return this.isVisible(id, currModalId) && (
-            <div className="modal">
+            <div className={this.cssCls('modal', clsSuffix)}>
                 <div className="modal__content">
                     <header>
                         <h3>{header}</h3>{ subHeader &&

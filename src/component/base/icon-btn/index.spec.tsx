@@ -12,7 +12,7 @@ describe('Component - Icon Button', () => {
         TestUtil.renderPlain(elem, IconBtn, {
             icon: 'setting',
             onClick: mockOnClick,
-            clsSuffix: [ 'suffix' ]
+            clsSuffix: 'suffix'
         });
         btnElem = elem.children[0] as HTMLElement;
     });

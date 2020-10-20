@@ -3,6 +3,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     subHeader?: string;
     currModalId: string;
     id: string;
+    clsSuffix?: string;
     cancel?: string;
     confirm?: string;
     onHide: TFn;
