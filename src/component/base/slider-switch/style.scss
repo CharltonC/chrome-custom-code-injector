@@ -1,5 +1,5 @@
 .slider-switch {
-    display: flex;
+    display: inline-flex;
     align-items: center;
 
     // Switch
@@ -9,7 +9,7 @@
         background: $light-gray;
         width: 40px;
         height: 20px;
-        transition: background-color 0.2s ease-out;
+        transition: background-color .2s ease-out;
         will-change: background-color;
 
         &,
@@ -60,8 +60,15 @@
 
     // Label Text
     span {
-        margin-left: 5px;
         font: 14px $roboto-reg;
         color: $gray;
+
+        &:first-child {
+            margin-right: 5px;
+        }
+
+        &:last-child {
+            margin-left: 5px;
+        }
     }
 }

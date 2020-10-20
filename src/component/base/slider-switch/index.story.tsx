@@ -6,13 +6,17 @@ export default {
     component: SliderSwitch,
 };
 
+const defStyle = { padding: 20 };
+
 export const InternalState = () => {
     return (
-        <SliderSwitch
-            id="lorem"
-            label="lorem"
-            onChange={() => {}}
-            />
+        <div style={defStyle}>
+            <SliderSwitch
+                id="lorem"
+                label="lorem"
+                onChange={() => {}}
+                />
+        </div>
     )
 };
 
@@ -20,31 +24,49 @@ export const ExternalState = () => {
     const [ checked, setChecked ] = useState(true);
 
     return (
-        <SliderSwitch
-            id="sum"
-            label="sum"
-            defaultChecked={checked}
-            onClick={() => setChecked(!checked)}
-            />
+        <div style={defStyle}>
+            <SliderSwitch
+                id="sum"
+                label="sum"
+                defaultChecked={checked}
+                onClick={() => setChecked(!checked)}
+                />
+        </div>
+    )
+};
+
+export const RightLabel = () => {
+    return (
+        <div style={defStyle}>
+            <SliderSwitch
+                id="lorem"
+                label="lorem"
+                rtLabel
+                />
+        </div>
     )
 };
 
 export const Disabled = () => {
     return (
-        <SliderSwitch
-            id="sum"
-            label="sum"
-            disabled
-            />
+        <div style={defStyle}>
+            <SliderSwitch
+                id="sum"
+                label="sum"
+                disabled
+                />
+        </div>
     )
 };
 
 export const NoLabel = () => {
     return (
-        <SliderSwitch
-            id="sum"
-            label=""
-            onChange={() => {}}
-            />
+        <div style={defStyle}>
+            <SliderSwitch
+                id="sum"
+                label=""
+                onChange={() => {}}
+                />
+        </div>
     )
 };
