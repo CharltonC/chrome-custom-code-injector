@@ -80,6 +80,18 @@ body.modal-open {
         margin-top: 40px;
     }
 
+    footer {
+        display: flex;
+        margin-top: 40px;
+        justify-content: flex-end;
+
+        .text-btn {
+            &:last-child {
+                margin-left: 25px;
+            }
+        }
+    }
+
     &__overlay {
         position: absolute;
         z-index: 9000;

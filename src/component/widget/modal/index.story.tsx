@@ -27,8 +27,8 @@ export const ForClassComponent = () => {
         }
 
         onHide(evt) {
-            const { type } = evt;
-            if (type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
+            const { type } = evt || {};
+            if (evt && type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
             this.setState({currId: null});
             document.removeEventListener('keyup', this.onHide);
             domHandle.addBodyCls('modal-open', false);
@@ -47,11 +47,15 @@ export const ForClassComponent = () => {
                     <Modal
                         currModalId={this.state.currId}
                         id="demo"
-                        headers={['title', '']}
-                        onHide={this.onHide}>
+                        header="title"
+                        subHeader="subheader"
+                        cancel="cancel"
+                        confirm="confirm"
+                        onHide={this.onHide}
+                        onCancel={this.onHide}
+                        onConfirm={this.onHide}
+                        >
                         <h1>Modal A content</h1>
-                        <TextBtn text="cancel" outline onClick={this.onHide} />
-                        <TextBtn text="confirm" onClick={this.onHide} />
                     </Modal>
                 </div>
             );
@@ -65,8 +69,8 @@ export const ForFunctionalComponent = () => {
     const [ currModalId, setCurrModalId ] = useState(null);
 
     const onHide = (evt: Event) => {
-        const { type } = evt;
-        if (type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
+        const { type } = evt || {};
+        if (evt && type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
         setCurrModalId(null);
         document.removeEventListener('keyup', onHide);
         domHandle.addBodyCls('modal-open', false);
@@ -84,8 +88,13 @@ export const ForFunctionalComponent = () => {
             <Modal
                 currModalId={currModalId}
                 id="demo"
-                headers={['header', 'subheader']}
+                header="header"
+                subHeader="subheader"
+                cancel="cancel"
+                confirm="confirm"
                 onHide={onHide}
+                onCancel={onHide}
+                onConfirm={onHide}
                 >
                 <h1>Modal A content</h1>
             </Modal>
@@ -104,8 +113,12 @@ export const WithoutEscKeyBinding = () => {
             <Modal
                 currModalId={currModalId}
                 id="demo"
-                headers={['header', 'subheader']}
+                header="header"
+                subHeader="subheader"
+                cancel="cancel"
+                confirm="confirm"
                 onHide={onHide}
+                onCancel={onHide}
                 >
                 <h1>Modal A content</h1>
             </Modal>

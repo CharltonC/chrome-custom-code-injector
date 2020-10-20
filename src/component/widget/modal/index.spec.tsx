@@ -5,7 +5,8 @@ import { IProps } from './type';
 
 describe('Component - Modal', () => {
     const mockBaseProps: IProps = {
-        headers: [ 'main', 'sub' ],
+        header: 'main',
+        subHeader: 'sub',
         currModalId: 'lorem',
         id: 'sum',
         onHide: null
@@ -36,7 +37,7 @@ describe('Component - Modal', () => {
         describe('Lifecycle - componentWillUnmount', () => {
             it('should trigger onHide', () => {
                 modal.componentWillUnmount();
-                expect(mockOnHide).toHaveBeenCalledWith({type: 'click'});
+                expect(mockOnHide).toHaveBeenCalled();
             });
         });
 
@@ -62,12 +63,14 @@ describe('Component - Modal', () => {
         let $subHeader: HTMLElement;
         let $overlay: HTMLElement;
         let $closeBtn: HTMLElement;
+        let $footer: HTMLElement;
 
         const syncElems = () => {
             $modal = $elem.querySelector('.modal');
             $overlay = $elem.querySelector('.modal__overlay');
             $closeBtn = $elem.querySelector('button');
             $subHeader = $elem.querySelector('h4');
+            $footer = $elem.querySelector('footer');
         }
 
         beforeEach(() => {
@@ -87,7 +90,7 @@ describe('Component - Modal', () => {
             });
         });
 
-        describe('hide shown modal', () => {
+        describe('triger `onHide` callback in general', () => {
             beforeEach(() => {
                 modalMethodSpy = TestUtil.spyProtoMethods(Modal);
                 modalMethodSpy.isVisible.mockReturnValue(true);
@@ -95,18 +98,88 @@ describe('Component - Modal', () => {
                 syncElems();
             });
 
-            it('should show header & subheader', () => {
+            it('should show header and subheader', () => {
                 expect($subHeader).toBeTruthy();
             });
 
-            it('should hide the modal when click overlay', () => {
+            it('should call `onHide` when click overlay', () => {
                 TestUtil.triggerEvt($overlay, 'click');
                 expect(mockOnHide).toHaveBeenCalled();
             });
 
-            it('should hide the modal when click close button', () => {
+            it('should call `onHide` when click close button', () => {
                 TestUtil.triggerEvt($closeBtn, 'click');
                 expect(mockOnHide).toHaveBeenCalled();
+            });
+        });
+
+        describe('trigger `onCancel/onConfirm` callbacks for cancel/confirm buttons', () => {
+            let mockOnCancel: jest.Mock;
+            let mockOnConfirm: jest.Mock;
+
+            beforeEach(() => {
+                mockOnCancel = jest.fn();
+                mockOnConfirm = jest.fn();
+                modalMethodSpy = TestUtil.spyProtoMethods(Modal);
+                modalMethodSpy.isVisible.mockReturnValue(true);
+            });
+
+            describe('callbacks not provided', () => {
+                beforeEach(() => {
+                    TestUtil.renderPlain($elem, Modal, {
+                        ...mockProps,
+                        cancel: 'cancel',
+                        confirm: 'confirm',
+                    });
+                    syncElems();
+                });
+
+                it('should render footer with cancel/confirm buttons', () => {
+                    expect($footer).toBeTruthy();
+                    expect($footer.querySelectorAll('.text-btn').length).toBe(2);
+                });
+
+                it('should call `onHide` when click cancel button ', () => {
+                    TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[0] as HTMLElement, 'click');
+                    expect(mockOnCancel).not.toHaveBeenCalled();
+                    expect(mockOnHide).toHaveBeenCalled();
+                });
+
+                it('should call `onHide` when click confirm button', () => {
+                    TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[1] as HTMLElement, 'click');
+                    expect(mockOnConfirm).not.toHaveBeenCalled();
+                    expect(mockOnHide).toHaveBeenCalled();
+                });
+            });
+
+            describe('callbacks provided', () => {
+                beforeEach(() => {
+                    TestUtil.renderPlain($elem, Modal, {
+                        ...mockProps,
+                        cancel: 'cancel',
+                        confirm: 'confirm',
+                        onCancel: mockOnCancel,
+                        onConfirm: mockOnConfirm
+                    });
+                    syncElems();
+                });
+
+                it('should render footer with cancel/confirm buttons', () => {
+                    expect($footer).toBeTruthy();
+                    expect($footer.querySelectorAll('.text-btn').length).toBe(2);
+                });
+
+                it('should call `onCancel` when click cancel button ', () => {
+                    TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[0] as HTMLElement, 'click');
+                    expect(mockOnCancel).toHaveBeenCalled();
+                    expect(mockOnHide).not.toHaveBeenCalled();
+                });
+
+                it('should call `onConfirm` isntead when click confirm button', () => {
+                    TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[1] as HTMLElement, 'click');
+                    expect(mockOnConfirm).toHaveBeenCalled();
+                    expect(mockOnHide).not.toHaveBeenCalled();
+                });
             });
         });
     });

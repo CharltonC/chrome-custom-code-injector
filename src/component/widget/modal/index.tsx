@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
+import { TextBtn } from '../../base/text-btn';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState } from './type';
 
@@ -18,12 +19,16 @@ export class Modal extends MemoComponent<IProps, IState> {
     readonly closeIconElem: ReactElement = inclStaticIcon('close');
 
     componentWillUnmount() {
-        this.props.onHide({ type: 'click' } );    // pass an object to mimic event (see story example)
+        this.props.onHide();
     }
 
     render() {
-        const { headers, children, onHide, id, currModalId } = this.props;
-        const [ header, subHeader ] = headers;
+        const {
+            header, subHeader,
+            children,
+            id, currModalId,
+            cancel, confirm, onCancel, onConfirm, onHide
+        } = this.props;
 
         return this.isVisible(id, currModalId) && (
             <div className="modal">
@@ -33,7 +38,11 @@ export class Modal extends MemoComponent<IProps, IState> {
                         <h4>{subHeader}</h4>}
                         <button type="button" onClick={onHide}>{this.closeIconElem}</button>
                     </header>
-                    <main>{children}</main>
+                    <main>{children}</main>{ (cancel || confirm) &&
+                    <footer>{ cancel &&
+                        <TextBtn text={cancel} outline onClick={onCancel ?? onHide} />}{ confirm &&
+                        <TextBtn text={confirm} onClick={onConfirm ?? onHide} />}
+                    </footer>}
                 </div>
                 <div className="modal__overlay" onClick={onHide}></div>
             </div>
