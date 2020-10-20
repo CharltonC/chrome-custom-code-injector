@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, IState , IValidationConfig } from './type';
+import { IProps, IState, IValidationConfig, TValidState } from './type';
 import { TextInput } from '.';
 
 describe('Component - Text Input', () => {
@@ -15,11 +15,11 @@ describe('Component - Text Input', () => {
         describe('Constructor', () => {
             it('should init', () => {
                 const mockInitialState: any = {};
-                const mockProps: IProps = {id: '', text: 'abc'};
+                const mockProps: IProps = {id: '', defaultValue: 'abc'};
                 let spyGetInitialState: jest.SpyInstance = jest.spyOn(TextInput.prototype, 'getInitialState').mockReturnValue(mockInitialState);
                 const cmpInst: any = new TextInput(mockProps);
 
-                expect(spyGetInitialState).toHaveBeenCalledWith(mockProps.text, undefined);
+                expect(spyGetInitialState).toHaveBeenCalledWith(undefined);
                 expect(cmpInst.state).toEqual(mockInitialState);
             });
         });
@@ -28,8 +28,8 @@ describe('Component - Text Input', () => {
             const mockText: string = 'lorem';
             const mockBaseProps: IProps = {id: '', validate: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
-            const mockValidState: Partial<IState> = {errMsg: [], isValid: true};
-            let mockInitialState: Partial<IState>;
+            const mockValidState: any = { errMsg: [], isValid: true };
+            let mockInitialState: any;
             let spyGetInitialState: jest.SpyInstance;
             let spyGetValidState: jest.SpyInstance;
             let spySetState: jest.SpyInstance;
@@ -39,7 +39,7 @@ describe('Component - Text Input', () => {
             beforeEach(() => {
                 jest.clearAllMocks();
 
-                cmpWithText = new TextInput({...mockBaseProps, text: mockText});
+                cmpWithText = new TextInput({...mockBaseProps, defaultValue: mockText});
                 cmpWithoutText = new TextInput(mockBaseProps);
 
                 spyGetInitialState = jest.spyOn(TextInput.prototype, 'getInitialState')
@@ -48,11 +48,11 @@ describe('Component - Text Input', () => {
             });
 
             it('should revalidate using passed text if text is passed and validation rules have changed', () => {
-                mockInitialState = { hsExtState: true, hsValidationRules: true };
+                mockInitialState = { hsValidationRules: true };
                 spyGetInitialState.mockReturnValue(mockInitialState);
-                cmpWithText.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: mockValidationRules});
+                cmpWithText.UNSAFE_componentWillReceiveProps({...mockBaseProps, defaultValue: mockText, validate: mockValidationRules});
 
-                expect(spyGetInitialState).toHaveBeenCalledWith(mockText, mockValidationRules);
+                expect(spyGetInitialState).toHaveBeenCalledWith(mockValidationRules);
                 expect(spyGetValidState).toHaveBeenCalledWith(mockText, mockValidationRules);
                 expect(spySetState).toHaveBeenCalledWith({
                     ...mockInitialState,
@@ -61,7 +61,7 @@ describe('Component - Text Input', () => {
             });
 
             it('should revalidate using text value from Input Elem Ref if no text is passed and validation rules have changed', () => {
-                mockInitialState = { hsExtState: false, hsValidationRules: true };
+                mockInitialState = { hsValidationRules: true };
                 spyGetInitialState.mockReturnValue(mockInitialState);
 
                 // Force validation rules change & call `UNSAFE_componentWillReceiveProps`
@@ -69,7 +69,7 @@ describe('Component - Text Input', () => {
                 (cmpWithoutText.inputElem as any) = {value: mockInputVal};
                 cmpWithoutText.UNSAFE_componentWillReceiveProps({...mockBaseProps, validate: mockValidationRules});
 
-                expect(spyGetInitialState).toHaveBeenCalledWith(undefined, mockValidationRules);
+                expect(spyGetInitialState).toHaveBeenCalledWith(mockValidationRules);
                 expect(spyGetValidState).toHaveBeenCalledWith(mockInputVal, mockValidationRules);
                 expect(spySetState).toHaveBeenCalledWith({
                     ...mockInitialState,
@@ -78,17 +78,17 @@ describe('Component - Text Input', () => {
             });
 
             it('should not revalidate if validation rules have changed but empty', () => {
-                mockInitialState = { hsExtState: true, hsValidationRules: false };
+                mockInitialState = { hsValidationRules: false };
                 spyGetInitialState.mockReturnValue(mockInitialState);
-                cmpWithText.UNSAFE_componentWillReceiveProps({...mockBaseProps, text: mockText, validate: []});
+                cmpWithText.UNSAFE_componentWillReceiveProps({...mockBaseProps, defaultValue: mockText, validate: []});
 
-                expect(spyGetInitialState).toHaveBeenCalledWith(mockText, []);
+                expect(spyGetInitialState).toHaveBeenCalledWith([]);
                 expect(spyGetValidState).not.toHaveBeenCalled();
                 expect(spySetState).toHaveBeenCalledWith(mockInitialState);
             });
 
             it('should not revalidate if validation rules have not changed', () => {
-                mockInitialState = { hsExtState: false, hsValidationRules: true };
+                mockInitialState = { hsValidationRules: true };
                 spyGetInitialState.mockReturnValue(mockInitialState);
                 cmpWithoutText.UNSAFE_componentWillReceiveProps(mockBaseProps);
 
@@ -99,34 +99,30 @@ describe('Component - Text Input', () => {
         });
 
         describe('Method - getInitialState', () => {
-            const mockInitialBaseState: Partial<IState> = {isValid: null, errMsg: []};
+            const mockInitialBaseState: TValidState = {isValid: null, errMsg: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
             const { getInitialState } = TextInput.prototype;
 
             it('should get Initial state when text is not provided', () => {
-                expect(getInitialState(undefined, undefined)).toEqual({
+                expect(getInitialState( undefined)).toEqual({
                     ...mockInitialBaseState,
-                    hsExtState: false,
                     hsValidationRules: false
                 });
 
-                expect(getInitialState(undefined, [])).toEqual({
+                expect(getInitialState([])).toEqual({
                     ...mockInitialBaseState,
-                    hsExtState: false,
                     hsValidationRules: false
                 });
             });
 
             it('should get Initial state when text is provided', () => {
-                expect(getInitialState('', undefined)).toEqual({
+                expect(getInitialState(undefined)).toEqual({
                     ...mockInitialBaseState,
-                    hsExtState: true,
                     hsValidationRules: false
                 });
 
-                expect(getInitialState('', mockValidationRules)).toEqual({
+                expect(getInitialState(mockValidationRules)).toEqual({
                     ...mockInitialBaseState,
-                    hsExtState: true,
                     hsValidationRules: true
                 });
             });
@@ -138,7 +134,7 @@ describe('Component - Text Input', () => {
             let mockFnRule: jest.Mock;
             let mockRegexRule: RegExp;
             let spyStrSearch: jest.SpyInstance;
-            let validState: Partial<IState>;
+            let validState: TValidState;
 
             beforeEach(() => {
                 mockFnRule = jest.fn();
@@ -196,7 +192,7 @@ describe('Component - Text Input', () => {
 
         describe('Method - Set valid state', () => {
             const mockText: string = 'lorem';
-            const mockRtnState: Partial<IState> = {isValid: true, errMsg: []};
+            const mockRtnState: TValidState = {isValid: true, errMsg: []};
             const mockEvtCbFn: jest.Mock = jest.fn();
             const mockEvt: any = { target: { value: mockText }};
             const mockProps: IProps = {id: ''};

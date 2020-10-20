@@ -1,15 +1,16 @@
 import React from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
-import { IProps, IState, IValidationConfig } from './type';
+import { IProps, IState, IValidationConfig, ICallback, TValidState } from './type';
 
 export class TextInput extends MemoComponent<IProps, IState> {
+    readonly BASE_CLS: string = 'text-ipt';
     inputElem: HTMLInputElement;
 
     constructor(props: IProps) {
         super(props);
-        const { text, validate } = this.props;
-        this.state = this.getInitialState(text, validate);
+        const { validate } = this.props;
+        this.state = this.getInitialState(validate);
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
@@ -17,7 +18,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
     /**
      * Revalidate when passed validation rules have changed
      */
-    UNSAFE_componentWillReceiveProps({text, validate}: IProps): void {
+    UNSAFE_componentWillReceiveProps({defaultValue, validate}: IProps): void {
         const { props } = this;
         const isSameRules: boolean = props.validate === validate;
 
@@ -25,20 +26,20 @@ export class TextInput extends MemoComponent<IProps, IState> {
         if (isSameRules) return;
 
         // Only Revalidate & Update internal state when the passed Validation rules have changed
-        const state: IState = this.getInitialState(text, validate);
-        const validateText: string = state.hsExtState ? text : this.inputElem.value;
-        const validState: Partial<IState> = state.hsValidationRules ? this.getValidState(validateText, validate) : {};
+        const state: IState = this.getInitialState(validate);
+        const validateText: string = defaultValue as string ?? this.inputElem.value;
+        const validState: TValidState = state.hsValidationRules ? this.getValidState(validateText, validate) : {} as TValidState;
         this.setState({...state, ...validState});
     }
 
     render() {
-        const { id, label, text, onInputChange, onInputBlur, validate, ...props } = this.props;
-        const { isValid, hsValidationRules, hsExtState, errMsg } = this.state;
+        const { BASE_CLS } = this;
+        const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
+        const { isValid, hsValidationRules, errMsg } = this.state;
         const hsValidState: boolean = hsValidationRules && (isValid !== null);
-        const baseCls: string = 'text-ipt';
-        const validateCls: string = hsValidState ? (isValid ? `${baseCls}--valid` : `${baseCls}--invalid`) : '';
-        const wrapperCls: string = validateCls ? `${baseCls} ${validateCls}` : baseCls;
-        const inputProps = hsExtState ? {...props, value: text} : {...props};
+
+        const validateCls: string = hsValidState ? (isValid ? `${BASE_CLS}--valid` : `${BASE_CLS}--invalid`) : '';
+        const wrapperCls: string = validateCls ? `${BASE_CLS} ${validateCls}` : BASE_CLS;
 
         return (
             <div className={wrapperCls}>{ label &&
@@ -61,16 +62,15 @@ export class TextInput extends MemoComponent<IProps, IState> {
         );
     }
 
-    getInitialState(text: string, validate: IValidationConfig[]): IState {
+    getInitialState(validate: IValidationConfig[]): IState {
         return {
-            hsExtState: typeof text !== 'undefined',
-            hsValidationRules: typeof validate !== 'undefined' && validate.length > 0,
+            hsValidationRules: validate?.length > 0,
             isValid: null,
             errMsg: []
-        }
+        };
     }
 
-    getValidState(text: string, rules: IValidationConfig[]): Partial<IState> {
+    getValidState(text: string, rules: IValidationConfig[]): TValidState {
         const errMsg: string[] = [];
         rules.forEach(({rule, msg}: IValidationConfig) => {
             let isValid: boolean = true;
@@ -90,13 +90,13 @@ export class TextInput extends MemoComponent<IProps, IState> {
         };
     }
 
-    setValidState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (...args: any[]) => void, charLimit: number): void {
+    setValidState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (arg: ICallback) => void, charLimit: number): void {
         const { validate } = this.props;
         const { isValid, hsValidationRules } = this.state;
         const val: string = evt.target.value;
 
         // Get validate state anyway
-        const validState: Partial<IState> = hsValidationRules ? this.getValidState(val, validate) : null;
+        const validState: TValidState = hsValidationRules ? this.getValidState(val, validate) : null;
 
         // Only set validate state only when there r validation rules & either of the following:
         // - when its 1st time focus & there r more than or eq. to 3 characters + validation rules exist

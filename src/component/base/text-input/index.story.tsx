@@ -25,11 +25,11 @@ export const WithValidation = () => {
 export const WithPassedInput  = () => {
     // Ext state & 2way binding
     const [ text, setText ] = useState('lorem sum');
-    const onInputChange = (evt, val) => setText(val);
+    const onInputChange = ({evt, val}) => setText(val);
 
     return (
         <div style={defStyle} >
-            <TextInput id="lorem2" placeholder="some text" text={text} onInputChange={onInputChange} />
+            <TextInput id="lorem2" placeholder="some text" defaultValue={text} onInputChange={onInputChange} />
         </div>
     )
 };
@@ -43,7 +43,7 @@ export const WithPassedInputAndValidation  = () => {
 
     // Ext state & 2way binding
     const [ text, setText ] = useState('lorem sum');
-    const onInputChange = (evt, val) => setText(val);
+    const onInputChange = ({ evt, val }) => setText(val);
 
     return (
         <div style={defStyle} >
@@ -52,7 +52,7 @@ export const WithPassedInputAndValidation  = () => {
                 id="lorem3"
                 placeholder="some text"
                 label="label"
-                text={text}
+                defaultValue={text}
                 onInputChange={onInputChange}
                 validate={validationRules}
                 />
