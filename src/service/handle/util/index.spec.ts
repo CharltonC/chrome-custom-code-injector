@@ -8,6 +8,7 @@ describe('Utility Handle', () => {
         it('should return the base css class if suffix is not provided', () => {
             expect(cssCls(MOCK_BASE_CLS, '')).toBe(MOCK_BASE_CLS);
             expect(cssCls(MOCK_BASE_CLS, [])).toBe(MOCK_BASE_CLS);
+            expect(cssCls(MOCK_BASE_CLS, ['', ''])).toBe(MOCK_BASE_CLS);
         });
 
         it('should return the css class when given a string suffix', () => {
