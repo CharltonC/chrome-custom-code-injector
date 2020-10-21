@@ -10,8 +10,8 @@
         outline-offset: 2px;
     }
 
-    &:before,
-    &:after {
+    &::before,
+    &::after {
         content: '';
         display: block;
     }
@@ -20,19 +20,19 @@
         @include arrow('up', 5px, $light-gray-200);
     }
 
-    &:after {
+    &::after {
         margin-top: 3px;
         @include arrow('dn', 5px, $light-gray-200);
     }
 
     &--asc {
-        &:before {
+        &::before {
             @include arrow('up', 5px, $dark-gray-100);
         }
     }
 
     &--dsc {
-        &:after {
+        &::after {
             @include arrow('dn', 5px, $dark-gray-100);
         }
     }

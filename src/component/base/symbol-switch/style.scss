@@ -6,7 +6,7 @@
         margin: 0;
 
         &:not(:checked) {
-            & + span:before {
+            & + span::before {
                 content: '';
                 position: absolute;
                 z-index: 100;
@@ -30,7 +30,7 @@
                 color: $dark-gray;
                 border-color: $dark-gray;
 
-                &:before {
+                &::before {
                     background: $dark-gray;
                 }
             }

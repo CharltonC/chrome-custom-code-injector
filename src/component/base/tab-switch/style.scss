@@ -30,7 +30,7 @@
             border-right: 1px solid $light-gray-100;
         }
 
-        &:before {
+        &::before {
             content: '';
             position: absolute;
             bottom: -1px;
@@ -42,7 +42,7 @@
         &:not(&--active) {
             border-top: 2px solid $light-gray-100;
 
-            &:before {
+            &::before {
                 display: none;
             }
 
@@ -54,7 +54,7 @@
         &--active {
             border-top: 2px solid $teal;
 
-            &:before {
+            &::before {
                 display: block;
             }
         }

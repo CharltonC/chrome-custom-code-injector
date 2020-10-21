@@ -20,7 +20,7 @@
             outline: 2px solid $light-blue-200;
         }
 
-        &:before {
+        &::before {
             @include checkbox-input-tick(2px, $white);
         }
 
