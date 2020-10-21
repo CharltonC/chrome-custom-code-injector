@@ -4,7 +4,6 @@ import { TextInput } from '../../base/text-input';
 import { SearchInput } from '../../base/search-input';
 import { SliderSwitch } from '../../base/slider-switch';
 import { Dropdown } from '../../base/dropdown';
-import { TextBtn } from '../../base/text-btn';
 import { FileInput } from '../../base/file-input';
 import { Modal } from '../../widget/modal';
 import { OptionEditView } from '../../view/option-edit';
@@ -93,47 +92,69 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
             {/* TODO: Modals */}
             <div className="modals">
                 <Modal
+                    // currModalId="modal-setting"
                     currModalId={currModalId}
-                    id="modal-def-option"
-                    headers={['Default Options']}
+                    id="modal-setting"
+                    clsSuffix="setting"
+                    header="Default Options"
                     onHide={() => {}}>
-                    <button type="button">RESET ALL</button>
                     <ul>
+                        <li>
+                            <button type="button">RESET ALL</button>
+                        </li>
                         <li>
                             <h4>Read/Search</h4>
                         </li>
                         <li>
-                            <p>Show delete confirmation dialog</p>
-                            <SliderSwitch id="show-dialog" />
+                            <SliderSwitch
+                                id="show-dialog"
+                                label="Show delete confirmation dialog"
+                                ltLabel />
                         </li>
                         <li>
-                            <p>Results per page</p>
-                            <Dropdown id="result-per-page" list={['a', 'b']} border={true} />
+                            <Dropdown
+                                id="result-per-page"
+                                label="Results per page"
+                                ltLabel
+                                list={['a', 'b']}
+                                border={true}
+                                />
                         </li>
                         <li>
                             <h4>New Item</h4>
                         </li>
                         <li>
-                            <p>HTTPS</p>
-                            <SliderSwitch id="match-https" />
+                            <SliderSwitch
+                                id="match-https"
+                                label="HTTPS"
+                                ltLabel />
                         </li>
                         <li>
-                            <p>Regex</p>
-                            <SliderSwitch id="match-regex" />
+                            <SliderSwitch
+                                id="match-regex"
+                                label="Regex"
+                                ltLabel />
                         </li>
                         <li>
-                            <p>Run Custom Js</p>
-                            <SliderSwitch id="run-js" />
+                            <SliderSwitch
+                                id="run-js"
+                                label="Run Custom Js"
+                                ltLabel />
                         </li>
                         <li>
-                            <p>Run Custom CSS</p>
-                            <SliderSwitch id="run-css" />
+                            <SliderSwitch
+                                id="run-css"
+                                label="Run Custom CSS"
+                                ltLabel />
                         </li>
                         <li>
-                            <p>Run Libraries</p>
-                            <SliderSwitch id="run-library" />
+                            <SliderSwitch
+                                id="run-library"
+                                label="Run Libraries"
+                                ltLabel />
                         </li>
                         <li>
+                            {/* TODO: sstyle */}
                             <p>Javascript Execution</p>
                             <Dropdown id="js-exec-frame" list={['a', 'b']} border={true} />
                             <Dropdown id="js-exec-order" list={['a', 'b']} border={true} />
@@ -141,26 +162,32 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     </ul>
                 </Modal>
                 <Modal
+                    // currModalId="modal-json-import"
                     currModalId={currModalId}
-                    id="modal-json-import"
-                    headers={['Import Configuration from a "*.json" file']}
-                    onHide={() => {}}>
+                    id="modal-setting-import"
+                    clsSuffix="setting-import"
+                    header="Import Configuration from a `*.json` file"
+                    cancel="CANCEL"
+                    confirm="IMPORT"
+                    onHide={() => {}}
+                    onCancel={() => {}}
+                    onConfirm={() => {}}
+                    >
                     <FileInput id="json-import-input" fileType="application/JSON" />
-                    <div className="modal__footer">
-                        <TextBtn text="CANCEL" outline onClick={() => {}} />
-                        <TextBtn text="IMPORT" onClick={() => {}} />
-                    </div>
                 </Modal>
                 <Modal
+                    // currModalId="modal-setting-export"
                     currModalId={currModalId}
-                    id="modal-json-export"
-                    headers={['Export Configuration from a "*.json" file']}
-                    onHide={() => {}}>
+                    id="modal-setting-export"
+                    clsSuffix="setting-export"
+                    header="Export Configuration to a `*.json` file"
+                    cancel="CANCEL"
+                    confirm="EXPORT"
+                    onHide={() => {}}
+                    onCancel={() => {}}
+                    onConfirm={() => {}}
+                    >
                     <TextInput id="" label="Filename" validate={[]}/>
-                    <div className="modal__footer">
-                        <TextBtn text="CANCEL" outline onClick={() => {}} />
-                        <TextBtn text="EXPORT" onClick={() => {}} />
-                    </div>
                 </Modal>
             </div>
         </div>

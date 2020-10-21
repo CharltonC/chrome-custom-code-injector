@@ -86,15 +86,37 @@
     }
 
     .modal {
-        &__footer {
-            display: flex;
-            margin-top: 40px;
-            justify-content: flex-end;
+        &--setting {
+            li {
+                margin-top: 25px;
+            }
 
-            .text-btn {
-                &:last-child {
-                    margin-left: 25px;
-                }
+            h4 {
+                margin-top: 25px;
+                font: 16px $roboto-bld;
+                color: #757575;
+            }
+
+            .dropdown select {
+                width: 150px;
+            }
+
+            .slider-switch,
+            .dropdown {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .slider-switch span,
+            .dropdown label {
+                width: 250px;
+            }
+        }
+
+        &--json-export {
+            .text-ipt {
+                grid-template-columns: 100px 1fr;
             }
         }
     }
