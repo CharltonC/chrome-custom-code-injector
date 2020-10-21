@@ -27,10 +27,6 @@
     }
 
     .icon {
-        // position: absolute;
-        // transform: translate3d(-25px, 0, 0);
-        float: left;
-        // z-index: 999;
         pointer-events: none;
         color: $gray-200;
         transition: color .2s ease;
