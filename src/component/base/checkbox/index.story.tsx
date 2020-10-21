@@ -6,12 +6,14 @@ export default {
     component: Checkbox,
 };
 
-const defStyle = {};
+const defStyle = { padding: 15 };
 
 export const Default = () => {
     return (
         <div style={defStyle} >
-            <Checkbox id="lorem" label="checkbox" />
+            <Checkbox id="1" label="left-label" />
+            <br/>
+            <Checkbox id="2" label="right-label" ltLabel />
         </div>
     )
 };
@@ -19,7 +21,9 @@ export const Default = () => {
 export const Disabled = () => {
     return (
         <div style={defStyle} >
-            <Checkbox id="lorem" label="checkbox" disabled />
+            <Checkbox id="1" label="left-label-disabled" disabled />
+            <br/>
+            <Checkbox id="2" label="right-label-disabled" disabled ltLabel />
         </div>
     )
 };
@@ -30,7 +34,7 @@ export const ExternalState = () => {
     return (
         <div style={defStyle} >
             <Checkbox
-                id="lorem"
+                id="1"
                 label="checkbox"
                 defaultChecked={checked}
                 onClick={() => setChecked(!checked)}

@@ -1,5 +1,5 @@
 .checkbox {
-    display: flex;
+    display: inline-flex;
     align-items: center;
 
     input {
@@ -26,7 +26,7 @@
 
         &:disabled {
             &,
-            & + span {
+            & + label {
                 opacity: .4;
             }
         }
@@ -42,10 +42,23 @@
         }
     }
 
-    span {
+    label {
         display: inline-block;
-        margin-left: 5px;
         font: 14px $roboto-reg;
         color: $gray;
+    }
+
+    &:not(&--lt-label) {
+        label {
+            margin-left: 10px;
+        }
+    }
+
+    &--lt-label {
+        flex-direction: row-reverse;
+
+        label {
+            margin-right: 10px;
+        }
     }
 }

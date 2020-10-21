@@ -6,32 +6,30 @@ describe('Component - Checkbox', () => {
     const MOCK_ID = 'id';
     const MOCK_LABEL = 'label';
 
-    function getChildElem(props) {
-        return TestUtil.renderShallow(<Checkbox {...props} />).props.children;
+    function getChildElem(props, rtnChildren: boolean = true) {
+        const { props: wrapperProps } = TestUtil.renderShallow(<Checkbox {...props} />);
+        return rtnChildren ? wrapperProps.children : wrapperProps;
     }
 
     it('should render without label', () => {
-        const [ $ltLabel, $input, $rtLabel ] = getChildElem({ id: MOCK_ID });
+        const [ $input, $label ] = getChildElem({ id: MOCK_ID });
         expect($input.props.id).toBe(MOCK_ID);
         expect($input.props.name).toBe(MOCK_ID);
-        expect($ltLabel).toBeFalsy();
-        expect($rtLabel).toBeFalsy();
+        expect($label).toBeFalsy();
+    });
+
+    it('should render with right positioned label by default', () => {
+        const { className, children } = getChildElem({ id: MOCK_ID, label: MOCK_LABEL }, false);
+        const [ , $label ] = children;
+        expect(className).not.toContain('lt-label');
+        expect($label.type).toBe('label');
+        expect($label.props.children).toBe(MOCK_LABEL);
+        expect($label.props.htmlFor).toBe(MOCK_ID);
     });
 
     it('should render with left positioned label', () => {
-        const [ $ltLabel, , $rtLabel ] = getChildElem({ id: MOCK_ID, label: MOCK_LABEL });
-        expect($ltLabel.type).toBe('label');
-        expect($ltLabel.props.children).toBe(MOCK_LABEL);
-        expect($ltLabel.props.htmlFor).toBe(MOCK_ID);
-        expect($rtLabel).toBeFalsy();
-    });
-
-    it('should render with right positioned label', () => {
-        const [ $ltLabel, , $rtLabel ] = getChildElem({ id: MOCK_ID, label: MOCK_LABEL, rtLabel: true });
-        expect($ltLabel).toBeFalsy();
-        expect($rtLabel.type).toBe('label');
-        expect($rtLabel.props.children).toBe(MOCK_LABEL);
-        expect($rtLabel.props.htmlFor).toBe(MOCK_ID);
+        const { className } = getChildElem({ id: MOCK_ID, label: MOCK_LABEL, ltLabel: true }, false);
+        expect(className).toContain('lt-label');
     });
 });
 

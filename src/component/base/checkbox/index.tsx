@@ -1,24 +1,22 @@
-import React, { memo, ReactElement } from 'react';
+import React, { memo } from 'react';
 import { IProps } from './type';
 import { UtilHandle } from '../../../service/handle/util';
 
 const { cssCls } = UtilHandle.prototype;
 
 export const Checkbox: React.FC<IProps> = memo((props: IProps) => {
-    const { id, label, rtLabel, clsSuffix, ...inputProps } = props;
-    const $label: ReactElement = <label htmlFor={id}>{label}</label>;
-    const className: string = cssCls('checkbox', clsSuffix);
+    const { id, label, ltLabel, clsSuffix, ...inputProps } = props;
+    const className: string = cssCls('checkbox', (clsSuffix ?? '') + `${ltLabel ? 'lt-label' : ''}`);
 
     return (
         <div className={className}>
-            { label && !rtLabel && $label }
             <input
                 type="checkbox"
                 id={id}
                 name={id}
                 {...inputProps}
-                />
-            { label && rtLabel && $label }
+                />{ label &&
+            <label htmlFor={id}>{label}</label> }
         </div>
     );
 });
