@@ -35,13 +35,13 @@ export const ExternalState = () => {
     )
 };
 
-export const RightLabel = () => {
+export const LeftLabel = () => {
     return (
         <div style={defStyle}>
             <SliderSwitch
                 id="lorem"
                 label="lorem"
-                rtLabel
+                ltLabel
                 />
         </div>
     )
@@ -51,9 +51,16 @@ export const Disabled = () => {
     return (
         <div style={defStyle}>
             <SliderSwitch
-                id="sum"
+                id="1"
                 label="sum"
                 disabled
+                />
+            <br/>
+            <SliderSwitch
+                id="2"
+                label="sum"
+                disabled
+                ltLabel
                 />
         </div>
     )

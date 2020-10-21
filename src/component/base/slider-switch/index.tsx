@@ -1,24 +1,22 @@
-import React, { memo, ReactElement } from 'react';
+import React, { memo } from 'react';
 import { IProps } from './type';
 import { UtilHandle } from '../../../service/handle/util';
 
 const { cssCls } = UtilHandle.prototype;
 
 export const SliderSwitch: React.FC<IProps> = memo((props: IProps) => {
-    const { id, label, rtLabel, clsSuffix, ...inputProps } = props;
-    const $label: ReactElement = <span>{label}</span>;
-    const className: string = cssCls('slider-switch', clsSuffix);
+    const { id, label, ltLabel, clsSuffix, ...inputProps } = props;
+    const className: string = cssCls('slider-switch', (clsSuffix ?? '') + ` ${ltLabel ? 'lt-label' : ''}`);
 
     return (
-        <label className={className} htmlFor={id}>
-            { label && !rtLabel && $label }
+        <div className={className}>
             <input
                 type="checkbox"
                 id={id}
                 name={id}
                 {...inputProps}
                 />
-            { label && rtLabel && $label }
-        </label>
+            { label && <label htmlFor={id}>{label}</label> }
+        </div>
     );
 });

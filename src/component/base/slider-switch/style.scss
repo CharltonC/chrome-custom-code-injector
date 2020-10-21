@@ -27,7 +27,10 @@
         }
 
         &:disabled {
-            opacity: .4;
+            &,
+            ~ label {
+                opacity: .4;
+            }
         }
 
         &:not(:disabled):hover {
@@ -59,16 +62,22 @@
     }
 
     // Label Text
-    span {
+    label {
         font: 14px $roboto-reg;
         color: $gray;
+    }
 
-        &:first-child {
-            margin-right: 5px;
+    &--lt-label {
+        flex-direction: row-reverse;
+
+        label {
+            margin-right: 10px;
         }
+    }
 
-        &:last-child {
-            margin-left: 5px;
+    &:not(&--lt-label) {
+        label {
+            margin-left: 10px;
         }
     }
 }
