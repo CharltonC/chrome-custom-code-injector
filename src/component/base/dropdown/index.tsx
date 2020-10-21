@@ -6,10 +6,6 @@ import { IProps, IState} from './type';
 const dnArrowElem: ReactElement = inclStaticIcon('arrow-dn');
 
 export class Dropdown extends MemoComponent<IProps, IState> {
-    static DefaultProps: Partial<IProps> = {
-        clsSuffix: ''
-    };
-
     constructor(props: IProps) {
         super(props);
         this.state = this.getInitialState(props);
@@ -28,26 +24,26 @@ export class Dropdown extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { id, label, list, listTxtTransform, border, selectIdx, onSelect, clsSuffix, ...props } = this.props;
+        const { id, label, ltLabel, list, listTxtTransform, border, selectIdx, onSelect, clsSuffix, ...props } = this.props;
         const { hsList, hsSelectIdx } = this.state;
-        const className: string = this.getClsName(clsSuffix, border);
+        const className: string = this.getClsName(clsSuffix, border, ltLabel);
         const selectProps = hsSelectIdx ? { ...props, value: selectIdx } : props;
 
         return hsList && (
             <div className={className}>
-                { label && <label htmlFor={id}>{label}</label> }
                 <select
                     {...selectProps}
                     id={id}
                     onChange={this.onSelect}
                     >{ list.map((text: string | number, idx: number) =>
-                        /* we use the list index as a generic value as we cant gurantee that the text is not empty or is diff. */
-                        <option key={`${id}-${idx}`} value={idx}>
-                            { listTxtTransform ? listTxtTransform(text) : text }
-                        </option>
+                    /* we use the list index as a generic value as we cant gurantee that the text is not empty or is diff. */
+                    <option key={`${id}-${idx}`} value={idx}>
+                        { listTxtTransform ? listTxtTransform(text) : text }
+                    </option>
                     )}
                 </select>
                 { dnArrowElem }
+                { label && <label htmlFor={id}>{label}</label> }
             </div>
         );
     }
@@ -65,7 +61,10 @@ export class Dropdown extends MemoComponent<IProps, IState> {
         this.props.onSelect?.(evt, selectValueAttrVal);
     }
 
-    getClsName(clsSuffix: string = '', border: boolean): string {
-        return this.cssCls('dropdown', clsSuffix + ` ${border ? 'border' : 'plain'}`);
+    getClsName(clsSuffix: string = '', border: boolean, ltLabel: boolean = false): string {
+        const suffix: string = clsSuffix
+            + ` ${border ? 'border' : 'plain'}`
+            + ` ${ltLabel ? 'lt-label' : ''}`;
+        return this.cssCls('dropdown', suffix);
     }
 }

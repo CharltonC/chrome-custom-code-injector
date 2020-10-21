@@ -1,18 +1,16 @@
 import { TestUtil } from '../../../asset/ts/test-util';
+import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { IProps, IState } from './type';
 import { Dropdown } from '.';
 
 describe('Component - Dropdown', () => {
     const mockBareProps: IProps = {id: 'id', list: []};
     const mockDefProps: IProps = {id: 'id', list: ['a', 'b']};
-    let getInitialStateSpy: jest.SpyInstance;
-    let onSelectSpy: jest.SpyInstance;
+    let spy: TMethodSpy<Dropdown>;
     let setStateSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        getInitialStateSpy = jest.spyOn(Dropdown.prototype, 'getInitialState');
-        onSelectSpy = jest.spyOn(Dropdown.prototype, 'onSelect');
-        setStateSpy = jest.spyOn(Dropdown.prototype, 'setState');
+        spy = TestUtil.spyProtoMethods(Dropdown);
     });
 
     afterEach(() => {
@@ -26,7 +24,7 @@ describe('Component - Dropdown', () => {
 
         describe('constructor', () => {
             it("should init ", () => {
-                getInitialStateSpy.mockReturnValue(mockRtnState);
+                spy.getInitialState.mockReturnValue(mockRtnState);
                 cmp = new Dropdown(mockBareProps);
 
                 expect(cmp.state).toEqual(mockRtnState);
@@ -47,14 +45,14 @@ describe('Component - Dropdown', () => {
                 cmpWithSelectIdx = new Dropdown(mockPropsWithInitialSelectIdx);
                 cmpWithoutSelectIdx = new Dropdown(mockDefProps);
 
-                getInitialStateSpy = jest.spyOn(Dropdown.prototype, 'getInitialState').mockReturnValue(mockRtnState);
+                spy.getInitialState = jest.spyOn(Dropdown.prototype, 'getInitialState').mockReturnValue(mockRtnState);
                 setStateSpy = jest.spyOn(Dropdown.prototype, 'setState').mockImplementation(() => {});
             });
 
             it('should not set state and not proceed with update when select index is not provided in the first place', () => {
                 cmpWithoutSelectIdx.UNSAFE_componentWillReceiveProps(mockPropsWithDiffSelectIdx);
 
-                expect(getInitialStateSpy).not.toHaveBeenCalled();
+                expect(spy.getInitialState).not.toHaveBeenCalled();
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
 
@@ -63,15 +61,15 @@ describe('Component - Dropdown', () => {
                 const { selectIdx } = mockPropsWithDiffSelectIdx;
                 cmpWithSelectIdx.UNSAFE_componentWillReceiveProps(mockPropsWithDiffSelectIdx);
 
-                expect(getInitialStateSpy).toHaveBeenCalledTimes(1);
-                expect(getInitialStateSpy).toHaveBeenCalledWith({list, selectIdx});
+                expect(spy.getInitialState).toHaveBeenCalledTimes(1);
+                expect(spy.getInitialState).toHaveBeenCalledWith({list, selectIdx});
                 expect(setStateSpy).toHaveBeenCalledWith(mockRtnState);
             });
 
             it('should not set state and not proceed with update if new select index is same as old one when select index is provided in the first place', () => {
                 cmpWithSelectIdx.UNSAFE_componentWillReceiveProps(mockPropsWithSameSelectIdx);
 
-                expect(getInitialStateSpy).not.toHaveBeenCalled();
+                expect(spy.getInitialState).not.toHaveBeenCalled();
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
         });
@@ -133,6 +131,21 @@ describe('Component - Dropdown', () => {
                 expect(mockOnSelect).toHaveBeenCalledWith(mockEvt, mockOptionIdx);
             });
         });
+
+        describe('Method - getClsName: Generate class names with suffixes based on border, label position and given suffixes from props', () => {
+            beforeEach(() => {
+                spy.getInitialState.mockImplementation(() => {});
+                cmp = new Dropdown({} as IProps);
+            });
+
+            it('should return class names', () => {
+                expect(cmp.getClsName('a', true, true)).toBe('dropdown dropdown--a dropdown--border dropdown--lt-label');
+
+                expect(cmp.getClsName('a', true, false)).toBe('dropdown dropdown--a dropdown--border');
+
+                expect(cmp.getClsName('a', false)).toBe('dropdown dropdown--a dropdown--plain');
+            });
+        });
     });
 
     describe('Render/DOM', () => {
@@ -140,11 +153,13 @@ describe('Component - Dropdown', () => {
         let $wrapper: HTMLElement;
         let $select: HTMLSelectElement;
         let $options: NodeListOf<HTMLOptionElement>;
+        let $label: HTMLLabelElement;
 
         function syncChildElem() {
             $wrapper = $elem.querySelector('div');
             $select = $elem.querySelector('select');
             $options = $elem.querySelectorAll('option');
+            $label = $elem.querySelector('label');
         }
 
         beforeEach(() => {
@@ -156,27 +171,20 @@ describe('Component - Dropdown', () => {
             $elem = null;
         });
 
-        it('should render the dropdown without border', () => {
+        it('should render the dropdown without border and withou label', () => {
             TestUtil.renderPlain($elem, Dropdown, mockDefProps);
             syncChildElem();
 
-            expect($wrapper.className).toBe('dropdown dropdown--plain');
             expect($select.id).toBe(mockDefProps.id);
             expect($options.length).toBe(2);
+            expect($label).toBeFalsy();
         });
 
-        it('should render the dropdown with border', () => {
-            TestUtil.renderPlain($elem, Dropdown, {...mockDefProps, border: true});
+        it('should render the dropdown with label if provided', () => {
+            TestUtil.renderPlain($elem, Dropdown, { ...mockDefProps, label: 'lorem' });
             syncChildElem();
 
-            expect($wrapper.className).toBe('dropdown dropdown--border');
-        });
-
-        it('should add the class suffix to wrapper if provided', () => {
-            TestUtil.renderPlain($elem, Dropdown, {...mockDefProps, clsSuffix: 'demo'});
-            syncChildElem();
-
-            expect($wrapper.className).toContain('dropdown--demo');
+            expect($label).toBeTruthy();
         });
 
         it('should not render if list is not provided', () => {
@@ -227,7 +235,7 @@ describe('Component - Dropdown', () => {
 
             $select.value = '1';
             TestUtil.triggerEvt($select, 'change');
-            expect(onSelectSpy).toHaveBeenCalled();
+            expect(spy.onSelect).toHaveBeenCalled();
             expect($options[0].selected).toBe(false);
             expect($options[1].selected).toBe(true);
         });

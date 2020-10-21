@@ -12,7 +12,13 @@ const list = ['a', 'b', 'c'];
 export const WithoutBorder = () => {
     return (
         <div style={defStyle} >
-            <Dropdown id="" list={list} />
+            <Dropdown id="1" list={list} label="label" />
+            <br/>
+            <Dropdown id="2" list={list} label="label" ltLabel />
+            <br/>
+            <Dropdown id="3" list={list} label="disabled" disabled />
+            <br/>
+            <Dropdown id="4" list={list} label="disabled" ltLabel disabled />
         </div>
     )
 };
@@ -20,7 +26,13 @@ export const WithoutBorder = () => {
 export const WithBorder = () => {
     return (
         <div style={defStyle} >
-            <Dropdown id="" list={list} border={true} />
+            <Dropdown id="1" list={list} border={true} label="label" />
+            <br/>
+            <Dropdown id="2" list={list} border={true} label="label" ltLabel />
+            <br/>
+            <Dropdown id="3" list={list} border={true} label="disabled" disabled />
+            <br/>
+            <Dropdown id="4" list={list} border={true} label="disabled" ltLabel disabled />
         </div>
     )
 };
@@ -42,13 +54,3 @@ export const WithSelectedIndexAndCallback = () => {
         </div>
     )
 };
-
-export const Disabled = () => {
-    return (
-        <div style={defStyle} >
-            <Dropdown id="" list={list} border={true} disabled={true} />
-        </div>
-    )
-};
-
-
