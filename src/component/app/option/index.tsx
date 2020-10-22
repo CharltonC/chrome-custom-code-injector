@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 import { IconBtn } from '../../base/icon-btn';
+import { IconSwitch } from '../../base/icon-switch';
 import { Checkbox } from '../../base/checkbox';
 import { TextInput } from '../../base/text-input';
 import { SearchInput } from '../../base/search-input';
@@ -61,14 +62,18 @@ const modalIds = [
     'setting',
     'setting-import',
     'setting-export',
-    'delete-confirm'
+    'delete-confirm',
+    'host-add',
+    'path-add',
+    'lib-add',
+    'lib-edit',
 ];
 
 // TODO: Props type
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
     // TODO: removal temp state
     const [ isEditView, setView ] = useState(true);
-    const [ currModalId, setModalId ] = useState('modal-confirm-removal');
+    const [ currModalId, setModalId ] = useState('modal-lib-edit');
 
     return (
         <div className="app app--option">
@@ -81,7 +86,6 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     <li><button type="button" onClick={() => setModalId(`modal-${id}`) }>Modal {id}</button></li>
                 )) }
             </ul>
-
             {/* End-Temp */}
 
             <header className="header">{ isEditView &&
@@ -191,6 +195,121 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     onConfirm={() => setModalId(null)}
                     >
                     <Checkbox id="setting-delete-confirm" label="Don’t show this confirmation again" />
+                </Modal>
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-host-add"
+                    clsSuffix="host-add"
+                    header="Add Host"
+                    cancel="CANCEL"
+                    confirm="SAVE"
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
+                    >
+                    <div className="fm-field">
+                        <TextInput
+                            id="host-id"
+                            label="ID"
+                            validate={[]}
+                            onInputChange={({ validState }) => {
+                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                            }} />
+                        <div className="fm-field__ctrl">
+                            <IconSwitch id="modal-https" label="lock-close" icon />
+                            <IconSwitch id="modal-regex" label="(.*)" />
+                        </div>
+                    </div>
+                    <div className="fm-field">
+                        <TextInput
+                            id="host-value"
+                            label="Address"
+                            validate={[]}
+                            onInputChange={({ validState }) => {
+                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                            }} />
+                    </div>
+                </Modal>
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-path-add"
+                    clsSuffix="path-add"
+                    header="Add Path"
+                    cancel="CANCEL"
+                    confirm="SAVE"
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
+                    >
+                    <div className="fm-field">
+                        <TextInput
+                            id="path-id"
+                            label="ID"
+                            validate={[]}
+                            onInputChange={({ validState }) => {
+                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                            }} />
+                        <div className="fm-field__ctrl">
+                            <IconSwitch id="modal-regex" label="(.*)" />
+                        </div>
+                    </div>
+                    <div className="fm-field">
+                        <TextInput
+                            id="path-url"
+                            label="Url"
+                            validate={[]}
+                            onInputChange={({ validState }) => {
+                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                            }} />
+                    </div>
+                </Modal>
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-lib-add"
+                    clsSuffix="lib-add"
+                    header="Add a library from a URL (e.g. CDN)"
+                    cancel="CANCEL"
+                    confirm="SAVE"
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
+                    >
+                    <TextInput
+                        id="path-id"
+                        label="ID"
+                        validate={[]}
+                        onInputChange={({ validState }) => {
+                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                        }} />
+                    <TextInput
+                        id="path-url"
+                        label="Url"
+                        validate={[]}
+                        onInputChange={({ validState }) => {
+                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                        }} />
+                </Modal>
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-lib-edit"
+                    clsSuffix="lib-edit"
+                    header="Edit a Library Url"
+                    cancel="CANCEL"
+                    confirm="SAVE"
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
+                    >
+                    <TextInput
+                        id="path-id"
+                        label="ID"
+                        validate={[]}
+                        onInputChange={({ validState }) => {
+                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                        }} />
+                    <TextInput
+                        id="path-url"
+                        label="Url"
+                        validate={[]}
+                        onInputChange={({ validState }) => {
+                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                        }} />
                 </Modal>
             </div>
         </div>

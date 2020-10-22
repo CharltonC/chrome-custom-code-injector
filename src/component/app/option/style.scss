@@ -143,5 +143,31 @@
                 grid-template-columns: 100px 1fr;
             }
         }
+
+        &--host-add,
+        &--path-add {
+            .fm-field {
+                position: relative;
+                &:not(:first-child) {
+                    margin-top: 40px;
+                }
+
+                .fm-field__ctrl {
+                    display: inline-block;
+                    position: absolute;
+                    top: -3px;
+                    right: 0;
+                }
+            }
+        }
+
+        &--lib-add,
+        &--lib-edit {
+            .text-ipt {
+                &:not(:first-child) {
+                    margin-top: 40px;
+                }
+            }
+        }
     }
 }
