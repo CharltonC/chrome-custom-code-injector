@@ -23,20 +23,20 @@ export const ForClassComponent = () => {
             super(props);
             this.state = { currId: null };
             this.onShow = this.onShow.bind(this);
-            this.onHide = this.onHide.bind(this);
+            this.onCancel = this.onCancel.bind(this);
         }
 
-        onHide(evt) {
+        onCancel(evt) {
             const { type } = evt || {};
             if (evt && type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
             this.setState({currId: null});
-            document.removeEventListener('keyup', this.onHide);
+            document.removeEventListener('keyup', this.onCancel);
             domHandle.addBodyCls('modal-open', false);
         }
 
         onShow() {
             this.setState({currId: 'demo'});
-            document.addEventListener('keyup', this.onHide);
+            document.addEventListener('keyup', this.onCancel);
             domHandle.addBodyCls('modal-open');
         }
 
@@ -51,8 +51,8 @@ export const ForClassComponent = () => {
                         subHeader="subheader"
                         cancel="cancel"
                         confirm="confirm"
-                        onHide={this.onHide}
-                        onConfirm={this.onHide}
+                        onCancel={this.onCancel}
+                        onConfirm={this.onCancel}
                         >
                         <h1>Modal A content</h1>
                     </Modal>
@@ -67,17 +67,17 @@ export const ForClassComponent = () => {
 export const ForFunctionalComponent = () => {
     const [ currModalId, setCurrModalId ] = useState(null);
 
-    const onHide = (evt: Event) => {
+    const onCancel = (evt: Event) => {
         const { type } = evt || {};
         if (evt && type !== 'click' && !(type === 'keyup' && (evt as KeyboardEvent).which === 27)) return;
         setCurrModalId(null);
-        document.removeEventListener('keyup', onHide);
+        document.removeEventListener('keyup', onCancel);
         domHandle.addBodyCls('modal-open', false);
     }
 
     const onShow = () => {
         setCurrModalId('demo');
-        document.addEventListener('keyup', onHide);
+        document.addEventListener('keyup', onCancel);
         domHandle.addBodyCls('modal-open');
     }
 
@@ -91,8 +91,8 @@ export const ForFunctionalComponent = () => {
                 subHeader="subheader"
                 cancel="cancel"
                 confirm="confirm"
-                onHide={onHide}
-                onConfirm={onHide}
+                onCancel={onCancel}
+                onConfirm={onCancel}
                 >
                 <h1>Modal A content</h1>
             </Modal>
@@ -102,7 +102,7 @@ export const ForFunctionalComponent = () => {
 
 export const WithoutEscKeyBinding = () => {
     const [ currModalId, setCurrModalId ] = useState(null);
-    const onHide = () => setCurrModalId(null);
+    const onCancel = () => setCurrModalId(null);
     const onShow = () => setCurrModalId('demo');
 
     return (
@@ -115,7 +115,7 @@ export const WithoutEscKeyBinding = () => {
                 subHeader="subheader"
                 cancel="cancel"
                 confirm="confirm"
-                onHide={onHide}
+                onCancel={onCancel}
                 >
                 <h1>Modal A content</h1>
             </Modal>

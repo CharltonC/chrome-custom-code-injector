@@ -9,16 +9,16 @@ describe('Component - Modal', () => {
         subHeader: 'sub',
         currModalId: 'lorem',
         id: 'sum',
-        onHide: null
+        onCancel: null
     };
     let mockProps: IProps;
-    let mockOnHide: jest.Mock;
+    let mockOnCancel: jest.Mock;
 
     beforeEach(() => {
-        mockOnHide = jest.fn();
+        mockOnCancel = jest.fn();
         mockProps = {
             ...mockBaseProps,
-            onHide: mockOnHide
+            onCancel: mockOnCancel
         }
     });
 
@@ -35,9 +35,9 @@ describe('Component - Modal', () => {
         });
 
         describe('Lifecycle - componentWillUnmount', () => {
-            it('should trigger onHide', () => {
+            it('should trigger onCancel', () => {
                 modal.componentWillUnmount();
-                expect(mockOnHide).toHaveBeenCalled();
+                expect(mockOnCancel).toHaveBeenCalled();
             });
         });
 
@@ -90,7 +90,7 @@ describe('Component - Modal', () => {
             });
         });
 
-        describe('triger `onHide` callback in general', () => {
+        describe('triger `onCancel` callback in general', () => {
             beforeEach(() => {
                 modalMethodSpy = TestUtil.spyProtoMethods(Modal);
                 modalMethodSpy.isVisible.mockReturnValue(true);
@@ -102,14 +102,14 @@ describe('Component - Modal', () => {
                 expect($subHeader).toBeTruthy();
             });
 
-            it('should call `onHide` when click overlay', () => {
+            it('should call `onCancel` when click overlay', () => {
                 TestUtil.triggerEvt($overlay, 'click');
-                expect(mockOnHide).toHaveBeenCalled();
+                expect(mockOnCancel).toHaveBeenCalled();
             });
 
-            it('should call `onHide` when click close button', () => {
+            it('should call `onCancel` when click close button', () => {
                 TestUtil.triggerEvt($closeBtn, 'click');
-                expect(mockOnHide).toHaveBeenCalled();
+                expect(mockOnCancel).toHaveBeenCalled();
             });
         });
 
@@ -137,15 +137,15 @@ describe('Component - Modal', () => {
                     expect($footer.querySelectorAll('.text-btn').length).toBe(2);
                 });
 
-                it('should call `onHide` when click cancel button ', () => {
+                it('should call `onCancel` when click cancel button ', () => {
                     TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[0] as HTMLElement, 'click');
-                    expect(mockOnHide).toHaveBeenCalled();
+                    expect(mockOnCancel).toHaveBeenCalled();
                 });
 
-                it('should call `onHide` when click confirm button', () => {
+                it('should call `onCancel` when click confirm button', () => {
                     TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[1] as HTMLElement, 'click');
                     expect(mockOnConfirm).not.toHaveBeenCalled();
-                    expect(mockOnHide).toHaveBeenCalled();
+                    expect(mockOnCancel).toHaveBeenCalled();
                 });
             });
 
@@ -168,7 +168,7 @@ describe('Component - Modal', () => {
                 it('should call `onConfirm` isntead when click confirm button', () => {
                     TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[1] as HTMLElement, 'click');
                     expect(mockOnConfirm).toHaveBeenCalled();
-                    expect(mockOnHide).not.toHaveBeenCalled();
+                    expect(mockOnCancel).not.toHaveBeenCalled();
                 });
             });
         });

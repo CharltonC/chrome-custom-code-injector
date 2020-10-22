@@ -19,7 +19,7 @@ export class Modal extends MemoComponent<IProps, IState> {
     readonly closeIconElem: ReactElement = inclStaticIcon('close');
 
     componentWillUnmount() {
-        this.props.onHide();
+        this.props.onCancel();
     }
 
     render() {
@@ -27,7 +27,7 @@ export class Modal extends MemoComponent<IProps, IState> {
             header, subHeader,
             children,
             id, currModalId, clsSuffix,
-            cancel, confirm, onConfirm, onHide
+            cancel, confirm, onConfirm, onCancel
         } = this.props;
 
         return this.isVisible(id, currModalId) && (
@@ -36,15 +36,15 @@ export class Modal extends MemoComponent<IProps, IState> {
                     <header>
                         <h3>{header}</h3>{ subHeader &&
                         <h4>{subHeader}</h4>}
-                        <button type="button" onClick={onHide}>{this.closeIconElem}</button>
+                        <button type="button" onClick={onCancel}>{this.closeIconElem}</button>
                     </header>
                     <main>{children}</main>{ (cancel || confirm) &&
                     <footer>{ cancel &&
-                        <TextBtn text={cancel} outline onClick={onHide} />}{ confirm &&
-                        <TextBtn text={confirm} onClick={onConfirm ?? onHide} />}
+                        <TextBtn text={cancel} outline onClick={onCancel} />}{ confirm &&
+                        <TextBtn text={confirm} onClick={onConfirm ?? onCancel} />}
                     </footer>}
                 </div>
-                <div className="modal__overlay" onClick={onHide}></div>
+                <div className="modal__overlay" onClick={onCancel}></div>
             </div>
         );
     }
