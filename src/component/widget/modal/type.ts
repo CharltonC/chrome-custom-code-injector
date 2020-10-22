@@ -7,7 +7,6 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     cancel?: string;
     confirm?: string;
     onHide: TFn;
-    onCancel?: TFn;
     onConfirm?: TFn;
 }
 

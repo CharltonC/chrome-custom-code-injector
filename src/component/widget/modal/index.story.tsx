@@ -52,7 +52,6 @@ export const ForClassComponent = () => {
                         cancel="cancel"
                         confirm="confirm"
                         onHide={this.onHide}
-                        onCancel={this.onHide}
                         onConfirm={this.onHide}
                         >
                         <h1>Modal A content</h1>
@@ -93,7 +92,6 @@ export const ForFunctionalComponent = () => {
                 cancel="cancel"
                 confirm="confirm"
                 onHide={onHide}
-                onCancel={onHide}
                 onConfirm={onHide}
                 >
                 <h1>Modal A content</h1>
@@ -118,7 +116,6 @@ export const WithoutEscKeyBinding = () => {
                 cancel="cancel"
                 confirm="confirm"
                 onHide={onHide}
-                onCancel={onHide}
                 >
                 <h1>Modal A content</h1>
             </Modal>

@@ -27,7 +27,7 @@ export class Modal extends MemoComponent<IProps, IState> {
             header, subHeader,
             children,
             id, currModalId, clsSuffix,
-            cancel, confirm, onCancel, onConfirm, onHide
+            cancel, confirm, onConfirm, onHide
         } = this.props;
 
         return this.isVisible(id, currModalId) && (
@@ -40,7 +40,7 @@ export class Modal extends MemoComponent<IProps, IState> {
                     </header>
                     <main>{children}</main>{ (cancel || confirm) &&
                     <footer>{ cancel &&
-                        <TextBtn text={cancel} outline onClick={onCancel ?? onHide} />}{ confirm &&
+                        <TextBtn text={cancel} outline onClick={onHide} />}{ confirm &&
                         <TextBtn text={confirm} onClick={onConfirm ?? onHide} />}
                     </footer>}
                 </div>
