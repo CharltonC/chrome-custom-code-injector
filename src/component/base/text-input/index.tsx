@@ -33,16 +33,15 @@ export class TextInput extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { BASE_CLS } = this;
+        const { BASE_CLS, cssCls } = this;
         const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
         const { isValid, hsValidationRules, errMsg } = this.state;
         const hsValidState: boolean = hsValidationRules && (isValid !== null);
-
-        const validateCls: string = hsValidState ? (isValid ? `${BASE_CLS}--valid` : `${BASE_CLS}--invalid`) : '';
-        const wrapperCls: string = validateCls ? `${BASE_CLS} ${validateCls}` : BASE_CLS;
+        const validateCls: string = hsValidState ? (isValid ? 'valid' : 'invalid') : '';
+        const className: string = cssCls(BASE_CLS, (label ? 'label' : '') + ` ${validateCls}`);
 
         return (
-            <div className={wrapperCls}>{ label &&
+            <div className={className}>{ label &&
                 <label htmlFor={id}>{label}</label>}
                 <div className="text-ipt__input">
                     <input

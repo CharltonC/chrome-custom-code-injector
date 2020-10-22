@@ -1,10 +1,13 @@
 .text-ipt {
     min-width: 300px;
-    display: grid;
-    grid-template-areas: 'label input'
-                         'label error';
-    justify-content: start;
-    align-items: baseline;
+
+    &--label {
+        display: grid;
+        grid-template-areas: 'label input'
+                             'label error';
+        justify-content: start;
+        align-items: baseline;
+    }
 
     label {
         grid-area: label;

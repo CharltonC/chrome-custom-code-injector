@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, IState, IValidationConfig, TValidState } from './type';
+import { IProps, IValidationConfig, TValidState } from './type';
 import { TextInput } from '.';
 
 describe('Component - Text Input', () => {
@@ -306,13 +306,20 @@ describe('Component - Text Input', () => {
         });
 
         describe('general', () => {
-            it('should render id, base class name', () => {
+            it('should render id, base class name when there is label', () => {
                 TestUtil.renderPlain(elem, TextInput, mockProps);
                 getChildElem();
 
-                expect(wrapperElem.className).toBe('text-ipt');
+                expect(wrapperElem.className).toBe('text-ipt text-ipt--label');
                 expect(labelElem.getAttribute('for')).toBe(mockId);
                 expect(inputElem.id).toBe(mockId);
+            });
+
+            it('should render when there is no label', () => {
+                TestUtil.renderPlain(elem, TextInput, {...mockProps, label: null});
+                getChildElem();
+
+                expect(wrapperElem.className).toBe('text-ipt');
             });
         });
 
