@@ -73,7 +73,7 @@ const modalIds = [
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
     // TODO: removal temp state
     const [ isEditView, setView ] = useState(true);
-    const [ currModalId, setModalId ] = useState('modal-lib-edit');
+    const [ currModalId, setModalId ] = useState(null);
 
     return (
         <div className="app app--option">
