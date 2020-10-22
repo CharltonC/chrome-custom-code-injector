@@ -66,6 +66,7 @@ body.modal-open {
 
         button {
             grid-area: close;
+            justify-self: end;
             color: $gray;
 
             &,
