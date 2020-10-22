@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 import { IconBtn } from '../../base/icon-btn';
+import { Checkbox } from '../../base/checkbox';
 import { TextInput } from '../../base/text-input';
 import { SearchInput } from '../../base/search-input';
 import { SliderSwitch } from '../../base/slider-switch';
@@ -56,11 +57,18 @@ const mockData = [
     }
 ];
 
-const currModalId = 'demo';
+const modalIds = [
+    'setting',
+    'setting-import',
+    'setting-export',
+    'delete-confirm'
+];
 
 // TODO: Props type
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
+    // TODO: removal temp state
     const [ isEditView, setView ] = useState(true);
+    const [ currModalId, setModalId ] = useState('modal-confirm-removal');
 
     return (
         <div className="app app--option">
@@ -68,6 +76,12 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
             <button type="button" onClick={() => setView(false) }>Home</button>
             <span> | </span>
             <button type="button" onClick={() => setView(true) }>Edit</button>
+            <ul>
+                { modalIds.map( id => (
+                    <li><button type="button" onClick={() => setModalId(`modal-${id}`) }>Modal {id}</button></li>
+                )) }
+            </ul>
+
             {/* End-Temp */}
 
             <header className="header">{ isEditView &&
@@ -90,14 +104,16 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 { isEditView ? <OptionEditView data={mockData}/> : <OptionListView data={mockData}/> }
             </main>
             {/* TODO: Modals */}
+            {/* Abstract Modal ID to a constant object */}
             <div className="modals">
                 <Modal
-                    // currModalId="modal-setting"
                     currModalId={currModalId}
                     id="modal-setting"
                     clsSuffix="setting"
                     header="Default Settings"
-                    onCancel={() => {}}>
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
+                    >
                     <ul>
                         <li>
                             <button type="button" className="btn btn--reset">RESET ALL</button>
@@ -134,28 +150,26 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     </ul>
                 </Modal>
                 <Modal
-                    // currModalId="modal-json-import"
                     currModalId={currModalId}
                     id="modal-setting-import"
                     clsSuffix="setting-import"
                     header="Import Configuration from a `*.json` file"
                     cancel="CANCEL"
                     confirm="IMPORT"
-                    onCancel={() => {}}
-                    onConfirm={() => {}}
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
                     >
                     <FileInput id="json-import-input" fileType="application/JSON" />
                 </Modal>
                 <Modal
-                    // currModalId="modal-setting-export"
                     currModalId={currModalId}
                     id="modal-setting-export"
                     clsSuffix="setting-export"
                     header="Export Configuration to a `*.json` file"
                     cancel="CANCEL"
                     confirm="EXPORT"
-                    onCancel={() => {}}
-                    onConfirm={() => {}}
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
                     >
                     <TextInput
                         id=""
@@ -164,6 +178,19 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
                         }} />
+                </Modal>
+                <Modal
+                    currModalId={currModalId}
+                    id="modal-delete-confirm"
+                    clsSuffix="delete-confirm"
+                    header="Confirmation"
+                    subHeader="Are you sure you want to remove?"
+                    cancel="CANCEL"
+                    confirm="DELETE"
+                    onCancel={() => setModalId(null)}
+                    onConfirm={() => setModalId(null)}
+                    >
+                    <Checkbox id="setting-delete-confirm" label="Don’t show this confirmation again" />
                 </Modal>
             </div>
         </div>
