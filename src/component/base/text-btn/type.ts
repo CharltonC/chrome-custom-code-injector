@@ -1,4 +1,4 @@
-export interface IProps extends React.HTMLAttributes<HTMLButtonElement> {
+export interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     text: string;
     outline?: boolean;
 }
