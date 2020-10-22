@@ -64,6 +64,7 @@ describe('Component - Modal', () => {
         let $overlay: HTMLElement;
         let $closeBtn: HTMLElement;
         let $footer: HTMLElement;
+        let $btns: NodeListOf<HTMLButtonElement>;
 
         const syncElems = () => {
             $modal = $elem.querySelector('.modal');
@@ -71,6 +72,7 @@ describe('Component - Modal', () => {
             $closeBtn = $elem.querySelector('button');
             $subHeader = $elem.querySelector('h4');
             $footer = $elem.querySelector('footer');
+            $btns = $elem.querySelectorAll('.text-btn');
         }
 
         beforeEach(() => {
@@ -90,7 +92,7 @@ describe('Component - Modal', () => {
             });
         });
 
-        describe('triger `onCancel` callback in general', () => {
+        describe('triger `onCancel` callback', () => {
             beforeEach(() => {
                 modalMethodSpy = TestUtil.spyProtoMethods(Modal);
                 modalMethodSpy.isVisible.mockReturnValue(true);
@@ -113,7 +115,7 @@ describe('Component - Modal', () => {
             });
         });
 
-        describe('trigger `onCancel/onConfirm` callbacks for cancel/confirm buttons', () => {
+        describe('trigger `onConfirm` callback', () => {
             let mockOnConfirm: jest.Mock;
 
             beforeEach(() => {
@@ -138,12 +140,12 @@ describe('Component - Modal', () => {
                 });
 
                 it('should call `onCancel` when click cancel button ', () => {
-                    TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[0] as HTMLElement, 'click');
+                    TestUtil.triggerEvt($btns[0], 'click');
                     expect(mockOnCancel).toHaveBeenCalled();
                 });
 
                 it('should call `onCancel` when click confirm button', () => {
-                    TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[1] as HTMLElement, 'click');
+                    TestUtil.triggerEvt($btns[1], 'click');
                     expect(mockOnConfirm).not.toHaveBeenCalled();
                     expect(mockOnCancel).toHaveBeenCalled();
                 });
@@ -162,13 +164,25 @@ describe('Component - Modal', () => {
 
                 it('should render footer with cancel/confirm buttons', () => {
                     expect($footer).toBeTruthy();
-                    expect($footer.querySelectorAll('.text-btn').length).toBe(2);
+                    expect($btns.length).toBe(2);
                 });
 
                 it('should call `onConfirm` isntead when click confirm button', () => {
-                    TestUtil.triggerEvt($footer.querySelectorAll('.text-btn')[1] as HTMLElement, 'click');
+                    TestUtil.triggerEvt($btns[1], 'click');
                     expect(mockOnConfirm).toHaveBeenCalled();
                     expect(mockOnCancel).not.toHaveBeenCalled();
+                });
+            });
+
+            describe('pass disabled state to confirm button', () => {
+                it('should pass disabled state', () => {
+                    TestUtil.renderPlain($elem, Modal, {
+                        ...mockProps,
+                        confirm: 'confirm',
+                        confirmDisabled: true
+                    });
+                    syncElems();
+                    expect(($btns[0]).disabled).toBeTruthy();
                 });
             });
         });

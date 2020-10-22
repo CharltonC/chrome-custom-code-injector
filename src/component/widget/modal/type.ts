@@ -6,6 +6,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     clsSuffix?: string;
     cancel?: string;
     confirm?: string;
+    confirmDisabled?: boolean;
     onCancel: TFn;
     onConfirm?: TFn;
 }
