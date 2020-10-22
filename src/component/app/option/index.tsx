@@ -96,22 +96,16 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     currModalId={currModalId}
                     id="modal-setting"
                     clsSuffix="setting"
-                    header="Default Options"
-                    onHide={() => {}}>
+                    header="Default Settings"
+                    onCancel={() => {}}>
                     <ul>
                         <li>
-                            <button type="button">RESET ALL</button>
-                        </li>
-                        <li>
+                            <button type="button" className="btn btn--reset">RESET ALL</button>
+                        </li><li>
                             <h4>Read/Search</h4>
-                        </li>
-                        <li>
-                            <SliderSwitch
-                                id="show-dialog"
-                                label="Show delete confirmation dialog"
-                                ltLabel />
-                        </li>
-                        <li>
+                        </li><li>
+                            <SliderSwitch id="show-dialog" label="Show delete confirmation dialog" ltLabel />
+                        </li><li>
                             <Dropdown
                                 id="result-per-page"
                                 label="Results per page"
@@ -119,42 +113,20 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                                 list={['a', 'b']}
                                 border={true}
                                 />
-                        </li>
-                        <li>
+                        </li><li>
                             <h4>New Item</h4>
-                        </li>
-                        <li>
-                            <SliderSwitch
-                                id="match-https"
-                                label="HTTPS"
-                                ltLabel />
-                        </li>
-                        <li>
-                            <SliderSwitch
-                                id="match-regex"
-                                label="Regex"
-                                ltLabel />
-                        </li>
-                        <li>
-                            <SliderSwitch
-                                id="run-js"
-                                label="Run Custom Js"
-                                ltLabel />
-                        </li>
-                        <li>
-                            <SliderSwitch
-                                id="run-css"
-                                label="Run Custom CSS"
-                                ltLabel />
-                        </li>
-                        <li>
-                            <SliderSwitch
-                                id="run-library"
-                                label="Run Libraries"
-                                ltLabel />
-                        </li>
-                        <li>
-                            {/* TODO: sstyle */}
+                        </li><li>
+                            <SliderSwitch id="match-https" label="HTTPS" ltLabel />
+                        </li><li>
+                            <SliderSwitch id="match-regex" label="Regex" ltLabel />
+                        </li><li>
+                            <SliderSwitch id="run-js" label="Run Custom Js" ltLabel />
+                        </li><li>
+                            <SliderSwitch id="run-css" label="Run Custom CSS" ltLabel />
+                        </li><li>
+                            <SliderSwitch id="run-library" label="Run Libraries" ltLabel />
+                        </li><li>
+                            {/* TODO: style */}
                             <p>Javascript Execution</p>
                             <Dropdown id="js-exec-frame" list={['a', 'b']} border={true} />
                             <Dropdown id="js-exec-order" list={['a', 'b']} border={true} />
@@ -169,7 +141,6 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     header="Import Configuration from a `*.json` file"
                     cancel="CANCEL"
                     confirm="IMPORT"
-                    onHide={() => {}}
                     onCancel={() => {}}
                     onConfirm={() => {}}
                     >
@@ -183,11 +154,16 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     header="Export Configuration to a `*.json` file"
                     cancel="CANCEL"
                     confirm="EXPORT"
-                    onHide={() => {}}
                     onCancel={() => {}}
                     onConfirm={() => {}}
                     >
-                    <TextInput id="" label="Filename" validate={[]}/>
+                    <TextInput
+                        id=""
+                        label="Filename"
+                        validate={[]}
+                        onInputChange={({ validState }) => {
+                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+                        }} />
                 </Modal>
             </div>
         </div>

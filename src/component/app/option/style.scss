@@ -87,18 +87,10 @@
 
     .modal {
         &--setting {
-            li {
-                margin-top: 25px;
-            }
-
-            h4 {
-                margin-top: 25px;
-                font: 16px $roboto-bld;
-                color: #757575;
-            }
-
-            .dropdown select {
-                width: 150px;
+            .slider-switch span,
+            .dropdown label,
+            p {
+                width: 250px;
             }
 
             .slider-switch,
@@ -108,9 +100,41 @@
                 align-items: center;
             }
 
-            .slider-switch span,
-            .dropdown label {
-                width: 250px;
+            li {
+                margin-top: 25px;
+
+                &:first-child {
+                    display: flex;
+                    justify-content: flex-end;
+                }
+
+                &:last-child {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+            }
+
+            h4 {
+                margin-top: 25px;
+                font: 16px $roboto-bld;
+                color: $dark-gray;
+            }
+
+            p {
+                font: 14px $roboto-reg;
+                color: $gray;
+            }
+
+            .btn--reset {
+                outline-offset: 5px;
+                font: 12px $roboto-bld;
+                color: $teal;
+            }
+
+            .dropdown select {
+                width: 150px;
+                margin: 0;
             }
         }
 
