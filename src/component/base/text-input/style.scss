@@ -1,17 +1,19 @@
 .text-ipt {
+    --label-width: 100px;
     min-width: 300px;
 
     &--label {
         display: grid;
         grid-template-areas: 'label input'
                              'label error';
+        grid-template-columns: var(--label-width) 1fr;
         justify-content: start;
         align-items: baseline;
     }
 
     label {
+        width: var(--label-width);
         grid-area: label;
-        margin-right: 40px;
         font: 14px $roboto-bld;
         color: $gray-200;
     }
