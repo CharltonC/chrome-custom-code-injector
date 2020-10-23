@@ -1,6 +1,6 @@
 import { BaseRuleConfig, PathRuleConfig, HostRuleConfig, LibRuleConfig } from '.';
 
-describe('Rule Config', () => {
+describe('Rule Config Model', () => {
     const mockId = 'id';
     const mockValue = 'value';
 
