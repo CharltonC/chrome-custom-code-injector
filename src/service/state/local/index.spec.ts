@@ -1,4 +1,4 @@
-import LocalState from '.';
+import { LocalState } from '.';
 
 describe('Local State (Non-Persisting)', () => {
     it('should return default value', () => {

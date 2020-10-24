@@ -1,6 +1,6 @@
 import { AView } from './type';
 
-export default class LocalState {
+export class LocalState {
     // Common
     currView: AView = 'LIST';
     currSearchText: string = '';
@@ -22,3 +22,4 @@ export default class LocalState {
     isModalConfirmDisabled: boolean = false;
 }
 
+export const localState = new LocalState();
