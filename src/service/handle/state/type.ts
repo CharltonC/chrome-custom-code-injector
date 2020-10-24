@@ -1,11 +1,13 @@
 import { BaseStoreHandler } from './base-store-handler';
 
 export interface IStoreConfigs {
+    root?: [ TObj, BaseStoreHandler ];
     [k: string]: [ TObj, BaseStoreHandler ];
 }
 
 export interface ITransfmStoreConfigs {
-    [k: string]: TObj | Record<string, BaseStoreHandler>;
+    store: TObj;
+    storeHandler: BaseStoreHandler | Record<string, BaseStoreHandler>;
 }
 
 export type TCmp = React.FC<any> | React.ComponentClass<any>;

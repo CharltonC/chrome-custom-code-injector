@@ -29,12 +29,12 @@ describe('Base Store Component', () => {
             class MockStoreHandler extends BaseStoreHandler {
                 sayHello() { return 'hello'; }
             }
-            const { root, rootHandler } = cmp.transformStoreConfigs({
+            const { store, storeHandler } = cmp.transformStoreConfigs({
                 root: [ mockStore, new MockStoreHandler() ]
             });
 
-            expect(root).toBe(mockStore);
-            expect(rootHandler).toBe(getProxyStoreHandler);
+            expect(store).toBe(mockStore);
+            expect(storeHandler).toBe(getProxyStoreHandler);
         });
 
         it('should return transformed config if multiple non-root stores and store handlers are provied', () => {
@@ -46,15 +46,15 @@ describe('Base Store Component', () => {
             class MockStoreHandler2 extends BaseStoreHandler {
                 sayHello2() { return 'hello2'; }
             }
-            const { store1, store1Handler, store2, store2Handler } = cmp.transformStoreConfigs({
+            const { store, storeHandler } = cmp.transformStoreConfigs({
                 store1: [ mockStore1, new MockStoreHandler1() ],
                 store2: [ mockStore2, new MockStoreHandler2() ]
             });
 
-            expect(store1).toBe(mockStore1);
-            expect(store2).toBe(mockStore2);
-            expect(store1Handler).toBe(getProxyStoreHandler);
-            expect(store2Handler).toBe(getProxyStoreHandler);
+            expect(store.store1).toBe(mockStore1);
+            expect(store.store2).toBe(mockStore2);
+            expect(storeHandler['store1']).toBe(getProxyStoreHandler);
+            expect(storeHandler['store2']).toBe(getProxyStoreHandler);
         });
     });
 
@@ -171,6 +171,30 @@ describe('Base Store Component', () => {
                 prev: mockState,
                 curr: expectedCurrState
             }, undefined);
+        });
+    });
+
+    describe('Method - checkStoreName: Check if store name already exists for duplication', () => {
+        const mockStore = { prop: 123 };
+        const mockStoreHandler = { onClick(){} };
+
+        it('should throw an error if store name already exists in either store or store handler', () => {
+            const mockStoreProp = 'prop';
+            const mockStoreHandlerProp = 'onClick';
+
+            expect(() => {
+                cmp.checkStoreName(mockStoreProp, mockStore, mockStoreHandler);
+            }).toThrowError(`${mockStoreProp} ${cmp.STORE_NAME_ERR}`);
+
+            expect(() => {
+                cmp.checkStoreName(mockStoreHandlerProp, mockStore, mockStoreHandler);
+            }).toThrowError(`${mockStoreHandlerProp} ${cmp.STORE_NAME_ERR}`);
+        });
+
+        it('should not throw an error if store name doesnt yet exist in either store or store handler ', () => {
+            expect(() => {
+                cmp.checkStoreName('lorem', mockStore, mockStoreHandler);
+            }).not.toThrowError();
         });
     });
 });

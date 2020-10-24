@@ -18,13 +18,17 @@ export const StateHandle = {
 
     init(Cmp: TCmp, storeConfigs: IStoreConfigs): ComponentClass {
         return class extends BaseStoreComponent {
+            storeHandler: TObj;
+
             constructor(props: TObj) {
                 super(props);
-                this.state = this.transformStoreConfigs(storeConfigs);
+                const { store, storeHandler } = this.transformStoreConfigs(storeConfigs);
+                this.state = store;
+                this.storeHandler = storeHandler;
             }
 
             render() {
-                return <Cmp {...this.state} />;
+                return <Cmp store={this.state} storeHandler={this.storeHandler} />;
             }
         }
     }

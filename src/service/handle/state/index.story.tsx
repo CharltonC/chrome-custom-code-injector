@@ -78,7 +78,7 @@ export const SingleStateExample = () => {
     }, [sampleStoreHandler]);
 
     const WrappedSampleComponent = StateHandle.init(SampleComponent, {
-        store: [ sampleStore, sampleStoreHandler ]
+        root: [ sampleStore, sampleStoreHandler ]
     });
 
     return <WrappedSampleComponent />;
@@ -107,11 +107,11 @@ export const MultipleStatesExample = () => {
         }
     }
 
-    const SampleComponent = ({ storeOne, storeOneHandler, storeTwo, storeTwoHandler }) => {
-        const { name } = storeOne;
-        const { project } = storeTwo;
-        const { onNameChange } = storeOneHandler;
-        const { onProjectChange } = storeTwoHandler;
+    const SampleComponent = ({ store, storeHandler }) => {
+        const { name } = store.storeOne;
+        const { project } = store.storeTwo;
+        const { onNameChange } = storeHandler.storeOne;
+        const { onProjectChange } = storeHandler.storeTwo;
 
         return (
             <div>
