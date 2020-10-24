@@ -1,7 +1,8 @@
-export interface IProps extends React.HTMLAttributes<HTMLElement> {
+import { AppState } from '../../../service/state';
 
-}
-
-export interface IState {
-
+export interface IProps {
+    store: AppState;
+    storeHandler: {
+        [k: string]: (...args: any[]) => (Partial<AppState> | void)
+    }
 }
