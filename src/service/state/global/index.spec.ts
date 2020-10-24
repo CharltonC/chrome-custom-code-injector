@@ -1,11 +1,9 @@
 import Setting from '../../model/setting';
-import GlobalState from '.';
+import { setting, rules } from '.';
 
 describe('Global State (Persisting)', () => {
     it('should return default value', () => {
-        expect(new GlobalState()).toEqual({
-            setting: new Setting(),
-            rules: []
-        });
+        expect(setting).toEqual(new Setting());
+        expect(rules).toEqual([]);
     });
 });
