@@ -15,7 +15,7 @@ describe('State Handle', () => {
     });
 
     describe('Single Store and Store Handler', () => {
-        const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
+        const MockCmp = ({ root, rootHandler }) => <h1 onClick={rootHandler.onClick}>{root.name}</h1>;
         const mockStore = { name: 'john' };
         class MockStoreHandler extends BaseStoreHandler {
             onClick(store) {
@@ -32,7 +32,7 @@ describe('State Handle', () => {
             $h1 = $elem.querySelector('h1');
         });
 
-        it('should render and update', () => {
+        it('should render', () => {
             expect($h1.textContent).toBe('john');
         });
 
@@ -45,10 +45,10 @@ describe('State Handle', () => {
     describe('Multiple Stores and Store Handlers', () => {
         const MOCK_STORE_ONE = 'store1';
         const MOCK_STORE_TWO = 'store2';
-        const MockCmp = ({ store, storeHandler }) => (
+        const MockCmp = ({ store1, store2, store1Handler, store2Handler }) => (
             <>
-                <h1 onClick={storeHandler[MOCK_STORE_ONE].onClick}>{store[MOCK_STORE_ONE].name}</h1>
-                <h2 onClick={storeHandler[MOCK_STORE_TWO].onClick}>{store[MOCK_STORE_TWO].name}</h2>
+                <h1 onClick={store1Handler.onClick}>{store1.name}</h1>
+                <h2 onClick={store2Handler.onClick}>{store2.name}</h2>
             </>
         );
         const mockStore1 = { name: 'john1' };
