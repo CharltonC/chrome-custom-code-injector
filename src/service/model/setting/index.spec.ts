@@ -1,5 +1,5 @@
 import { BaseRuleConfig } from '../rule-config';
-import Setting from '.';
+import { Setting } from '.';
 
 describe('Setting Model', () => {
     it('should return default values', () => {
