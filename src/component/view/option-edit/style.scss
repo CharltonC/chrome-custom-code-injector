@@ -2,11 +2,6 @@
     display: grid;
     grid-template-columns: 220px auto;
 
-    .side-nav {
-        float: left;
-        height: calc(100vh - var(--header-height));
-    }
-
     .text-ipt input {
         padding-right: 70px;
         background-color: transparent;
