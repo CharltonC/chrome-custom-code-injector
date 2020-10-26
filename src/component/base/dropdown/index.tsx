@@ -57,7 +57,7 @@ export class Dropdown extends MemoComponent<IProps, IState> {
 
     onSelect(evt: React.ChangeEvent<HTMLSelectElement>): void {
         // this is the actual index of the list item or `<option>`
-        const selectValueAttrVal: string = evt.target.value;
+        const selectValueAttrVal: number = Number(evt.target.value);
         this.props.onSelect?.(evt, selectValueAttrVal);
     }
 
