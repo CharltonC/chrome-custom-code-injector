@@ -1,6 +1,6 @@
 import { StateHandle } from '../handle/state';
 import { AView } from '../model/local-state/type';
-import { AppState } from '../state';
+import { AppState } from '../model/app-state';
 import { LocalState } from '../model/local-state';
 
 export class StateHandler extends StateHandle.BaseStoreHandler {
