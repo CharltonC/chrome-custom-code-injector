@@ -1,6 +1,6 @@
-import { Setting } from '../model/setting';
-import { HostRuleConfig } from '../model/rule-config';
-import { LocalState } from '../model/local-state';
+import { Setting } from '../setting';
+import { HostRuleConfig } from '../rule-config';
+import { LocalState } from '../local-state';
 
 export class AppState {
     // Persistant: user default config

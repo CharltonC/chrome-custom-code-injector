@@ -1,5 +1,5 @@
-import { Setting } from '../model/setting';
-import { LocalState } from '../model/local-state';
+import { Setting } from '../setting';
+import { LocalState } from '../local-state';
 import { AppState } from '.';
 
 describe('State', () => {
