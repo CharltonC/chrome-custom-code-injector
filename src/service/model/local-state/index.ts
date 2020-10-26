@@ -1,4 +1,4 @@
-import { AView } from './type';
+import { AView, AObj } from './type';
 
 export class LocalState {
     // Common
@@ -9,13 +9,7 @@ export class LocalState {
     isAllRowsSelected: boolean = false;
 
     // Edit View
-    currListItemIdx: number = 0;
-    currNestedListItemIdx: number = 0;
-
-    // TODO: current host/path input for add/edit
-    // currHost;
-    // currPath;
-    // currLib;
+    currListItem: AObj = null;
 
     // Modal
     currModalId: string = null;
