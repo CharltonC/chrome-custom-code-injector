@@ -1,8 +1,5 @@
-import { AppState } from '../../../service/state';
+import { AppState } from '../../../service/model/app-state';
+import { StateHandler } from '../../../service/state-handler';
+import { IAppProps } from '../../../service/handle/state/type';
 
-export interface IProps {
-    store: AppState;
-    storeHandler: {
-        [k: string]: (...args: any[]) => (Partial<AppState> | void)
-    }
-}
+export type IProps = IAppProps<AppState, StateHandler>;

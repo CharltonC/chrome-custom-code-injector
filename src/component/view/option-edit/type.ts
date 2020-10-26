@@ -1,8 +1,5 @@
-// TODO: Update the Matching `HTMLAttributes`, `HTMLElement` accordingly
-export interface IProps extends React.HTMLAttributes<HTMLElement> {
+import { AppState } from '../../../service/model/app-state';
+import { StateHandler } from '../../../service/state-handler';
+import { IAppProps } from '../../../service/handle/state/type';
 
-}
-
-export interface IState {
-
-}
+export type IProps = IAppProps<AppState, StateHandler>;

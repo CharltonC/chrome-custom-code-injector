@@ -15,3 +15,8 @@ export type TCmp = React.FC<any> | React.ComponentClass<any>;
 export type TFn = (...args: any[]) => any;
 
 export type TObj = Record<string, any>;
+
+export interface IAppProps<T, U> {
+    store: T;
+    storeHandler: Record<keyof U, (...args: any[]) => any>;
+}
