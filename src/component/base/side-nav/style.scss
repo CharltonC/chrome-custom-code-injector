@@ -14,7 +14,7 @@
     background-color: $dark-blue-200;
     color: $light-blue-100;
 
-    &__nls {
+    &__list--child {
         @include self-custom-scrollbar($dark-blue-200, $light-blue-100, 2px);
         overflow-y: auto;
         list-style-type: circle;
@@ -22,8 +22,8 @@
         font: 16px $roboto-reg;
     }
 
-    &__ls-item {
-        &--atv {
+    &__item--parent {
+        &.side-nav__item--atv {
             .side-nav__tier {
                 @include side-nav__tier($dark-blue-300);
 
@@ -33,14 +33,14 @@
                 }
             }
 
-            .side-nav__nls {
-                transition: max-height 0.2s ease-out;
+            .side-nav__list--child {
+                transition: max-height .3s ease-in .05s;
                 transform: translateZ(0);
                 will-change: max-height;
             }
         }
 
-        &:not(&--atv) {
+        &:not(.side-nav__item--atv) {
             .side-nav__tier:hover {
                 @include side-nav__tier($teal-200, true);
                 transition: background-color .15s ease;
@@ -52,24 +52,24 @@
                 }
             }
 
-            .side-nav__nls {
-                transition: max-height 0.1s ease-out;
+            .side-nav__list--child {
+                transition: max-height .1s ease-out;
                 transform: translateZ(0);
                 will-change: max-height;
             }
         }
     }
 
-    &__nls-item  {
+    &__item--child  {
         padding-left: 45px;
         line-height: 40px;
         height: 40px;
 
-        &--atv {
+        &.side-nav__item--atv {
             @include side-nav__tier($dark-blue-300);
         }
 
-        &:not(&--atv):hover {
+        &:not(.side-nav__item--atv):hover {
             @include side-nav__tier($teal-200, true);
             transition: background-color .15s ease;
             transform: translateZ(0);

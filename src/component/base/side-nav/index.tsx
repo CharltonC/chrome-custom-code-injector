@@ -8,140 +8,70 @@ const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
 const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
 
 export class SideNav extends MemoComponent<IProps, IState> {
-    //// Element class name constants: list, list items, list item contents (Row, Title Text, Dropdown Arrows)
-    readonly baseCls: string = 'side-nav';
-    readonly lsBaseCls: string = `${this.baseCls}__ls`;
-    readonly nstLsBaseCls: string = `${this.baseCls}__nls`;
-    readonly lsItemBaseCls: string = `${this.lsBaseCls}-item`;
-    readonly nstLsItemBaseCls: string = `${this.nstLsBaseCls}-item`;
-    readonly lsTierCls: string = `${this.baseCls}__tier`;
-    readonly titleCls: string = `${this.baseCls}__title`;
-
-    constructor(props: IProps) {
-        super(props);
-        this.state = this.getIntitalState(props.list);
-        this.onClick = this.onClick.bind(this);
-    }
-
-    /**
-     * Check if the active list is still in the new list
-     * - if YES, make it still active
-     * - if not, make the 1st list active by def
-     */
-    UNSAFE_componentWillReceiveProps({list}: IProps): void {
-        const { props } = this;
-        const { atvLsIdx } = this.state;
-
-        // Only proceed when passed list is different
-        if (list === props.list) return;
-        const currAtvLs = props.list[atvLsIdx];
-        const currAtvLsIdxInNewList: number = list.indexOf(currAtvLs);
-        const isCurrAtvLsInNewList: boolean = currAtvLsIdxInNewList !== -1;
-        const isCurrAtvLsIdxDiffInNewList: boolean = isCurrAtvLsInNewList && (currAtvLsIdxInNewList !== atvLsIdx);
-
-        // If the active list is in the new passed list however not in the same index we update the active state
-        if (isCurrAtvLsIdxDiffInNewList) {
-            this.setState({atvLsIdx: currAtvLsIdxInNewList});
-
-        // If the active list is NOT in the new passed list, by def. we just make the 1st (if exist) active
-        } else if (!isCurrAtvLsInNewList) {
-            const state: IState = this.getIntitalState(list);
-            this.setState(state);
-        }
-    }
+    readonly BASE_CLS: string = 'side-nav';
+    readonly PARENT_CLS_SUFFIX: string = 'parent';
+    readonly CHILD_CLS_SUFFIX: string = 'child';
 
     render() {
-        const { baseCls, lsBaseCls, nstLsBaseCls, lsItemBaseCls, lsTierCls, titleCls } = this;
-        const { list, itemKeys, childKey } = this.props;
-        const { atvLsIdx, atvNestLsIdx } = this.state;
-        const [ upperItemKey ] = itemKeys;
+        const { BASE_CLS, PARENT_CLS_SUFFIX, cssCls, props } = this;
+        const { list } = props;
+        const LIST_CLS: string = cssCls(`${BASE_CLS}__list`, PARENT_CLS_SUFFIX);
 
         return (
-            <aside className={baseCls}>
-                <ul className={lsBaseCls}>{list.map((ls: IObj, lsIdx: number) => {
-                    const {
-                        [upperItemKey]: id,
-                        [childKey]: nestList
-                    } = ls;
-
-                    const isAtvIdx: boolean = atvLsIdx === lsIdx;
-                    const lsTotal: number = nestList?.length;
-                    const isAtvWithChildLs: boolean = isAtvIdx && !!lsTotal;
-                    const lsCls: string = this.getLsCls(lsItemBaseCls, (isAtvIdx && atvNestLsIdx === null));
-                    const lsKey: string = `${lsItemBaseCls}-${lsIdx}`;
-
-                    return (
-                    <li className={lsCls} key={lsKey} onClick={(e) => {this.onClick(e, lsIdx);}}>
-                        <p className={lsTierCls}>
-                            { isAtvIdx ? dnIconElem : rtIconElem }
-                            <span className={titleCls}>{id}</span>
-                            { InclStaticNumBadge(lsTotal) }
-                        </p>
-                        <ul className={nstLsBaseCls} style={{maxHeight: isAtvWithChildLs ? '320px' : '0'}}>
-                            {
-                                /* only render nested list under active list for performance */
-                                isAtvWithChildLs ? this.getNestedLsItems(nestList, lsIdx, atvNestLsIdx) : null
-                            }
-                        </ul>
-                    </li>
-                    );
-                })}</ul>
+            <aside className={BASE_CLS}>
+                <ul className={LIST_CLS}>
+                    {list.map((item: IObj, idx: number) => this.getListItem(item, idx))}
+                </ul>
             </aside>
         );
     }
 
-    getLsCls(baseCls: string, isAtv: boolean): string {
-        return isAtv ? `${baseCls} ${baseCls}--atv` : baseCls;
-    }
+    getListItem(item: IObj, idx: number, parentIdx?: number): ReactElement {
+        const { props, BASE_CLS, PARENT_CLS_SUFFIX, CHILD_CLS_SUFFIX, cssCls } = this;
+        const { activeItem, itemKeys, childKey } = props;
+        const [ idKey, childIdKey ] = itemKeys;
 
-    getNestedLsItems(nestList: IObj[], lsIdx: number, atvNestLsIdx: number): ReactElement[] {
-        const { nstLsItemBaseCls, titleCls } = this;
-        const [ , lowerItemKey ] = this.props.itemKeys;
+        const isParent: boolean = typeof parentIdx === 'undefined';
+        const nestedItems = item[childKey];
+        const nestedItemsTotal: number = nestedItems?.length;
+        const isActive: boolean = item === activeItem;
+        const showNestedItems: boolean = isActive || (nestedItems?.indexOf(activeItem) !== -1);
 
-        return nestList.map((nstLs: IObj, nstLsIdx: number) => {
-            const nstLsCls: string = this.getLsCls(nstLsItemBaseCls, atvNestLsIdx === nstLsIdx);
-            const nstLsKey: string = `${nstLsItemBaseCls}-${nstLsIdx}`;
+        const ITEM_TITLE: string = item[isParent ? idKey : childIdKey];
+        const ITEM_KEY: string = `${BASE_CLS}__item${isParent ? `-${PARENT_CLS_SUFFIX}` : `-${CHILD_CLS_SUFFIX}`}-${idx}`;
+        const ITEM_CLS: string = cssCls(`${BASE_CLS}__item`, (isParent ? PARENT_CLS_SUFFIX : CHILD_CLS_SUFFIX) + (isActive ? ' atv' : ''));
+        const ITEM_TIER_CLS: string = `${BASE_CLS}__tier`;
+        const ITEM_TITLE_CLS: string = `${BASE_CLS}__title`;
+        const NESTED_LIST_CLS: string = cssCls(`${BASE_CLS}__list`, CHILD_CLS_SUFFIX);
+        const itemTitle: ReactElement = <span className={ITEM_TITLE_CLS}>{ITEM_TITLE}</span>;
 
-            return (
-            <li className={nstLsCls}
-                key={nstLsKey}
-                onClick={(e) => {this.onClick(e, lsIdx, nstLsIdx);}}
-                >
-                <span className={titleCls}>{nstLs[lowerItemKey]}</span>
+        return (
+            <li
+                className={ITEM_CLS}
+                key={ITEM_KEY}
+                onClick={(e) => this.onClick(e, { item, idx, parentIdx })}
+                >{ isParent ?
+                <>
+                    <p className={ITEM_TIER_CLS}>
+                        { isActive ? dnIconElem : rtIconElem }
+                        { itemTitle }
+                        { InclStaticNumBadge(nestedItemsTotal) }
+                    </p>
+                    <ul
+                        className={NESTED_LIST_CLS}
+                        style={{ maxHeight: showNestedItems ? '320px' : '0' }}
+                        >
+                        {/* only render nested list under active list for performance */}
+                        { showNestedItems && nestedItems.map((childItem: IObj, childIdx: number) => this.getListItem(childItem, childIdx, idx)) }
+                    </ul>
+                </> :
+                itemTitle }
             </li>
-            );
-        })
+        );
     }
 
-    /**
-     * Config the active list when a new or diff. list is passed
-     */
-    getIntitalState(list: IObj[]): IState {
-        const hsList: boolean = typeof list !== 'undefined' && list.length > 0;
-        return {
-            atvLsIdx: hsList ? 0 : null,
-            atvNestLsIdx: null
-        };
-    }
-
-    onClick(evt: React.MouseEvent<HTMLElement, MouseEvent>, atvLsIdx: number, atvNestLsIdx: number = null): void {
+    onClick(evt: React.MouseEvent, arg: unknown) {
         evt.stopPropagation();
-        const { state } = this;
-        const { list, onActiveItemChange } = this.props;
-        const isAtvList: boolean = atvLsIdx === state.atvLsIdx;
-        const isNotSameNestedList = atvNestLsIdx !== state.atvNestLsIdx;
-
-        // If parent list is diff.
-        if (!isAtvList) this.setState({
-            atvLsIdx,
-            atvNestLsIdx: null
-        });
-
-        // if parent list is same but child list is diff.
-        if (isAtvList && isNotSameNestedList) this.setState({
-            atvNestLsIdx
-        });
-
-        onActiveItemChange?.(list, atvLsIdx, atvNestLsIdx);
+        this.props.onItemClick?.(evt, arg);
     }
 }
