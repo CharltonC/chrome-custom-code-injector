@@ -15,23 +15,6 @@ export class TextInput extends MemoComponent<IProps, IState> {
         this.onBlur = this.onBlur.bind(this);
     }
 
-    /**
-     * Revalidate when passed validation rules have changed
-     */
-    UNSAFE_componentWillReceiveProps({defaultValue, validate}: IProps): void {
-        const { props } = this;
-        const isSameRules: boolean = props.validate === validate;
-
-        // We dont care about if other props change except for the passed text and validation rules
-        if (isSameRules) return;
-
-        // Only Revalidate & Update internal state when the passed Validation rules have changed
-        const state: IState = this.getInitialState(validate);
-        const validateText: string = defaultValue as string ?? this.inputElem.value;
-        const validState: TValidState = state.hsValidationRules ? this.getValidState(validateText, validate) : {} as TValidState;
-        this.setState({...state, ...validState});
-    }
-
     render() {
         const { BASE_CLS, cssCls } = this;
         const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
