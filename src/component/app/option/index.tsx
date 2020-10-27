@@ -1,4 +1,7 @@
-import React, { memo, useState } from 'react';
+import React, { memo, ReactElement } from 'react';
+// import { debounce } from '../../../asset/ts/vendor/debounce';
+import { modals } from '../../../service/constant/modals';
+import { UtilHandle } from '../../../service/handle/util';
 import { IconBtn } from '../../base/icon-btn';
 import { IconSwitch } from '../../base/icon-switch';
 import { Checkbox } from '../../base/checkbox';
@@ -11,112 +14,106 @@ import { Modal } from '../../widget/modal';
 import { OptionEditView } from '../../view/option-edit';
 import { OptionListView } from '../../view/option-list';
 import { IProps } from './type';
+import { inclStaticIcon } from '../../static/icon';
 
-const mockData = [
-    {
-        https: true,
-        id: 'Host ID 1',
-        addr: 'www.abc.com',
-        script_exec: 2,
-        script_js: true,
-        script_css: true,
-        script_lib: true,
-        paths: [
-            {
-                id: 'lorem1',
-                addr: 'lorem',
-                script_js: true,
-                script_css: true,
-                script_lib: true,
-            },
-            {
-                id: 'lorem2',
-                addr: 'lorem2',
-                script_js: true,
-                script_css: false,
-                script_lib: true,
-            }
-        ],
-    },
-    {
-        https: false,
-        id: 'Host ID 2',
-        addr: 'cnn.com',
-        script_exec: 1,
-        script_js: true,
-        script_css: true,
-        script_lib: false,
-        paths: [
-            {
-                id: 'sum1',
-                addr: 'sum',
-                script_js: false,
-                script_css: true,
-                script_lib: true,
-            }
-        ],
-    }
-];
+{/* TODO: make this a constant */}
+const DOC_URL: string = 'https://github.com/CharltonC/chrome-custom-code-insertion-userguide';
+const { cssCls } = UtilHandle.prototype;
+const docIcon: ReactElement = inclStaticIcon('doc', 'white');
+const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
 
-const modalIds = [
-    'setting',
-    'setting-import',
-    'setting-export',
-    'delete-confirm',
-    'host-add',
-    'path-add',
-    'lib-add',
-    'lib-edit',
-];
-
-// TODO: Props type
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
-    // TODO: removal temp state
-    const [ isEditView, setView ] = useState(true);
-    const [ currModalId, setModalId ] = useState(null);
+    const { store, storeHandler } = props;
+
+    const { localState, setting } = store;
+
+    const {
+        currView,
+        currModalId,
+        searchedText,
+        targetEditItem, isTargetEditItemIdValid, isTargetEditItemValValid,
+    } = localState;
+
+    const {
+        showDeleteModal
+    } = setting;
+
+    const {
+        onListView,
+        onSearch, onSearchClear,
+        hideModal, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
+        onAddHostCancel, onAddHostConfirm, onDelModalConfirm,
+        onEditItemIdChange, onEditItemAddrChange,
+        onDelConfirmToggle
+    } = storeHandler;
+
+    const isEditView: boolean = currView === 'EDIT';
+    const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
+    const MAIN_CLS = cssCls('main', isEditView ? 'edit' : 'list');
 
     return (
         <div className="app app--option">
-            {/* Temp */}
-            <button type="button" onClick={() => setView(false) }>Home</button>
-            <span> | </span>
-            <button type="button" onClick={() => setView(true) }>Edit</button>
-            <ul>
-                { modalIds.map( id => (
-                    <li><button type="button" onClick={() => setModalId(`modal-${id}`) }>Modal {id}</button></li>
-                )) }
-            </ul>
-            {/* End-Temp */}
-
             <header className="header">{ isEditView &&
-                <div className="header__ctrl header__ctrl--edit">
-                    <IconBtn icon="arrow-lt" theme="white" onClick={() => setView(false) }/>
+                <div className={EDIT_CTRL_CLS}>
+                    <IconBtn
+                        icon="arrow-lt"
+                        theme="white"
+                        onClick={onListView}
+                        />
                     <IconBtn icon="save" theme="white" />
                     <IconBtn icon="delete" theme="white" />
+                    {/* TODO: for host rule only */}
                     <IconBtn icon="add" theme="white" />
                 </div>}
                 <div className="header__ctrl">
-                    <SearchInput id="search" />
-                    <IconBtn icon="add-outline" theme="white" />
-                    <IconBtn icon="setting" theme="white" />
-                    <IconBtn icon="doc" theme="white" />
-                    <IconBtn icon="download" theme="white" />
-                    <IconBtn icon="download" theme="white" clsSuffix="upload" />
+                    <SearchInput
+                        id="search"
+                        text={searchedText}
+                        onChange={onSearch}
+                        onClear={onSearchClear}
+                        />
+                    <IconBtn
+                        icon="add-outline"
+                        theme="white"
+                        onClick={onAddHostModal}
+                        />
+                    <IconBtn
+                        icon="setting"
+                        theme="white"
+                        onClick={onSettingModal}
+                        />
+                    <a
+                        target="_blank"
+                        href={DOC_URL}
+                        rel="noopener noreferrer"
+                        className="icon-btn"
+                        >
+                        {docIcon}
+                    </a>
+                    <IconBtn
+                        icon="download"
+                        theme="white"
+                        onClick={onImportSettingModal}
+                        />
+                    <IconBtn
+                        icon="download"
+                        theme="white"
+                        clsSuffix="upload"
+                        onClick={onExportSettingModal}
+                        />
                 </div>
             </header>
-            <main className={`main main--${(isEditView ? 'edit' : 'list')}`}>
-                { isEditView ? <OptionEditView data={mockData}/> : <OptionListView data={mockData}/> }
+            <main className={MAIN_CLS}>
+                { isEditView ? <OptionEditView {...props} /> : <OptionListView {...props} /> }
             </main>
-            {/* TODO: Modals */}
-            {/* Abstract Modal ID to a constant object */}
-            <div className="modals">
+            { currModalId && <div className="modals">
                 <Modal
                     currModalId={currModalId}
-                    id="modal-setting"
+                    id={SETTING.id}
+                    header={SETTING.txt}
                     clsSuffix="setting"
-                    header="Default Settings"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    onCancel={hideModal}
+                    onConfirm={hideModal}
                     >
                     <ul>
                         <li>
@@ -124,7 +121,13 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         </li><li>
                             <h4>Read/Search</h4>
                         </li><li>
-                            <SliderSwitch id="show-dialog" label="Show delete confirmation dialog" ltLabel />
+                            <SliderSwitch
+                                id="show-dialog"
+                                label="Show delete confirmation dialog"
+                                checked={showDeleteModal}
+                                ltLabel
+                                onChange={onDelConfirmToggle}
+                                />
                         </li><li>
                             <Dropdown
                                 id="result-per-page"
@@ -136,15 +139,35 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         </li><li>
                             <h4>New Item</h4>
                         </li><li>
-                            <SliderSwitch id="match-https" label="HTTPS" ltLabel />
+                            <SliderSwitch
+                                id="match-https"
+                                label="HTTPS"
+                                ltLabel
+                                />
                         </li><li>
-                            <SliderSwitch id="match-regex" label="Regex" ltLabel />
+                            <SliderSwitch
+                                id="match-regex"
+                                label="Regex"
+                                ltLabel
+                                />
                         </li><li>
-                            <SliderSwitch id="run-js" label="Run Custom Js" ltLabel />
+                            <SliderSwitch
+                                id="run-js"
+                                label="Run Custom Js"
+                                ltLabel
+                                />
                         </li><li>
-                            <SliderSwitch id="run-css" label="Run Custom CSS" ltLabel />
+                            <SliderSwitch
+                                id="run-css"
+                                label="Run Custom CSS"
+                                ltLabel
+                                />
                         </li><li>
-                            <SliderSwitch id="run-library" label="Run Libraries" ltLabel />
+                            <SliderSwitch
+                                id="run-library"
+                                label="Run Libraries"
+                                ltLabel
+                                />
                         </li><li>
                             {/* TODO: style */}
                             <p>Javascript Execution</p>
@@ -155,25 +178,26 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id="modal-setting-import"
+                    id={IMPORT_SETTING.id}
+                    header={IMPORT_SETTING.txt}
                     clsSuffix="setting-import"
-                    header="Import Configuration from a `*.json` file"
                     cancel="CANCEL"
                     confirm="IMPORT"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    onCancel={hideModal}
+                    onConfirm={hideModal}
                     >
+                    {/* TODO: */}
                     <FileInput id="json-import-input" fileType="application/JSON" />
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id="modal-setting-export"
+                    id={EXPORT_SETTING.id}
+                    header={EXPORT_SETTING.txt}
                     clsSuffix="setting-export"
-                    header="Export Configuration to a `*.json` file"
                     cancel="CANCEL"
                     confirm="EXPORT"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    onCancel={hideModal}
+                    onConfirm={hideModal}
                     >
                     <TextInput
                         id=""
@@ -185,59 +209,73 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id="modal-delete-confirm"
+                    id={DELETE.id}
+                    header={DELETE.txt}
                     clsSuffix="delete-confirm"
-                    header="Confirmation"
                     subHeader="Are you sure you want to remove?"
                     cancel="CANCEL"
                     confirm="DELETE"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    onCancel={hideModal}
+                    onConfirm={onDelModalConfirm}
                     >
-                    <Checkbox id="setting-delete-confirm" label="Don’t show this confirmation again" />
+                    <Checkbox
+                        id="setting-delete-confirm"
+                        label="Don’t show this confirmation again"
+                        onChange={onDelConfirmToggle}
+                        />
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id="modal-host-add"
+                    id={ADD_HOST.id}
+                    header={ADD_HOST.txt}
                     clsSuffix="host-add"
-                    header="Add Host"
                     cancel="CANCEL"
                     confirm="SAVE"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    confirmDisabled={!isTargetEditItemIdValid || !isTargetEditItemValValid}
+                    onCancel={onAddHostCancel}
+                    onConfirm={onAddHostConfirm}
                     >
                     <div className="fm-field">
+                        {/* TODO: Fix valid state check symbol posiiton conflict */}
                         <TextInput
                             id="host-id"
                             label="ID"
-                            validate={[]}
-                            onInputChange={({ validState }) => {
-                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                            }} />
-                        <div className="fm-field__ctrl">
-                            <IconSwitch id="modal-https" label="lock-close" icon />
-                            <IconSwitch id="modal-regex" label="(.*)" />
-                        </div>
+                            value={targetEditItem?.id}
+                            // TODO: refactor this into validation handle service
+                            validate={[
+                                {
+                                    rule: /^[a-zA-Z]{3,}$/g,
+                                    msg: 'must be 3 or more characters without whitespace'
+                                }
+                            ]}
+                            onInputChange={onEditItemIdChange}
+                            />
                     </div>
                     <div className="fm-field">
                         <TextInput
                             id="host-value"
                             label="Address"
-                            validate={[]}
-                            onInputChange={({ validState }) => {
-                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                            }} />
+                            value={targetEditItem?.value}
+                            // TODO: refactor this into validation handle service
+                            validate={[
+                                {
+                                    rule: /^(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+$/g,
+                                    msg: 'e.g. www.google.com'
+                                }
+                            ]}
+                            onInputChange={onEditItemAddrChange}
+                            />
                     </div>
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id="modal-path-add"
+                    id={ADD_PATH.id}
+                    header={ADD_PATH.txt}
                     clsSuffix="path-add"
-                    header="Add Path"
                     cancel="CANCEL"
                     confirm="SAVE"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    onCancel={hideModal}
+                    onConfirm={onAddHostConfirm}
                     >
                     <div className="fm-field">
                         <TextInput
@@ -263,13 +301,13 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id="modal-lib-add"
+                    id={ADD_LIB.id}
+                    header={ADD_LIB.txt}
                     clsSuffix="lib-add"
-                    header="Add a library from a URL (e.g. CDN)"
                     cancel="CANCEL"
                     confirm="SAVE"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    onCancel={hideModal}
+                    onConfirm={hideModal}
                     >
                     <TextInput
                         id="path-id"
@@ -288,13 +326,13 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id="modal-lib-edit"
+                    id={EDIT_LIB.id}
+                    header={EDIT_LIB.txt}
                     clsSuffix="lib-edit"
-                    header="Edit a Library Url"
                     cancel="CANCEL"
                     confirm="SAVE"
-                    onCancel={() => setModalId(null)}
-                    onConfirm={() => setModalId(null)}
+                    onCancel={hideModal}
+                    onConfirm={hideModal}
                     >
                     <TextInput
                         id="path-id"
@@ -311,7 +349,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
                         }} />
                 </Modal>
-            </div>
+            </div> }
         </div>
     );
 });
