@@ -6,24 +6,33 @@ import { IconSwitch } from '../../base/icon-switch';
 import { Dropdown } from '../../base/dropdown';
 import { SideNav } from '../../base/side-nav';
 import { DataGrid } from '../../widget/data-grid';
+import { jsExecStage } from '../../../service/constant/js-exec-stage';
 import { TbRow } from './tb-row';
+import { IProps } from './type';
 
+// TODO: constant
 const tabSwitchList = [
     {name: 'js' , isEnable: true},
     {name: 'css', isEnable: false},
     {name: 'lib', isEnable: true},
 ];
 
-const dropdownValues = [
-    'before page script',
-    'dom content ready',
-    'after page script',
-    'after page load'
-];
 
-export const OptionEditView = memo(({ data }: any) => {
+// TODO: props type
+export const OptionEditView = memo((props: IProps) => {
+    const { store, storeHandler } = props;
+    const { rules, localState } = store;
+    const { onListItemClick } = storeHandler;
+    const { currListItem } = localState;
+
     return (<>
-        <SideNav list={data} itemKeys={['id', 'id']} childKey="paths" />
+        <SideNav
+            list={rules}
+            itemKeys={['id', 'id']}
+            childKey="paths"
+            activeItem={currListItem}
+            onItemClick={onListItemClick}
+            />
         <div className="main--edit__form">
             <section className="fm-field">
                 <p className="fm-field__label">ID</p>
@@ -58,7 +67,7 @@ export const OptionEditView = memo(({ data }: any) => {
                 <Dropdown
                     id="js-execution"
                     border={true}
-                    list={dropdownValues}
+                    list={jsExecStage}
                     selectIdx={0}
                     onSelect={() => {}} />
             </section>
@@ -66,6 +75,7 @@ export const OptionEditView = memo(({ data }: any) => {
             <TabSwitch
                 id="tab-switch"
                 list={tabSwitchList}
+                activeIdx={currListItem.lastTabIdx}
                 onTabActive={(evt, checkedTab, idx) => {}}
                 onTabEnable={(evt, tab, idx, isTabAtv, isEnable) => {}}
                 />
@@ -81,7 +91,7 @@ export const OptionEditView = memo(({ data }: any) => {
                 /> */}
             {/* TODO: Conditional DataGrid */}
             <DataGrid
-                data={data}
+                data={rules}
                 component={{
                     rows: [ [ TbRow ] ]
                 }}
