@@ -4,12 +4,16 @@ describe('Local State (Non-Persisting)', () => {
     it('should return default value', () => {
         expect(new LocalState()).toEqual({
             currView: 'LIST',
-            currSearchText: '',
+            searchedText: '',
+            searchedRules: null,
             isAllRowsSelected: false,
-            currListItemIdx: 0,
-            currNestedListItemIdx: 0,
+            currListItem: null,
             currModalId: null,
-            isModalConfirmDisabled: false,
+            targetEditItem: null,
+            isTargetEditItemIdValid: false,
+            isTargetEditItemValValid: false,
+            targetRmvItemIdx: null,
+            targetRmvItemParentIdx: null,
         });
     });
 });
