@@ -1,64 +1,120 @@
 import React, { memo } from 'react';
+import { jsExecStage } from '../../../service/constant/js-exec-stage';
 import { IconBtn } from '../../base/icon-btn';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/slider-switch';
 import { Dropdown } from '../../base/dropdown';
 import { InclStaticNumBadge } from '../../static/num-badge';
-// import { IProps } from './type';
+import { ITbRowProps } from './type';
 
-// TODO: Move to def. value/state
-const dropdownValues = [
-    'before page script',
-    'dom content ready',
-    'after page script',
-    'after page load'
-];
+export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
+    const { idx, itemLvl, item, nestedItems, classNames, parentItemCtx, expandProps, commonProps } = props;
 
-// TODO: Type for props
-export const TbRow: React.FC<any> = memo((props) => {
-    const { idx, itemLvl, item, nestedItems , classNames, expandProps } = props;
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
     const { isOpen, onClick }: any = nestedItems ? expandProps : {};
-    // TODO: Renamed the state prop
-    const { https, id, addr, script_exec, script_js, script_css, script_lib, paths } = item;
+    const { isHttps, id, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
     const ID_SUFFIX: string = `${itemLvl}-${idx}`;
+
+    const { store, storeHandler } = commonProps;
+    const { localState } = store;
+    const { isAllRowsSelected } = localState;
+
+    const {
+        onDelModal,
+        onHttpsToggle, onJsToggle, onCssToggle, onLibToggle,
+        onJsExecStageChange,
+        onItemEdit,
+    } = storeHandler;
+
+    const isParent = itemLvl === 0;
+    const parentIdx: number = parentItemCtx?.idx;
+
+    // Allow both external state & internal state
+    const isAllChecked = isAllRowsSelected ? isAllRowsSelected : null;
 
     return <>
             {/* Index required for each id */}
             <tr className={REG_ROW}>
-                <td><Checkbox id={`check-${ID_SUFFIX}`} /></td>
-                <td>{ nestedItems &&
+                <td>
+                    {/* TODO, check state */}
+                    <Checkbox
+                        id={`check-${ID_SUFFIX}`}
+                        checked={isAllChecked}
+                        />
+                </td><td>{ isParent &&
                     <SliderSwitch
                         id={`https-${ID_SUFFIX}`}
-                        defaultChecked={https}
+                        checked={isHttps}
+                        disabled={isAllChecked}
+                        onClick={() => onHttpsToggle(idx)}
                         />}
-                </td>
-                <td>
-                    <div>{ nestedItems && <>
+                </td><td>
+                    <div>{ isParent && <>
                         <IconBtn
                             icon="arrow-rt"
                             clsSuffix={`arrow-rt ${isOpen ? 'open': ''}`}
+                            disabled={!paths.length}
                             onClick={onClick}
                             />
                         { InclStaticNumBadge(paths.length) } </>}
                         <span>{id}</span>
                     </div>
-                </td>
-                <td>{addr}</td>
-                <td>
+                </td><td>
+                    {value}
+                </td><td>
                     <Dropdown
                         id={`select-${ID_SUFFIX}`}
-                        list={dropdownValues}
-                        selectIdx={script_exec}
+                        list={jsExecStage}
+                        selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
+                        disabled={isAllChecked}
+                        onSelect={(...args) => onJsExecStageChange(idx, args[1])}
+                        />
+                </td><td>
+                    <SliderSwitch
+                        id={`js-${ID_SUFFIX}`}
+                        defaultChecked={isJsOn}
+                        disabled={isAllChecked}
+                        onClick={() => onJsToggle(idx)}
+                        />
+                </td><td>
+                    <SliderSwitch
+                        id={`css-${ID_SUFFIX}`}
+                        defaultChecked={isCssOn}
+                        disabled={isAllChecked}
+                        onClick={() => onCssToggle(idx)}
+                        />
+                </td><td>
+                    <SliderSwitch
+                        id={`lib-${ID_SUFFIX}`}
+                        defaultChecked={isLibOn}
+                        disabled={isAllChecked}
+                        onClick={() => onLibToggle(idx)}
+                        />
+                </td><td>{ isParent &&
+                    // TODO: action - add path
+                    <IconBtn
+                        icon="add"
+                        theme="gray"
+                        disabled={isAllChecked}
+                        onClick={() => {}}
+                        />}
+                </td><td>
+                    <IconBtn
+                        icon="edit"
+                        theme="gray"
+                        disabled={isAllChecked}
+                        onClick={() => onItemEdit(item) }
+                        />
+                </td><td>
+                    <IconBtn
+                        icon="delete"
+                        theme="gray"
+                        disabled={isAllChecked}
+                        /* TODO: only if the flag is on, show modal */
+                        onClick={() => onDelModal(idx, parentIdx)}
                         />
                 </td>
-                <td><SliderSwitch id={`js-${ID_SUFFIX}`} defaultChecked={script_js} /></td>
-                <td><SliderSwitch id={`css-${ID_SUFFIX}`} defaultChecked={script_css} /></td>
-                <td><SliderSwitch id={`lib-${ID_SUFFIX}`} defaultChecked={script_lib} /></td>
-                <td><IconBtn icon="add" theme="gray" /></td>
-                <td><IconBtn icon="edit" theme="gray" /></td>
-                <td><IconBtn icon="delete" theme="gray" /></td>
             </tr>{ nestedItems && isOpen &&
             <tr className={NESTED_ROW}>
                 <td colSpan={11}>

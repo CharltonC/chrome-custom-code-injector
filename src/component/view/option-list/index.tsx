@@ -3,45 +3,62 @@ import { TbRow } from './tb-row';
 import { DataGrid } from '../../widget/data-grid';
 import { IconBtn } from '../../base/icon-btn';
 import { Checkbox } from '../../base/checkbox';
+import { IProps } from './type';
 
-const dataGridConfig: any = {
-    type: "table",
-    component: {
-        rows: [
-            [ TbRow ],
-            [ 'paths', TbRow ]
-        ]
-    },
-    rowKey: "id",
-    header: [
-        { title: <Checkbox id="check-all" /> },
-        { title: 'HTTPS' },
-        { title: 'ID', sortKey: 'id' },
-        { title: 'ADDRESS', sortKey: 'addr' },
-        { title: 'SCRIPT EXECUTION' },
-        { title: 'JS' },
-        { title: 'CSS' },
-        { title: 'LIBRARY' },
-        { title: '' },
-        { title: '' },
-        { title: <IconBtn icon="delete" theme="gray" /> }
-    ],
-    expand:{
-        onePerLevel: true
-    },
-    sort: {
-        key: 'name',
-        isAsc: true,
-        reset: true,
-    },
-    paginate:{
-        page: 0,
-        increment: [10, 25, 50],
-    }
-};
+export const OptionListView = memo((props: IProps) => {
+    const { store, storeHandler } = props;
+    const { rules, localState } = store;
+    const { isAllRowsSelected, searchedRules } = localState;
+    const { onAllRowsToggle } = storeHandler;
 
-export const OptionListView = memo(({ data }: any) => {
+    const checkAllHeader = <Checkbox
+        id="check-all"
+        onClick={onAllRowsToggle}
+        />;
+
+    const delAllHeader = <IconBtn
+        icon="delete"
+        theme="gray"
+        disabled={!isAllRowsSelected}
+        />;
+
     return (<>
-        <DataGrid {...dataGridConfig} data={data} />
+        <DataGrid
+            data={searchedRules || rules}
+            type="table"
+            component={{
+                rows: [
+                    [ TbRow ],
+                    [ 'paths', TbRow ]
+                ],
+                commonProps: props
+            }}
+            rowKey="id"
+            header={[
+                { title: checkAllHeader as any},
+                { title: 'HTTPS' },
+                { title: 'ID', sortKey: 'id' },
+                { title: 'ADDRESS', sortKey: 'value' },
+                { title: 'SCRIPT EXECUTION' },
+                { title: 'JS' },
+                { title: 'CSS' },
+                { title: 'LIBRARY' },
+                { title: '' },
+                { title: '' },
+                { title: delAllHeader as any}
+            ]}
+            expand={{
+                onePerLevel: true
+            }}
+            sort={{
+                key: 'name',
+                isAsc: true,
+                reset: true,
+            }}
+            paginate={{
+                page: 0,
+                increment: [10, 25, 50],
+            }}
+            />
     </>);
 });
