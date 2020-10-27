@@ -2,7 +2,7 @@ import React from 'react';
 import { StateHandler } from '../../../service/state-handler';
 import { StateHandle } from '../../../service/handle/state';
 import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../../../service/model/rule-config';
-import { AppState } from '../../../service/state';
+import { AppState } from '../../../service/model/app-state';
 import { OptionApp } from '.';
 
 const mockHostRuleConfigs: [string, string][] = [
