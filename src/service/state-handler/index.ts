@@ -2,27 +2,12 @@ import { StateHandle } from '../handle/state';
 import { AView } from '../model/local-state/type';
 import { AppState } from '../model/app-state';
 import { LocalState } from '../model/local-state';
+import { HostRuleConfig } from '../model/rule-config';
+import { modals } from '../constant/modals';
+
+const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
 
 export class StateHandler extends StateHandle.BaseStoreHandler {
-    //// Modals
-    openModal({ localState }: AppState, currModalId: string): Partial<AppState> {
-        return {
-            localState: {
-                ...localState,
-                currModalId
-            }
-        };
-    }
-
-    hideModal({ localState }: AppState): Partial<AppState> {
-        return {
-            localState: {
-                ...localState,
-                currModalId: null
-            }
-        };
-    }
-
     //// Router/Views
     onListView(state: AppState): Partial<AppState> {
         const { currView } = this.reflect.setView(state, 'LIST').localState;
@@ -30,7 +15,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: {
                 ...resetLocalState,
-                currView
+                currView,
             }
         };
     }
@@ -93,16 +78,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
-        const clone = rules.slice();
-        const value = clone[idx][key];
-        clone[idx][key] = !value;
-        return { rules: clone };
-    }
+    onItemRmv({ rules }: AppState, idx: number, parentIdx?: number) {
+        const cloneRules = rules.concat();
+        const modItems = typeof parentIdx !== 'undefined' ?
+            cloneRules[parentIdx].paths :
+            cloneRules;
 
-    //// TODO
-    onSearch(store) {
-        console.log(store);
+        modItems.splice(idx, 1);
+        return { rules: cloneRules };
     }
 
     onListItemClick({ localState }: AppState, ...[, { item }]) {
@@ -110,6 +93,203 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currListItem: item,
+            }
+        };
+    }
+
+    toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
+        const clone = rules.slice();
+        const value = clone[idx][key];
+        clone[idx][key] = !value;
+        return { rules: clone };
+    }
+
+    //// Search
+    // TODO: debounce
+    onSearch({ localState, rules }: AppState, evt, val: string, gte3Char: boolean): Partial<AppState> {
+        const baseLocalState = {
+            ...localState,
+            searchedText: val
+        };
+
+        if (!val) return {
+            localState: {
+                ...baseLocalState,
+                searchedRules: null,
+            }
+        };
+
+        if (!gte3Char) return { localState: baseLocalState };
+
+        const searchedRules: HostRuleConfig[] = val
+            .split(/\s+/)
+            .reduce((filteredRules: HostRuleConfig[], text: string) => {
+                return filteredRules.filter(({ id, value, paths }: HostRuleConfig) => {
+                    const isIdMatch = id.indexOf(text) !== -1;
+                    if (isIdMatch) return true;
+
+                    const isValMatch = value.indexOf(text) !== -1;
+                    if (isValMatch) return true;
+
+                    return paths.some(({ id: childId, value: childValue}) => {
+                        return (childId.indexOf(text) !== -1) || (childValue.indexOf(text) !== -1);
+                    });
+                });
+            }, rules);
+
+        return {
+            localState: {
+                ...baseLocalState,
+                searchedRules,
+            }
+        };
+    }
+
+    onSearchClear({ localState }: AppState) {
+        return {
+            localState: {
+                ...localState,
+                searchedRules: null,
+                searchedText: ''
+            }
+        };
+    }
+
+    //// Modals
+    // Generic
+    openModal({ localState }: AppState, currModalId: string): Partial<AppState> {
+        return {
+            localState: {
+                ...localState,
+                currModalId
+            }
+        };
+    }
+
+    hideModal({ localState }: AppState): Partial<AppState> {
+        return {
+            localState: {
+                ...localState,
+                currModalId: null
+            }
+        };
+    }
+
+    // Setting
+    onSettingModal(state: AppState) {
+        return this.reflect.openModal(state, SETTING.id);
+    }
+
+    onImportSettingModal(state: AppState) {
+        return this.reflect.openModal(state, IMPORT_SETTING.id);
+    }
+
+    onExportSettingModal(state: AppState) {
+        return this.reflect.openModal(state, EXPORT_SETTING.id);
+    }
+
+    // Delete
+    onDelModal(appState: AppState, idx: number, parentIdx?: number) {
+        const { localState, setting } = appState;
+
+        if (!setting.showDeleteModal) {
+            return this.reflect.onItemRmv(appState, idx, parentIdx);
+
+        } else {
+            return {
+                localState: {
+                    ...localState,
+                    currModalId: DELETE.id,
+                    targetRmvItemIdx: idx,
+                    targetRmvItemParentIdx: parentIdx
+                }
+            };
+        }
+    }
+
+    onDelModalConfirm(appState: AppState) {
+        const { localState } = appState;
+        const { targetRmvItemIdx, targetRmvItemParentIdx } = localState;
+        const { rules } = this.reflect.onItemRmv(appState, targetRmvItemIdx, targetRmvItemParentIdx);
+
+        return {
+            rules,
+            localState: {
+                ...localState,
+                currModalId: null,
+                targetRmvItemIdx: null,
+                targetRmvItemParentIdx: null
+            }
+        };
+    }
+
+    onDelConfirmToggle({ setting }: AppState) {
+        return {
+            setting: {
+                ...setting,
+                showDeleteModal: !setting.showDeleteModal
+            }
+        };
+    }
+
+    // Add/Edit Host/Path
+    onAddHostModal({ localState }: AppState) {
+        return {
+            localState: {
+                ...localState,
+                currModalId: ADD_HOST.id,
+                targetEditItem: new HostRuleConfig('', '')
+            }
+        };
+    }
+
+    onAddHostCancel({ localState }: AppState) {
+        return {
+            localState: {
+                ...localState,
+                currModalId: null,
+                targetEditItem: null,
+            }
+        };
+    }
+
+    onAddHostConfirm({ localState, rules }: AppState) {
+        const cloneRules = rules.concat();
+        cloneRules.push(localState.targetEditItem);
+        return {
+            rules: cloneRules,
+            localState: {
+                ...localState,
+                currModalId: null,
+                targetEditItem: null,
+            }
+        };
+    }
+
+    onEditItemIdChange({ localState }: AppState, { val, validState }) {
+        const { targetEditItem } = localState;
+        return {
+            localState: {
+                ...localState,
+                isTargetEditItemIdValid: validState.isValid,
+                targetEditItem: {
+                    ...targetEditItem,
+                    id: val
+                },
+            }
+        };
+    }
+
+    onEditItemAddrChange({ localState }: AppState, { val, validState }) {
+        const { targetEditItem } = localState;
+        return {
+            localState: {
+                ...localState,
+                isTargetEditItemValValid: validState.isValid,
+                targetEditItem: {
+                    ...targetEditItem,
+                    value: val
+                },
             }
         };
     }
