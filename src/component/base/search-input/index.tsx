@@ -29,11 +29,11 @@ export class SearchInput extends MemoComponent<IProps, IState> {
     onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
         // handle two way binding internally
         const text: string = evt.target.value;
-        const lt3Char: boolean = text.length >= 2;
+        const gte3Char: boolean = text.length >= 3;
         this.setState({hsText: !!text});
 
         // run any external callback (incl. sync external state if needed)
-        this.props.onChange?.(evt, text, lt3Char);
+        this.props.onChange?.(evt, text, gte3Char);
     }
 
     onBtnClick(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
