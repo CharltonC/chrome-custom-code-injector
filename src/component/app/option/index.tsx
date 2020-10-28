@@ -187,6 +187,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                                 id="js-exec-order"
                                 list={jsExecStage}
                                 border
+                                selectIdx={defRuleConfig.jsExecPhase}
                                 onSelect={onDefJsExecStageChange}
                                 />
                         </li>
