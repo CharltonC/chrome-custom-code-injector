@@ -320,11 +320,12 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onEditItemIdChange({ localState }: AppState, { val, validState }) {
-        const { targetEditItem } = localState;
+        const { targetEditItem, isTargetEditItemValValid } = localState;
         return {
             localState: {
                 ...localState,
                 isTargetEditItemIdValid: validState.isValid,
+                allowModalConfirm: isTargetEditItemValValid && validState.isValid,
                 targetEditItem: {
                     ...targetEditItem,
                     id: val
@@ -334,11 +335,12 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onEditItemAddrChange({ localState }: AppState, { val, validState }) {
-        const { targetEditItem } = localState;
+        const { targetEditItem, isTargetEditItemIdValid } = localState;
         return {
             localState: {
                 ...localState,
                 isTargetEditItemValValid: validState.isValid,
+                allowModalConfirm: isTargetEditItemIdValid && validState.isValid,
                 targetEditItem: {
                     ...targetEditItem,
                     value: val
