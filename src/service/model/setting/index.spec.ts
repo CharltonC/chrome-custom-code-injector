@@ -6,7 +6,7 @@ describe('Setting Model', () => {
         expect(new Setting()).toEqual({
             ...(new BaseRuleConfig()),
             showDeleteModal: true,
-            resultsPerPage: 20,
+            resultsPerPageIdx: 0,
             isHttps: false,
             isRegex: false,
         });
