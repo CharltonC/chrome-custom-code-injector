@@ -8,23 +8,25 @@ import { InclStaticNumBadge } from '../../static/num-badge';
 import { ITbRowProps } from './type';
 
 export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
-    const { idx, itemLvl, item, nestedItems, classNames, parentItemCtx, expandProps, commonProps } = props;
-
-    const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
-    const { isHttps, id, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
-    const ID_SUFFIX: string = `${itemLvl}-${idx}`;
-
+    const { idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
     const { store, storeHandler } = commonProps;
     const { localState } = store;
-    const { isAllRowsSelected, expdRowId } = localState;
 
     const {
-        onDelModal,
+        isAllRowsSelected,
+        expdRowId
+    } = localState;
+
+    const {
+        onDelModal, onAddPathModal,
         onHttpsToggle, onJsToggle, onCssToggle, onLibToggle,
         onJsExecStageChange,
         onItemEdit, onItemExpd,
     } = storeHandler;
 
+    const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
+    const { isHttps, id, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
+    const ID_SUFFIX: string = `${itemLvl}-${idx}`;
     const isParent = itemLvl === 0;
     const isRowExp = isParent && id === expdRowId;
     const parentIdx: number = parentItemCtx?.idx;
@@ -75,30 +77,29 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isAllChecked}
-                        onClick={() => onJsToggle(idx)}
+                        onChange={() => onJsToggle(idx)}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isAllChecked}
-                        onClick={() => onCssToggle(idx)}
+                        onChange={() => onCssToggle(idx)}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isAllChecked}
-                        onClick={() => onLibToggle(idx)}
+                        onChange={() => onLibToggle(idx)}
                         />
                 </td><td>{ isParent &&
-                    // TODO: action - add path
                     <IconBtn
                         icon="add"
                         theme="gray"
                         title="add path rule"
                         disabled={isAllChecked}
-                        onClick={() => {}}
+                        onClick={() => onAddPathModal(idx)}
                         />}
                 </td><td>
                     <IconBtn

@@ -10,13 +10,22 @@ export const OptionListView = memo((props: IProps) => {
     const { store, storeHandler } = props;
     const { rules, localState, setting } = store;
 
-    const { isAllRowsSelected, searchedRules } = localState;
-    const { resultsPerPageIdx } = setting;
-    const { onAllRowsToggle } = storeHandler;
+    const {
+        isAllRowsSelected,
+        searchedRules
+    } = localState;
+
+    const {
+        resultsPerPageIdx
+    } = setting;
+
+    const {
+        onAllRowsToggle
+    } = storeHandler;
 
     const checkAllHeader = <Checkbox
         id="check-all"
-        onClick={onAllRowsToggle}
+        onChange={onAllRowsToggle}
         />;
 
     const delAllHeader = <IconBtn
@@ -38,6 +47,7 @@ export const OptionListView = memo((props: IProps) => {
             }}
             rowKey="id"
             header={[
+                /* TODO: Fix type `any` */
                 { title: checkAllHeader as any},
                 { title: 'HTTPS' },
                 { title: 'ID', sortKey: 'id' },
