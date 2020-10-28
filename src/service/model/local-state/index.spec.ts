@@ -7,6 +7,7 @@ describe('Local State (Non-Persisting)', () => {
             searchedText: '',
             searchedRules: null,
             isAllRowsSelected: false,
+            expdRowId: null,
             currListItem: null,
             currModalId: null,
             allowModalConfirm: false,

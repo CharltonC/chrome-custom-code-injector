@@ -9,6 +9,7 @@ export class LocalState {
 
     // List View
     isAllRowsSelected: boolean = false;
+    expdRowId: string = null;
 
     // Edit View (TODO: rename it to editListItem)
     currListItem: AObj = null;
