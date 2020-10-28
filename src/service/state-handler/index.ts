@@ -155,6 +155,16 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
+    //// Settings
+    onResultsPerPageChange({ setting }: AppState, resultsPerPageIdx: number) {
+        return {
+            setting: {
+                ...setting,
+                resultsPerPageIdx
+            }
+        };
+    }
+
     //// Modals
     // Generic
     openModal({ localState }: AppState, currModalId: string): Partial<AppState> {
