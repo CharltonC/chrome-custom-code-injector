@@ -3,6 +3,7 @@ import React, { memo, ReactElement } from 'react';
 // import { debounce } from '../../../asset/ts/vendor/debounce';
 import { modals } from '../../../service/constant/modals';
 import { urls } from '../../../service/constant/urls';
+import { resultsPerPage } from '../../../service/constant/result-per-page';
 import { UtilHandle } from '../../../service/handle/util';
 
 import { IconBtn } from '../../base/icon-btn';
@@ -36,7 +37,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
     } = localState;
 
     const {
-        showDeleteModal
+        showDeleteModal,
+        resultsPerPageIdx
     } = setting;
 
     const {
@@ -134,7 +136,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                                 id="result-per-page"
                                 label="Results per page"
                                 ltLabel
-                                list={['a', 'b']}
+                                list={resultsPerPage}
+                                selectIdx={resultsPerPageIdx}
                                 border={true}
                                 />
                         </li><li>
