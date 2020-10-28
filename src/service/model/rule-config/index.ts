@@ -8,9 +8,7 @@ export class BaseRuleConfig {
     isJsOn: boolean = false;
     isCssOn: boolean = false;
     isLibOn: boolean = false;
-    lastTabIdx: 0 | 1 | 2 = 0;         // last tab where user is on
     jsExecPhase: AJsExecPhase = 1;
-    // jsExecInclSubframe: boolean = false;
 }
 
 export class PathRuleConfig extends BaseRuleConfig {
@@ -29,7 +27,6 @@ export class PathRuleConfig extends BaseRuleConfig {
 
 export class HostRuleConfig extends PathRuleConfig {
     isHttps: boolean = false;
-    isRegex: boolean = false;
     paths: PathRuleConfig[] = [];
 }
 
@@ -38,7 +35,6 @@ export class LibRuleConfig {
     value: string = '';
     isOn: boolean = false;
     isAsync: boolean = true;
-    // isSubFrame: boolean = false;
 
     constructor(id: string, value: string) {
         this.id = id;

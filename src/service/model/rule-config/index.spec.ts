@@ -9,7 +9,6 @@ describe('Rule Config Model', () => {
             isJsOn: false,
             isCssOn: false,
             isLibOn: false,
-            lastTabIdx: 0,
             jsExecPhase: 1
         });
     });
@@ -31,7 +30,6 @@ describe('Rule Config Model', () => {
             ...(new BaseRuleConfig()),
             ...(new PathRuleConfig(mockId, mockValue)),
             isHttps: false,
-            isRegex: false,
             paths: []
         });
     });
