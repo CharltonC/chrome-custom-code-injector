@@ -1,8 +1,12 @@
-import { BaseRuleConfig } from '../rule-config';
-
-export class Setting extends BaseRuleConfig {
+export class Setting {
     showDeleteModal: boolean = true;
     resultsPerPageIdx: number = 0;
-    isHttps: boolean = false;
-    isRegex: boolean = false;
+    defRuleConfig = {
+        isHttps: false,
+        isJsOn: false,
+        isCssOn: false,
+        isLibOn: false,
+        jsExecPhase: 1
+    };
+
 }
