@@ -34,7 +34,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         currView,
         currModalId, allowModalConfirm,
         searchedText,
-        targetEditItem, isTargetEditItemIdValid, isTargetEditItemValValid,
+        targetEditItem,
     } = localState;
 
     const {
@@ -200,6 +200,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     clsSuffix="setting-import"
                     cancel="CANCEL"
                     confirm="IMPORT"
+                    confirmDisabled={!allowModalConfirm}
                     onCancel={hideModal}
                     onConfirm={hideModal}
                     >
@@ -213,6 +214,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     clsSuffix="setting-export"
                     cancel="CANCEL"
                     confirm="EXPORT"
+                    confirmDisabled={!allowModalConfirm}
                     onCancel={hideModal}
                     onConfirm={hideModal}
                     >
@@ -280,6 +282,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     clsSuffix="path-add"
                     cancel="CANCEL"
                     confirm="SAVE"
+                    confirmDisabled={!allowModalConfirm}
                     onCancel={hideModal}
                     onConfirm={onAddHostConfirm}
                     >
@@ -314,6 +317,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     clsSuffix="lib-add"
                     cancel="CANCEL"
                     confirm="SAVE"
+                    confirmDisabled={!allowModalConfirm}
                     onCancel={hideModal}
                     onConfirm={hideModal}
                     >
@@ -341,6 +345,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     clsSuffix="lib-edit"
                     cancel="CANCEL"
                     confirm="SAVE"
+                    confirmDisabled={!allowModalConfirm}
                     onCancel={hideModal}
                     onConfirm={hideModal}
                     >
