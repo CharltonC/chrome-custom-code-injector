@@ -47,7 +47,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         hideModal, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
         onAddHostCancel, onAddHostConfirm, onDelModalConfirm,
         onEditItemIdChange, onEditItemAddrChange,
-        onDelConfirmToggle
+        onDelConfirmToggle, onResultsPerPageChange,
     } = storeHandler;
 
     const isEditView: boolean = currView === 'EDIT';
@@ -139,6 +139,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                                 list={resultsPerPage}
                                 selectIdx={resultsPerPageIdx}
                                 border={true}
+                                onSelect={(evt, idx) => onResultsPerPageChange(idx) }
                                 />
                         </li><li>
                             <h4>New Item</h4>
