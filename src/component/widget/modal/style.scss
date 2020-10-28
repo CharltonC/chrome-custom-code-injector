@@ -45,7 +45,7 @@ body.modal-open {
         will-change: opacity, transform;
     }
 
-    header {
+    &__header {
         display: grid;
         grid-template-areas: "main-header close"
                              "sub-header sub-header";
@@ -78,11 +78,11 @@ body.modal-open {
         }
     }
 
-    main {
+    &__body {
         margin-top: 40px;
     }
 
-    footer {
+    &__footer {
         display: flex;
         margin-top: 40px;
         justify-content: flex-end;

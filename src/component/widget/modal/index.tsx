@@ -33,16 +33,16 @@ export class Modal extends MemoComponent<IProps, IState> {
         return this.isVisible(id, currModalId) && (
             <div className={this.cssCls('modal', clsSuffix)}>
                 <div className="modal__content">
-                    <header>
+                    <div className="modal__header">
                         <h3>{header}</h3>{ subHeader &&
                         <h4>{subHeader}</h4>}
                         <button type="button" onClick={onCancel}>{this.closeIconElem}</button>
-                    </header>
-                    <main>{children}</main>{ (cancel || confirm) &&
-                    <footer>{ cancel &&
+                    </div>
+                    <div className="modal__body">{children}</div>{ (cancel || confirm) &&
+                    <div className="modal__footer">{ cancel &&
                         <TextBtn text={cancel} outline onClick={onCancel} />}{ confirm &&
                         <TextBtn text={confirm} disabled={confirmDisabled} onClick={onConfirm ?? onCancel} />}
-                    </footer>}
+                    </div>}
                 </div>
                 <div className="modal__overlay" onClick={onCancel}></div>
             </div>

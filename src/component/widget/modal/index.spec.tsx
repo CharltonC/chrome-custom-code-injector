@@ -71,7 +71,7 @@ describe('Component - Modal', () => {
             $overlay = $elem.querySelector('.modal__overlay');
             $closeBtn = $elem.querySelector('button');
             $subHeader = $elem.querySelector('h4');
-            $footer = $elem.querySelector('footer');
+            $footer = $elem.querySelector('.modal__footer');
             $btns = $elem.querySelectorAll('.text-btn');
         }
 
