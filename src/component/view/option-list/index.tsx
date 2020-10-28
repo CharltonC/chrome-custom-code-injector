@@ -1,14 +1,17 @@
 import React, { memo } from 'react';
-import { TbRow } from './tb-row';
+import { resultsPerPage } from '../../../service/constant/result-per-page';
 import { DataGrid } from '../../widget/data-grid';
 import { IconBtn } from '../../base/icon-btn';
 import { Checkbox } from '../../base/checkbox';
+import { TbRow } from './tb-row';
 import { IProps } from './type';
 
 export const OptionListView = memo((props: IProps) => {
     const { store, storeHandler } = props;
-    const { rules, localState } = store;
+    const { rules, localState, setting } = store;
+
     const { isAllRowsSelected, searchedRules } = localState;
+    const { resultsPerPageIdx } = setting;
     const { onAllRowsToggle } = storeHandler;
 
     const checkAllHeader = <Checkbox
@@ -57,7 +60,8 @@ export const OptionListView = memo((props: IProps) => {
             }}
             paginate={{
                 page: 0,
-                increment: [10, 25, 50],
+                increment: resultsPerPage,
+                incrementIdx: resultsPerPageIdx,
             }}
             />
     </>);
