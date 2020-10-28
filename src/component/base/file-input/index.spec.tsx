@@ -3,7 +3,7 @@ import { TestUtil } from '../../../asset/ts/test-util/';
 import { FileInput, CLS_BASE } from './';
 import { IProps } from './type';
 
-describe('Component - TODO: Component Name', () => {
+describe('Component - File Input', () => {
     const mockProps: IProps = {
         id: 'some-id',
         fileType: 'image/jpg',
