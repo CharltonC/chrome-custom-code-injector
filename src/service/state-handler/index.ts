@@ -2,10 +2,9 @@ import { StateHandle } from '../handle/state';
 import { AView } from '../model/local-state/type';
 import { AppState } from '../model/app-state';
 import { LocalState } from '../model/local-state';
-import { HostRuleConfig } from '../model/rule-config';
+import { HostRuleConfig, PathRuleConfig } from '../model/rule-config';
 import { modals } from '../constant/modals';
 import { Setting } from '../model/setting';
-import { settings } from 'cluster';
 
 const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
 
@@ -334,7 +333,40 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onEditItemIdChange({ localState }: AppState, { val, validState }) {
+    onAddPathModal({ localState }: AppState, idx: number) {
+        return {
+            localState: {
+                ...localState,
+                currModalId: ADD_PATH.id,
+                targetItemIdx: idx,
+                targetItem: new PathRuleConfig('', '')
+            }
+        };
+    }
+
+    onAddPathConfirm({ localState, rules, setting }: AppState) {
+        const cloneRules = rules.concat();
+        const { targetItem, targetItemIdx } = localState;
+        const { isHttps, ...defConfig } = setting.defRuleConfig
+
+        // merge with user config before added
+        Object.assign(targetItem, defConfig);
+        cloneRules[targetItemIdx].paths.push(targetItem);
+
+        return {
+            rules: cloneRules,
+            localState: {
+                ...localState,
+                currModalId: null,
+                targetItemIdx: null,
+                allowModalConfirm: false,
+                isTargetItemIdValid: false,
+                isTargetItemValValid: false,
+            }
+        };
+    }
+
+    onTargetItemIdChange({ localState }: AppState, { val, validState }) {
         const { targetItem, isTargetItemValValid } = localState;
         return {
             localState: {
@@ -349,7 +381,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onEditItemAddrChange({ localState }: AppState, { val, validState }) {
+    onTargetItemValChange({ localState }: AppState, { val, validState }) {
         const { targetItem, isTargetItemIdValid } = localState;
         return {
             localState: {
