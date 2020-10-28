@@ -18,10 +18,10 @@ export class LocalState {
     currModalId: string = null;
     allowModalConfirm: boolean = false;
 
-    targetEditItem: HostRuleConfig = null;
-    isTargetEditItemIdValid: boolean = false;
-    isTargetEditItemValValid: boolean = false;
-
-    targetRmvItemIdx: number = null;
-    targetRmvItemParentIdx: number = null;
+    // Host/Path add/edit item (table row)
+    targetItem: HostRuleConfig = null;
+    targetItemIdx: number = null;
+    targetChildItemIdx: number = null;
+    isTargetItemIdValid: boolean = false;
+    isTargetItemValValid: boolean = false;
 }

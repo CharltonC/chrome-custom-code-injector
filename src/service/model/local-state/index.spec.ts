@@ -11,11 +11,11 @@ describe('Local State (Non-Persisting)', () => {
             currListItem: null,
             currModalId: null,
             allowModalConfirm: false,
-            targetEditItem: null,
-            isTargetEditItemIdValid: false,
-            isTargetEditItemValValid: false,
-            targetRmvItemIdx: null,
-            targetRmvItemParentIdx: null,
+            targetItem: null,
+            isTargetItemIdValid: false,
+            isTargetItemValValid: false,
+            targetChildItemIdx: null,
+            targetItemIdx: null,
         });
     });
 });

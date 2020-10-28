@@ -260,8 +260,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 localState: {
                     ...localState,
                     currModalId: DELETE.id,
-                    targetRmvItemIdx: idx,
-                    targetRmvItemParentIdx: parentIdx
+                    targetChildItemIdx: idx,
+                    targetItemIdx: parentIdx
                 }
             };
         }
@@ -269,16 +269,16 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     onDelModalConfirm(appState: AppState) {
         const { localState } = appState;
-        const { targetRmvItemIdx, targetRmvItemParentIdx } = localState;
-        const { rules } = this.reflect.onItemRmv(appState, targetRmvItemIdx, targetRmvItemParentIdx);
+        const { targetChildItemIdx, targetItemIdx } = localState;
+        const { rules } = this.reflect.onItemRmv(appState, targetChildItemIdx, targetItemIdx);
 
         return {
             rules,
             localState: {
                 ...localState,
                 currModalId: null,
-                targetRmvItemIdx: null,
-                targetRmvItemParentIdx: null
+                targetChildItemIdx: null,
+                targetItemIdx: null
             }
         };
     }
@@ -298,7 +298,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currModalId: ADD_HOST.id,
-                targetEditItem: new HostRuleConfig('', '')
+                targetItem: new HostRuleConfig('', '')
             }
         };
     }
@@ -308,41 +308,41 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currModalId: null,
-                targetEditItem: null,
+                targetItem: null,
             }
         };
     }
 
     onAddHostConfirm({ localState, rules, setting }: AppState) {
         const cloneRules = rules.concat();
-        const { targetEditItem } = localState;
+        const { targetItem } = localState;
 
         // merge with user config before added
-        Object.assign(targetEditItem, setting.defRuleConfig);
-        cloneRules.push(localState.targetEditItem);
+        Object.assign(targetItem, setting.defRuleConfig);
+        cloneRules.push(localState.targetItem);
 
         return {
             rules: cloneRules,
             localState: {
                 ...localState,
                 currModalId: null,
-                targetEditItem: null,
+                targetItem: null,
                 allowModalConfirm: false,
-                isTargetEditItemIdValid: false,
-                isTargetEditItemValValid: false,
+                isTargetItemIdValid: false,
+                isTargetItemValValid: false,
             }
         };
     }
 
     onEditItemIdChange({ localState }: AppState, { val, validState }) {
-        const { targetEditItem, isTargetEditItemValValid } = localState;
+        const { targetItem, isTargetItemValValid } = localState;
         return {
             localState: {
                 ...localState,
-                isTargetEditItemIdValid: validState.isValid,
-                allowModalConfirm: isTargetEditItemValValid && validState.isValid,
-                targetEditItem: {
-                    ...targetEditItem,
+                isTargetItemIdValid: validState.isValid,
+                allowModalConfirm: isTargetItemValValid && validState.isValid,
+                targetItem: {
+                    ...targetItem,
                     id: val
                 },
             }
@@ -350,14 +350,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onEditItemAddrChange({ localState }: AppState, { val, validState }) {
-        const { targetEditItem, isTargetEditItemIdValid } = localState;
+        const { targetItem, isTargetItemIdValid } = localState;
         return {
             localState: {
                 ...localState,
-                isTargetEditItemValValid: validState.isValid,
-                allowModalConfirm: isTargetEditItemIdValid && validState.isValid,
-                targetEditItem: {
-                    ...targetEditItem,
+                isTargetItemValValid: validState.isValid,
+                allowModalConfirm: isTargetItemIdValid && validState.isValid,
+                targetItem: {
+                    ...targetItem,
                     value: val
                 },
             }
