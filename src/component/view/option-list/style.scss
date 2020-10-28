@@ -70,7 +70,8 @@
             @include gen-tb-cells-width( (65, 80, (270, 2), 220, (75, 3), (50, 3)) );
         }
 
-        .slider-switch {
+        .slider-switch,
+        .checkbox {
             display: flex;
         }
     }
