@@ -1,7 +1,10 @@
 import React, { memo, ReactElement } from 'react';
+
 // import { debounce } from '../../../asset/ts/vendor/debounce';
 import { modals } from '../../../service/constant/modals';
+import { urls } from '../../../service/constant/urls';
 import { UtilHandle } from '../../../service/handle/util';
+
 import { IconBtn } from '../../base/icon-btn';
 import { IconSwitch } from '../../base/icon-switch';
 import { Checkbox } from '../../base/checkbox';
@@ -13,11 +16,9 @@ import { FileInput } from '../../base/file-input';
 import { Modal } from '../../widget/modal';
 import { OptionEditView } from '../../view/option-edit';
 import { OptionListView } from '../../view/option-list';
-import { IProps } from './type';
 import { inclStaticIcon } from '../../static/icon';
+import { IProps } from './type';
 
-{/* TODO: make this a constant */}
-const DOC_URL: string = 'https://github.com/CharltonC/chrome-custom-code-insertion-userguide';
 const { cssCls } = UtilHandle.prototype;
 const docIcon: ReactElement = inclStaticIcon('doc', 'white');
 const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
@@ -84,7 +85,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         />
                     <a
                         target="_blank"
-                        href={DOC_URL}
+                        href={urls.DOC}
                         rel="noopener noreferrer"
                         className="icon-btn"
                         >
