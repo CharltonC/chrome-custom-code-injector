@@ -301,9 +301,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onAddHostConfirm({ localState, rules }: AppState) {
+    onAddHostConfirm({ localState, rules, setting }: AppState) {
         const cloneRules = rules.concat();
+        const { targetEditItem } = localState;
+
+        // merge with user config before added
+        Object.assign(targetEditItem, setting.defRuleConfig);
         cloneRules.push(localState.targetEditItem);
+
         return {
             rules: cloneRules,
             localState: {
