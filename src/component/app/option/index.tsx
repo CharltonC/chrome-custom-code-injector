@@ -4,6 +4,7 @@ import React, { memo, ReactElement } from 'react';
 import { modals } from '../../../service/constant/modals';
 import { urls } from '../../../service/constant/urls';
 import { resultsPerPage } from '../../../service/constant/result-per-page';
+import { validationRules } from '../../../service/constant/validation';
 import { UtilHandle } from '../../../service/handle/util';
 
 import { IconBtn } from '../../base/icon-btn';
@@ -138,7 +139,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                                 ltLabel
                                 list={resultsPerPage}
                                 selectIdx={resultsPerPageIdx}
-                                border={true}
+                                border
                                 onSelect={(evt, idx) => onResultsPerPageChange(idx) }
                                 />
                         </li><li>
@@ -247,13 +248,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                             id="host-id"
                             label="ID"
                             value={targetEditItem?.id}
-                            // TODO: refactor this into validation handle service
-                            validate={[
-                                {
-                                    rule: /^[a-zA-Z]{3,}$/g,
-                                    msg: 'must be 3 or more characters without whitespace'
-                                }
-                            ]}
+                            validate={[ validationRules.gte3Char ]}
                             onInputChange={onEditItemIdChange}
                             />
                     </div>
@@ -262,13 +257,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                             id="host-value"
                             label="Address"
                             value={targetEditItem?.value}
-                            // TODO: refactor this into validation handle service
-                            validate={[
-                                {
-                                    rule: /^(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+$/g,
-                                    msg: 'e.g. www.google.com'
-                                }
-                            ]}
+                            validate={[ validationRules.urlHost ]}
                             onInputChange={onEditItemAddrChange}
                             />
                     </div>
