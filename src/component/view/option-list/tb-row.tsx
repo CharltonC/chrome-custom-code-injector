@@ -46,7 +46,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
                         disabled={isAllChecked}
-                        onClick={() => onHttpsToggle(idx)}
+                        onChange={() => onHttpsToggle(idx)}
                         />}
                 </td><td>
                     <div>{ isParent && <>
