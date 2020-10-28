@@ -4,6 +4,8 @@ import { AppState } from '../model/app-state';
 import { LocalState } from '../model/local-state';
 import { HostRuleConfig } from '../model/rule-config';
 import { modals } from '../constant/modals';
+import { Setting } from '../model/setting';
+import { settings } from 'cluster';
 
 const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
 
@@ -161,6 +163,42 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             setting: {
                 ...setting,
                 resultsPerPageIdx
+            }
+        };
+    }
+
+    onResetAll() {
+        return {
+            setting: new Setting()
+        };
+    }
+
+    onDefHostRuleToggle({ setting }: AppState, key: string) {
+        const { defRuleConfig } = setting;
+        const isValid: boolean = key in defRuleConfig && typeof defRuleConfig[key] === 'boolean';
+        if (!isValid) throw new Error('key is not valid');
+        const val: boolean = defRuleConfig[key];
+
+        return {
+            setting: {
+                ...setting,
+                defRuleConfig: {
+                    ...defRuleConfig,
+                    [key]: !val
+                }
+            }
+        };
+    }
+
+    onDefJsExecStageChange({ setting }: AppState, evt, idx: number) {
+        const { defRuleConfig } = setting;
+        return {
+            setting: {
+                ...setting,
+                defRuleConfig: {
+                    ...defRuleConfig,
+                    jsExecPhase: idx
+                }
             }
         };
     }
