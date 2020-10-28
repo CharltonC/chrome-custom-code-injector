@@ -32,7 +32,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
 
     const {
         currView,
-        currModalId,
+        currModalId, allowModalConfirm,
         searchedText,
         targetEditItem, isTargetEditItemIdValid, isTargetEditItemValValid,
     } = localState;
@@ -249,7 +249,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     clsSuffix="host-add"
                     cancel="CANCEL"
                     confirm="SAVE"
-                    confirmDisabled={!isTargetEditItemIdValid || !isTargetEditItemValValid}
+                    confirmDisabled={!allowModalConfirm}
                     onCancel={onAddHostCancel}
                     onConfirm={onAddHostConfirm}
                     >
