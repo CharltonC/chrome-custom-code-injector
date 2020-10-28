@@ -5,6 +5,7 @@ import { modals } from '../../../service/constant/modals';
 import { urls } from '../../../service/constant/urls';
 import { resultsPerPage } from '../../../service/constant/result-per-page';
 import { validationRules } from '../../../service/constant/validation';
+import { jsExecStage } from '../../../service/constant/js-exec-stage';
 import { UtilHandle } from '../../../service/handle/util';
 
 import { IconBtn } from '../../base/icon-btn';
@@ -27,7 +28,6 @@ const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD
 
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const { store, storeHandler } = props;
-
     const { localState, setting } = store;
 
     const {
@@ -39,7 +39,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
 
     const {
         showDeleteModal,
-        resultsPerPageIdx
+        resultsPerPageIdx,
+        defRuleConfig
     } = setting;
 
     const {
@@ -48,7 +49,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         hideModal, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
         onAddHostCancel, onAddHostConfirm, onDelModalConfirm,
         onEditItemIdChange, onEditItemAddrChange,
-        onDelConfirmToggle, onResultsPerPageChange,
+        onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
     } = storeHandler;
 
     const isEditView: boolean = currView === 'EDIT';
@@ -121,7 +122,11 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     >
                     <ul>
                         <li>
-                            <button type="button" className="btn btn--reset">RESET ALL</button>
+                            <button
+                                type="button"
+                                className="btn btn--reset"
+                                onClick={onResetAll}
+                                >RESET ALL</button>
                         </li><li>
                             <h4>Read/Search</h4>
                         </li><li>
@@ -149,36 +154,41 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                                 id="match-https"
                                 label="HTTPS"
                                 ltLabel
-                                />
-                        </li><li>
-                            <SliderSwitch
-                                id="match-regex"
-                                label="Regex"
-                                ltLabel
+                                checked={defRuleConfig.isHttps}
+                                onChange={() => onDefHostRuleToggle('isHttps')}
                                 />
                         </li><li>
                             <SliderSwitch
                                 id="run-js"
                                 label="Run Custom Js"
                                 ltLabel
+                                checked={defRuleConfig.isJsOn}
+                                onChange={() => onDefHostRuleToggle('isJsOn')}
                                 />
                         </li><li>
                             <SliderSwitch
                                 id="run-css"
                                 label="Run Custom CSS"
                                 ltLabel
+                                checked={defRuleConfig.isCssOn}
+                                onChange={() => onDefHostRuleToggle('isCssOn')}
                                 />
                         </li><li>
                             <SliderSwitch
                                 id="run-library"
                                 label="Run Libraries"
                                 ltLabel
+                                checked={defRuleConfig.isLibOn}
+                                onChange={() => onDefHostRuleToggle('isLibOn')}
                                 />
                         </li><li>
-                            {/* TODO: style */}
                             <p>Javascript Execution</p>
-                            <Dropdown id="js-exec-frame" list={['a', 'b']} border={true} />
-                            <Dropdown id="js-exec-order" list={['a', 'b']} border={true} />
+                            <Dropdown
+                                id="js-exec-order"
+                                list={jsExecStage}
+                                border
+                                onSelect={onDefJsExecStageChange}
+                                />
                         </li>
                     </ul>
                 </Modal>
