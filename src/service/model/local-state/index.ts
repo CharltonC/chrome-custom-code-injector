@@ -15,6 +15,7 @@ export class LocalState {
 
     // Modal
     currModalId: string = null;
+    allowModalConfirm: boolean = false;
 
     targetEditItem: HostRuleConfig = null;
     isTargetEditItemIdValid: boolean = false;

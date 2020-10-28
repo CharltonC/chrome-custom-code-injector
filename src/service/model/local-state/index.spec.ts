@@ -9,6 +9,7 @@ describe('Local State (Non-Persisting)', () => {
             isAllRowsSelected: false,
             currListItem: null,
             currModalId: null,
+            allowModalConfirm: false,
             targetEditItem: null,
             isTargetEditItemIdValid: false,
             isTargetEditItemValValid: false,
