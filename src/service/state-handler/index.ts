@@ -99,6 +99,18 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
+    onItemExpd({ localState }: AppState, expdState: Record<string, number>) {
+        const { expdRowId } = localState;
+        const [ id ]: string[] = Object.getOwnPropertyNames(expdState);
+
+        return {
+            localState: {
+                ...localState,
+                expdRowId: id === expdRowId ? null : id
+            }
+        };
+    }
+
     toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
         const clone = rules.slice();
         const value = clone[idx][key];
@@ -315,6 +327,9 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 ...localState,
                 currModalId: null,
                 targetEditItem: null,
+                allowModalConfirm: false,
+                isTargetEditItemIdValid: false,
+                isTargetEditItemValValid: false,
             }
         };
     }
