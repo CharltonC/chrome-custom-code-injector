@@ -11,22 +11,22 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { idx, itemLvl, item, nestedItems, classNames, parentItemCtx, expandProps, commonProps } = props;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
-    const { isOpen, onClick }: any = nestedItems ? expandProps : {};
     const { isHttps, id, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
     const ID_SUFFIX: string = `${itemLvl}-${idx}`;
 
     const { store, storeHandler } = commonProps;
     const { localState } = store;
-    const { isAllRowsSelected } = localState;
+    const { isAllRowsSelected, expdRowId } = localState;
 
     const {
         onDelModal,
         onHttpsToggle, onJsToggle, onCssToggle, onLibToggle,
         onJsExecStageChange,
-        onItemEdit,
+        onItemEdit, onItemExpd,
     } = storeHandler;
 
     const isParent = itemLvl === 0;
+    const isRowExp = isParent && id === expdRowId;
     const parentIdx: number = parentItemCtx?.idx;
 
     // Allow both external state & internal state
@@ -52,9 +52,9 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                     <div>{ isParent && <>
                         <IconBtn
                             icon="arrow-rt"
-                            clsSuffix={`arrow-rt ${isOpen ? 'open': ''}`}
+                            clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
                             disabled={!paths.length}
-                            onClick={onClick}
+                            onClick={() => onItemExpd({[id]: itemLvl})}
                             />
                         { InclStaticNumBadge(paths.length) } </>}
                         <span>{id}</span>
@@ -96,6 +96,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                     <IconBtn
                         icon="add"
                         theme="gray"
+                        title="add path rule"
                         disabled={isAllChecked}
                         onClick={() => {}}
                         />}
@@ -115,7 +116,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         onClick={() => onDelModal(idx, parentIdx)}
                         />
                 </td>
-            </tr>{ nestedItems && isOpen &&
+            </tr>{ nestedItems && isRowExp &&
             <tr className={NESTED_ROW}>
                 <td colSpan={11}>
                     <table className={NESTED_GRID}>
