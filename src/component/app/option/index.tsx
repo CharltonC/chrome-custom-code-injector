@@ -206,7 +206,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }} />
+                        }}
+                        />
                 </Modal>
                 <Modal
                     currModalId={currModalId}
@@ -285,7 +286,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                             validate={[]}
                             onInputChange={({ validState }) => {
                                 // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                            }} />
+                            }}
+                            />
                         <div className="fm-field__ctrl">
                             <IconSwitch id="modal-regex" label="(.*)" />
                         </div>
@@ -297,7 +299,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                             validate={[]}
                             onInputChange={({ validState }) => {
                                 // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                            }} />
+                            }}
+                            />
                     </div>
                 </Modal>
                 <Modal
@@ -316,14 +319,16 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }} />
+                        }}
+                        />
                     <TextInput
                         id="path-url"
                         label="Url"
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }} />
+                        }}
+                        />
                 </Modal>
                 <Modal
                     currModalId={currModalId}
@@ -341,14 +346,16 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }} />
+                        }}
+                        />
                     <TextInput
                         id="path-url"
                         label="Url"
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }} />
+                        }}
+                        />
                 </Modal>
             </div> }
         </div>
