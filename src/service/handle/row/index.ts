@@ -16,19 +16,20 @@ export class RowHandle {
             data: [],
             rows: [],
             rowIdKey: 'id',
-            showAll: false
+            showAll: false,
+            pgnStartIdx: 0
         };
         return { ...baseOption, ...modOption };
     }
 
     createCtxRows<T = IRowItemCtx>(option: Partial<IOption> = {}): T[] {
-        const { data, rows, rowIdKey, showAll }: IOption = this.createOption(option);
+        const { data, rows, rowIdKey, showAll, pgnStartIdx }: any = this.createOption(option);
 
         // Skip if data has no rows OR config doesnt exist
         const _data: any[] = this.getValidatedData(data);
         if (!_data) return;
 
-        return this.getCtxRows<T>({data, rows, rowLvl: 0, rowIdKey, parentPath: '', showAll});
+        return this.getCtxRows<T>({data, rows, rowLvl: 0, rowIdKey, parentPath: '', showAll, pgnStartIdx});
     }
 
     /**
@@ -45,13 +46,14 @@ export class RowHandle {
      * })
      */
     getCtxRows<T = IRowItemCtx>(ctxRowsQuery: ICtxRowsQuery): T[] {
-        const { data, rows, rowIdKey, rowLvl, parentPath, showAll, parentItemCtx }: ICtxRowsQuery = ctxRowsQuery;
+        const { data, rows, rowIdKey, rowLvl, pgnStartIdx, parentPath, showAll, parentItemCtx }: any = ctxRowsQuery;
         const { rowKey, transformFn }: IParsedRowsOption = this.parseRowConfig(rows[rowLvl], rowLvl);
 
         return data.map((item: any, idx: number) => {
             // Self
             const baseRowItemCtx: IRowItemBaseCtx = {
-                idx,
+                ctxIdx: typeof pgnStartIdx !== 'undefined' ? (idx + pgnStartIdx) : null,
+                idx: idx,
                 rowType: this.getRowType(idx),
                 item,
                 itemPath: this.getItemPath(idx, rowKey, parentPath),

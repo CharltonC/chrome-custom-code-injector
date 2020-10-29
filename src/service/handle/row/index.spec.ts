@@ -19,6 +19,7 @@ describe('Service - Row Handle', () => {
 
             it('should return merged option when existing option is provided', () => {
                 expect(handle.createOption(mockModOption)).toEqual({
+                    pgnStartIdx: 0,
                     rows: [],
                     showAll: false,
                     rowIdKey: 'id',
@@ -85,9 +86,10 @@ describe('Service - Row Handle', () => {
                 spy.parseRowConfig.mockReturnValue(mockRows);
                 spy.getCtxNestedRows.mockReturnValue(mockNestedItems);
 
-                expect(handle.getCtxRows(mockItemsReq)).toEqual([mockTransformResult]);
+                expect(handle.getCtxRows({...mockItemsReq, pgnStartIdx: 1})).toEqual([mockTransformResult]);
                 expect(spy.getCtxNestedRows).toHaveBeenCalled();
                 expect(mockTransformFn).toHaveBeenCalledWith({
+                    ctxIdx: 1,
                     idx: 0,
                     rowType: 'odd',
                     item: mockData[0],
@@ -122,6 +124,7 @@ describe('Service - Row Handle', () => {
                     isExpdByDef: false,
                     parentItemCtx: undefined,
                     rowType: mockRowType,
+                    ctxIdx: null,
                     idx: 0,
                     item: mockData[0],
                 }]);
@@ -136,6 +139,7 @@ describe('Service - Row Handle', () => {
             const mockNestedData: any[] = [1,2];
             const mockNestedKey: string = 'prop';
             const mockItemsReq: ICtxRowsQuery = {
+                pgnStartIdx: 0,
                 data: {[mockNestedKey]: mockNestedData},
                 rows: [[mockNestedKey]],
                 rowIdKey: 'id',

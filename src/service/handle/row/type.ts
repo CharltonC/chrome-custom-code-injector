@@ -4,7 +4,9 @@ export interface IOption {
     rows: IRawRowsOption[];
     rowIdKey: TRowIdKeyOption;
     showAll?: boolean;
+    pgnStartIdx: number;   // actual inclusive index of item in the array when there is pagination (def: 0)
 }
+
 export interface IRawRowsOption extends Array<any> {
     0?: string | TFn;
     1?: TFn;
@@ -22,6 +24,7 @@ export interface ICtxRowsQuery {
     rows: IRawRowsOption[];
     rowLvl: number;
     rowIdKey: TRowIdKeyOption;
+    pgnStartIdx: number;
     parentPath?: string;
     parentItemCtx?: IRowItemCtx<any>;
     showAll: boolean;
@@ -35,6 +38,7 @@ export interface IRowItemCtx<T = TDefNestdItems> extends IRowItemBaseCtx {
 }
 
 export interface IRowItemBaseCtx {
+    ctxIdx: number;         // actual idx of item in full set of data (w/o pagination)
     idx: number;
     rowType: TRowType;
     item: any;
