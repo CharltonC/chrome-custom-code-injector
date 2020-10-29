@@ -187,7 +187,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { startIdx, endIdx } = pgnState ?? {};
         const { showAll } = expand ?? {};
         const data: TDataOption = pgnState ? sortedData.slice(startIdx, endIdx) : sortedData;
-        return this.rowHandle.createCtxRows<ReactElement>({ data, rows, rowIdKey, showAll });
+        return this.rowHandle.createCtxRows<ReactElement>({ data, rows, rowIdKey, showAll, pgnStartIdx: startIdx });
     }
 
     //// Get/Wrap Conditional Components

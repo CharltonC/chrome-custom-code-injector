@@ -453,6 +453,7 @@ describe('Component - Data Grid', () => {
                 mockStateProps(mockProps, mockState);
                 expect(cmp.getRowElems(mockSortedData)).toEqual(mockRtnRows);
                 expect(rowHandleSpy.createCtxRows).toHaveBeenCalledWith({
+                    pgnStartIdx: 0,
                     data: mockSlicedData,
                     rows: mockState.rowsOption,
                     rowIdKey: mockProps.rowKey,
