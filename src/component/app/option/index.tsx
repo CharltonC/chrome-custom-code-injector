@@ -45,8 +45,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const {
         onListView,
         onSearch, onSearchClear,
-        hideModal, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
-        onAddHostCancel, onAddHostConfirm, onDelModalConfirm,
+        onModalCancel, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
+        onAddHostConfirm, onDelModalConfirm,
         onAddPathConfirm,
         onTargetItemIdChange, onTargetItemValChange,
         onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
@@ -118,8 +118,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     id={SETTING.id}
                     header={SETTING.txt}
                     clsSuffix="setting"
-                    onCancel={hideModal}
-                    onConfirm={hideModal}
+                    onCancel={onModalCancel}
+                    onConfirm={onModalCancel}
                     >
                     <ul>
                         <li>
@@ -202,8 +202,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     cancel="CANCEL"
                     confirm="IMPORT"
                     confirmDisabled={!allowModalConfirm}
-                    onCancel={hideModal}
-                    onConfirm={hideModal}
+                    onCancel={onModalCancel}
+                    onConfirm={onModalCancel}
                     >
                     {/* TODO: */}
                     <FileInput id="json-import-input" fileType="application/JSON" />
@@ -216,8 +216,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     cancel="CANCEL"
                     confirm="EXPORT"
                     confirmDisabled={!allowModalConfirm}
-                    onCancel={hideModal}
-                    onConfirm={hideModal}
+                    onCancel={onModalCancel}
+                    onConfirm={onModalCancel}
                     >
                     <TextInput
                         id=""
@@ -236,7 +236,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     subHeader="Are you sure you want to remove?"
                     cancel="CANCEL"
                     confirm="DELETE"
-                    onCancel={hideModal}
+                    onCancel={onModalCancel}
                     onConfirm={onDelModalConfirm}
                     >
                     <Checkbox
@@ -253,7 +253,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     cancel="CANCEL"
                     confirm="SAVE"
                     confirmDisabled={!allowModalConfirm}
-                    onCancel={onAddHostCancel}
+                    onCancel={onModalCancel}
                     onConfirm={onAddHostConfirm}
                     >
                     <TextInput
@@ -279,7 +279,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     cancel="CANCEL"
                     confirm="SAVE"
                     confirmDisabled={!allowModalConfirm}
-                    onCancel={hideModal}
+                    onCancel={onModalCancel}
                     onConfirm={onAddPathConfirm}
                     >
                     <TextInput
@@ -303,8 +303,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     cancel="CANCEL"
                     confirm="SAVE"
                     confirmDisabled={!allowModalConfirm}
-                    onCancel={hideModal}
-                    onConfirm={hideModal}
+                    onCancel={onModalCancel}
+                    onConfirm={onModalCancel}
                     >
                     <TextInput
                         id="path-id"
@@ -331,8 +331,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     cancel="CANCEL"
                     confirm="SAVE"
                     confirmDisabled={!allowModalConfirm}
-                    onCancel={hideModal}
-                    onConfirm={hideModal}
+                    onCancel={onModalCancel}
+                    onConfirm={onModalCancel}
                     >
                     <TextInput
                         id="path-id"

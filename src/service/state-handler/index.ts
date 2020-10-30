@@ -334,11 +334,17 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    hideModal({ localState }: AppState): Partial<AppState> {
+    onModalCancel({ localState }: AppState): Partial<AppState> {
         return {
             localState: {
                 ...localState,
-                currModalId: null
+                currModalId: null,
+                allowModalConfirm: false,
+                targetItem: null,
+                targetItemIdx: null,
+                targetChildItemIdx: null,
+                isTargetItemIdValid:  false,
+                isTargetItemValValid:  false,
             }
         };
     }
@@ -407,16 +413,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 ...localState,
                 currModalId: ADD_HOST.id,
                 targetItem: new HostRuleConfig('', '')
-            }
-        };
-    }
-
-    onAddHostCancel({ localState }: AppState) {
-        return {
-            localState: {
-                ...localState,
-                currModalId: null,
-                targetItem: null,
             }
         };
     }
