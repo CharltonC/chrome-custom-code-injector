@@ -13,10 +13,13 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     //// Router/Views
     onListView(state: AppState): Partial<AppState> {
         const { currView } = this.reflect.setView(state, 'LIST').localState;
+        const { pgnIncrmIdx } = state.localState;   // maintain the only pagination setting
         const resetLocalState = new LocalState();
+
         return {
             localState: {
                 ...resetLocalState,
+                pgnIncrmIdx,
                 currView,
             }
         };
