@@ -5,6 +5,7 @@ import { LocalState } from '../model/local-state';
 import { HostRuleConfig, PathRuleConfig } from '../model/rule-config';
 import { modals } from '../constant/modals';
 import { Setting } from '../model/setting';
+import { resultsPerPage } from '../constant/result-per-page';
 
 const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
 
@@ -34,12 +35,60 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    //// DataGrid rows
+    //// DataGrid
     onAllRowsToggle({ localState }: AppState): Partial<AppState> {
         return {
             localState: {
                 ...localState,
-                isAllRowsSelected: !localState.isAllRowsSelected
+                areAllRowsSelected: !localState.areAllRowsSelected,
+                selectedRowKeys: {},        // reset existing select state for any checkboxes
+            }
+        };
+    }
+
+    onRowSelectToggle({ localState, rules }: AppState, idx: number) {
+        const { selectRow } = this.reflect;
+        const {
+            areAllRowsSelected,
+            selectedRowKeys: currRowKeys,
+            pgnItemStartIdx, pgnIncrmIdx, pgnItemEndIdx,
+        } = localState;
+
+        const selectedRowKeys = { ...currRowKeys };
+        const isCurrRowSelected = currRowKeys[idx];
+        const actualRowsPerPage: number = Math.min(rules.length, resultsPerPage[pgnIncrmIdx]);
+
+        // Add the rest of checkboxes to selected except current one
+        if (areAllRowsSelected) {
+            const itemEndIdx: number = pgnItemEndIdx ?? actualRowsPerPage;
+
+            for (let i = pgnItemStartIdx; i < itemEndIdx; i++) {
+                const isCurrRow = i === idx;
+                const isSelected = i in selectedRowKeys;
+                const isSelectedCurrRow = isCurrRow && isSelected;
+                const isUnselectedOtherRows = !isCurrRow && !isSelected;
+
+                if (isSelectedCurrRow) {
+                    selectRow(selectedRowKeys, i, false);
+
+                } else if (isUnselectedOtherRows) {
+                    selectRow(selectedRowKeys, i);
+                }
+            }
+
+        // Toggle the current checkbox
+        } else {
+            selectRow(selectedRowKeys, idx, !isCurrRowSelected);
+        }
+
+        // if All checkboxes are selected at that page AFTER the abv operation
+        const wereAllRowsSelected = Object.entries(selectedRowKeys).length === actualRowsPerPage;
+
+        return {
+            localState: {
+                ...localState,
+                areAllRowsSelected: wereAllRowsSelected ? true : (areAllRowsSelected ? false : areAllRowsSelected),
+                selectedRowKeys: wereAllRowsSelected ? {} : selectedRowKeys
             }
         };
     }
@@ -115,6 +164,26 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const value = clone[idx][key];
         clone[idx][key] = !value;
         return { rules: clone };
+    }
+
+    onPaginate({ localState}: AppState, { curr, perPage, startIdx, endIdx }) {
+        const pgnIncrmIdx: number = resultsPerPage.indexOf(perPage);
+
+        return {
+            localState: {
+                ...localState,
+
+                // clear all selections
+                areAllRowsSelected: false,
+                selectedRowKeys: {},
+
+                // pagination state
+                pgnPageIdx: curr,
+                pgnIncrmIdx,
+                pgnItemStartIdx: startIdx,
+                pgnItemEndIdx: endIdx,
+            }
+        };
     }
 
     //// Search
@@ -394,5 +463,11 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 },
             }
         };
+    }
+
+    //// Helper (used in Reflect only)
+    selectRow(selectedRowKeys, idx: number, doSelect: boolean = true) {
+        selectedRowKeys[idx] = doSelect ? true : null;
+        if (!doSelect) delete selectedRowKeys[idx];
     }
 }
