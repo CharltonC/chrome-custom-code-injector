@@ -128,14 +128,20 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onItemRmv({ rules }: AppState, idx: number, parentIdx?: number) {
+    onItemRmv({ rules, localState }: AppState, idx: number, parentIdx?: number) {
         const cloneRules = rules.concat();
         const modItems = typeof parentIdx !== 'undefined' ?
             cloneRules[parentIdx].paths :
             cloneRules;
 
         modItems.splice(idx, 1);
-        return { rules: cloneRules };
+        return {
+            rules: cloneRules,
+            localState: {
+                ...localState,
+                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            }
+        };
     }
 
     onListItemClick({ localState }: AppState, ...[, { item }]) {
