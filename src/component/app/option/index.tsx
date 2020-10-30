@@ -9,7 +9,6 @@ import { jsExecStage } from '../../../service/constant/js-exec-stage';
 import { UtilHandle } from '../../../service/handle/util';
 
 import { IconBtn } from '../../base/icon-btn';
-import { IconSwitch } from '../../base/icon-switch';
 import { Checkbox } from '../../base/checkbox';
 import { TextInput } from '../../base/text-input';
 import { SearchInput } from '../../base/search-input';
@@ -34,7 +33,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         currView,
         currModalId, allowModalConfirm,
         searchedText,
-        targetEditItem,
+        targetItem,
     } = localState;
 
     const {
@@ -48,7 +47,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         onSearch, onSearchClear,
         hideModal, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
         onAddHostCancel, onAddHostConfirm, onDelModalConfirm,
-        onEditItemIdChange, onEditItemAddrChange,
+        onAddPathConfirm,
+        onTargetItemIdChange, onTargetItemValChange,
         onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
     } = storeHandler;
 
@@ -80,6 +80,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     <IconBtn
                         icon="add-outline"
                         theme="white"
+                        title="add host rule"
                         onClick={onAddHostModal}
                         />
                     <IconBtn
@@ -255,25 +256,20 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     onCancel={onAddHostCancel}
                     onConfirm={onAddHostConfirm}
                     >
-                    <div className="fm-field">
-                        {/* TODO: Fix valid state check symbol posiiton conflict */}
-                        <TextInput
-                            id="host-id"
-                            label="ID"
-                            value={targetEditItem?.id}
-                            validate={[ validationRules.gte3Char ]}
-                            onInputChange={onEditItemIdChange}
-                            />
-                    </div>
-                    <div className="fm-field">
-                        <TextInput
-                            id="host-value"
-                            label="Address"
-                            value={targetEditItem?.value}
-                            validate={[ validationRules.urlHost ]}
-                            onInputChange={onEditItemAddrChange}
-                            />
-                    </div>
+                    <TextInput
+                        id="host-id"
+                        label="ID"
+                        value={targetItem?.id}
+                        validate={[ validationRules.gte3Char ]}
+                        onInputChange={onTargetItemIdChange}
+                        />
+                    <TextInput
+                        id="host-value"
+                        label="Host Value"
+                        value={targetItem?.value}
+                        validate={[ validationRules.urlHost ]}
+                        onInputChange={onTargetItemValChange}
+                        />
                 </Modal>
                 <Modal
                     currModalId={currModalId}
@@ -284,31 +280,20 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     confirm="SAVE"
                     confirmDisabled={!allowModalConfirm}
                     onCancel={hideModal}
-                    onConfirm={onAddHostConfirm}
+                    onConfirm={onAddPathConfirm}
                     >
-                    <div className="fm-field">
-                        <TextInput
-                            id="path-id"
-                            label="ID"
-                            validate={[]}
-                            onInputChange={({ validState }) => {
-                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                            }}
-                            />
-                        <div className="fm-field__ctrl">
-                            <IconSwitch id="modal-regex" label="(.*)" />
-                        </div>
-                    </div>
-                    <div className="fm-field">
-                        <TextInput
-                            id="path-url"
-                            label="Url"
-                            validate={[]}
-                            onInputChange={({ validState }) => {
-                                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                            }}
-                            />
-                    </div>
+                    <TextInput
+                        id="path-id"
+                        label="ID"
+                        validate={[ validationRules.gte3Char ]}
+                        onInputChange={onTargetItemIdChange}
+                        />
+                    <TextInput
+                        id="path-url"
+                        label="Path Value"
+                        validate={[ validationRules.urlPath ]}
+                        onInputChange={onTargetItemValChange}
+                        />
                 </Modal>
                 <Modal
                     currModalId={currModalId}
