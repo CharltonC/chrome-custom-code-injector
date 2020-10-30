@@ -36,7 +36,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// DataGrid
-    onAllRowsToggle({ localState }: AppState): Partial<AppState> {
+    onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
         return {
             localState: {
                 ...localState,

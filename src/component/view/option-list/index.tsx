@@ -46,7 +46,7 @@ export class OptionListView extends MemoComponent<IProps> {
         } = localState;
 
         const {
-            onAllRowsToggle,
+            onRowsSelectToggle,
         } = storeHandler;
 
         const selectedTotal: number = Object.entries(selectedRowKeys).length;
@@ -58,7 +58,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 id="check-all"
                 clsSuffix={isPartialSelected ? 'partial' : ''}
                 checked={areAllRowsSelected || isPartialSelected}
-                onChange={onAllRowsToggle}
+                onChange={onRowsSelectToggle}
                 />
         );
 
