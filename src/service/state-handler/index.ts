@@ -144,6 +144,37 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
+    onItemsRmv({ localState, rules }: AppState) {
+        const { areAllRowsSelected, selectedRowKeys } = localState;
+        let modRules: HostRuleConfig[];
+
+        // For all rows selected
+        if (areAllRowsSelected) {
+            modRules = [];
+
+        // For partial rows selected
+        } else {
+            modRules = rules.concat();
+            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
+            const selectedRowsTotal: number = rowIndexes.length - 1;
+
+            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
+            for (let i = selectedRowsTotal; i >= 0; i--) {
+                const rowIdx: number = Number(rowIndexes[i][0]);
+                modRules.splice(rowIdx, 1);
+            }
+        }
+
+        return {
+            rules: modRules,
+            localState: {
+                ...localState,
+                areAllRowsSelected: false,
+                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            }
+        };
+    }
+
     onListItemClick({ localState }: AppState, ...[, { item }]) {
         return {
             localState: {
