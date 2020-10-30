@@ -385,15 +385,11 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const { localState } = appState;
         const { targetChildItemIdx, targetItemIdx } = localState;
         const { rules } = this.reflect.onItemRmv(appState, targetChildItemIdx, targetItemIdx);
+        const resetState = this.reflect.onModalCancel(appState);
 
         return {
+            ...resetState,
             rules,
-            localState: {
-                ...localState,
-                currModalId: null,
-                targetChildItemIdx: null,
-                targetItemIdx: null
-            }
         };
     }
 
