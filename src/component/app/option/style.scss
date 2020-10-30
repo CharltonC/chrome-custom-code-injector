@@ -62,10 +62,6 @@
                     height: 50px;
                     font: bold 14px $arial;
                 }
-
-                .checkbox input:not(:checked) {
-                    border: 2px solid $dark-gray-100;
-                }
             }
 
             &__row {
