@@ -20,25 +20,11 @@
             outline: 2px solid $light-blue-200;
         }
 
-        &::before {
-            @include checkbox-input-tick(2px, $white);
-        }
-
         &:disabled {
             &,
             & + label {
                 opacity: .4;
             }
-        }
-
-        &:checked {
-            background-color: $teal;
-            border: 1px solid $teal;
-        }
-
-        &:not(:checked) {
-            background-color: $white;
-            border: 1px solid $gray;
         }
     }
 
@@ -59,6 +45,37 @@
 
         label {
             margin-right: 10px;
+        }
+    }
+
+    &:not(&--partial) {
+        input {
+            &:checked {
+                background-color: $teal;
+                border: 1px solid $teal;
+            }
+
+            &:not(:checked) {
+                background-color: $white;
+                border: 1px solid $gray;
+            }
+
+            &::before {
+                @include checkbox-input-tick(2px, $white);
+            }
+        }
+    }
+
+    &--partial {
+        input {
+            &:checked {
+                background-color: $white;
+                border: 1px solid $gray;
+            }
+
+            &::before {
+                @include checkbox-input-box($teal);
+            }
         }
     }
 }
