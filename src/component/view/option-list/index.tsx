@@ -1,78 +1,105 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { resultsPerPage } from '../../../service/constant/result-per-page';
+import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
 import { IconBtn } from '../../base/icon-btn';
 import { Checkbox } from '../../base/checkbox';
 import { TbRow } from './tb-row';
 import { IProps } from './type';
 
-export const OptionListView = memo((props: IProps) => {
-    const { store, storeHandler } = props;
-    const { rules, localState, setting } = store;
+export class OptionListView extends MemoComponent<IProps> {
+    dataGridProps;
 
-    const {
-        isAllRowsSelected,
-        searchedRules
-    } = localState;
+    constructor(props: IProps) {
+        super(props);
 
-    const {
-        resultsPerPageIdx
-    } = setting;
+        const { onPaginate } = props.storeHandler;
 
-    const {
-        onAllRowsToggle
-    } = storeHandler;
-
-    const checkAllHeader = <Checkbox
-        id="check-all"
-        onChange={onAllRowsToggle}
-        />;
-
-    const delAllHeader = <IconBtn
-        icon="delete"
-        theme="gray"
-        disabled={!isAllRowsSelected}
-        />;
-
-    return (<>
-        <DataGrid
-            data={searchedRules || rules}
-            type="table"
-            component={{
-                rows: [
-                    [ TbRow ],
-                    [ 'paths', TbRow ]
-                ],
-                commonProps: props
-            }}
-            rowKey="id"
-            header={[
-                /* TODO: Fix type `any` */
-                { title: checkAllHeader as any},
-                { title: 'HTTPS' },
-                { title: 'ID', sortKey: 'id' },
-                { title: 'ADDRESS', sortKey: 'value' },
-                { title: 'SCRIPT EXECUTION' },
-                { title: 'JS' },
-                { title: 'CSS' },
-                { title: 'LIBRARY' },
-                { title: '' },
-                { title: '' },
-                { title: delAllHeader as any}
-            ]}
-            expand={{
+        // Fixed props for DataGrid component
+        this.dataGridProps = {
+            type: 'table',
+            rowKey: 'id',
+            expand: {
                 onePerLevel: true
-            }}
-            sort={{
+            },
+            sort: {
                 key: 'name',
                 isAsc: true,
                 reset: true,
-            }}
-            paginate={{
-                page: 0,
-                increment: resultsPerPage,
-                incrementIdx: resultsPerPageIdx,
-            }}
-            />
-    </>);
-});
+            },
+            callback: {
+                onPaginateChange: ({ pgnState }) => onPaginate(pgnState)
+            }
+        };
+    }
+
+    render() {
+        const { props, dataGridProps } = this;
+        const { store, storeHandler } = props;
+        const { rules, localState } = store;
+
+        const {
+            areAllRowsSelected,
+            searchedRules,
+            selectedRowKeys,
+            pgnPageIdx, pgnIncrmIdx,
+        } = localState;
+
+        const {
+            onAllRowsToggle,
+        } = storeHandler;
+
+        const selectedTotal: number = Object.entries(selectedRowKeys).length;
+        const allowDelAll: boolean = areAllRowsSelected || !!selectedTotal;
+        const isPartialSelected = !areAllRowsSelected && !!selectedTotal;
+
+        const selectAllHeader = (
+            <Checkbox
+                id="check-all"
+                clsSuffix={isPartialSelected ? 'partial' : ''}
+                checked={areAllRowsSelected || isPartialSelected}
+                onChange={onAllRowsToggle}
+                />
+        );
+
+        const delAllHeader = (
+            <IconBtn
+                icon="delete"
+                theme="gray"
+                disabled={!allowDelAll}
+                />
+        );
+
+        return (<>
+            <DataGrid
+                {...dataGridProps}
+                data={searchedRules || rules}
+                component={{
+                    rows: [
+                        [ TbRow ],
+                        [ 'paths', TbRow ]
+                    ],
+                    commonProps: props
+                }}
+                header={[
+                    { title: selectAllHeader as any},
+                    { title: 'HTTPS' },
+                    { title: 'ID', sortKey: 'id' },
+                    { title: 'ADDRESS', sortKey: 'value' },
+                    { title: 'SCRIPT EXECUTION' },
+                    { title: 'JS' },
+                    { title: 'CSS' },
+                    { title: 'LIBRARY' },
+                    { title: '' },
+                    { title: '' },
+                    { title: delAllHeader as any}
+                ]}
+                paginate={{
+                    page: pgnPageIdx,
+                    increment: resultsPerPage,
+                    incrementIdx: pgnIncrmIdx,
+                }}
+                />
+        </>);
+    }
+}
