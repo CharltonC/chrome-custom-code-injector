@@ -97,6 +97,15 @@ describe('Base Store Component', () => {
             expect(getModPartialStateSpy).toHaveBeenCalledWith(mockHandler[MOCK_METHOD_NAME], proxyHandler, mockArgs);
             expect(spy.updateState).toHaveBeenCalledWith(mockModPartialState, mockHandler, MOCK_STORE_NAME);
         });
+
+        it('should return a wrapped function where state is not updated when returned state is falsy', () => {
+            const method = proxyHandler[MOCK_METHOD_NAME];
+            const mockArgs = [1,2];
+            getModPartialStateSpy.mockReturnValue(false);
+            method(...mockArgs);
+
+            expect(spy.updateState).not.toHaveBeenCalled();
+        });
     });
 
     describe('Method - getAllowedMethodNames: Get allowed method names for an object', () => {

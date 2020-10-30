@@ -48,6 +48,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
                 // If proxied method is called, then return a wrapped method which includes setting the state
                 return (...args: any[]) => {
                     const modPartialState: TObj = getModPartialState(method, proxy, args);
+                    if (!modPartialState) return;   // skip state update if `falsy` value is returned
                     updateState(modPartialState, storeHandler, storeName);
                 };
             }
