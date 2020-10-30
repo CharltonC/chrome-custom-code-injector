@@ -8,47 +8,50 @@ import { InclStaticNumBadge } from '../../static/num-badge';
 import { ITbRowProps } from './type';
 
 export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
-    const { idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
+    const { ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
     const { store, storeHandler } = commonProps;
     const { localState } = store;
 
     const {
-        isAllRowsSelected,
-        expdRowId
+        areAllRowsSelected,
+        selectedRowKeys,
+        expdRowId,
     } = localState;
 
     const {
         onDelModal, onAddPathModal,
         onHttpsToggle, onJsToggle, onCssToggle, onLibToggle,
         onJsExecStageChange,
-        onItemEdit, onItemExpd,
+        onItemEdit, onItemExpd, onRowSelectToggle,
     } = storeHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
     const { isHttps, id, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
+
     const ID_SUFFIX: string = `${itemLvl}-${idx}`;
     const isParent = itemLvl === 0;
     const isRowExp = isParent && id === expdRowId;
-    const parentIdx: number = parentItemCtx?.idx;
+    const parentCtxIdx: number = parentItemCtx?.ctxIdx;
 
-    // Allow both external state & internal state
-    const isAllChecked = isAllRowsSelected ? isAllRowsSelected : null;
+    const isSelected = areAllRowsSelected || ctxIdx in selectedRowKeys;
+    const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeys).length;
 
     return <>
-            {/* Index required for each id */}
             <tr className={REG_ROW}>
                 <td>
-                    {/* TODO, check state */}
+                    { isParent &&
                     <Checkbox
                         id={`check-${ID_SUFFIX}`}
-                        checked={isAllChecked}
-                        />
+                        clsSuffix=""
+                        checked={isSelected}
+                        onChange={() => onRowSelectToggle(ctxIdx)}
+                        />}
                 </td><td>{ isParent &&
                     <SliderSwitch
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
-                        disabled={isAllChecked}
-                        onChange={() => onHttpsToggle(idx)}
+                        disabled={isDelDisabled}
+                        onChange={() => onHttpsToggle(ctxIdx)}
                         />}
                 </td><td>
                     <div>{ isParent && <>
@@ -69,52 +72,52 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         list={jsExecStage}
                         selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
-                        disabled={isAllChecked}
-                        onSelect={(...args) => onJsExecStageChange(idx, args[1])}
+                        disabled={isDelDisabled}
+                        onSelect={(evt, selectIdx) => onJsExecStageChange(ctxIdx, selectIdx)}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
-                        disabled={isAllChecked}
-                        onChange={() => onJsToggle(idx)}
+                        disabled={isDelDisabled}
+                        onChange={() => onJsToggle(ctxIdx)}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
-                        disabled={isAllChecked}
-                        onChange={() => onCssToggle(idx)}
+                        disabled={isDelDisabled}
+                        onChange={() => onCssToggle(ctxIdx)}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
-                        disabled={isAllChecked}
-                        onChange={() => onLibToggle(idx)}
+                        disabled={isDelDisabled}
+                        onChange={() => onLibToggle(ctxIdx)}
                         />
                 </td><td>{ isParent &&
                     <IconBtn
                         icon="add"
                         theme="gray"
                         title="add path rule"
-                        disabled={isAllChecked}
-                        onClick={() => onAddPathModal(idx)}
+                        disabled={isDelDisabled}
+                        onClick={() => onAddPathModal(ctxIdx)}
                         />}
                 </td><td>
                     <IconBtn
                         icon="edit"
                         theme="gray"
-                        disabled={isAllChecked}
+                        disabled={isDelDisabled}
                         onClick={() => onItemEdit(item) }
                         />
                 </td><td>
                     <IconBtn
                         icon="delete"
                         theme="gray"
-                        disabled={isAllChecked}
+                        disabled={isDelDisabled}
                         /* TODO: only if the flag is on, show modal */
-                        onClick={() => onDelModal(idx, parentIdx)}
+                        onClick={() => onDelModal(ctxIdx, parentCtxIdx)}
                         />
                 </td>
             </tr>{ nestedItems && isRowExp &&
