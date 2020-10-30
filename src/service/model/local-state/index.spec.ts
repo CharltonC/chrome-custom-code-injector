@@ -9,10 +9,10 @@ describe('Local State (Non-Persisting)', () => {
             pgnPageIdx: 0,
             pgnIncrmIdx: 0,
             pgnItemStartIdx: 0,
-            pgnItemEndIdx: 20,
+            pgnItemEndIdx: null,
 
             currView: 'LIST',
-            isAllRowsSelected: false,
+            areAllRowsSelected: false,
             expdRowId: null,
             currListItem: null,
             currModalId: null,

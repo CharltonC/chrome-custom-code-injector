@@ -1,10 +1,8 @@
 import { AView, AObj } from './type';
-import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig } from '../rule-config';
 import { Setting } from '../../model/setting';
 
 const { resultsPerPageIdx } = new Setting();
-const totalPerPage: number = resultsPerPage[resultsPerPageIdx];
 
 export class LocalState {
     //// Common
@@ -17,14 +15,14 @@ export class LocalState {
     pgnPageIdx: number = 0;
     pgnIncrmIdx: number = resultsPerPageIdx;
     pgnItemStartIdx: number = 0;
-    pgnItemEndIdx: number = totalPerPage;
+    pgnItemEndIdx: number = null;
 
     //// Views
     // Current
     currView: AView = 'LIST';
 
     // - List View
-    isAllRowsSelected: boolean = false;
+    areAllRowsSelected: boolean = false;
     expdRowId: string = null;
 
     // - Edit View (TODO: rename it to editListItem)
