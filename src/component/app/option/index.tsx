@@ -223,6 +223,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         id=""
                         label="Filename"
                         required
+                        autoFocus
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
@@ -262,6 +263,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         id="host-id"
                         label="ID"
                         required
+                        autoFocus
                         value={targetItem?.id}
                         validate={[ validationRules.gte3Char ]}
                         onInputChange={onTargetItemIdChange}
@@ -290,6 +292,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         id="path-id"
                         label="ID"
                         required
+                        autoFocus
                         validate={[ validationRules.gte3Char ]}
                         onInputChange={onTargetItemIdChange}
                         />
@@ -316,6 +319,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         id="path-id"
                         label="ID"
                         required
+                        autoFocus
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
@@ -346,6 +350,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         id="path-id"
                         label="ID"
                         required
+                        autoFocus
                         validate={[]}
                         onInputChange={({ validState }) => {
                             // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
