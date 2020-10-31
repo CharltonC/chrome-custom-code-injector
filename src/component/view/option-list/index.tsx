@@ -23,7 +23,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 onePerLevel: true
             },
             sort: {
-                key: 'name',
+                key: 'id',
                 isAsc: true,
                 reset: true,
             },
