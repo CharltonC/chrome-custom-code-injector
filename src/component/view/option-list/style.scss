@@ -30,6 +30,7 @@
                     }
 
                     .icon {
+                        transform: translateZ(0) rotateZ(0);
                         transition: transform .1s;
                         will-change: transform;
                     }
