@@ -413,24 +413,19 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onAddHostConfirm({ localState, rules, setting }: AppState) {
+    onAddHostConfirm(state: AppState) {
+        const { localState, rules, setting } = state;
         const cloneRules = rules.concat();
         const { targetItem } = localState;
+        const resetState = this.reflect.onModalCancel(state);
 
         // merge with user config before added
         Object.assign(targetItem, setting.defRuleConfig);
         cloneRules.push(localState.targetItem);
 
         return {
-            rules: cloneRules,
-            localState: {
-                ...localState,
-                currModalId: null,
-                targetItem: null,
-                allowModalConfirm: false,
-                isTargetItemIdValid: false,
-                isTargetItemValValid: false,
-            }
+            ...resetState,
+            rules: cloneRules
         };
     }
 
