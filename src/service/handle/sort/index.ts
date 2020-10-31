@@ -33,14 +33,20 @@ export class SortHandle implements IUiHandle {
         return isAsc ? diff : -diff;
     }
 
-    compareStr(a: string, b: string, isAsc: boolean): TStrSortOrder {
-        const { noOrder, abOrder, baOrder } = this;
-        const isCurrAsc: boolean = a < b;
-        const isCurrDsc: boolean = a > b;
+    // compareStr(a: string, b: string, isAsc: boolean): TStrSortOrder {
+    //     const { noOrder, abOrder, baOrder } = this;
+    //     const isCurrAsc: boolean = a < b;
+    //     const isCurrDsc: boolean = a > b;
 
-        if (isCurrAsc) return isAsc ? abOrder : baOrder;
-        if (isCurrDsc) return isAsc ? baOrder : abOrder;
-        return noOrder;
+    //     if (isCurrAsc) return isAsc ? abOrder : baOrder;
+    //     if (isCurrDsc) return isAsc ? baOrder : abOrder;
+    //     return noOrder;
+    // }
+
+    compareStr(a: string, b: string, isAsc: boolean): number {
+        const option = { sensitivity: 'base' };     // ignore case
+        const locale = 'en';
+        return isAsc ? a.localeCompare(b, locale, option) : b.localeCompare(a, locale, option);
     }
 
     compareLocaleStr(a: string, b: string, isAsc: boolean): number {

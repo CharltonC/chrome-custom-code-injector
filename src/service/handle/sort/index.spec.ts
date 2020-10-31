@@ -21,7 +21,7 @@ describe('Handle Service - Default Sorter', () => {
     describe('Core', () => {
         describe('Method: sortByObjKey - Sort a list of object based on an object key', () => {
             const mockInvalidList: TLsItem[] = [{key: []}, {key: ()=>{}}, {key: 'y'}];
-            const mockStrList: TLsItem[] = [{key: 'z'}, {key: 'x'}, {key: 'y'}];
+            const mockStrList: TLsItem[] = [{key: 'z'}, {key: 'X'}, {key: 'x'}, {key: 'y'}];
             const mockNumList: TLsItem[] = [{key: 5}, {key: 1}, {key: 19},];
             const mockLocaleStrList: TLsItem[] = [{key: 'cqé'}, {key: 'rév'}, {key: 'écl'}];
             const mockOption: IOption = { key: 'key', isAsc: true, hsLocale: false };
@@ -51,7 +51,7 @@ describe('Handle Service - Default Sorter', () => {
                 expect(spy.compareStr).toHaveBeenCalled();
                 expect(spy.compareNum).not.toHaveBeenCalled();
                 expect(spy.compareLocaleStr).not.toHaveBeenCalled();
-                expect(sortedList).toEqual([{key: 'x'}, {key: 'y'}, {key: 'z'}]);
+                expect(sortedList).toEqual([{key: 'X'}, {key: 'x'}, {key: 'y'}, {key: 'z'}]);
             });
 
             it('should sort based on string in dsc. order', () => {
@@ -60,7 +60,7 @@ describe('Handle Service - Default Sorter', () => {
                 expect(spy.compareStr).toHaveBeenCalled();
                 expect(spy.compareNum).not.toHaveBeenCalled();
                 expect(spy.compareLocaleStr).not.toHaveBeenCalled();
-                expect(sortedList).toEqual([{key: 'z'}, {key: 'y'}, {key: 'x'}]);
+                expect(sortedList).toEqual([{key: 'z'}, {key: 'y'}, {key: 'X'}, {key: 'x'}]);
             });
 
             it('should sort based on number in asc. order', () => {
