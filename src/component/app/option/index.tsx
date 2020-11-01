@@ -112,7 +112,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
             <main className={MAIN_CLS}>
                 { isEditView ? <OptionEditView {...props} /> : <OptionListView {...props} /> }
             </main>
-            { currModalId && <div className="modals">
+            { currModalId && <form className="modals">
                 <Modal
                     currModalId={currModalId}
                     id={SETTING.id}
@@ -366,7 +366,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         }}
                         />
                 </Modal>
-            </div> }
+            </form> }
         </div>
     );
 });
