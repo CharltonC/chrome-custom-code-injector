@@ -47,7 +47,7 @@ export class OptionListView extends MemoComponent<IProps> {
 
         const {
             onRowsSelectToggle,
-            onItemsRmv
+            onDelModal
         } = storeHandler;
 
         const selectedTotal: number = Object.entries(selectedRowKeys).length;
@@ -69,7 +69,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 icon="delete"
                 theme="gray"
                 disabled={!allowDelAll}
-                onClick={onItemsRmv}
+                onClick={() => onDelModal()}
                 />
         );
 

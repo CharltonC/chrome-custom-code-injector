@@ -116,7 +116,6 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         icon="delete"
                         theme="gray"
                         disabled={isDelDisabled}
-                        /* TODO: only if the flag is on, show modal */
                         onClick={() => onDelModal(ctxIdx, parentCtxIdx)}
                         />
                 </td>
