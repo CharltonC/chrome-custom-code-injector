@@ -2,7 +2,7 @@ import React from 'react';
 import { IconSwitch } from '.';
 
 export default {
-    title: 'Form - Icon Switch',
+    title: 'Icon Switch',
     component: IconSwitch,
 };
 

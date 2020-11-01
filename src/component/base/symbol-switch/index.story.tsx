@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SymbolSwitch } from '.';
 
 export default {
-    title: 'Form - Symbol Switch',
+    title: 'Symbol Switch',
     component: SymbolSwitch,
 };
 
