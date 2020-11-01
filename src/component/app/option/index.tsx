@@ -56,6 +56,42 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
     const MAIN_CLS = cssCls('main', isEditView ? 'edit' : 'list');
 
+    // Reusable template for Host config rule add/edit operation
+    const $ruleIdEdit = <>
+        <TextInput
+            id="rule-id"
+            label="ID"
+            required
+            autoFocus
+            value={targetItem?.id}
+            validate={[ validationRules.gte3Char ]}
+            onInputChange={onTargetItemIdChange}
+            />
+    </>;
+
+    const $libEdit = <>
+        <TextInput
+            id="path-id"
+            label="ID"
+            required
+            autoFocus
+            validate={[]}
+            onInputChange={({ validState }) => {
+                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+            }}
+            />
+        <TextInput
+            id="path-url"
+            label="Url"
+            required
+            validate={[]}
+            onInputChange={({ validState }) => {
+                // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
+            }}
+            />
+    </>;
+
+
     return (
         <div className="app app--option">
             <header className="header">{ isEditView &&
@@ -244,7 +280,6 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     <Checkbox
                         id="setting-delete-confirm"
                         label="Don’t show this confirmation again"
-                        required
                         onChange={onDelConfirmToggle}
                         />
                 </Modal>
@@ -259,15 +294,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     onCancel={onModalCancel}
                     onConfirm={onAddHostConfirm}
                     >
-                    <TextInput
-                        id="host-id"
-                        label="ID"
-                        required
-                        autoFocus
-                        value={targetItem?.id}
-                        validate={[ validationRules.gte3Char ]}
-                        onInputChange={onTargetItemIdChange}
-                        />
+                    { $ruleIdEdit }
                     <TextInput
                         id="host-value"
                         label="Host Value"
@@ -288,18 +315,12 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     onCancel={onModalCancel}
                     onConfirm={onAddPathConfirm}
                     >
-                    <TextInput
-                        id="path-id"
-                        label="ID"
-                        required
-                        autoFocus
-                        validate={[ validationRules.gte3Char ]}
-                        onInputChange={onTargetItemIdChange}
-                        />
+                    { $ruleIdEdit }
                     <TextInput
                         id="path-url"
                         label="Path Value"
                         required
+                        value={targetItem?.value}
                         validate={[ validationRules.urlPath ]}
                         onInputChange={onTargetItemValChange}
                         />
@@ -315,25 +336,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     onCancel={onModalCancel}
                     onConfirm={onModalCancel}
                     >
-                    <TextInput
-                        id="path-id"
-                        label="ID"
-                        required
-                        autoFocus
-                        validate={[]}
-                        onInputChange={({ validState }) => {
-                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }}
-                        />
-                    <TextInput
-                        id="path-url"
-                        label="Url"
-                        required
-                        validate={[]}
-                        onInputChange={({ validState }) => {
-                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }}
-                        />
+                    { $libEdit }
                 </Modal>
                 <Modal
                     currModalId={currModalId}
@@ -346,25 +349,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     onCancel={onModalCancel}
                     onConfirm={onModalCancel}
                     >
-                    <TextInput
-                        id="path-id"
-                        label="ID"
-                        required
-                        autoFocus
-                        validate={[]}
-                        onInputChange={({ validState }) => {
-                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }}
-                        />
-                    <TextInput
-                        id="path-url"
-                        label="Url"
-                        required
-                        validate={[]}
-                        onInputChange={({ validState }) => {
-                            // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                        }}
-                        />
+                    { $libEdit }
                 </Modal>
             </form> }
         </div>
