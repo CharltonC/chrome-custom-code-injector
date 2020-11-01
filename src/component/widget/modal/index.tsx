@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, FormEvent } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { TextBtn } from '../../base/text-btn';
 import { inclStaticIcon } from '../../static/icon';
@@ -16,6 +16,7 @@ import { IProps, IState } from './type';
  *   and, any method call would have to be `onClick={() => onOpen()}`, instead of `onClick={onOpen}` outside of Modal
  */
 export class Modal extends MemoComponent<IProps, IState> {
+    static defaultProps = { confirmType: 'submit' };
     readonly closeIconElem: ReactElement = inclStaticIcon('close');
 
     componentWillUnmount() {
@@ -27,7 +28,7 @@ export class Modal extends MemoComponent<IProps, IState> {
             header, subHeader,
             children,
             id, currModalId, clsSuffix,
-            cancel, confirm, confirmDisabled, onConfirm, onCancel
+            cancel, onCancel, confirm, confirmDisabled, confirmType
         } = this.props;
 
         return this.isVisible(id, currModalId) && (
@@ -40,8 +41,17 @@ export class Modal extends MemoComponent<IProps, IState> {
                     </div>
                     <div className="modal__body">{children}</div>{ (cancel || confirm) &&
                     <div className="modal__footer">{ cancel &&
-                        <TextBtn text={cancel} outline onClick={onCancel} />}{ confirm &&
-                        <TextBtn text={confirm} disabled={confirmDisabled} onClick={onConfirm ?? onCancel} />}
+                        <TextBtn
+                            text={cancel}
+                            outline
+                            onClick={onCancel}
+                            />}{ confirm &&
+                        <TextBtn
+                            text={confirm}
+                            disabled={confirmDisabled}
+                            type={confirmType}
+                            onClick={this.onSubmit.bind(this)}
+                            />}
                     </div>}
                 </div>
                 <div className="modal__overlay" onClick={onCancel}></div>
@@ -51,5 +61,11 @@ export class Modal extends MemoComponent<IProps, IState> {
 
     isVisible(id: string, currModalId: string): boolean {
         return currModalId && id && currModalId === id;
+    }
+
+    onSubmit(e: FormEvent) {
+        const { onConfirm, onCancel } = this.props;
+        e.preventDefault();
+        onConfirm ? onConfirm(e) : onCancel(e);
     }
 }

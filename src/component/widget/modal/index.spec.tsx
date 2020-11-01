@@ -57,7 +57,7 @@ describe('Component - Modal', () => {
     });
 
     describe('Render', () => {
-        let modalMethodSpy: TMethodSpy<Modal>;
+        let spy: TMethodSpy<Modal>;
         let $elem: HTMLElement;
         let $modal: HTMLElement;
         let $subHeader: HTMLElement;
@@ -92,10 +92,36 @@ describe('Component - Modal', () => {
             });
         });
 
+        describe('confirm button type', () => {
+            beforeEach(() => {
+                spy = TestUtil.spyProtoMethods(Modal);
+                spy.isVisible.mockReturnValue(true);
+            });
+
+            it('should have a submit confirm button', () => {
+                TestUtil.renderPlain($elem, Modal, {
+                    ...mockProps,
+                    confirm: 'confirm'
+                });
+                syncElems();
+                expect($footer.querySelector('button[type="submit"]')).toBeTruthy();
+            });
+
+            it('should not have a submit button confirm button', () => {
+                TestUtil.renderPlain($elem, Modal, {
+                    ...mockProps,
+                    confirmType: 'button',
+                    confirm: 'confirm'
+                });
+                syncElems();
+                expect($footer.querySelector('button[type="submit"]')).toBeFalsy();
+            });
+        });
+
         describe('triger `onCancel` callback', () => {
             beforeEach(() => {
-                modalMethodSpy = TestUtil.spyProtoMethods(Modal);
-                modalMethodSpy.isVisible.mockReturnValue(true);
+                spy = TestUtil.spyProtoMethods(Modal);
+                spy.isVisible.mockReturnValue(true);
                 TestUtil.renderPlain($elem, Modal, mockProps);
                 syncElems();
             });
@@ -120,8 +146,8 @@ describe('Component - Modal', () => {
 
             beforeEach(() => {
                 mockOnConfirm = jest.fn();
-                modalMethodSpy = TestUtil.spyProtoMethods(Modal);
-                modalMethodSpy.isVisible.mockReturnValue(true);
+                spy = TestUtil.spyProtoMethods(Modal);
+                spy.isVisible.mockReturnValue(true);
             });
 
             describe('callbacks not provided', () => {

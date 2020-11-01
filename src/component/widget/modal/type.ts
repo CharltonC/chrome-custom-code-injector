@@ -7,6 +7,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     cancel?: string;
     confirm?: string;
     confirmDisabled?: boolean;
+    confirmType?: 'submit' | 'button';
     onCancel: TFn;
     onConfirm?: TFn;
 }
