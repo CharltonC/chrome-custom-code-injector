@@ -343,7 +343,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     onDelModalConfirm(state: AppState) {
         const { targetChildItemIdx, targetItemIdx } = state.localState;
-        const isDelSingleItem = targetChildItemIdx ?? false;
+        const isDelSingleItem = Number.isInteger(targetChildItemIdx);
         const baseResetLocalState = this.reflect.onModalCancel(state);
 
         if (isDelSingleItem) {
