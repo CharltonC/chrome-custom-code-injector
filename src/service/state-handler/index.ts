@@ -131,53 +131,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onItemRmv({ rules, localState }: AppState, idx: number, parentIdx?: number) {
-        const cloneRules = rules.concat();
-        const modItems = typeof parentIdx !== 'undefined' ?
-            cloneRules[parentIdx].paths :
-            cloneRules;
-
-        modItems.splice(idx, 1);
-        return {
-            rules: cloneRules,
-            localState: {
-                ...localState,
-                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
-            }
-        };
-    }
-
-    onItemsRmv({ localState, rules }: AppState) {
-        const { areAllRowsSelected, selectedRowKeys } = localState;
-        let modRules: HostRuleConfig[];
-
-        // For all rows selected
-        if (areAllRowsSelected) {
-            modRules = [];
-
-        // For partial rows selected
-        } else {
-            modRules = rules.concat();
-            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
-            const selectedRowsTotal: number = rowIndexes.length - 1;
-
-            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
-            for (let i = selectedRowsTotal; i >= 0; i--) {
-                const rowIdx: number = Number(rowIndexes[i][0]);
-                modRules.splice(rowIdx, 1);
-            }
-        }
-
-        return {
-            rules: modRules,
-            localState: {
-                ...localState,
-                areAllRowsSelected: false,
-                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
-            }
-        };
-    }
-
     onListItemClick({ localState }: AppState, ...[, { item }]) {
         return {
             localState: {
@@ -363,34 +316,53 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     // Delete
-    onDelModal(appState: AppState, idx: number, parentIdx?: number) {
+    onDelModal(appState: AppState, idx?: number, parentIdx?: number) {
         const { localState, setting } = appState;
+        const isDelSingleItem = typeof idx !== 'undefined';
 
-        if (!setting.showDeleteModal) {
-            return this.reflect.onItemRmv(appState, idx, parentIdx);
+        // Direct delete w/o confirmation
+        if (!setting.showDeleteModal) return isDelSingleItem ?
+            this.reflect.rmvItem(appState, idx, parentIdx) :
+            this.reflect.rmvItems(appState);
 
-        } else {
-            return {
-                localState: {
-                    ...localState,
-                    currModalId: DELETE.id,
-                    targetChildItemIdx: idx,
-                    targetItemIdx: parentIdx
-                }
-            };
-        }
+        // With confirmation (set the cache so when `onDelModalConfirm` know the context of the item)
+        return isDelSingleItem ? {
+            localState: {
+                ...localState,
+                currModalId: DELETE.id,
+                targetChildItemIdx: idx,
+                targetItemIdx: parentIdx
+            }
+        } : {
+            localState: {
+                ...localState,
+                currModalId: DELETE.id
+            }
+        };
     }
 
-    onDelModalConfirm(appState: AppState) {
-        const { localState } = appState;
-        const { targetChildItemIdx, targetItemIdx } = localState;
-        const { rules } = this.reflect.onItemRmv(appState, targetChildItemIdx, targetItemIdx);
-        const resetState = this.reflect.onModalCancel(appState);
+    onDelModalConfirm(state: AppState) {
+        const { targetChildItemIdx, targetItemIdx } = state.localState;
+        const isDelSingleItem = targetChildItemIdx ?? false;
+        const baseResetLocalState = this.reflect.onModalCancel(state);
 
-        return {
-            ...resetState,
-            rules,
-        };
+        if (isDelSingleItem) {
+            const { rules } = this.reflect.rmvItem(state, targetChildItemIdx, targetItemIdx);
+            return {
+                ...baseResetLocalState,
+                rules
+            };
+
+        } else {
+            const { rules, localState } = this.reflect.rmvItems(state);
+            return {
+                localState: {
+                    ...baseResetLocalState.localState,
+                    ...localState
+                },
+                rules
+            };
+        }
     }
 
     onDelConfirmToggle({ setting }: AppState) {
@@ -401,6 +373,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             }
         };
     }
+
 
     // Add/Edit Host/Path
     onAddHostModal({ localState }: AppState) {
@@ -493,8 +466,55 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// Helper (used in Reflect only)
+    // - Unlike the `on<Xyz>` methods, No full state is required to be returned
     selectRow(selectedRowKeys, idx: number, doSelect: boolean = true) {
         selectedRowKeys[idx] = doSelect ? true : null;
         if (!doSelect) delete selectedRowKeys[idx];
+    }
+
+    rmvItem({ rules }: AppState, idx: number, parentIdx?: number) {
+        const cloneRules = rules.concat();
+        const modItems = typeof parentIdx !== 'undefined' ?
+            cloneRules[parentIdx].paths :
+            cloneRules;
+
+        modItems.splice(idx, 1);
+
+        return {
+            rules: cloneRules,
+            localState: {
+                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            }
+        };
+    }
+
+    rmvItems({ localState, rules }: AppState) {
+        const { areAllRowsSelected, selectedRowKeys } = localState;
+        let modRules: HostRuleConfig[];
+
+        // For all rows selected
+        if (areAllRowsSelected) {
+            modRules = [];
+
+        // For partial rows selected
+        } else {
+            modRules = rules.concat();
+            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
+            const selectedRowsTotal: number = rowIndexes.length - 1;
+
+            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
+            for (let i = selectedRowsTotal; i >= 0; i--) {
+                const rowIdx: number = Number(rowIndexes[i][0]);
+                modRules.splice(rowIdx, 1);
+            }
+        }
+
+        return {
+            rules: modRules,
+            localState: {
+                areAllRowsSelected: false,
+                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            }
+        };
     }
 }
