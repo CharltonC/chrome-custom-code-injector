@@ -34,6 +34,16 @@ export const WithPassedInput  = () => {
     )
 };
 
+export const WithLabelAndRequired = () => (
+    <div style={defStyle} >
+        <TextInput
+            id="lorem2"
+            label="label"
+            required
+            />
+    </div>
+);
+
 export const WithPassedInputAndValidation  = () => {
     const validationRules = [
         {rule: val => !!val, msg: 'must not be empty' },

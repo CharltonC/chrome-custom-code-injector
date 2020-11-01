@@ -11,11 +11,24 @@
         align-items: baseline;
     }
 
-    label {
+    &__label {
+        position: relative;
         width: var(--label-width);
         grid-area: label;
         font: 14px $roboto-bld;
         color: $gray-200;
+
+        &--req {
+            &:before {
+                content: '*';
+                display: inline;
+                position: relative;
+                margin-right: 5px;
+                vertical-align: super;
+                color: $red;
+                font-size: 12px;
+            }
+        }
     }
 
     &__input {

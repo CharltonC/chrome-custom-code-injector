@@ -18,14 +18,16 @@ export class TextInput extends MemoComponent<IProps, IState> {
     render() {
         const { BASE_CLS, cssCls } = this;
         const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
+        const { required } = inputProps;
         const { isValid, hsValidationRules, errMsg } = this.state;
         const hsValidState: boolean = hsValidationRules && (isValid !== null);
         const validateCls: string = hsValidState ? (isValid ? 'valid' : 'invalid') : '';
         const className: string = cssCls(BASE_CLS, (label ? 'label' : '') + ` ${validateCls}`);
+        const labelCls: string = cssCls(`${BASE_CLS}__label`, required ? 'req' : '');
 
         return (
             <div className={className}>{ label &&
-                <label htmlFor={id}>{label}</label>}
+                <label className={labelCls} htmlFor={id}>{label}</label>}
                 <div className="text-ipt__input">
                     <input
                         id={id}

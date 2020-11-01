@@ -247,6 +247,13 @@ describe('Component - Text Input', () => {
 
                 expect(wrapperElem.className).toBe('text-ipt');
             });
+
+            it('should render label with class suffix when input is required', () => {
+                TestUtil.renderPlain(elem, TextInput, {...mockProps, required: true});
+                getChildElem();
+
+                expect(labelElem.className).toContain('--req');
+            });
         });
 
         describe('props: validation rules', () => {
