@@ -60,8 +60,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const onImportModalConfirm = () => {
         const { importFile } = localState;
         const reader = new FileReader();
-        reader.onloadend = (evt) => {
-            const modRules = JSON.parse((reader as any).result);
+        reader.onloadend = () => {
+            const modRules = JSON.parse(JSON.stringify(reader.result));
             onFileImport(modRules);
         };
         reader.readAsText(importFile);
