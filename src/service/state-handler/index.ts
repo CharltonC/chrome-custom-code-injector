@@ -315,8 +315,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
         // Direct delete w/o confirmation
         if (!setting.showDeleteModal) return isDelSingleItem ?
-            this.reflect.rmvItem(appState, idx, parentIdx) :
-            this.reflect.rmvItems(appState);
+            this.reflect.rmvRow(appState, idx, parentIdx) :
+            this.reflect.rmvRows(appState);
 
         // With confirmation (set the cache so when `onDelModalConfirm` know the context of the item)
         return isDelSingleItem ? {
@@ -347,7 +347,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             };
 
         } else {
-            const { rules, localState } = this.reflect.rmvItems(state);
+            const { rules, localState } = this.reflect.rmvRows(state);
             return {
                 localState: {
                     ...baseResetLocalState.localState,
@@ -465,13 +465,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         if (!doSelect) delete selectedRowKeys[idx];
     }
 
-    rmvItem({ rules }: AppState, idx: number, parentIdx?: number) {
     toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
         const clone = rules.slice();
         const value = clone[idx][key];
         clone[idx][key] = !value;
         return { rules: clone };
     }
+
+    rmvRow({ rules }: AppState, idx: number, parentIdx?: number) {
         const cloneRules = rules.concat();
         const modItems = typeof parentIdx !== 'undefined' ?
             cloneRules[parentIdx].paths :
@@ -487,8 +488,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    rmvItems({ localState, rules }: AppState) {
         const { areAllRowsSelected, selectedRowKeys } = localState;
+    rmvRows({ localState, rules }: AppState) {
         let modRules: HostRuleConfig[];
 
         // For all rows selected
