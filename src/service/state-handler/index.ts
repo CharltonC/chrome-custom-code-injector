@@ -152,13 +152,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
-        const clone = rules.slice();
-        const value = clone[idx][key];
-        clone[idx][key] = !value;
-        return { rules: clone };
-    }
-
     onPaginate({ localState}: AppState, { curr, perPage, startIdx, endIdx }) {
         const pgnIncrmIdx: number = resultsPerPage.indexOf(perPage);
 
@@ -473,6 +466,12 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     rmvItem({ rules }: AppState, idx: number, parentIdx?: number) {
+    toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
+        const clone = rules.slice();
+        const value = clone[idx][key];
+        clone[idx][key] = !value;
+        return { rules: clone };
+    }
         const cloneRules = rules.concat();
         const modItems = typeof parentIdx !== 'undefined' ?
             cloneRules[parentIdx].paths :
