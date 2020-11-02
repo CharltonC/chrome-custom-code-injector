@@ -48,7 +48,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         onModalCancel, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
         onAddHostConfirm, onDelModalConfirm,
         onAddPathConfirm,
-        onTargetItemIdChange, onTargetItemValChange,
+        onEditItemIdChange, onEditItemValChange,
         onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
     } = storeHandler;
 
@@ -65,7 +65,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
             autoFocus
             value={targetItem?.id}
             validate={[ validationRules.gte3Char ]}
-            onInputChange={onTargetItemIdChange}
+            onInputChange={onEditItemIdChange}
             />
     </>;
 
@@ -301,7 +301,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         required
                         value={targetItem?.value}
                         validate={[ validationRules.urlHost ]}
-                        onInputChange={onTargetItemValChange}
+                        onInputChange={onEditItemValChange}
                         />
                 </Modal>
                 <Modal
@@ -322,7 +322,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         required
                         value={targetItem?.value}
                         validate={[ validationRules.urlPath ]}
-                        onInputChange={onTargetItemValChange}
+                        onInputChange={onEditItemValChange}
                         />
                 </Modal>
                 <Modal

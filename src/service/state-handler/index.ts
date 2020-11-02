@@ -39,6 +39,26 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// DataGrid
+    onPaginate({ localState}: AppState, { curr, perPage, startIdx, endIdx }) {
+        const pgnIncrmIdx: number = resultsPerPage.indexOf(perPage);
+
+        return {
+            localState: {
+                ...localState,
+
+                // clear all selections
+                areAllRowsSelected: false,
+                selectedRowKeys: {},
+
+                // pagination state
+                pgnPageIdx: curr,
+                pgnIncrmIdx,
+                pgnItemStartIdx: startIdx,
+                pgnItemEndIdx: endIdx,
+            }
+        };
+    }
+
     onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
         return {
             localState: {
@@ -96,23 +116,23 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onHttpsToggle(state: AppState, idx: number): Partial<AppState> {
+    onRowHttpsToggle(state: AppState, idx: number): Partial<AppState> {
         return this.reflect.toggleTbRowSwitch(state, idx, 'isHttps');
     }
 
-    onJsToggle(state: AppState, idx: number): Partial<AppState> {
+    onRowJsToggle(state: AppState, idx: number): Partial<AppState> {
         return this.reflect.toggleTbRowSwitch(state, idx, 'isJsOn');
     }
 
-    onCssToggle(state: AppState, idx: number): Partial<AppState> {
+    onRowCssToggle(state: AppState, idx: number): Partial<AppState> {
         return this.reflect.toggleTbRowSwitch(state, idx, 'isCssOn');
     }
 
-    onLibToggle(state: AppState, idx: number): Partial<AppState> {
+    onRowLibToggle(state: AppState, idx: number): Partial<AppState> {
         return this.reflect.toggleTbRowSwitch(state, idx, 'isLibOn');
     }
 
-    onJsExecStageChange({ rules }: AppState, idx: number, modIdx): Partial<AppState> {
+    onRowJsStageChange({ rules }: AppState, idx: number, modIdx): Partial<AppState> {
         const clone = rules.slice();
         clone[idx].jsExecPhase = modIdx;
         return { rules: clone };
@@ -139,26 +159,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 expdRowId: id === expdRowId ? null : id
-            }
-        };
-    }
-
-    onPaginate({ localState}: AppState, { curr, perPage, startIdx, endIdx }) {
-        const pgnIncrmIdx: number = resultsPerPage.indexOf(perPage);
-
-        return {
-            localState: {
-                ...localState,
-
-                // clear all selections
-                areAllRowsSelected: false,
-                selectedRowKeys: {},
-
-                // pagination state
-                pgnPageIdx: curr,
-                pgnIncrmIdx,
-                pgnItemStartIdx: startIdx,
-                pgnItemEndIdx: endIdx,
             }
         };
     }
@@ -281,7 +281,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     //// Modals
     // Generic
-    openModal({ localState }: AppState, currModalId: string): Partial<AppState> {
+    onModalOpen({ localState }: AppState, currModalId: string): Partial<AppState> {
         return {
             localState: {
                 ...localState,
@@ -307,15 +307,15 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     // Setting
     onSettingModal(state: AppState) {
-        return this.reflect.openModal(state, SETTING.id);
+        return this.reflect.onModalOpen(state, SETTING.id);
     }
 
     onImportSettingModal(state: AppState) {
-        return this.reflect.openModal(state, IMPORT_SETTING.id);
+        return this.reflect.onModalOpen(state, IMPORT_SETTING.id);
     }
 
     onExportSettingModal(state: AppState) {
-        return this.reflect.openModal(state, EXPORT_SETTING.id);
+        return this.reflect.onModalOpen(state, EXPORT_SETTING.id);
     }
 
     // Delete
@@ -429,7 +429,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onTargetItemIdChange({ localState }: AppState, { val, validState }) {
+    //// Form
+    onEditItemIdChange({ localState }: AppState, { val, validState }) {
         const { targetItem, isTargetItemValValid } = localState;
         return {
             localState: {
@@ -444,7 +445,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onTargetItemValChange({ localState }: AppState, { val, validState }) {
+    onEditItemValChange({ localState }: AppState, { val, validState }) {
         const { targetItem, isTargetItemIdValid } = localState;
         return {
             localState: {
