@@ -50,22 +50,20 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onRowSelectToggle({ localState, rules }: AppState, idx: number) {
-        const { selectRow } = this.reflect;
+        const { selectRow, getActualRowsPerPage } = this.reflect;
         const {
             areAllRowsSelected,
             selectedRowKeys: currRowKeys,
-            pgnItemStartIdx, pgnIncrmIdx, pgnItemEndIdx,
+            pgnItemStartIdx, pgnItemEndIdx,
         } = localState;
 
         const selectedRowKeys = { ...currRowKeys };
         const isCurrRowSelected = currRowKeys[idx];
-        const actualRowsPerPage: number = Math.min(rules.length, resultsPerPage[pgnIncrmIdx]);
+        const itemsTotalPerPage = getActualRowsPerPage(localState, rules.length);
 
         // Add the rest of checkboxes to selected except current one
         if (areAllRowsSelected) {
-            const itemEndIdx: number = pgnItemEndIdx ?? actualRowsPerPage;
-
-            for (let i = pgnItemStartIdx; i < itemEndIdx; i++) {
+            for (let i = pgnItemStartIdx; i < (pgnItemEndIdx ?? itemsTotalPerPage); i++) {
                 const isCurrRow = i === idx;
                 const isSelected = i in selectedRowKeys;
                 const isSelectedCurrRow = isCurrRow && isSelected;
@@ -85,12 +83,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         }
 
         // if All checkboxes are selected at that page AFTER the abv operation
-        const wereAllRowsSelected = Object.entries(selectedRowKeys).length === actualRowsPerPage;
+        const wereAllRowsSelected = Object.entries(selectedRowKeys).length === itemsTotalPerPage;
 
         return {
             localState: {
                 ...localState,
-                areAllRowsSelected: wereAllRowsSelected ? true : (areAllRowsSelected ? false : areAllRowsSelected),
+                areAllRowsSelected: wereAllRowsSelected ?
+                    true :
+                    (areAllRowsSelected ? false : areAllRowsSelected),
                 selectedRowKeys: wereAllRowsSelected ? {} : selectedRowKeys
             }
         };
@@ -340,7 +340,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const baseResetLocalState = this.reflect.onModalCancel(state);
 
         if (isDelSingleItem) {
-            const { rules } = this.reflect.rmvItem(state, targetChildItemIdx, targetItemIdx);
+            const { rules } = this.reflect.rmvRow(state, targetChildItemIdx, targetItemIdx);
             return {
                 ...baseResetLocalState,
                 rules
@@ -488,13 +488,25 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-        const { areAllRowsSelected, selectedRowKeys } = localState;
     rmvRows({ localState, rules }: AppState) {
+        const { getActualRowsPerPage } = this.reflect;
+        const { areAllRowsSelected, selectedRowKeys, pgnItemStartIdx, pgnItemEndIdx } = localState;
+        const rulesTotal: number = rules.length;
         let modRules: HostRuleConfig[];
 
         // For all rows selected
         if (areAllRowsSelected) {
-            modRules = [];
+            const itemsTotalPerPage = getActualRowsPerPage(localState, rulesTotal);
+
+            if (itemsTotalPerPage === rulesTotal) {
+                modRules = [];
+
+            } else {
+                modRules = rules.concat();
+                for (let i = pgnItemStartIdx; i < (pgnItemEndIdx ?? itemsTotalPerPage); i++) {
+                    modRules.splice(i, 1);
+                }
+            }
 
         // For partial rows selected
         } else {
