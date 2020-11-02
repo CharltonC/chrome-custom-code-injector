@@ -89,6 +89,6 @@ export { rowHandleType };
 export { expdHandleType };
 export { sortHandleType };
 export { headerGrpHandleType };
-export * as sortBtnType from '../../base/sort-btn/type';
+export * as sortBtnType from '../../base/btn-sort/type';
 export * as paginationType from '../../group/pagination/type';
 export * as GridHeaderType from '../../group/grid-header/type';

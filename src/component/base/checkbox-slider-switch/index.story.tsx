@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SliderSwitch } from '.';
 
 export default {
-    title: 'Slider Switch',
+    title: 'Checkbox - Slider Switch',
     component: SliderSwitch,
 };
 

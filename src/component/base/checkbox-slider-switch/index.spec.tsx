@@ -1,6 +1,6 @@
 import React from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { SliderSwitch } from './';
+import { SliderSwitch } from '.';
 
 describe('Component - Slider Switch', () => {
     const MOCK_ID = 'id';

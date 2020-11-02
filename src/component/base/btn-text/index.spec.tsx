@@ -1,6 +1,6 @@
 import React from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { TextBtn } from './';
+import { TextBtn } from '.';
 
 describe('Component - Text Button', () => {
     const mockBtnTxt = 'abc';

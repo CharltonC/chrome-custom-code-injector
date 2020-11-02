@@ -2,7 +2,7 @@ import React from 'react';
 import { resultsPerPage } from '../../../service/constant/result-per-page';
 import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
-import { IconBtn } from '../../base/icon-btn';
+import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { TbRow } from './tb-row';
 import { IProps } from './type';

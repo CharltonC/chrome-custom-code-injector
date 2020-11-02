@@ -1,6 +1,6 @@
 import React, { ReactElement, FormEvent } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
-import { TextBtn } from '../../base/text-btn';
+import { TextBtn } from '../../base/btn-text';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState } from './type';
 

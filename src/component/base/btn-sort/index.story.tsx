@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SortBtn, _SortBtn } from '.';
 
 export default {
-    title: 'Sort Button',
+    title: 'Button - Sort Button',
     component: _SortBtn,
 };
 

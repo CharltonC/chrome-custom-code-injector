@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import { jsExecStage } from '../../../service/constant/js-exec-stage';
-import { IconBtn } from '../../base/icon-btn';
+import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
-import { SliderSwitch } from '../../base/slider-switch';
-import { Dropdown } from '../../base/dropdown';
+import { SliderSwitch } from '../../base/checkbox-slider-switch';
+import { Dropdown } from '../../base/select-dropdown';
 import { InclStaticNumBadge } from '../../static/num-badge';
 import { ITbRowProps } from './type';
 

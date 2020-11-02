@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import { IconBtn } from '../../base/icon-btn';
+import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
-import { SliderSwitch } from '../../base/slider-switch';
+import { SliderSwitch } from '../../base/checkbox-slider-switch';
 
 // TODO: Type for props
 export const TbRow: React.FC<any> = memo((props) => {

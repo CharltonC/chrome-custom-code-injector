@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { DomHandle } from '../../../service/handle/dom';
-import { TextBtn } from '../../base/text-btn';
+import { TextBtn } from '../../base/btn-text';
 import { Modal } from '.';
 
 export default {

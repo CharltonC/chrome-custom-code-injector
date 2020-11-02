@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
-import { SortBtn } from '../../base/sort-btn';
+import { SortBtn } from '../../base/btn-sort';
 import { IProps, TTbHeaderRows, TListHeaderRows } from './type';
 
 export class GridHeader extends MemoComponent<IProps> {

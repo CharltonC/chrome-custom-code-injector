@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { IconBtn } from '../../base/icon-btn';
-import { SymbolSwitch } from '../../base/symbol-switch';
+import { IconBtn } from '../../base/btn-icon';
+import { SymbolSwitch } from '../../base/checkbox-symbol-switch';
 import { IProps } from './type';
 
 export const PopupApp: React.FC<IProps> = memo((props: IProps) => {

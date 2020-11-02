@@ -1,6 +1,6 @@
 import React from 'react';
-import { TestUtil } from '../../../asset/ts/test-util/';
-import { FileInput, CLS_BASE } from './';
+import { TestUtil } from '../../../asset/ts/test-util';
+import { FileInput, CLS_BASE } from '.';
 import { IProps } from './type';
 
 describe('Component - File Input', () => {

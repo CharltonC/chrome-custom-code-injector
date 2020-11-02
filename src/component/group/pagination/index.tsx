@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
-import { Dropdown } from '../../base/dropdown';
+import { Dropdown } from '../../base/select-dropdown';
 import { inclStaticIcon } from '../../static/icon';
 
 import {

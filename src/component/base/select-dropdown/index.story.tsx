@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dropdown } from  '.';
 
 export default {
-    title: 'Dropdown',
+    title: 'Select - Dropdown',
     component: Dropdown ,
 };
 

@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
-import { TextInput } from '../../base/text-input';
-import { TabSwitch } from '../../base/tab-switch';
-import { IconSwitch } from '../../base/icon-switch';
-import { Dropdown } from '../../base/dropdown';
+import { TextInput } from '../../base/input-text';
+import { TabSwitch } from '../../base/checkbox-tab-switch';
+import { IconSwitch } from '../../base/checkbox-icon-switch';
+import { Dropdown } from '../../base/select-dropdown';
 import { SideNav } from '../../base/side-nav';
 import { DataGrid } from '../../widget/data-grid';
 import { jsExecStage } from '../../../service/constant/js-exec-stage';

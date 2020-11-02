@@ -1,5 +1,5 @@
 import * as headerGrpHandleType from '../../../service/handle/header-group/type';
-import * as sortBtnType from '../../base/sort-btn/type';
+import * as sortBtnType from '../../base/btn-sort/type';
 import { ReactElement } from 'react';
 
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
