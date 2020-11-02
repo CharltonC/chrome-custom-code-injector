@@ -4,7 +4,7 @@ import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
 import { Dropdown } from '../../base/select-dropdown';
-import { InclStaticNumBadge } from '../../static/num-badge';
+import { NumBadge } from '../../static/num-badge';
 import { ITbRowProps } from './type';
 
 export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
@@ -61,7 +61,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                             disabled={!paths.length}
                             onClick={() => onRowExpand({[id]: itemLvl})}
                             />
-                        { InclStaticNumBadge(paths.length) } </>}
+                        <NumBadge total={paths.length} /> </>}
                         <span>{id}</span>
                     </div>
                 </td><td>

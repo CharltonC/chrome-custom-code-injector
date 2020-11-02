@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
-import { InclStaticNumBadge } from '../../static/num-badge';
+import { NumBadge } from '../../static/num-badge';
 import { IProps, IState, IObj } from './type';
 
 const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
@@ -55,7 +55,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                     <p className={ITEM_TIER_CLS}>
                         { isActive ? dnIconElem : rtIconElem }
                         { itemTitle }
-                        { InclStaticNumBadge(nestedItemsTotal) }
+                        <NumBadge total={nestedItemsTotal} />
                     </p>
                     <ul
                         className={NESTED_LIST_CLS}
