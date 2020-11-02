@@ -1,5 +1,5 @@
 import { IValidationRule } from './type';
-import { validationRules } from ".";
+import { validationHandle } from ".";
 
 describe('Validation Rules', () => {
     let gte3Char: IValidationRule;
@@ -8,7 +8,7 @@ describe('Validation Rules', () => {
     let rule;
 
     beforeEach(() => {
-        ({ gte3Char, urlHost, urlPath } = validationRules);
+        ({ gte3Char, urlHost, urlPath } = validationHandle);
     });
 
     describe('3 or more alphabets only', () => {

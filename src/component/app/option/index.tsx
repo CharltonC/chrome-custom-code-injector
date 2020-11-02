@@ -4,7 +4,7 @@ import React, { memo, ReactElement } from 'react';
 import { modals } from '../../../service/constant/modals';
 import { urls } from '../../../service/constant/urls';
 import { resultsPerPage } from '../../../service/constant/result-per-page';
-import { validationRules } from '../../../service/constant/validation';
+import { validationHandle } from '../../../service/handle/validation';
 import { jsExecStage } from '../../../service/constant/js-exec-stage';
 import { UtilHandle } from '../../../service/handle/util';
 
@@ -75,7 +75,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
             required
             autoFocus
             value={targetItem?.id}
-            validate={[ validationRules.gte3Char ]}
+            validate={[ validationHandle.gte3Char ]}
             onInputChange={onEditItemIdChange}
             />
     </>;
@@ -319,7 +319,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         label="Host Value"
                         required
                         value={targetItem?.value}
-                        validate={[ validationRules.urlHost ]}
+                        validate={[ validationHandle.urlHost ]}
                         onInputChange={onEditItemValChange}
                         />
                 </Modal>
@@ -340,7 +340,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         label="Path Value"
                         required
                         value={targetItem?.value}
-                        validate={[ validationRules.urlPath ]}
+                        validate={[ validationHandle.urlPath ]}
                         onInputChange={onEditItemValChange}
                         />
                 </Modal>

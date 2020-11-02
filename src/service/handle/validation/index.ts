@@ -1,6 +1,6 @@
 import { IValidationRule } from './type';
 
-class ValidatioNRules {
+class ValidationHandle {
     readonly gte3Char: IValidationRule = {
         rule: /^[a-zA-Z0-9]{3,}$/,
         msg: 'must be 3 or more characters without whitespace'
@@ -17,4 +17,4 @@ class ValidatioNRules {
     };
 }
 
-export const validationRules = new ValidatioNRules();
+export const validationHandle = new ValidationHandle();
