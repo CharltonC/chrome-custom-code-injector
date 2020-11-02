@@ -4,7 +4,7 @@ import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, pgnHandleType } from './type';
 import { Pagination } from '.';
 
-jest.mock('../../base/dropdown', () => {
+jest.mock('../../base/select-dropdown', () => {
     return {
         _Dropdown: true,
         Dropdown: () => <select />
