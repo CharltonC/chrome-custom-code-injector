@@ -50,11 +50,22 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         onAddPathConfirm,
         onEditItemIdChange, onEditItemValChange,
         onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
+        onImportFileChange, onFileImport,
     } = storeHandler;
 
     const isEditView: boolean = currView === 'EDIT';
     const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
     const MAIN_CLS = cssCls('main', isEditView ? 'edit' : 'list');
+
+    const onImportModalConfirm = () => {
+        const { importFile } = localState;
+        const reader = new FileReader();
+        reader.onloadend = (evt) => {
+            const modRules = JSON.parse((reader as any).result);
+            onFileImport(modRules);
+        };
+        reader.readAsText(importFile);
+    };
 
     // Reusable template for Host config rule add/edit operation
     const $ruleIdEdit = <>
@@ -239,10 +250,18 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     confirm="IMPORT"
                     confirmDisabled={!allowModalConfirm}
                     onCancel={onModalCancel}
-                    onConfirm={onModalCancel}
+                    onConfirm={onImportModalConfirm}
                     >
-                    {/* TODO: */}
-                    <FileInput id="json-import-input" fileType="application/JSON" />
+                    {/* TODO:
+                    $elem.validity.valid (boolean): filesize
+                    check/merge the settings
+                    */}
+                    <FileInput
+                        id="json-import-input"
+                        fileType="application/JSON"
+                        required
+                        onChange={onImportFileChange}
+                        />
                 </Modal>
                 <Modal
                     currModalId={currModalId}
