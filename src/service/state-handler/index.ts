@@ -517,4 +517,9 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             }
         };
     }
+
+    getActualRowsPerPage(localState: LocalState, rulesTotal: number): number {
+        const { pgnIncrmIdx } = localState;
+        return Math.min(rulesTotal, resultsPerPage[pgnIncrmIdx]);
+    }
 }
