@@ -7,7 +7,7 @@ import { modals } from '../constant/modals';
 import { Setting } from '../model/setting';
 import { resultsPerPage } from '../constant/result-per-page';
 
-const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
+const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 
 export class StateHandler extends StateHandle.BaseStoreHandler {
     //// Router/Views
@@ -298,15 +298,15 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     // Setting
     onSettingModal(state: AppState) {
-        return this.reflect.onModalOpen(state, SETTING.id);
+        return this.reflect.onModalOpen(state, defSetting.id);
     }
 
-    onImportSettingModal(state: AppState) {
-        return this.reflect.onModalOpen(state, IMPORT_SETTING.id);
+    onimportConfigModal(state: AppState) {
+        return this.reflect.onModalOpen(state, importConfig.id);
     }
 
-    onExportSettingModal(state: AppState) {
-        return this.reflect.onModalOpen(state, EXPORT_SETTING.id);
+    onexportConfigModal(state: AppState) {
+        return this.reflect.onModalOpen(state, exportConfig.id);
     }
 
     // Delete
@@ -324,14 +324,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return isDelSingleItem ? {
             localState: {
                 ...localState,
-                currModalId: DELETE.id,
+                currModalId: removeConfirm.id,
                 targetChildItemIdx: idx,
                 targetItemIdx: parentIdx
             }
         } : {
             localState: {
                 ...localState,
-                currModalId: DELETE.id
+                currModalId: removeConfirm.id
             }
         };
     }
@@ -365,7 +365,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: {
                 ...localState,
-                currModalId: ADD_HOST.id,
+                currModalId: editHost.id,
                 targetItem: new HostRuleConfig('', '')
             }
         };
@@ -391,7 +391,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: {
                 ...localState,
-                currModalId: ADD_PATH.id,
+                currModalId: editPath.id,
                 targetItemIdx: idx,
                 targetItem: new PathRuleConfig('', '')
             }

@@ -23,7 +23,7 @@ import { IProps } from './type';
 
 const { cssCls } = UtilHandle.prototype;
 const docIcon: ReactElement = inclStaticIcon('doc', 'white');
-const { SETTING, IMPORT_SETTING, EXPORT_SETTING, DELETE, ADD_HOST, ADD_PATH, ADD_LIB, EDIT_LIB } = modals;
+const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const { store, storeHandler } = props;
@@ -45,7 +45,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const {
         onListView,
         onSearch, onSearchClear,
-        onModalCancel, onSettingModal, onImportSettingModal, onExportSettingModal, onAddHostModal,
+        onModalCancel, onSettingModal, onimportConfigModal, onexportConfigModal, onAddHostModal,
         onAddHostConfirm, onDelModalConfirm,
         onAddPathConfirm,
         onEditItemIdChange, onEditItemValChange,
@@ -146,13 +146,13 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     <IconBtn
                         icon="download"
                         theme="white"
-                        onClick={onImportSettingModal}
+                        onClick={onimportConfigModal}
                         />
                     <IconBtn
                         icon="download"
                         theme="white"
                         clsSuffix="upload"
-                        onClick={onExportSettingModal}
+                        onClick={onexportConfigModal}
                         />
                 </div>
             </header>
@@ -162,8 +162,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
             { currModalId && <form className="modals">
                 <Modal
                     currModalId={currModalId}
-                    id={SETTING.id}
-                    header={SETTING.txt}
+                    id={defSetting.id}
+                    header={defSetting.txt}
                     clsSuffix="setting"
                     onCancel={onModalCancel}
                     onConfirm={onModalCancel}
@@ -243,8 +243,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id={IMPORT_SETTING.id}
-                    header={IMPORT_SETTING.txt}
+                    id={importConfig.id}
+                    header={importConfig.txt}
                     clsSuffix="setting-import"
                     cancel="CANCEL"
                     confirm="IMPORT"
@@ -265,8 +265,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id={EXPORT_SETTING.id}
-                    header={EXPORT_SETTING.txt}
+                    id={exportConfig.id}
+                    header={exportConfig.txt}
                     clsSuffix="setting-export"
                     cancel="CANCEL"
                     confirm="EXPORT"
@@ -287,12 +287,12 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id={DELETE.id}
-                    header={DELETE.txt}
+                    id={removeConfirm.id}
+                    header={removeConfirm.txt}
                     clsSuffix="delete-confirm"
                     subHeader="Are you sure you want to remove?"
                     cancel="CANCEL"
-                    confirm="DELETE"
+                    confirm="remove"
                     onCancel={onModalCancel}
                     onConfirm={onDelModalConfirm}
                     >
@@ -304,8 +304,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id={ADD_HOST.id}
-                    header={ADD_HOST.txt}
+                    id={editHost.id}
+                    header={editHost.txt}
                     clsSuffix="host-add"
                     cancel="CANCEL"
                     confirm="SAVE"
@@ -325,8 +325,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id={ADD_PATH.id}
-                    header={ADD_PATH.txt}
+                    id={editPath.id}
+                    header={editPath.txt}
                     clsSuffix="path-add"
                     cancel="CANCEL"
                     confirm="SAVE"
@@ -346,8 +346,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id={ADD_LIB.id}
-                    header={ADD_LIB.txt}
+                    id={addLib.id}
+                    header={addLib.txt}
                     clsSuffix="lib-add"
                     cancel="CANCEL"
                     confirm="SAVE"
@@ -359,8 +359,8 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                 </Modal>
                 <Modal
                     currModalId={currModalId}
-                    id={EDIT_LIB.id}
-                    header={EDIT_LIB.txt}
+                    id={editLib.id}
+                    header={editLib.txt}
                     clsSuffix="lib-edit"
                     cancel="CANCEL"
                     confirm="SAVE"
