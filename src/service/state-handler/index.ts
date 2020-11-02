@@ -118,7 +118,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return { rules: clone };
     }
 
-    onItemEdit(state: AppState, currListItem): Partial<AppState> {
+    onRowEdit(state: AppState, currListItem): Partial<AppState> {
         const { localState } = state;
         const { currView } = this.reflect.onEditView(state).localState;
 
@@ -131,16 +131,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onListItemClick({ localState }: AppState, ...[, { item }]) {
-        return {
-            localState: {
-                ...localState,
-                currListItem: item,
-            }
-        };
-    }
-
-    onItemExpd({ localState }: AppState, expdState: Record<string, number>) {
+    onRowExpand({ localState }: AppState, expdState: Record<string, number>) {
         const { expdRowId } = localState;
         const [ id ]: string[] = Object.getOwnPropertyNames(expdState);
 
@@ -168,6 +159,16 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 pgnIncrmIdx,
                 pgnItemStartIdx: startIdx,
                 pgnItemEndIdx: endIdx,
+            }
+        };
+    }
+
+    //// Edit View
+    onListItemClick({ localState }: AppState, ...[, { item }]) {
+        return {
+            localState: {
+                ...localState,
+                currListItem: item,
             }
         };
     }
@@ -269,6 +270,15 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
+    onDelConfirmToggle({ setting }: AppState) {
+        return {
+            setting: {
+                ...setting,
+                showDeleteModal: !setting.showDeleteModal
+            }
+        };
+    }
+
     //// Modals
     // Generic
     openModal({ localState }: AppState, currModalId: string): Partial<AppState> {
@@ -310,13 +320,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     // Delete
     onDelModal(appState: AppState, idx?: number, parentIdx?: number) {
+        const { rmvRow, rmvRows } = this.reflect;
         const { localState, setting } = appState;
         const isDelSingleItem = typeof idx !== 'undefined';
 
         // Direct delete w/o confirmation
         if (!setting.showDeleteModal) return isDelSingleItem ?
-            this.reflect.rmvRow(appState, idx, parentIdx) :
-            this.reflect.rmvRows(appState);
+            rmvRow(appState, idx, parentIdx) :
+            rmvRows(appState);
 
         // With confirmation (set the cache so when `onDelModalConfirm` know the context of the item)
         return isDelSingleItem ? {
@@ -357,16 +368,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             };
         }
     }
-
-    onDelConfirmToggle({ setting }: AppState) {
-        return {
-            setting: {
-                ...setting,
-                showDeleteModal: !setting.showDeleteModal
-            }
-        };
-    }
-
 
     // Add/Edit Host/Path
     onAddHostModal({ localState }: AppState) {

@@ -22,7 +22,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
         onDelModal, onAddPathModal,
         onHttpsToggle, onJsToggle, onCssToggle, onLibToggle,
         onJsExecStageChange,
-        onItemEdit, onItemExpd, onRowSelectToggle,
+        onRowEdit, onRowExpand, onRowSelectToggle,
     } = storeHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
@@ -59,7 +59,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                             icon="arrow-rt"
                             clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
                             disabled={!paths.length}
-                            onClick={() => onItemExpd({[id]: itemLvl})}
+                            onClick={() => onRowExpand({[id]: itemLvl})}
                             />
                         { InclStaticNumBadge(paths.length) } </>}
                         <span>{id}</span>
@@ -109,7 +109,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         icon="edit"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onItemEdit(item) }
+                        onClick={() => onRowEdit(item) }
                         />
                 </td><td>
                     <IconBtn
