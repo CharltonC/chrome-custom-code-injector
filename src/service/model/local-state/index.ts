@@ -17,6 +17,9 @@ export class LocalState {
     pgnItemStartIdx: number = 0;
     pgnItemEndIdx: number = null;
 
+    // - Import File
+    importFile: null;
+
     //// Views
     // Current
     currView: AView = 'LIST';
