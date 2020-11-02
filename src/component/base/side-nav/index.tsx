@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
-import { NumBadge } from '../../static/num-badge';
+import { NumBadge } from '../num-badge';
 import { IProps, IState, IObj } from './type';
 
 const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');

@@ -1,6 +1,6 @@
 import React from "react";
 import { TestUtil } from '../../../asset/ts/test-util';
-import { NumBadge } from './';
+import { NumBadge } from '.';
 
 describe('Static Component: Number Badge', () => {
     const { renderShallow } = TestUtil;
