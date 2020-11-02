@@ -451,6 +451,35 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
+    onImportFileChange({ localState }, { target }) {
+        const { files } = target;
+        const importFile = files.item(0);
+        const { size, type, name } = importFile;
+
+        // TODO: validate
+        return {
+            localState: {
+                ...localState,
+                allowModalConfirm: true,
+                importFile
+            }
+        };
+    }
+
+    onFileImport({ localState }: AppState, rules: HostRuleConfig[]) {
+        return {
+            rules,
+            // TODO: goto Edit View,
+            localState: {
+                ...localState,
+                allowModalConfirm: false,
+                importFile: null,
+                currModalId: null
+            }
+        };
+    }
+
+
     //// Helper (used in Reflect only)
     // - Unlike the `on<Xyz>` methods, No full state is required to be returned
     selectRow(selectedRowKeys, idx: number, doSelect: boolean = true) {
