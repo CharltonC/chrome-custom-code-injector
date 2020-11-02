@@ -29,15 +29,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return this.reflect.setView(state, 'EDIT');
     }
 
-    setView({ localState }: AppState, currView: AView): Partial<AppState> {
-        return {
-            localState: {
-                ...localState,
-                currView
-            }
-        };
-    }
-
     //// DataGrid
     onPaginate({ localState}: AppState, { curr, perPage, startIdx, endIdx }) {
         const pgnIncrmIdx: number = resultsPerPage.indexOf(perPage);
@@ -429,7 +420,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    //// Form
+    // Modal Input (common)
     onEditItemIdChange({ localState }: AppState, { val, validState }) {
         const { targetItem, isTargetItemValValid } = localState;
         return {
@@ -535,5 +526,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     getActualRowsPerPage(localState: LocalState, rulesTotal: number): number {
         const { pgnIncrmIdx } = localState;
         return Math.min(rulesTotal, resultsPerPage[pgnIncrmIdx]);
+    }
+
+    setView({ localState }: AppState, currView: AView): Partial<AppState> {
+        return {
+            localState: {
+                ...localState,
+                currView
+            }
+        };
     }
 }
