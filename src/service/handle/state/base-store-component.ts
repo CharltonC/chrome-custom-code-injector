@@ -42,6 +42,9 @@ export class BaseStoreComponent extends Component<any, TObj> {
             get: (target: BaseStoreHandler, key: string, proxy: BaseStoreHandler) => {
                 const method: any = target[key];
 
+                // TODO - if User requests the root store handler, `rootHandler`, return the rootHandler object
+                // e.g. if (key === 'rootHandler')
+
                 // Filter out non-own prototype methods
                 if (allowedMethodNames.indexOf(key) === -1) return method;
 
@@ -49,6 +52,8 @@ export class BaseStoreComponent extends Component<any, TObj> {
                 return (...args: any[]) => {
                     const modPartialState: TObj = getModPartialState(method, proxy, args);
                     if (!modPartialState) return;   // skip state update if `falsy` value is returned
+
+                    // TODO - Check type if its not object, throw error
                     updateState(modPartialState, storeHandler, storeName);
                 };
             }
