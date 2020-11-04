@@ -27,7 +27,7 @@ const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPat
 
 export const OptionApp: React.FC<any> = memo((props: IProps) => {
     const { store, storeHandler } = props;
-    const { localState, setting } = store;
+    const { localState, setting, rules } = store;
 
     const {
         currView,
@@ -152,6 +152,7 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         icon="download"
                         theme="white"
                         clsSuffix="upload"
+                        disabled={!rules.length}
                         onClick={onexportConfigModal}
                         />
                 </div>
