@@ -297,11 +297,12 @@ describe('Handle Service - Default Sorter', () => {
                     option,
                     callback
                 );
-                expect(spy.createSortBtnAttr).toHaveBeenCalledWith(
-                    mockEvtHandler,
+                expect(spy.createSortBtnAttr).toHaveBeenCalledWith({
+                    onEvt: mockEvtHandler,
                     option,
-                    mockSortKey
-                );
+                    sortKey: mockSortKey,
+                    dataTotal: 0
+                });
             });
         });
 
@@ -327,7 +328,12 @@ describe('Handle Service - Default Sorter', () => {
                 });
 
                 it('should return attribute for Sort Reset is off, current sort order is ascending', () => {
-                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockBaseOption, mockSortKey);
+                    const { isAsc, onClick } = createSortBtnAttr({
+                        onEvt: mockEvtHandler,
+                        option: mockBaseOption,
+                        sortKey: mockSortKey,
+                        dataTotal: 2
+                    });
                     onClick();
 
                     expect(isAsc).toBe(mockBaseOption.isAsc);
@@ -339,7 +345,12 @@ describe('Handle Service - Default Sorter', () => {
 
                 it('should return attribute for Sort Reset is off, current sort order is descending', () => {
                     mockOption = {...mockBaseOption, isAsc: false };
-                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockOption, mockSortKey);
+                    const { isAsc, onClick } = createSortBtnAttr({
+                        onEvt: mockEvtHandler,
+                        option: mockOption,
+                        sortKey: mockSortKey,
+                        dataTotal: 2
+                    });
                     onClick();
 
                     expect(isAsc).toBe(mockOption.isAsc);
@@ -351,7 +362,12 @@ describe('Handle Service - Default Sorter', () => {
 
                 it('should return attribute when Sort Reset is on, current sort order is ascending', () => {
                     mockOption = {...mockBaseOption, reset: true };
-                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockOption, mockSortKey);
+                    const { isAsc, onClick } = createSortBtnAttr({
+                        onEvt: mockEvtHandler,
+                        option: mockOption,
+                        sortKey: mockSortKey,
+                        dataTotal: 2
+                    });
                     onClick();
 
                     expect(isAsc).toBe(mockOption.isAsc);
@@ -363,7 +379,12 @@ describe('Handle Service - Default Sorter', () => {
 
                 it('should return attribute when Sort Reset is on, current sort order is descending', () => {
                     mockOption = {...mockBaseOption, reset: true, isAsc: false };
-                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockOption, mockSortKey);
+                    const { isAsc, onClick } = createSortBtnAttr({
+                        onEvt: mockEvtHandler,
+                        option: mockOption,
+                        sortKey: mockSortKey,
+                        dataTotal: 2
+                    });
                     onClick();
 
                     expect(isAsc).toBe(false);
@@ -380,7 +401,12 @@ describe('Handle Service - Default Sorter', () => {
                 });
 
                 it('should return attribute current sort order is ascending', () => {
-                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockBaseOption, mockSortKey);
+                    const { isAsc, onClick } = createSortBtnAttr({
+                        onEvt: mockEvtHandler,
+                        option: mockBaseOption,
+                        sortKey: mockSortKey,
+                        dataTotal: 2
+                    });
                     onClick();
 
                     expect(isAsc).toBe(null);
@@ -392,7 +418,12 @@ describe('Handle Service - Default Sorter', () => {
 
                 it('should return attribute current sort order is descending', () => {
                     mockOption = {...mockBaseOption, isAsc: false };
-                    const { isAsc, onClick } = createSortBtnAttr(mockEvtHandler, mockBaseOption, mockSortKey);
+                    const { isAsc, onClick } = createSortBtnAttr({
+                        onEvt: mockEvtHandler,
+                        option: mockOption,
+                        sortKey: mockSortKey,
+                        dataTotal: 2
+                    });
                     onClick();
 
                     expect(isAsc).toBe(null);

@@ -23,6 +23,8 @@ export interface ICmpAttr {
 }
 
 export interface ICmpSortBtnAttr {
+    disabled: boolean;
+
     // up/dn arrow highlight state for the sort btn
     // - o highlight state for non-current header or if current header sort is temp. off
     isAsc: boolean;

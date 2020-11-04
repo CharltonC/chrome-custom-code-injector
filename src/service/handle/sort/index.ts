@@ -90,16 +90,19 @@ export class SortHandle implements IUiHandle {
 
     //// UI - Generic Component Attribute
     createGenericCmpAttr({ data, option, callback }: ICmpAttrQuery, sortKey: string): ICmpAttr {
+        const dataTotal: number = data.length;
         const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
-        const sortBtnAttr = this.createSortBtnAttr(onEvt, option, sortKey);
+        const sortBtnAttr = this.createSortBtnAttr({ dataTotal, onEvt, option, sortKey });
         return { sortBtnAttr };
     }
 
-    createSortBtnAttr(onEvt: TFn, { key, isAsc, reset }: IOption, sortKey: string): ICmpSortBtnAttr {
+    createSortBtnAttr({ dataTotal, onEvt, option, sortKey }): ICmpSortBtnAttr {
+        const { key, isAsc, reset } = option;
         const isCurrTh: boolean = sortKey === key;
         const shallClear: boolean = reset && !isAsc;
 
         return {
+            disabled: dataTotal <= 1,
             isAsc: isCurrTh ? isAsc : null,
             onClick: () => onEvt({
                 key: isCurrTh ? (shallClear ? null : sortKey) : sortKey,
