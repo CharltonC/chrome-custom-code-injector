@@ -7,6 +7,7 @@ describe('Static Component: Number Badge', () => {
 
     it('should have a default badge of `0` if no number is provided or if number is less than 0', () => {
         expect(renderShallow(<NumBadge />).props.children).toBe('0');
+        expect(renderShallow(<NumBadge total={-1} />).props.children).toBe('0');
     });
 
     it('should have a badge of `9+` if number is greater than 9', () => {
