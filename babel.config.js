@@ -20,7 +20,12 @@ module.exports = {
         /**
          * For ES6 Class property defined on top of `constructor`
          */
-        ["@babel/plugin-proposal-class-properties", { "loose": true }]
+        ["@babel/plugin-proposal-class-properties", { "loose": true }],
+
+        /*
+         * For Code that uses `async/await`
+         */
+        ["@babel/plugin-transform-runtime"]
     ],
 
     presets: [
