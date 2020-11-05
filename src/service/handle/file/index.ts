@@ -1,11 +1,11 @@
 import { AObj, ASuccessFn, TFn } from './type';
 
 export class FileHandle {
-    async readJson(file: File, onError: TFn) {
+    async readJson(file: File, onError?: TFn) {
         try {
             return await new Promise((resolve) => this.readFile(file, resolve));
         } catch (e) {
-            onError(e);
+            onError?.(e);
         }
     }
 
@@ -19,14 +19,14 @@ export class FileHandle {
     }
 
     //// Helper Fn
-    readFile(file: File, onLoadedFn: ASuccessFn): void {
+    readFile(file: File, onLoadFn: ASuccessFn): void {
         const reader = new FileReader();
-        reader.addEventListener('load', this.createOnFileLoadedHandler(onLoadedFn));
-        reader.addEventListener('error', this.onFileErrorHandler);
+        reader.addEventListener('load', this.onFileLoad(onLoadFn));
+        reader.addEventListener('error', this.onFileError);
         reader.readAsText(file);
     }
 
-    createOnFileLoadedHandler(callback: ASuccessFn): TFn {
+    onFileLoad(callback: ASuccessFn): TFn {
         const evtHandler = ({ target }: ProgressEvent<FileReader>) => {
             const parsedData = JSON.parse(target.result as string);
             callback(parsedData);
@@ -35,7 +35,7 @@ export class FileHandle {
         return evtHandler;
     }
 
-    onFileErrorHandler({ target }: ProgressEvent<FileReader>): void {
+    onFileError({ target }: ProgressEvent<FileReader>): void {
         throw target.error;
     }
 
