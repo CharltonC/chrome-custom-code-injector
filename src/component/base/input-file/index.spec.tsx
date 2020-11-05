@@ -17,15 +17,11 @@ describe('Component - File Input', () => {
     });
 
     it('should render', () => {
-        const {
-            id,
-            className,
-            accept,
-            title
-        } = TestUtil.renderShallow(<FileInput {...mockProps} />).props;
+        const { className, children } = TestUtil.renderShallow(<FileInput {...mockProps} />).props;
+        const { id, accept, title } = children.props;
 
-        expect(id).toBe(mockProps.id);
         expect(className).toBe(`${CLS_BASE} ${CLS_BASE}--${mockProps.clsSuffix}`);
+        expect(id).toBe(mockProps.id);
         expect(accept).toBe(mockProps.fileType);
         expect(title).toBe(mockProps.title);
     });

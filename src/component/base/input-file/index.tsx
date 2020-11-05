@@ -10,12 +10,13 @@ export const FileInput: React.FC<IProps> = memo((props: IProps) => {
     const { id, clsSuffix, fileType, ...inputProps } = props;
     const CLS_NAME: string = cssCls(CLS_BASE, clsSuffix);
     return (
-        <input
-            type="file"
-            id={id}
-            className={CLS_NAME}
-            accept={fileType}
-            {...inputProps}
-            />
+        <div className={CLS_NAME}>
+            <input
+                type="file"
+                id={id}
+                accept={fileType}
+                {...inputProps}
+                />
+        </div>
     );
 });
