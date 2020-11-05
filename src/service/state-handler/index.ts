@@ -6,8 +6,10 @@ import { HostRuleConfig, PathRuleConfig } from '../model/rule-config';
 import { modals } from '../constant/modals';
 import { Setting } from '../model/setting';
 import { resultsPerPage } from '../constant/result-per-page';
+import { FileHandle } from '../../service/handle/file';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
+const fileHandle = new FileHandle();
 
 export class StateHandler extends StateHandle.BaseStoreHandler {
     //// Router/Views
@@ -466,7 +468,11 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onFileImport({ localState }: AppState, rules: HostRuleConfig[]) {
+    async onImportModalConfirm({ localState }: AppState) {
+        const rules = await fileHandle.readJson(localState.importFile, (err) => {
+            // TODO: handle error
+        });
+
         return {
             rules,
             // TODO: goto Edit View,
@@ -477,6 +483,11 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 currModalId: null
             }
         };
+    }
+
+    onFileExport({ rules }: AppState) {
+        fileHandle.saveJson(rules, 'demo', true);
+        // TODO: Close Modal & reset state
     }
 
 
