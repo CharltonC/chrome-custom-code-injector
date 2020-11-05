@@ -50,22 +50,12 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
         onAddPathConfirm,
         onEditItemIdChange, onEditItemValChange,
         onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
-        onImportFileChange, onFileImport,
+        onImportFileChange, onImportModalConfirm, onFileExport,
     } = storeHandler;
 
     const isEditView: boolean = currView === 'EDIT';
     const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
     const MAIN_CLS = cssCls('main', isEditView ? 'edit' : 'list');
-
-    const onImportModalConfirm = () => {
-        const { importFile } = localState;
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const modRules = JSON.parse(JSON.stringify(reader.result));
-            onFileImport(modRules);
-        };
-        reader.readAsText(importFile);
-    };
 
     // Reusable template for Host config rule add/edit operation
     const $ruleIdEdit = <>
@@ -271,9 +261,9 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                     clsSuffix="setting-export"
                     cancel="CANCEL"
                     confirm="EXPORT"
-                    confirmDisabled={!allowModalConfirm}
+                    // confirmDisabled={!allowModalConfirm}
                     onCancel={onModalCancel}
-                    onConfirm={onModalCancel}
+                    onConfirm={onFileExport}
                     >
                     <TextInput
                         id=""
