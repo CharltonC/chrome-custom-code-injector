@@ -62,6 +62,11 @@ export const TestUtil = {
         const proto: Record<string, any> = Object.getPrototypeOf(target);
         Object
             .getOwnPropertyNames(proto)
+            .filter((name: string) => {
+                // Dont mock any setter/getter
+                const { set, get } = Object.getOwnPropertyDescriptor(proto, name);
+                return !set && !get;
+            })
             .forEach((name: string) => {
                 $spy[name] = jest.spyOn(target, name);
             });
@@ -70,17 +75,23 @@ export const TestUtil = {
 
     spyProtoMethods(target: {new(...args: any[]): any}, extraKeys: string[] = []): Record<string, jest.SpyInstance> {
         const $spy: Record<string, jest.SpyInstance> = {};
+        const proto = target.prototype;
 
         Object
-            .getOwnPropertyNames(target.prototype)
-            .filter((name: string) => name !== 'constructor')   // Dont mock the constructor as it will cause problem with `this` context
+            .getOwnPropertyNames(proto)
+            .filter((name: string) => {
+                // Dont mock the constructor as it will cause problem with `this` context
+                // Dont mock any setter/getter
+                const { set, get } = Object.getOwnPropertyDescriptor(proto, name);
+                return !set && !get && name !== 'constructor';
+            })
             .forEach((name: string) => {
-                $spy[name] = jest.spyOn(target.prototype, name);
+                $spy[name] = jest.spyOn(proto, name);
             });
 
 
         extraKeys.forEach((name: string) => {
-            $spy[name] = jest.spyOn(target.prototype, name);
+            $spy[name] = jest.spyOn(proto, name);
         });
 
         return $spy;
