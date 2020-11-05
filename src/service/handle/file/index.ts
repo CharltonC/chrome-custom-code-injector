@@ -10,7 +10,7 @@ export class FileHandle {
     }
 
     saveJson(data: AObj, fileName: string, timeStamp: boolean = false): void {
-        const Url: any = URL || webkitURL;
+        const { Url } = this;
         const jsonData = JSON.stringify(data);
         const blobData = new Blob([jsonData], { type: 'application/json;charset=utf-8' });
         const blobUrl: string = Url.createObjectURL(blobData);
@@ -54,5 +54,9 @@ export class FileHandle {
         const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         const yyyy = today.getFullYear();
         return yyyy + mm + dd;
+    }
+
+    get Url() {
+        return URL || webkitURL;
     }
 }
