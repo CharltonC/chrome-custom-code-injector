@@ -49,12 +49,21 @@ export class BaseStoreComponent extends Component<any, TObj> {
                 if (allowedMethodNames.indexOf(key) === -1) return method;
 
                 // If proxied method is called, then return a wrapped method which includes setting the state
-                return (...args: any[]) => {
+                return async (...args: any[]) => {
                     const modPartialState: TObj = getModPartialState(method, proxy, args);
+
                     if (!modPartialState) return;   // skip state update if `falsy` value is returned
 
-                    // TODO - Check type if its not object, throw error
-                    updateState(modPartialState, storeHandler, storeName);
+                    // If contains promise or async/await logic
+                    if (modPartialState instanceof Promise) {
+                        const partialState = await modPartialState;
+                        updateState(partialState, storeHandler, storeName);
+
+                    } else {
+                        // TODO - Check type if its not object, throw error
+                        updateState(modPartialState, storeHandler, storeName);
+                    }
+
                 };
             }
         });

@@ -83,28 +83,43 @@ describe('Base Store Component', () => {
             proxyHandler = cmp.getProxyStoreHandler(mockHandler, MOCK_STORE_NAME);
         });
 
-        it('should return the value if the key is not allowed or is not a function', () => {
-            expect(proxyHandler.lorem).toBeFalsy();
-            expect(proxyHandler.age).toBe(10)
+        describe('return value', () => {
+            it('should return the value if the key is not allowed or is not a function', () => {
+                expect(proxyHandler.lorem).toBeFalsy();
+                expect(proxyHandler.age).toBe(10)
+            });
         });
 
-        it('should return a wrapped function if the key is allowed and is a method', () => {
-            const method = proxyHandler[MOCK_METHOD_NAME];
+        describe('return wrapped function', () => {
             const mockArgs = [1,2];
-            method(...mockArgs);
+            let method;
 
-            expect(typeof method).toBe('function');
-            expect(getModPartialStateSpy).toHaveBeenCalledWith(mockHandler[MOCK_METHOD_NAME], proxyHandler, mockArgs);
-            expect(spy.updateState).toHaveBeenCalledWith(mockModPartialState, mockHandler, MOCK_STORE_NAME);
-        });
+            beforeEach(() => {
+                method = proxyHandler[MOCK_METHOD_NAME];
+            });
 
-        it('should return a wrapped function where state is not updated when returned state is falsy', () => {
-            const method = proxyHandler[MOCK_METHOD_NAME];
-            const mockArgs = [1,2];
-            getModPartialStateSpy.mockReturnValue(false);
-            method(...mockArgs);
+            it('should return a wrapped function if the key is allowed and is a method', () => {
+                method(...mockArgs);
 
-            expect(spy.updateState).not.toHaveBeenCalled();
+                expect(typeof method).toBe('function');
+                expect(getModPartialStateSpy).toHaveBeenCalledWith(mockHandler[MOCK_METHOD_NAME], proxyHandler, mockArgs);
+                expect(spy.updateState).toHaveBeenCalledWith(mockModPartialState, mockHandler, MOCK_STORE_NAME);
+            });
+
+            it('should return a wrapped function where state is not updated when returned state is falsy', () => {
+                getModPartialStateSpy.mockReturnValue(false);
+                method(...mockArgs);
+
+                expect(spy.updateState).not.toHaveBeenCalled();
+            });
+
+            it('should return a wrapped function where state is only updated when promise is resolved', async () => {
+                const mockResolvePartialState = {lorem: 123};
+                getModPartialStateSpy.mockReturnValue(Promise.resolve(mockResolvePartialState));
+                await method(...mockArgs);
+
+                expect(spy.updateState.mock.calls[0][0]).toBe(mockResolvePartialState);
+            });
         });
     });
 
