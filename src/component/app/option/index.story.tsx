@@ -1,5 +1,5 @@
 import React from 'react';
-import { StateHandler } from '../../../service/state-handler';
+import { StateHandler } from '../../../service/state-handler/root';
 import { StateHandle } from '../../../service/handle/state';
 import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../../../service/model/rule-config';
 import { AppState } from '../../../service/model/app-state';

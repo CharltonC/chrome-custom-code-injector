@@ -1,12 +1,12 @@
-import { StateHandle } from '../handle/state';
-import { AView } from '../model/local-state/type';
-import { AppState } from '../model/app-state';
-import { LocalState } from '../model/local-state';
-import { HostRuleConfig, PathRuleConfig } from '../model/rule-config';
-import { modals } from '../constant/modals';
-import { Setting } from '../model/setting';
-import { resultsPerPage } from '../constant/result-per-page';
-import { FileHandle } from '../../service/handle/file';
+import { StateHandle } from '../../handle/state';
+import { AView } from '../../model/local-state/type';
+import { AppState } from '../../model/app-state';
+import { LocalState } from '../../model/local-state';
+import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
+import { modals } from '../../constant/modals';
+import { Setting } from '../../model/setting';
+import { resultsPerPage } from '../../constant/result-per-page';
+import { FileHandle } from '../../handle/file';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
