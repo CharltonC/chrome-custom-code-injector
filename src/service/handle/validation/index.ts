@@ -1,19 +1,27 @@
-import { IValidationRule } from './type';
-
 class ValidationHandle {
-    readonly gte3Char: IValidationRule = {
+    readonly gte3Char = {
         rule: /^[a-zA-Z0-9]{3,}$/,
         msg: 'must be 3 or more characters without whitespace'
     };
 
-    readonly urlHost: IValidationRule = {
+    readonly urlHost = {
         rule: /^(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+$/,
         msg: 'must be a domain, e.g. www.google.com'
     };
 
-    readonly urlPath: IValidationRule = {
+    readonly urlPath = {
         rule: /^\/([^?\/]+)/,
         msg: 'must be Url path, e.g. /home'
+    };
+
+    readonly isEmptyFile = {
+        rule: ({ size }: File) => !!size,
+        msg: 'file selected has no content'
+    };
+
+    readonly isFileLte2Mb = {
+        rule: ({ size }: File) => size <= 2097152,
+        msg: 'file selected has size larger than 2mb'
     };
 }
 

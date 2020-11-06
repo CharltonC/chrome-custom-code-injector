@@ -1,20 +1,8 @@
-import { IValidationRule } from './type';
 import { validationHandle } from ".";
 
 describe('Validation Rules', () => {
-    let gte3Char: IValidationRule;
-    let urlHost: IValidationRule;
-    let urlPath: IValidationRule;
-    let rule;
-
-    beforeEach(() => {
-        ({ gte3Char, urlHost, urlPath } = validationHandle);
-    });
-
     describe('3 or more alphabets only', () => {
-        beforeEach(() => {
-            ({ rule } = gte3Char);
-        });
+        const { rule } = validationHandle.gte3Char;
 
         it('should test truthy when value has 3 or more alphabets only', () => {
             expect(rule.test('abc')).toBeTruthy();
@@ -30,10 +18,8 @@ describe('Validation Rules', () => {
         });
     });
 
-    describe('should test for host of a URL', () => {
-        beforeEach(() => {
-            ({ rule } = urlHost);
-        });
+    describe('host of a URL', () => {
+       const { rule } = validationHandle.urlHost;
 
         it('shold test truthy when value is valid', () => {
             expect(rule.test('www.google.com')).toBeTruthy();
@@ -46,10 +32,8 @@ describe('Validation Rules', () => {
         });
     });
 
-    describe('should test for path of a URL', () => {
-        beforeEach(() => {
-            ({ rule } = urlPath);
-        });
+    describe('path of a URL', () => {
+        const { rule } = validationHandle.urlPath;
 
         it('shold test truthy when value is valid', () => {
             expect(rule.test('/a')).toBeTruthy();
@@ -59,6 +43,30 @@ describe('Validation Rules', () => {
         it('shold test falsy when value is invalid', () => {
             expect(rule.test('/')).toBeFalsy();
             expect(rule.test('abc/')).toBeFalsy();
+        });
+    });
+
+    describe('empty file', () => {
+        const { rule } = validationHandle.isEmptyFile;
+
+        it('should return true if file is not empty', () => {
+            expect(rule({ size: 1 } as File)).toBeTruthy();
+        });
+
+        it('should return false if file is empty', () => {
+            expect(rule({ size: 0 } as File)).toBeFalsy();
+        });
+    });
+
+    describe('file siz eless than 2mb', () => {
+        const { rule } = validationHandle.isFileLte2Mb;
+
+        it('should return true if less than or equal to2mb', () => {
+            expect(rule({ size: 1 } as File)).toBeTruthy();
+        });
+
+        it('should return false if larger than 2mb', () => {
+            expect(rule({ size: 3*1024*1024 } as File)).toBeFalsy();
         });
     });
 });
