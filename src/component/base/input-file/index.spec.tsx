@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { FileInput } from '.';
 import { IProps } from './type';
