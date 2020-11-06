@@ -23,3 +23,28 @@ export const Disabled = () => {
         </div>
     )
 };
+
+export const WithValidation = () => {
+    const fileType = 'application/json';
+
+    const validateRules = [
+        {
+            msg: 'file selected is not a json file',
+            rule: ({ type }: File) => (type === fileType)
+        },
+        {
+            msg: 'file selected has no content',
+            rule: ({ size }: File) => !!size
+        }
+    ];
+
+    return (
+        <div style={defStyle} >
+            <FileInput
+                id="demo"
+                fileType={fileType}
+                validate={validateRules}
+                />
+        </div>
+    )
+};

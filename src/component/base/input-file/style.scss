@@ -3,15 +3,17 @@
     --btn-width: 92px;
     --gap: 15px;
 
+    display: inline-block;
+    width: var(--wrapper-width);
+
     input {
         position: relative;
-        display: inline-block;
-        width: var(--wrapper-width);
+        display: block;
+        width: 100%;
         height: 36px;
         outline-offset: 3px;
         font: 12px $roboto-reg;
         color: $light-gray-200;
-        vertical-align: middle;
 
         &:disabled {
             opacity: .4;
@@ -47,5 +49,13 @@
             background-color: $light-gray-600;
             width: calc(var(--wrapper-width) - var(--btn-width) - var(--gap));
         }
+    }
+
+    &__err {
+        list-style-type: disc;
+        list-style-position: inside;
+        margin-top: 5px;
+        font: 12px $roboto-reg;
+        color: $red;
     }
 }
