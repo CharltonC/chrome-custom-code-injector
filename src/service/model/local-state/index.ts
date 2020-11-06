@@ -17,8 +17,9 @@ export class LocalState {
     pgnItemStartIdx: number = 0;
     pgnItemEndIdx: number = null;
 
-    // - Import File
-    importFile: null;
+    // - Import/Export
+    importFile: File = null;
+    exportFileName: string = null;
 
     //// Views
     // Current

@@ -10,6 +10,8 @@ describe('Local State (Non-Persisting)', () => {
             pgnIncrmIdx: 0,
             pgnItemStartIdx: 0,
             pgnItemEndIdx: null,
+            importFile: null,
+            exportFileName: null,
 
             currView: 'LIST',
             areAllRowsSelected: false,
