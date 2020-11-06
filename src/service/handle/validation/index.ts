@@ -24,7 +24,10 @@ class ValidationHandle {
         msg: 'file selected has size larger than 2mb'
     };
 
-    readonly
+    readonly fileName = {
+        rule: /^\w+(.*\w+)?$/,
+        msg: 'file name must start/end with a character'
+    };
 }
 
 export const validationHandle = new ValidationHandle();

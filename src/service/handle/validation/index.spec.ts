@@ -58,15 +58,31 @@ describe('Validation Rules', () => {
         });
     });
 
-    describe('file siz eless than 2mb', () => {
+    describe('file size less than 2mb', () => {
         const { rule } = validationHandle.maxFileSize;
 
-        it('should return true if less than or equal to2mb', () => {
+        it('should return true if less than or equal to 2mb', () => {
             expect(rule({ size: 1 } as File)).toBeTruthy();
         });
 
         it('should return false if larger than 2mb', () => {
             expect(rule({ size: 3*1024*1024 } as File)).toBeFalsy();
+        });
+    });
+
+    describe('file name', () => {
+        const { rule } = validationHandle.fileName;
+
+        it('should test true if file name is valid', () => {
+            expect(rule.test('a')).toBeTruthy();
+            expect(rule.test('a - bc')).toBeTruthy();
+            expect(rule.test('ab - _')).toBeTruthy();
+            expect(rule.test('_ab')).toBeTruthy();
+        });
+
+        it('should test false if file name starts/ends with space', () => {
+            expect(rule.test('ab ')).toBeFalsy();
+            expect(rule.test(' ab')).toBeFalsy();
         });
     });
 });
