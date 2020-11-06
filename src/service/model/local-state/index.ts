@@ -1,4 +1,4 @@
-import { AView, AObj } from './type';
+import { AView } from './type';
 import { HostRuleConfig } from '../rule-config';
 import { Setting } from '../../model/setting';
 
@@ -22,7 +22,6 @@ export class LocalState {
     exportFileName: string = null;
 
     //// Views
-    // Current
     currView: AView = 'LIST';
 
     // - List View
