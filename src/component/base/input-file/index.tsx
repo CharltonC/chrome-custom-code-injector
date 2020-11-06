@@ -17,7 +17,7 @@ export class FileInput extends MemoComponent<IProps, IState> {
 
     render() {
         const { BASE_CLS, cssCls, props, state } = this;
-        const { id, clsSuffix, fileType, validate, onChange, ...inputProps } = props;
+        const { id, clsSuffix, fileType, validate, onFileChange, ...inputProps } = props;
         const { isValid, errMsg } = state;
         const className: string = cssCls(BASE_CLS, clsSuffix);
 
