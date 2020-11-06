@@ -4,6 +4,7 @@ import { IProps, IState, IValidationConfig } from './type';
 
 export class FileInput extends MemoComponent<IProps, IState> {
     readonly BASE_CLS: string = 'file-input';
+    readonly MSG_NO_FILE: string = 'no file was selected';
 
     state: IState = {
         isValid: null,
@@ -42,16 +43,19 @@ export class FileInput extends MemoComponent<IProps, IState> {
         const { validate, onFileChange } = this.props;
         if (!validate?.length) return;
 
-        const errMsg: string[] = [];
         const file: File = evt.target.files.item(0);
-        validate.forEach(({ rule, msg }: IValidationConfig) => {
-            if (!rule(file)) errMsg.push(msg);
-        });
-        const validState: IState = {
-            errMsg,
-            isValid: !errMsg.length
-        };
+        const errMsg: string[] = [];
 
+        if (!file) {
+            errMsg.push(this.MSG_NO_FILE);
+
+        } else {
+            validate.forEach(({ rule, msg }: IValidationConfig) => {
+                if (!rule(file)) errMsg.push(msg);
+            });
+        }
+
+        const validState: IState = { errMsg, isValid: !errMsg.length };
         this.setState(validState);
         onFileChange?.(evt, validState);
     }

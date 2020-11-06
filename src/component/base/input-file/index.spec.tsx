@@ -22,17 +22,22 @@ describe('Component - File Input', () => {
     });
 
     describe('Component Class', () => {
-        const mockEvt: any = {
-            target: {
-                files: { item: () => [] }
-            }
-        };
+        let mockFileItem: jest.Mock;
+        let mockEvt: any;
         let cmp: FileInput;
         let setStateSpy: jest.SpyInstance;
 
         beforeEach(() => {
             setStateSpy = jest.spyOn(Component.prototype, 'setState');
             setStateSpy.mockImplementation(() => {});
+
+            mockFileItem = jest.fn();
+            mockFileItem.mockReturnValue(true);     // assume there is file by def.
+            mockEvt = {
+                target: {
+                    files: { item: mockFileItem }
+                }
+            };
         });
 
         describe('Default State', () => {
@@ -56,7 +61,7 @@ describe('Component - File Input', () => {
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
 
-            it('should set state and trigger callback if validation rules are provied', () => {
+            it('should set state and trigger callback if validation rules are provided & file is selected', () => {
                 const mockOnFileChange = jest.fn();
                 const validState = {
                     errMsg: [ mockValidation[0].msg ],
@@ -71,6 +76,12 @@ describe('Component - File Input', () => {
 
                 expect(setStateSpy.mock.calls[0][0]).toEqual(validState);
                 expect(mockOnFileChange).toHaveBeenCalledWith(mockEvt, validState);
+            });
+
+            it('should set state and trigger callback if validation rules are provided & no file is selected', () => {
+                mockFileItem.mockReturnValue(false);
+                new FileInput({ ...mockProps, validate: mockValidation }).onChange(mockEvt);
+                expect(setStateSpy.mock.calls[0][0].errMsg).toEqual(['no file was selected']);
             });
         });
     });
