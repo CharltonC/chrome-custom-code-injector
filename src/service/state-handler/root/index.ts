@@ -453,31 +453,22 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onImportFileChange({ localState }, { target }) {
-        const { files } = target;
-        const importFile = files.item(0);
-        const { size, type, name } = importFile;
-
-        // TODO: validate
+    onImportFileChange({ localState }, { target }, { isValid }) {
         return {
             localState: {
                 ...localState,
-                allowModalConfirm: true,
-                importFile
+                importFile: target.files.item(0),
+                allowModalConfirm: isValid
             }
         };
     }
 
     async onImportModalConfirm({ localState }: AppState) {
-        const rules = await fileHandle.readJson(localState.importFile, (err) => {
-            // TODO: handle error
-        });
-
         return {
-            rules,
-            // TODO: goto Edit View,
+            rules: await fileHandle.readJson(localState.importFile),
             localState: {
                 ...localState,
+                currView: 'LIST',
                 allowModalConfirm: false,
                 importFile: null,
                 currModalId: null
@@ -485,11 +476,31 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onFileExport({ rules }: AppState) {
-        fileHandle.saveJson(rules, 'demo', true);
-        // TODO: Close Modal & reset state
+    onExportFileNameChange({ localState }: AppState, { validState, val }) {
+        const isValid = validState?.isValid ?? true;
+
+        return {
+            localState: {
+                ...localState,
+                allowModalConfirm: isValid,
+                exportFileName: isValid ? val : null
+            }
+        };
     }
 
+    onExportModalConfirm({ rules, localState }: AppState) {
+        const { exportFileName } = localState;
+        fileHandle.saveJson(rules, exportFileName, true);
+
+        return {
+            localState: {
+                ...localState,
+                currModalId: null,
+                allowModalConfirm: false,
+                exportFileName: null
+            }
+        };
+    }
 
     //// Helper (used in Reflect only)
     // - Unlike the `on<Xyz>` methods, No full state is required to be returned
