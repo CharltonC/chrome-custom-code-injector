@@ -14,15 +14,17 @@ class ValidationHandle {
         msg: 'must be Url path, e.g. /home'
     };
 
-    readonly isEmptyFile = {
+    readonly nonEmptyFile = {
         rule: ({ size }: File) => !!size,
         msg: 'file selected has no content'
     };
 
-    readonly isFileLte2Mb = {
+    readonly maxFileSize = {
         rule: ({ size }: File) => size <= 2097152,
         msg: 'file selected has size larger than 2mb'
     };
+
+    readonly
 }
 
 export const validationHandle = new ValidationHandle();

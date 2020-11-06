@@ -252,6 +252,10 @@ export const OptionApp: React.FC<any> = memo((props: IProps) => {
                         fileType="application/JSON"
                         required
                         onChange={onImportFileChange}
+                        validate={[
+                            validationHandle.nonEmptyFile,
+                            validationHandle.maxFileSize
+                        ]}
                         />
                 </Modal>
                 <Modal

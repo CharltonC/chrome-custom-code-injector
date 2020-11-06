@@ -47,7 +47,7 @@ describe('Validation Rules', () => {
     });
 
     describe('empty file', () => {
-        const { rule } = validationHandle.isEmptyFile;
+        const { rule } = validationHandle.nonEmptyFile;
 
         it('should return true if file is not empty', () => {
             expect(rule({ size: 1 } as File)).toBeTruthy();
@@ -59,7 +59,7 @@ describe('Validation Rules', () => {
     });
 
     describe('file siz eless than 2mb', () => {
-        const { rule } = validationHandle.isFileLte2Mb;
+        const { rule } = validationHandle.maxFileSize;
 
         it('should return true if less than or equal to2mb', () => {
             expect(rule({ size: 1 } as File)).toBeTruthy();
