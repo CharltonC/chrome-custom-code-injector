@@ -131,14 +131,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return { rules: clone };
     }
 
-    onRowEdit(state: AppState, currListItem): Partial<AppState> {
+    onRowEdit(state: AppState, targetItem): Partial<AppState> {
         const { localState } = state;
         const { currView } = this.reflect.onEditView(state).localState;
 
         return {
             localState: {
                 ...localState,
-                currListItem,
+                targetItem,
                 currView
             }
         };
@@ -161,7 +161,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: {
                 ...localState,
-                currListItem: item,
+                targetItem: item,
             }
         };
     }

@@ -16,7 +16,6 @@ describe('Local State (Non-Persisting)', () => {
             currView: 'LIST',
             areAllRowsSelected: false,
             expdRowId: null,
-            currListItem: null,
             currModalId: null,
             allowModalConfirm: false,
 

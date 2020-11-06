@@ -29,9 +29,6 @@ export class LocalState {
     areAllRowsSelected: boolean = false;
     expdRowId: string = null;
 
-    // - Edit View (TODO: rename it to editListItem)
-    currListItem: AObj = null;
-
     //// Modal
     currModalId: string = null;
     allowModalConfirm: boolean = false;

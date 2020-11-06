@@ -23,14 +23,14 @@ export const OptionEditView = memo((props: IProps) => {
     const { store, storeHandler } = props;
     const { rules, localState } = store;
     const { onListItemClick } = storeHandler;
-    const { currListItem } = localState;
+    const { targetItem } = localState;
 
     return (<>
         <SideNav
             list={rules}
             itemKeys={['id', 'id']}
             childKey="paths"
-            activeItem={currListItem}
+            activeItem={targetItem}
             onItemClick={onListItemClick}
             />
         <div className="main--edit__form">
@@ -75,7 +75,6 @@ export const OptionEditView = memo((props: IProps) => {
             <TabSwitch
                 id="tab-switch"
                 list={tabSwitchList}
-                activeIdx={currListItem.lastTabIdx}
                 onTabActive={(evt, checkedTab, idx) => {}}
                 onTabEnable={(evt, tab, idx, isTabAtv, isEnable) => {}}
                 />
