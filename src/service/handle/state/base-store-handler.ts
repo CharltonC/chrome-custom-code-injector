@@ -1,9 +1,26 @@
 import PubSub from 'pubsub-js';
-import { TFn } from './type';
+import { TFn, IStoreHandlerClass } from './type';
 
 export class BaseStoreHandler {
     readonly CHANGE_EVT: string = 'CHANGE';
     readonly PubSub: PubSub = PubSub;
+
+    static join<T extends BaseStoreHandler>(...Handlers: IStoreHandlerClass[]): IStoreHandlerClass<T> {
+        class BaseClass extends BaseStoreHandler {}
+        Handlers.forEach((Handler: IStoreHandlerClass) => {
+            const { prototype: baseProto } = BaseClass;
+            const { prototype } = Handler;
+
+            const keys = Object.getOwnPropertyNames(prototype).filter((key) => {
+                return typeof prototype[key] === 'function' && key !== 'constructor';
+            });
+
+            keys.forEach((key) => {
+                baseProto[key] = prototype[key];
+            });
+        });
+        return BaseClass as unknown as IStoreHandlerClass<T>;
+    }
 
     get reflect() {
         return this;

@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { StateHandle } from '.';
 
+const { BaseStoreHandler } = StateHandle;
+
 export default {
     title: 'Service - State Handle',
 };
@@ -13,7 +15,7 @@ export const SingleStateExample = () => {
         address: '100 Railway Street',
     }
 
-    class SampleStoreHandler extends StateHandle.BaseStoreHandler {
+    class SampleStoreHandler extends BaseStoreHandler {
         onNameChange(store, evt?) {
             // Setting state Directly
             return {
@@ -84,7 +86,6 @@ export const SingleStateExample = () => {
     return <WrappedSampleComponent />;
 };
 
-
 export const MultipleStatesExample = () => {
     const sampleStore1 = {
         name: 'joe',
@@ -95,13 +96,13 @@ export const MultipleStatesExample = () => {
         license: 'MIT'
     };
 
-    class SampleStoreHandler1 extends StateHandle.BaseStoreHandler {
+    class SampleStoreHandler1 extends BaseStoreHandler {
         onNameChange(store, evt?) {
             return { name: 'jane' };
         }
     }
 
-    class SampleStoreHandler2 extends StateHandle.BaseStoreHandler {
+    class SampleStoreHandler2 extends BaseStoreHandler {
         onProjectChange(store, evt?) {
             return { project: 'Apache' };
         }
@@ -140,6 +141,45 @@ export const MultipleStatesExample = () => {
     const WrappedSampleComponent = StateHandle.init(SampleComponent, {
         storeOne: [sampleStore1, sampleStoreHandler1],
         storeTwo: [sampleStore2, sampleStoreHandler2],
+    });
+
+    return <WrappedSampleComponent />;
+};
+
+
+export const SingleStateWithPartialHandlers = () => {
+    const sampleStore = {
+        name: 'john' ,
+        age: 6
+    };
+
+    class PartialHandlerA extends BaseStoreHandler {
+        onH1Click(store) {
+            return { name: 'jane' }
+        }
+    }
+    class PartialHandlerB extends BaseStoreHandler {
+        onH2Click(store) {
+            return { age: 20 }
+        }
+    }
+
+    const SampleStoreHandler = BaseStoreHandler.join(PartialHandlerA, PartialHandlerB);
+
+    const SampleComponent = ({ store, storeHandler }) => {
+        const { name, age } = store;
+        const { onH1Click, onH2Click } = storeHandler;
+        return (
+            <div>
+                <h1 onClick={onH1Click}>{name}</h1>
+                <h2 onClick={onH2Click}>{age}</h2>
+            </div>
+        );
+    };
+
+    const WrappedSampleComponent = StateHandle.init(
+        SampleComponent,
+        { root: [ sampleStore, new SampleStoreHandler() ]
     });
 
     return <WrappedSampleComponent />;

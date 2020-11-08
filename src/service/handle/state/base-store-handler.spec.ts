@@ -24,6 +24,14 @@ describe('Base Store Handler', () => {
         jest.restoreAllMocks();
     });
 
+    it('static - `join`: should join the prototypal methods of multiple partial store handlers into the prototypal methods of 1 main store handler', () => {
+        class MockHandlerA extends BaseStoreHandler { logA() {} }
+        class MockHandlerB extends BaseStoreHandler { logB() {} }
+        const { logA, logB } = BaseStoreHandler.join(MockHandlerA, MockHandlerB).prototype;
+        expect(logA).toBeTruthy();
+        expect(logB).toBeTruthy();
+    });
+
     it('getter - `reflect`: should return itself when property `reflect` is accessed', () => {
         expect(handle.reflect).toBe(handle);
     });

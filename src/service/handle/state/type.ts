@@ -10,13 +10,15 @@ export interface ITransfmStoreConfigs {
     storeHandler: BaseStoreHandler | Record<string, BaseStoreHandler>;
 }
 
-export type TCmp = React.FC<any> | React.ComponentClass<any>;
-
-export type TFn = (...args: any[]) => any;
-
-export type TObj = Record<string, any>;
+export interface IStoreHandlerClass<T = BaseStoreHandler> {
+    new(...args: any[]): T;
+}
 
 export interface IAppProps<T, U> {
     store: T;
     storeHandler: Record<keyof U, (...args: any[]) => any>;
 }
+
+export type TCmp = React.FC<any> | React.ComponentClass<any>;
+export type TFn = (...args: any[]) => any;
+export type TObj = Record<string, any>;
