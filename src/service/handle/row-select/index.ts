@@ -8,54 +8,54 @@ export class RowSelectHandle {
         return isAll ? this.toggleSelectAll(currState) : this.toggleSelectOne(currState, rowsCtx);
     }
 
-    toggleSelectAll({ areAllSelected }: IState): IState {
+    toggleSelectAll({ areAllRowsSelected }: IState): IState {
         return {
-            areAllSelected: !areAllSelected,
-            selectedIndexes: {},
+            areAllRowsSelected: !areAllRowsSelected,
+            selectedRowsIndexes: {},
         };
     }
 
-    toggleSelectOne({ areAllSelected, selectedIndexes }: IState, { startRowIdx, endRowIdx, rowIdx }: IRowsContext): IState {
+    toggleSelectOne({ areAllRowsSelected, selectedRowsIndexes }: IState, { startRowIdx, endRowIdx, rowIdx }: IRowsContext): IState {
         const { toggleSelect, ROW_IDX_ERR } = this;
         const totalItems: number = endRowIdx - startRowIdx;             // since `endRowIdx` is not inclusive
-        const selectedIndexesCopy = { ...selectedIndexes };
-        const isRowSelected = selectedIndexes[rowIdx];
+        const selectedRowsIndexesCopy = { ...selectedRowsIndexes };
+        const isRowSelected = selectedRowsIndexes[rowIdx];
 
         if (rowIdx < startRowIdx || rowIdx >= endRowIdx) throw new Error(ROW_IDX_ERR);
 
         // Add the rest of checkboxes to selected except current one
-        if (areAllSelected) {
+        if (areAllRowsSelected) {
             for (let i = startRowIdx; i < endRowIdx; i++) {
                 const isCurrRow = i === rowIdx;
-                const isSelected = i in selectedIndexesCopy;
+                const isSelected = i in selectedRowsIndexesCopy;
                 const isCurrRowSelected = isCurrRow && isSelected;
                 const isUnselectedNonCurrRow = !isCurrRow && !isSelected;
 
                 if (isCurrRowSelected) {
-                    toggleSelect(selectedIndexesCopy, i, false);
+                    toggleSelect(selectedRowsIndexesCopy, i, false);
 
                 } else if (isUnselectedNonCurrRow) {
-                    toggleSelect(selectedIndexesCopy, i);
+                    toggleSelect(selectedRowsIndexesCopy, i);
                 }
             }
 
         // Toggle the current checkbox
         } else {
-            toggleSelect(selectedIndexesCopy, rowIdx, !isRowSelected);
+            toggleSelect(selectedRowsIndexesCopy, rowIdx, !isRowSelected);
         }
 
         // if All checkboxes are selected at that page AFTER the abv operation
-        const wereAllSelected = Object.entries(selectedIndexesCopy).length === totalItems;
+        const wereAllSelected = Object.entries(selectedRowsIndexesCopy).length === totalItems;
 
         return {
-            areAllSelected: wereAllSelected ? true : (areAllSelected ? false : areAllSelected),
-            selectedIndexes: wereAllSelected ? {} : selectedIndexesCopy
+            areAllRowsSelected: wereAllSelected ? true : (areAllRowsSelected ? false : areAllRowsSelected),
+            selectedRowsIndexes: wereAllSelected ? {} : selectedRowsIndexesCopy
         };
     }
 
-    toggleSelect(selectedIndexes: ISelectedRowIndexes, rowIdx: number, doSelect: boolean = true) {
-        selectedIndexes[rowIdx] = doSelect ? true : null;
-        if (!doSelect) delete selectedIndexes[rowIdx];
+    toggleSelect(selectedRowsIndexes: ISelectedRowIndexes, rowIdx: number, doSelect: boolean = true) {
+        selectedRowsIndexes[rowIdx] = doSelect ? true : null;
+        if (!doSelect) delete selectedRowsIndexes[rowIdx];
     }
 
     get defOption(): IOption {
@@ -63,8 +63,8 @@ export class RowSelectHandle {
             isAll: true,
             rowsCtx: null,
             currState: {
-                areAllSelected: false,
-                selectedIndexes: {},
+                areAllRowsSelected: false,
+                selectedRowsIndexes: {},
             }
         };
     }

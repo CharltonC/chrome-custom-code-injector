@@ -5,8 +5,8 @@ export interface IOption {
 }
 
 export interface IState {
-    areAllSelected: boolean;
-    selectedIndexes: ISelectedRowIndexes;
+    areAllRowsSelected: boolean;
+    selectedRowsIndexes: ISelectedRowIndexes;
 }
 
 export interface ISelectedRowIndexes {

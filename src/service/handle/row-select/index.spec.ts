@@ -37,31 +37,31 @@ describe('Row Select Handle', () => {
 
     describe('Method - toggleSelectAll: Select/Unselect all rows', () => {
         it('should return all selected', () => {
-            expect(handle.toggleSelectAll({ areAllSelected: false } as IState)).toEqual({
-                areAllSelected: true,
-                selectedIndexes: {},
+            expect(handle.toggleSelectAll({ areAllRowsSelected: false } as IState)).toEqual({
+                areAllRowsSelected: true,
+                selectedRowsIndexes: {},
             });
         });
 
         it('should return all unselected', () => {
-            expect(handle.toggleSelectAll({ areAllSelected: true } as IState)).toEqual({
-                areAllSelected: false,
-                selectedIndexes: {},
+            expect(handle.toggleSelectAll({ areAllRowsSelected: true } as IState)).toEqual({
+                areAllRowsSelected: false,
+                selectedRowsIndexes: {},
             });
         });
     });
 
     describe('Method - toggleSelectOne: Select/Unselect a single row', () => {
         it('should return partially selected state when all rows are currently selected', () => {
-            const mockCurrState = { areAllSelected: true, selectedIndexes: {} };
+            const mockCurrState = { areAllRowsSelected: true, selectedRowsIndexes: {} };
 
             expect(handle.toggleSelectOne(mockCurrState, {
                 startRowIdx: 1,
                 endRowIdx: 4,
                 rowIdx: 3
             })).toEqual({
-                areAllSelected: false,
-                selectedIndexes: { 1: true, 2: true, }
+                areAllRowsSelected: false,
+                selectedRowsIndexes: { 1: true, 2: true, }
             });
 
             expect(handle.toggleSelectOne(mockCurrState, {
@@ -69,24 +69,24 @@ describe('Row Select Handle', () => {
                 endRowIdx: 4,
                 rowIdx: 1
             })).toEqual({
-                areAllSelected: false,
-                selectedIndexes: { 2: true, 3: true, }
+                areAllRowsSelected: false,
+                selectedRowsIndexes: { 2: true, 3: true, }
             });
 
-            expect(handle.toggleSelectOne({ ...mockCurrState, selectedIndexes: { 1: true } }, {
+            expect(handle.toggleSelectOne({ ...mockCurrState, selectedRowsIndexes: { 1: true } }, {
                 startRowIdx: 1,
                 endRowIdx: 4,
                 rowIdx: 1
             })).toEqual({
-                areAllSelected: false,
-                selectedIndexes: { 2: true, 3: true }
+                areAllRowsSelected: false,
+                selectedRowsIndexes: { 2: true, 3: true }
             });
         });
 
         it('should return state when all rows are currently unselected', () => {
             const mockCurrState = {
-                areAllSelected: false,
-                selectedIndexes: { 1: true }
+                areAllRowsSelected: false,
+                selectedRowsIndexes: { 1: true }
             };
 
             expect(handle.toggleSelectOne(mockCurrState, {
@@ -94,8 +94,8 @@ describe('Row Select Handle', () => {
                 endRowIdx: 4,
                 rowIdx: 1
             })).toEqual({
-                areAllSelected: false,
-                selectedIndexes: {}
+                areAllRowsSelected: false,
+                selectedRowsIndexes: {}
             });
 
             expect(handle.toggleSelectOne(mockCurrState, {
@@ -103,8 +103,8 @@ describe('Row Select Handle', () => {
                 endRowIdx: 4,
                 rowIdx: 2
             })).toEqual({
-                areAllSelected: false,
-                selectedIndexes: { 1: true, 2: true }
+                areAllRowsSelected: false,
+                selectedRowsIndexes: { 1: true, 2: true }
             });
 
             const modState = handle.toggleSelectOne(mockCurrState, {
@@ -117,13 +117,13 @@ describe('Row Select Handle', () => {
                 endRowIdx: 4,
                 rowIdx: 3
             })).toEqual({
-                areAllSelected: true,
-                selectedIndexes: {}
+                areAllRowsSelected: true,
+                selectedRowsIndexes: {}
             })
         });
 
         it('should throw error when row index is in conflict with either row start index or row end index', () => {
-            const mockCurrState = { areAllSelected: true, selectedIndexes: {} };
+            const mockCurrState = { areAllRowsSelected: true, selectedRowsIndexes: {} };
 
             expect(() => {
                 handle.toggleSelectOne(mockCurrState, {
