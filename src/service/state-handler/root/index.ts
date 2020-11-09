@@ -464,7 +464,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// Helper (used in Reflect only)
-    toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
+    onRowSwitchToggle({ rules }: AppState, idx: number, key: string): Partial<AppState> {
         const clone = rules.slice();
         const value = clone[idx][key];
         clone[idx][key] = !value;

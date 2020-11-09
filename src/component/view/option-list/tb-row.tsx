@@ -20,8 +20,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
 
     const {
         onDelModal, onAddPathModal,
-        toggleTbRowSwitch,
-        onRowJsStageChange,
+        onRowSwitchToggle, onRowJsStageChange,
         onRowEdit, onRowExpand, onRowSelectToggle,
     } = storeHandler;
 
@@ -51,7 +50,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
                         disabled={isDelDisabled}
-                        onChange={() => toggleTbRowSwitch(ctxIdx, 'isHttps')}
+                        onChange={() => onRowSwitchToggle(ctxIdx, 'isHttps')}
                         />}
                 </td><td>
                     <div>{ isParent && <>
@@ -80,21 +79,21 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
-                        onChange={() => toggleTbRowSwitch(ctxIdx, 'isJsOn')}
+                        onChange={() => onRowSwitchToggle(ctxIdx, 'isJsOn')}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
-                        onChange={() => toggleTbRowSwitch(ctxIdx, 'isCssOn')}
+                        onChange={() => onRowSwitchToggle(ctxIdx, 'isCssOn')}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
-                        onChange={() => toggleTbRowSwitch(ctxIdx, 'isLibOn')}
+                        onChange={() => onRowSwitchToggle(ctxIdx, 'isLibOn')}
                         />
                 </td><td>{ isParent &&
                     <IconBtn
