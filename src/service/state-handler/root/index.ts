@@ -8,6 +8,7 @@ import { modals } from '../../constant/modals';
 import { Setting } from '../../model/setting';
 import { resultsPerPage } from '../../constant/result-per-page';
 import { FileHandle } from '../../handle/file';
+import { isNumber } from 'util';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
@@ -501,8 +502,10 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 modRules = [];
 
             } else {
+                const assumeEndIdx = pgnItemStartIdx + (isNumber(pgnItemEndIdx) ? pgnItemEndIdx : itemsTotalPerPage);
+                const endIdx = (assumeEndIdx < rulesTotal ? assumeEndIdx : rulesTotal) - 1;
                 modRules = rules.concat();
-                for (let i = pgnItemStartIdx; i < (pgnItemEndIdx ?? itemsTotalPerPage); i++) {
+                for (let i = endIdx; i >= pgnItemStartIdx; i--) {
                     modRules.splice(i, 1);
                 }
             }
