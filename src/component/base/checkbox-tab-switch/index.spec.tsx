@@ -19,7 +19,7 @@ describe('Component - Tab Switch', () => {
 
         mockProps = {
             id: 'id',
-            list: mockList,
+            data: mockList,
             tabEnableKey: 'isEnable',
             onTabActive: mockOnTabActive,
             onTabEnable: mockOnTabEnable,
@@ -29,6 +29,44 @@ describe('Component - Tab Switch', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+    });
+
+    describe('Component Class', () => {
+        let cmp: TabSwitch;
+
+        describe('Getter - list: get either list or transformed list from an object ', () => {
+            it('should return the data if data is Array', () => {
+                cmp = new TabSwitch(mockProps);
+                expect(cmp.list).toBe(mockProps.data);
+            });
+
+            it('should throw an error if data is not an array and `dataKeyMap` prop is not provided', () => {
+                cmp = new TabSwitch({
+                    ...mockProps,
+                    data: { lorem: 'sum' }
+                });
+                expect(() => {
+                    console.log(cmp.list);
+                }).toThrowError(cmp.propErrMsg);
+            });
+
+            it('should return a transformed list when data is an object `dataKeyMap` prop is provided', () => {
+                cmp = new TabSwitch({
+                    ...mockProps,
+                    tabKey: 'x',
+                    tabEnableKey: 'y',
+                    data: { lorem: true, sum: false },
+                    dataKeyMap: [
+                        ['tab-one', 'lorem'],
+                        ['tab-two', 'sum'],
+                    ]
+                });
+                expect(cmp.list).toEqual([
+                    { x: 'tab-one', y: true },
+                    { x: 'tab-two', y: false },
+                ]);
+            });
+        });
     });
 
     describe('Render/DOM', () => {
@@ -71,7 +109,7 @@ describe('Component - Tab Switch', () => {
         });
 
         it('should not render if empty-list is passed', () => {
-            TestUtil.renderPlain(elem, TabSwitch, {...mockProps, list: []});
+            TestUtil.renderPlain(elem, TabSwitch, {...mockProps, data: []});
             expect(elem.querySelector('ul')).toBeFalsy();
         });
 

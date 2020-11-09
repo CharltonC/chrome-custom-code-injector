@@ -8,15 +8,17 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
     readonly itemBaseCls: string = 'tab-switch__item';
     readonly tabCls: string = 'tab-switch__rdo';
     readonly tabSwitchCls: string = 'tab-switch__checkbox';
+    readonly propErrMsg: string = '`dataKeyMap` must be defined if `data` is an object';
 
     static defaultProps: Partial<IProps> = {
         activeTabIdx: 0,
-        tabKey: 'id'
+        tabKey: 'id',
+        tabEnableKey: 'isOn'
     };
 
     render() {
-        const { itemBaseCls, tabCls, tabSwitchCls, $switchIcon, cssCls, props } = this;
-        const { id, list, activeTabIdx, tabKey, tabEnableKey, onTabActive, onTabEnable } = props;
+        const { itemBaseCls, tabCls, tabSwitchCls, $switchIcon, cssCls, list, props } = this;
+        const { id, activeTabIdx, tabKey, tabEnableKey, onTabActive, onTabEnable } = props;
         const itemActiveCls: string = cssCls(itemBaseCls, 'active');
 
         return list.length && (
@@ -50,5 +52,20 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
                 })}
             </ul>
         );
+    }
+
+    get list() {
+        const { data, dataKeyMap, tabKey, tabEnableKey } = this.props;
+
+        if (Array.isArray(data)) return data;
+
+        if (!dataKeyMap) throw new Error(this.propErrMsg);
+
+        return dataKeyMap.map(([tabName, tabSwitchEnabledKey]) => {
+            return {
+                [tabKey]: tabName,
+                [tabEnableKey]: data[tabSwitchEnabledKey]
+            };
+        });
     }
 }

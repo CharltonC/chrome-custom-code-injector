@@ -8,7 +8,7 @@ export default {
 
 const defStyle = {padding: '15px'};
 
-export const SampleTabs = () => {
+export const TabsWithArrayData = () => {
     const list = [
         {id: 'js' , isEnabled: true},
         {id: 'css', isEnabled: false},
@@ -16,12 +16,12 @@ export const SampleTabs = () => {
     ];
     return (
         <div style={defStyle} >
-            <TabSwitch list={list} id="test" tabEnableKey="isEnabled" />
+            <TabSwitch data={list} id="test" tabEnableKey="isEnabled" />
         </div>
     )
 };
 
-export const SampleTabsWithActiveIndex = () => {
+export const TabsWithActiveIndexWithArrayData = () => {
     const [ atvIdx, setAtvIdx ]  = useState(1);
 
     const [ list, setList ] = useState([
@@ -34,7 +34,7 @@ export const SampleTabsWithActiveIndex = () => {
         <div style={defStyle} >
             <TabSwitch
                 id="test"
-                list={list}
+                data={list}
                 tabEnableKey="isEnabled"
                 activeTabIdx={atvIdx}
                 onTabActive={(evt, checkedTab, idx) => setAtvIdx(idx)}
@@ -43,6 +43,25 @@ export const SampleTabsWithActiveIndex = () => {
                     listClone[idx].isEnabled =  !tab.isEnabled;
                     setList(listClone);
                 }}
+                />
+        </div>
+    )
+};
+
+export const TabsWithObjectData = () => {
+    return (
+        <div style={defStyle} >
+            <TabSwitch
+                data={{
+                    isJsOn: true,
+                    isCssOn: false,
+                    isLibOn: false
+                }}
+                dataKeyMap={[
+                    ['js', 'isJsOn'],
+                    ['css', 'isCssOn'],
+                    ['lib', 'isLibOn']
+                ]}
                 />
         </div>
     )
