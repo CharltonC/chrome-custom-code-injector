@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/handle/util/index';
-import { RowExpdHandle } from '../../../service/handle/expand';
+import { RowExpdHandle } from '../../../service/handle/row-expand';
 import { RowHandle } from '../../../service/handle/row';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';

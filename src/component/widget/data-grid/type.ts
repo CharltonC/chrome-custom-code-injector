@@ -1,6 +1,6 @@
 import * as sortHandleType from '../../../service/handle/sort/type';
 import * as rowHandleType from '../../../service/handle/row/type';
-import * as rowExpdHandleType from '../../../service/handle/expand/type';
+import * as rowExpdHandleType from '../../../service/handle/row-expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as headerGrpHandleType from '../../../service/handle/header-group/type';
 import { ReactElement } from 'react';
