@@ -16,7 +16,7 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
 
     render() {
         const { itemBaseCls, tabCls, tabSwitchCls, $switchIcon, cssCls, props } = this;
-        const { id, list, activeTabIdx, tabEnableKey, onTabActive, onTabEnable } = props;
+        const { id, list, activeTabIdx, tabKey, tabEnableKey, onTabActive, onTabEnable } = props;
         const itemActiveCls: string = cssCls(itemBaseCls, 'active');
 
         return list.length && (
@@ -26,6 +26,8 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
                 const itemCls: string = isItemActive ? itemActiveCls : itemBaseCls;
                 const tabId: string = `rdo-${itemId}`;
                 const tabSwitchId: string = `checkbox-${itemId}`;
+                const tabName: string = tab[tabKey];
+                const isTabSwitchOn: boolean = tab[tabEnableKey];
 
                 return (
                     <li key={itemId} className={itemCls}>
@@ -36,11 +38,11 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
                             checked={isItemActive}
                             onChange={(e) => onTabActive?.(e, tab, idx)}
                             />
-                        <label htmlFor={tabId} className={tabCls}>{tab.name}</label>
+                        <label htmlFor={tabId} className={tabCls}>{tabName}</label>
                         <input
                             type="checkbox"
                             id={tabSwitchId}
-                            checked={tab[tabEnableKey]}
+                            checked={isTabSwitchOn}
                             onChange={(e) => onTabEnable?.(e, tab, idx)}
                             />
                         <label htmlFor={tabSwitchId} className={tabSwitchCls}>{$switchIcon}</label>

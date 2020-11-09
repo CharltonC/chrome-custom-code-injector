@@ -10,9 +10,9 @@ const defStyle = {padding: '15px'};
 
 export const SampleTabs = () => {
     const list = [
-        {name: 'js' , isEnable: true},
-        {name: 'css', isEnable: false},
-        {name: 'lib', isEnable: true},
+        {id: 'js' , isEnabled: true},
+        {id: 'css', isEnabled: false},
+        {id: 'lib', isEnabled: true},
     ];
     return (
         <div style={defStyle} >
@@ -25,9 +25,9 @@ export const SampleTabsWithActiveIndex = () => {
     const [ atvIdx, setAtvIdx ]  = useState(1);
 
     const [ list, setList ] = useState([
-        {name: 'js' , isEnable: true},
-        {name: 'css', isEnable: false},
-        {name: 'lib', isEnable: true},
+        {id: 'js' , isEnabled: true},
+        {id: 'css', isEnabled: false},
+        {id: 'lib', isEnabled: true},
     ]);
 
     return (
@@ -38,9 +38,10 @@ export const SampleTabsWithActiveIndex = () => {
                 tabEnableKey="isEnabled"
                 activeTabIdx={atvIdx}
                 onTabActive={(evt, checkedTab, idx) => setAtvIdx(idx)}
-                onTabEnable={(evt, tab, idx, isTabAtv, isEnable) => {
-                    Object.assign(list[idx], {isEnable});
-                    setList(list);
+                onTabEnable={(evt, tab, idx) => {
+                    const listClone = list.concat();
+                    listClone[idx].isEnabled =  !tab.isEnabled;
+                    setList(listClone);
                 }}
                 />
         </div>
