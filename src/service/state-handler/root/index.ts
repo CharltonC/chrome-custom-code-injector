@@ -1,3 +1,4 @@
+import { RowSelectHandle } from '../../handle/row-select';
 import { StateHandle } from '../../handle/state';
 import { AView } from '../../model/local-state/type';
 import { AppState } from '../../model/app-state';
@@ -10,6 +11,7 @@ import { FileHandle } from '../../handle/file';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
+const rowSelectHandle = new RowSelectHandle();
 
 export class StateHandler extends StateHandle.BaseStoreHandler {
     //// Router/Views
@@ -53,59 +55,34 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
+        const { areAllRowsSelected, selectedRowKeys } = localState;
+
+        const rowSelectState = rowSelectHandle.getState({
+            isAll: true,
+            currState: { areAllRowsSelected, selectedRowKeys }
+        });
+
         return {
-            localState: {
-                ...localState,
-                areAllRowsSelected: !localState.areAllRowsSelected,
-                selectedRowKeys: {},        // reset existing select state for any checkboxes
-            }
+            localState: { ...localState, ...rowSelectState }
         };
     }
 
-    onRowSelectToggle({ localState, rules }: AppState, idx: number) {
-        const { selectRow, getActualRowsPerPage } = this.reflect;
-        const {
-            areAllRowsSelected,
-            selectedRowKeys: currRowKeys,
-            pgnItemStartIdx, pgnItemEndIdx,
-        } = localState;
+    onRowSelectToggle({ localState, rules }: AppState, rowIdx: number) {
+        const { areAllRowsSelected, selectedRowKeys, pgnItemStartIdx } = localState;
+        const endRowIdx = this.reflect.getActualRowsPerPage(localState, rules.length);
 
-        const selectedRowKeys = { ...currRowKeys };
-        const isCurrRowSelected = currRowKeys[idx];
-        const itemsTotalPerPage = getActualRowsPerPage(localState, rules.length);
-
-        // Add the rest of checkboxes to selected except current one
-        if (areAllRowsSelected) {
-            for (let i = pgnItemStartIdx; i < (pgnItemEndIdx ?? itemsTotalPerPage); i++) {
-                const isCurrRow = i === idx;
-                const isSelected = i in selectedRowKeys;
-                const isSelectedCurrRow = isCurrRow && isSelected;
-                const isUnselectedOtherRows = !isCurrRow && !isSelected;
-
-                if (isSelectedCurrRow) {
-                    selectRow(selectedRowKeys, i, false);
-
-                } else if (isUnselectedOtherRows) {
-                    selectRow(selectedRowKeys, i);
-                }
+        const rowSelectState = rowSelectHandle.getState({
+            isAll: false,
+            currState: { areAllRowsSelected, selectedRowKeys },
+            rowsCtx: {
+                startRowIdx: pgnItemStartIdx,
+                endRowIdx,
+                rowIdx
             }
-
-        // Toggle the current checkbox
-        } else {
-            selectRow(selectedRowKeys, idx, !isCurrRowSelected);
-        }
-
-        // if All checkboxes are selected at that page AFTER the abv operation
-        const wereAllRowsSelected = Object.entries(selectedRowKeys).length === itemsTotalPerPage;
+        });
 
         return {
-            localState: {
-                ...localState,
-                areAllRowsSelected: wereAllRowsSelected ?
-                    true :
-                    (areAllRowsSelected ? false : areAllRowsSelected),
-                selectedRowKeys: wereAllRowsSelected ? {} : selectedRowKeys
-            }
+            localState: { ...localState, ...rowSelectState }
         };
     }
 
@@ -503,12 +480,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// Helper (used in Reflect only)
-    // - Unlike the `on<Xyz>` methods, No full state is required to be returned
-    selectRow(selectedRowKeys, idx: number, doSelect: boolean = true) {
-        selectedRowKeys[idx] = doSelect ? true : null;
-        if (!doSelect) delete selectedRowKeys[idx];
-    }
-
     toggleTbRowSwitch({ rules }: AppState, idx: number, key: string): Partial<AppState> {
         const clone = rules.slice();
         const value = clone[idx][key];
