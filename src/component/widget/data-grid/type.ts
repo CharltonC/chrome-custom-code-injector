@@ -1,6 +1,6 @@
 import * as sortHandleType from '../../../service/handle/sort/type';
 import * as rowHandleType from '../../../service/handle/row/type';
-import * as expdHandleType from '../../../service/handle/expand/type';
+import * as rowExpdHandleType from '../../../service/handle/expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as headerGrpHandleType from '../../../service/handle/header-group/type';
 import { ReactElement } from 'react';
@@ -12,7 +12,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     header?: headerGrpHandleType.IOption[];
     rowKey?: TRowKeyOption;
     component: IComponentOption;
-    expand?: Partial<expdHandleType.IOption>;
+    expand?: Partial<rowExpdHandleType.IOption>;
     sort?: Partial<sortHandleType.IOption>;
     paginate?: Partial<pgnHandleType.IOption>;
     callback?: ICallbackOption;
@@ -47,7 +47,7 @@ export interface IState {
     isTb: boolean;
     headerCtx: THeaderCtx;
     rowsOption: rowHandleType.IRawRowsOption[];
-    expdState: expdHandleType.IState;
+    expdState: rowExpdHandleType.IState;
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
     pgnOption: pgnHandleType.IOption;
@@ -73,7 +73,7 @@ export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
 // User-Defined Row Template
 export interface IRowComponentProps extends TRowCtx {
     key: string;
-    expandProps: expdHandleType.IExpdBtnAttr;
+    expandProps: rowExpdHandleType.IExpdBtnAttr;
     commonProps: Record<string, any>;
     rowColStyle?: Record<string, string | number>;
     classNames: {
@@ -86,7 +86,7 @@ export interface IRowComponentProps extends TRowCtx {
 //// Reexport
 export { pgnHandleType };
 export { rowHandleType };
-export { expdHandleType };
+export { rowExpdHandleType };
 export { sortHandleType };
 export { headerGrpHandleType };
 export * as sortBtnType from '../../base/btn-sort/type';

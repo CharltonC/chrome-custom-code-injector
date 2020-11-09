@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/handle/util/index';
-import { ExpdHandle } from '../../../service/handle/expand';
+import { RowExpdHandle } from '../../../service/handle/expand';
 import { RowHandle } from '../../../service/handle/row';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
@@ -22,7 +22,7 @@ describe('Component - Data Grid', () => {
     let spy: TMethodSpy<DataGrid>;
     let utilHandleSpy: TMethodSpy<UtilHandle>;
     let rowHandleSpy: TMethodSpy<RowHandle>;
-    let expdHandleSpy: TMethodSpy<ExpdHandle>;
+    let rowExpdHandleSpy: TMethodSpy<RowExpdHandle>;
     let sortHandleSpy: TMethodSpy<SortHandle>;
     let pgnHandleSpy: TMethodSpy<PgnHandle>;
     let headerGrpHandleSpy: TMethodSpy<HeaderGrpHandle>;
@@ -34,7 +34,7 @@ describe('Component - Data Grid', () => {
 
         utilHandleSpy = TestUtil.spyProtoMethods(UtilHandle);
         rowHandleSpy = TestUtil.spyProtoMethods(RowHandle);
-        expdHandleSpy = TestUtil.spyProtoMethods(ExpdHandle);
+        rowExpdHandleSpy = TestUtil.spyProtoMethods(RowExpdHandle);
         sortHandleSpy = TestUtil.spyProtoMethods(SortHandle);
         pgnHandleSpy = TestUtil.spyProtoMethods(PgnHandle);
         headerGrpHandleSpy = TestUtil.spyProtoMethods(HeaderGrpHandle);
@@ -175,7 +175,7 @@ describe('Component - Data Grid', () => {
                 sortHandleSpy.createState.mockReturnValue('sort-state');
                 pgnHandleSpy.createOption.mockReturnValue('pgn-option');
                 pgnHandleSpy.createState.mockReturnValue('pgn-state');
-                expdHandleSpy.createState.mockReturnValue('expd-state')
+                rowExpdHandleSpy.createState.mockReturnValue('expd-state')
                 headerGrpHandleSpy.getCtxTbHeaders.mockReturnValue('tb-header');
                 headerGrpHandleSpy.getCtxListHeaders.mockReturnValue('list-header');
             });
@@ -606,7 +606,7 @@ describe('Component - Data Grid', () => {
                 mockCallback = jest.fn();
                 mockProps = { expand: {}, callback: { onExpandChange: mockCallback } };
                 spy.getOnStateChangeHandler.mockReturnValue(mockRtnHandler);
-                expdHandleSpy.getExpdBtnAttr.mockReturnValue(mockRtnProps);
+                rowExpdHandleSpy.getExpdBtnAttr.mockReturnValue(mockRtnProps);
             });
 
             it('should return props when user callback exists', () => {

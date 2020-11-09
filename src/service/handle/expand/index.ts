@@ -4,7 +4,7 @@ import {
     TExpdStateEntry, TItemCtx
 } from './type';
 
-export class ExpdHandle {
+export class RowExpdHandle {
     //// Generic
     createOption(modOption: Partial<IOption>, currOption?: IOption): IOption {
         const baseOption = currOption ? currOption : { showAll: false, onePerLevel: false };

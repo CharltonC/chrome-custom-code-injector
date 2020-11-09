@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { HeaderGrpHandle } from '../../../service/handle/header-group';
 import { RowHandle } from '../../../service/handle/row'
-import { ExpdHandle } from '../../../service/handle/expand'
+import { RowExpdHandle } from '../../../service/handle/expand'
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
 import { Pagination as DefPagination } from '../../group/pagination';
@@ -11,7 +11,7 @@ import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TShallResetState,
     TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp,
-    rowHandleType, expdHandleType, paginationType, sortBtnType, GridHeaderType
+    rowHandleType, rowExpdHandleType, paginationType, sortBtnType, GridHeaderType
 } from './type';
 
 
@@ -21,7 +21,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
     readonly rowHandle: RowHandle = new RowHandle();
-    readonly expdHandle: ExpdHandle = new ExpdHandle();
+    readonly rowExpdHandle: RowExpdHandle = new RowExpdHandle();
     readonly BASE_CLS: string = 'datagrid';
 
     //// Builtin API
@@ -65,7 +65,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     createState(props: IProps, shallResetState?: TShallResetState): IState {
         const { type, component, data, sort, paginate, expand, header } = props;
         const { rows } = component;
-        const { headerGrpHandle, expdHandle, sortHandle, pgnHandle } = this;
+        const { headerGrpHandle, rowExpdHandle, sortHandle, pgnHandle } = this;
         const sortOption = sort ? sortHandle.createOption(sort) : null;
         const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
         const isTb: boolean = type !== 'list' ? true : false;
@@ -84,7 +84,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             sortState: sort ? sortHandle.createState(data, sortOption) : null,
             pgnOption,
             pgnState: paginate ? pgnHandle.createState(data, pgnOption) : null,
-            expdState: rows?.length > 1 && expand ? expdHandle.createState() : null
+            expdState: rows?.length > 1 && expand ? rowExpdHandle.createState() : null
         };
 
         // If Reset is need, we filter out the state properties to get partial state to be merged later
@@ -241,8 +241,8 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { expdState } = this.state;
         const { expand, callback } = this.props;
         const { onExpandChange } = callback ?? {};
-        return this.expdHandle.getExpdBtnAttr({
-            itemCtx: itemCtx as expdHandleType.TItemCtx,
+        return this.rowExpdHandle.getExpdBtnAttr({
+            itemCtx: itemCtx as rowExpdHandleType.TItemCtx,
             expdState,
             option: expand,
             callback: this.getOnStateChangeHandler(onExpandChange),
