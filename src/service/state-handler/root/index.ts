@@ -86,22 +86,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onRowHttpsToggle(state: AppState, idx: number): Partial<AppState> {
-        return this.reflect.toggleTbRowSwitch(state, idx, 'isHttps');
-    }
-
-    onRowJsToggle(state: AppState, idx: number): Partial<AppState> {
-        return this.reflect.toggleTbRowSwitch(state, idx, 'isJsOn');
-    }
-
-    onRowCssToggle(state: AppState, idx: number): Partial<AppState> {
-        return this.reflect.toggleTbRowSwitch(state, idx, 'isCssOn');
-    }
-
-    onRowLibToggle(state: AppState, idx: number): Partial<AppState> {
-        return this.reflect.toggleTbRowSwitch(state, idx, 'isLibOn');
-    }
-
     onRowJsStageChange({ rules }: AppState, idx: number, modIdx): Partial<AppState> {
         const clone = rules.slice();
         clone[idx].jsExecPhase = modIdx;
