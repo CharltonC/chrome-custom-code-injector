@@ -1,6 +1,6 @@
 import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IOption, IState, TItemCtx, IExpdBtnAttrQuery } from './type';
+import { IOption, IState, TItemCtx } from './type';
 import { RowExpdHandle } from '.';
 
 describe('Expand Handle', () => {
@@ -25,8 +25,6 @@ describe('Expand Handle', () => {
 
     describe('Generic', () => {
         describe('Method - getExpdBtnAttr - Get Generic Attributes of Expand Button to be used in a Button Component', () => {
-            const mockExpdBtnAttrQuery = {} as IExpdBtnAttrQuery;
-
             beforeEach(() => {
                 spy.getBtnAttrForOneExpd.mockReturnValue('one-expd');
                 spy.getBtnAttrForShowAll.mockReturnValue('show-all');
