@@ -1,157 +1,34 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, ITabItem  } from './type';
+import { IProps  } from './type';
 import { TabSwitch } from '.';
 
 describe('Component - Tab Switch', () => {
-    const mockBaseProps: IProps = {id: 'id', list: []};
-    let mockListProps: IProps;
-    let mockList: ITabItem[];
-    let tabSwitch: TabSwitch;
-    let spyOnRdoChecked: jest.SpyInstance;
-    let spyOnCbChanged: jest.SpyInstance;
-    let spySetState: jest.SpyInstance;
-    let spyGetInitialState: jest.SpyInstance;
+    let mockProps: IProps;
+    let mockList: Record<string, any>[];
+    let mockOnTabActive: jest.Mock;
+    let mockOnTabEnable: jest.Mock;
 
     beforeEach(() => {
+        mockOnTabActive = jest.fn();
+        mockOnTabEnable = jest.fn();
+
         mockList = [
             { name: 'a', isEnable: false},
             { name: 'b', isEnable: false},
         ];
-        mockListProps = {...mockBaseProps, list: mockList};
 
-        spyOnRdoChecked = jest.spyOn(TabSwitch.prototype, 'onRdoChecked');
-        spyOnCbChanged = jest.spyOn(TabSwitch.prototype, 'onCheckboxChanged');
-        spySetState = jest.spyOn(TabSwitch.prototype, 'setState');
-        spyGetInitialState = jest.spyOn(TabSwitch.prototype, 'getInitialState');
+        mockProps = {
+            id: 'id',
+            list: mockList,
+            tabEnableKey: 'isEnable',
+            onTabActive: mockOnTabActive,
+            onTabEnable: mockOnTabEnable,
+        };
     });
 
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
-    });
-
-    describe('Component Class', () => {
-        describe('Constructor', () => {
-            it('should initialize', () => {
-                const mockInitialState: any = {};
-                spyGetInitialState.mockReturnValue(mockInitialState);
-                tabSwitch = new TabSwitch(mockBaseProps);
-
-                expect(spyGetInitialState).toHaveBeenCalledWith(mockBaseProps.list, undefined);
-                expect(tabSwitch.state).toBe(mockInitialState);
-            });
-        });
-
-        describe('Method - getIntiialState', () => {
-            beforeEach(() => {
-                tabSwitch = new TabSwitch(mockBaseProps);
-            });
-
-            it('should get initial state when list is not provided', () => {
-                expect(tabSwitch.getInitialState(undefined, undefined)).toEqual({
-                    hsList: false,
-                    hsAtvIdx: false,
-                    activeTab: null
-                });
-
-                expect(tabSwitch.getInitialState([], undefined)).toEqual({
-                    hsList: false,
-                    hsAtvIdx: false,
-                    activeTab: null
-                });
-
-                expect(tabSwitch.getInitialState([], 0)).toEqual({
-                    hsList: false,
-                    hsAtvIdx: false,
-                    activeTab: null
-                });
-            });
-
-            it('should get initial state when list is provided', () => {
-                expect(tabSwitch.getInitialState(mockList, undefined)).toEqual({
-                    hsList: true,
-                    hsAtvIdx: false,
-                    activeTab: mockList[0]
-                });
-
-                expect(tabSwitch.getInitialState(mockList, 99)).toEqual({
-                    hsList: true,
-                    hsAtvIdx: false,
-                    activeTab: mockList[0]
-                });
-
-                expect(tabSwitch.getInitialState(mockList, 1)).toEqual({
-                    hsList: true,
-                    hsAtvIdx: true,
-                    activeTab: mockList[1]
-                });
-            });
-        });
-
-        describe('Method - onRdoChecked', () => {
-            const mockEvt: any = {};
-            let mockCheckedTabIdx: number;
-            let mockCheckedTab: ITabItem;
-
-            beforeEach(() => {
-                spySetState.mockImplementation(() => {});
-            });
-
-            it('should not update state if tab is currently active', () => {
-                mockCheckedTabIdx = 0;
-                mockCheckedTab = mockList[mockCheckedTabIdx];
-                tabSwitch = new TabSwitch(mockListProps);
-                tabSwitch.onRdoChecked(mockEvt, mockCheckedTab, mockCheckedTabIdx);
-
-                expect(spySetState).not.toHaveBeenCalled();
-            });
-
-            it('should update state if tab is not currently active', () => {
-                mockCheckedTabIdx = 1;
-                mockCheckedTab = mockList[mockCheckedTabIdx];
-                tabSwitch = new TabSwitch(mockListProps);
-                tabSwitch.onRdoChecked(mockEvt, mockCheckedTab, mockCheckedTabIdx);
-
-                expect(spySetState).toHaveBeenCalledWith({activeTab: mockCheckedTab});
-            });
-
-            it('should call the passed callback if provided', () => {
-                const mockOnTabAtv: jest.Mock = jest.fn();
-                mockCheckedTabIdx = 1;
-                mockCheckedTab = mockList[mockCheckedTabIdx];
-                tabSwitch = new TabSwitch({...mockListProps, onTabActive: mockOnTabAtv});
-                tabSwitch.onRdoChecked(mockEvt, mockCheckedTab, mockCheckedTabIdx);
-
-                expect(mockOnTabAtv).toHaveBeenCalledWith({
-                    evt: mockEvt,
-                    activeTab: mockCheckedTab,
-                    idx: mockCheckedTabIdx,
-                    isActive: false
-                });
-            });
-        });
-
-        describe('Method - onCheckboxChanged', () => {
-            const mockOnTabEnable: jest.Mock = jest.fn();
-            const mockEvt: any = {};
-            const mockEnabledTabIdx: number = 0;
-
-            it('should call the passed callback if provided', () => {
-                const mockEnabledTab: ITabItem = mockList[mockEnabledTabIdx];
-                const mockEnabledTabEnable: boolean = !mockEnabledTab.isEnable;
-
-                tabSwitch = new TabSwitch({...mockListProps, onTabEnable: mockOnTabEnable});
-                tabSwitch.onCheckboxChanged(mockEvt, mockEnabledTab, mockEnabledTabIdx);
-
-                expect(mockOnTabEnable).toHaveBeenCalledWith({
-                    evt: mockEvt,
-                    tab: mockEnabledTab,
-                    idx: mockEnabledTabIdx,
-                    isEnable: mockEnabledTabEnable,
-                    isActive: true
-                });
-            });
-        });
     });
 
     describe('Render/DOM', () => {
@@ -165,9 +42,7 @@ describe('Component - Tab Switch', () => {
         let $1stRdoLabel: HTMLLabelElement;
         let $1stCb: HTMLInputElement;
         let $1stCbLabel: HTMLLabelElement;
-        let $2ndRdo: HTMLInputElement;
         let $2ndRdoLabel: HTMLLabelElement;
-        let $2ndCb: HTMLInputElement;
         let $2ndCbLabel: HTMLLabelElement;
 
         function getChildElem() {
@@ -176,17 +51,13 @@ describe('Component - Tab Switch', () => {
 
             const $1stInput = $li[0].querySelectorAll('input');
             const $1stLabel = $li[0].querySelectorAll('label');
-            const $2ndInput = $li[1].querySelectorAll('input');
             const $2ndLabel = $li[1].querySelectorAll('label');
 
             $1stRdo = $1stInput[0];
             $1stRdoLabel = $1stLabel[0];
             $1stCb = $1stInput[1];
             $1stCbLabel = $1stLabel[1];
-
-            $2ndRdo = $2ndInput[0];
             $2ndRdoLabel = $2ndLabel[0];
-            $2ndCb = $2ndInput[1];
             $2ndCbLabel = $2ndLabel[1];
         }
 
@@ -200,13 +71,13 @@ describe('Component - Tab Switch', () => {
         });
 
         it('should not render if empty-list is passed', () => {
-            TestUtil.renderPlain(elem, TabSwitch, mockBaseProps);
+            TestUtil.renderPlain(elem, TabSwitch, {...mockProps, list: []});
             expect(elem.querySelector('ul')).toBeFalsy();
         });
 
         it('should render id and class when list is passed', () => {
-            const mockId: string = mockBaseProps.id;
-            TestUtil.renderPlain(elem, TabSwitch, mockListProps);
+            const mockId: string = mockProps.id;
+            TestUtil.renderPlain(elem, TabSwitch, mockProps);
             getChildElem();
 
             expect($ul.className).toBe(ulCls);
@@ -221,38 +92,33 @@ describe('Component - Tab Switch', () => {
         });
 
         it('should render id and class when list is passed and active index is passed', () => {
-            TestUtil.renderPlain(elem, TabSwitch, {...mockListProps, activeIdx: 1});
+            TestUtil.renderPlain(elem, TabSwitch, {...mockProps, activeTabIdx: 1});
             getChildElem();
 
             expect($li[0].className).toBe(liCls);
             expect($li[1].className).toBe(`${liCls} ${liAtvCls}`);
         });
 
-        it('should trigger the builtin `onRdoChecked` event callback and update active tab', () => {
-            TestUtil.renderPlain(elem, TabSwitch, mockListProps);
+        it('should trigger callback and update active tab', () => {
+            TestUtil.renderPlain(elem, TabSwitch, mockProps);
             getChildElem();
             TestUtil.triggerEvt($2ndRdoLabel, 'click', MouseEvent);
 
-            const callArgs: any[] = spyOnRdoChecked.mock.calls[0];
-            expect(spyOnRdoChecked).toHaveBeenCalled();
-            expect(callArgs[1]).toBe(mockList[1]);
-            expect(callArgs[2]).toBe(1);
-            expect($1stRdo.checked).toBe(false);
-            expect($li[0].className).toBe(liCls);
-            expect($2ndRdo.checked).toBe(true);
-            expect($li[1].className).toBe(`${liCls} ${liAtvCls}`);
+            const [, tab, idx ] = mockOnTabActive.mock.calls[0];
+            expect(mockOnTabActive).toHaveBeenCalled();
+            expect(tab).toBe(mockList[1]);
+            expect(idx).toBe(1);
         });
 
-        it('should trigger the builtin `onCheckboxChanged` event callback and update the switch status', () => {
-            TestUtil.renderPlain(elem, TabSwitch, mockListProps);
+        it('should trigger tcallback and update the switch status', () => {
+            TestUtil.renderPlain(elem, TabSwitch, mockProps);
             getChildElem();
             TestUtil.triggerEvt($2ndCbLabel, 'click', MouseEvent);
 
-            const callArgs: any[] = spyOnCbChanged.mock.calls[0];
-            expect(spyOnCbChanged).toHaveBeenCalled();
-            expect(callArgs[1]).toBe(mockList[1]);
-            expect(callArgs[2]).toBe(1);
-            expect($2ndCb.checked).toBe(true);
+            const [, tab, idx ] = mockOnTabEnable.mock.calls[0];
+            expect(mockOnTabEnable).toHaveBeenCalled();
+            expect(tab).toBe(mockList[1]);
+            expect(idx).toBe(1);
         });
 
     });

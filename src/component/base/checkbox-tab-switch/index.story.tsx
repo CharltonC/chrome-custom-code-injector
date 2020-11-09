@@ -16,7 +16,7 @@ export const SampleTabs = () => {
     ];
     return (
         <div style={defStyle} >
-            <TabSwitch list={list} id="test"/>
+            <TabSwitch list={list} id="test" tabEnableKey="isEnabled" />
         </div>
     )
 };
@@ -35,7 +35,8 @@ export const SampleTabsWithActiveIndex = () => {
             <TabSwitch
                 id="test"
                 list={list}
-                activeIdx={atvIdx}
+                tabEnableKey="isEnabled"
+                activeTabIdx={atvIdx}
                 onTabActive={(evt, checkedTab, idx) => setAtvIdx(idx)}
                 onTabEnable={(evt, tab, idx, isTabAtv, isEnable) => {
                     Object.assign(list[idx], {isEnable});
