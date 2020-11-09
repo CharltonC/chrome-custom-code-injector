@@ -10,14 +10,6 @@ import { jsExecStage } from '../../../service/constant/js-exec-stage';
 import { TbRow } from './tb-row';
 import { IProps } from './type';
 
-// TODO: constant
-const tabSwitchList = [
-    {name: 'js' , isEnable: true},
-    {name: 'css', isEnable: false},
-    {name: 'lib', isEnable: true},
-];
-
-
 // TODO: props type
 export const OptionEditView = memo((props: IProps) => {
     const { store, storeHandler } = props;
@@ -74,9 +66,15 @@ export const OptionEditView = memo((props: IProps) => {
             {/* TOD: section-form field? */}
             <TabSwitch
                 id="tab-switch"
-                list={tabSwitchList}
-                onTabActive={(evt, checkedTab, idx) => {}}
-                onTabEnable={(evt, tab, idx, isTabAtv, isEnable) => {}}
+                data={targetItem}
+                dataKeyMap={[
+                    ['js', 'isJsOn'],
+                    ['css', 'isCssOn'],
+                    ['lib', 'isLibOn'],
+                ]}
+                /* TODO: callback update state */
+                onTabActive={(evt, tab, idx) => {}}
+                onTabEnable={(evt, tab, idx) => {}}
                 />
             {/* TODO: Conditional CodeMirror */}
 {/*             <CodeMirror
