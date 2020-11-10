@@ -69,17 +69,20 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onRowSelectToggle({ localState, rules }: AppState, rowIdx: number) {
-        const { areAllRowsSelected, selectedRowKeys, pgnItemStartIdx } = localState;
-        const endRowIdx = this.reflect.getActualRowsPerPage(localState, rules.length);
+        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
+        const totalRules: number = rules.length;
+
+        const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx({
+            totalRules,
+            pgnIncrmIdx,
+            pgnItemStartIdx,
+            pgnItemEndIdx
+        });
 
         const rowSelectState = rowSelectHandle.getState({
             isAll: false,
             currState: { areAllRowsSelected, selectedRowKeys },
-            rowsCtx: {
-                startRowIdx: pgnItemStartIdx,
-                endRowIdx,
-                rowIdx
-            }
+            rowsCtx: { startRowIdx, endRowIdx, rowIdx }
         });
 
         return {
@@ -489,25 +492,22 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     rmvRows({ localState, rules }: AppState) {
-        const { getActualRowsPerPage } = this.reflect;
-        const { areAllRowsSelected, selectedRowKeys, pgnItemStartIdx, pgnItemEndIdx } = localState;
-        const rulesTotal: number = rules.length;
+        const { getRowIndexCtx } = this.reflect;
+        const totalRules = rules.length;
+        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
+        const { startRowIdx, totalVisibleRows } = getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
         let modRules: HostRuleConfig[];
 
         // For all rows selected
         if (areAllRowsSelected) {
-            const itemsTotalPerPage = getActualRowsPerPage(localState, rulesTotal);
-
-            if (itemsTotalPerPage === rulesTotal) {
+            // only 1 page regardless of pagination or not
+            if (totalRules <= totalVisibleRows) {
                 modRules = [];
 
+            // at specific page with pagination
             } else {
-                const assumeEndIdx = pgnItemStartIdx + (isNumber(pgnItemEndIdx) ? pgnItemEndIdx : itemsTotalPerPage);
-                const endIdx = (assumeEndIdx < rulesTotal ? assumeEndIdx : rulesTotal) - 1;
                 modRules = rules.concat();
-                for (let i = endIdx; i >= pgnItemStartIdx; i--) {
-                    modRules.splice(i, 1);
-                }
+                modRules.splice(startRowIdx, totalVisibleRows);
             }
 
         // For partial rows selected
@@ -532,9 +532,35 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    getActualRowsPerPage(localState: LocalState, rulesTotal: number): number {
-        const { pgnIncrmIdx } = localState;
-        return Math.min(rulesTotal, resultsPerPage[pgnIncrmIdx]);
+    /**
+     *
+     * Formula for calculating a row's end index used for rows removal at a specific page when all rows are selected
+     * - e.g.
+     * Total Rows | Per Page | Start Row Index | Removal Indexes | End Index (which needs to be calculated)
+     * -----------------------------------------------------------------
+     * 3          | 2        | 0               | 0-1             | 2
+     * 3          | 2        | 2               | 2               | 3
+     * 5          | 10       | 0               | 0-4             | 5
+     * 2          | 1        | 0               | 0               | 1
+     * 2          | 1        | 1               | 1               | 2
+     */
+    // TODO: param type & rtn type
+    getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules }) {
+        // either the total no. of results per page OR the total results
+        // - e.g. 10 per page, 5 total results --> max no. of items shown on that page is 5
+        // - e.g. 5 per page, 10 results --> max no. of items shown on that page is 5
+        const totalVisibleRowsAllowed: number = Math.min(totalRules, resultsPerPage[pgnIncrmIdx]);
+
+        // Find in the actual end index of the row in the actual data based on the pagination context
+        const assumeEndIdx: number = pgnItemStartIdx + (isNumber(pgnItemEndIdx) ? pgnItemEndIdx : totalVisibleRowsAllowed);
+        const endRowIdx: number = assumeEndIdx <= totalRules ? assumeEndIdx : totalRules;
+
+        return {
+            startRowIdx: pgnItemStartIdx,
+            endRowIdx,
+            totalVisibleRows: endRowIdx - pgnItemStartIdx,
+            totalVisibleRowsAllowed
+        };
     }
 
     setView({ localState }: AppState, currView: AView): Partial<AppState> {
