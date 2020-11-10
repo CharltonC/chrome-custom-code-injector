@@ -500,15 +500,10 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
         // For all rows selected
         if (areAllRowsSelected) {
-            // only 1 page regardless of pagination or not
-            if (totalRules <= totalVisibleRows) {
-                modRules = [];
-
-            // at specific page with pagination
-            } else {
-                modRules = rules.concat();
-                modRules.splice(startRowIdx, totalVisibleRows);
-            }
+            // - if only 1 page regardless of pagination or not, remove all items
+            // - if not, then only remove all items at that page
+            const hsOnlyOnePage = totalRules <= totalVisibleRows;
+            modRules = hsOnlyOnePage ? [] : rules.concat().splice(startRowIdx, totalVisibleRows);
 
         // For partial rows selected
         } else {
