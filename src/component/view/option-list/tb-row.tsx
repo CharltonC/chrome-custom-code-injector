@@ -57,10 +57,10 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         <IconBtn
                             icon="arrow-rt"
                             clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
-                            disabled={!paths.length}
+                            disabled={!paths?.length}
                             onClick={() => onRowExpand({[id]: itemLvl})}
                             />
-                        <NumBadge total={paths.length} /> </>}
+                        <NumBadge total={paths?.length} /> </>}
                         <span>{id}</span>
                     </div>
                 </td><td>
