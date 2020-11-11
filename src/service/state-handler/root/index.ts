@@ -304,22 +304,29 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onDelModalConfirm(state: AppState) {
-        const { targetChildItemIdx, targetItemIdx } = state.localState;
+        const { targetChildItemIdx, targetItemIdx, searchedRules } = state.localState;
         const isDelSingleItem = Number.isInteger(targetChildItemIdx);
-        const baseResetLocalState = this.reflect.onModalCancel(state);
+        const hsSearchResults = searchedRules?.length;
+        const baseResetLocalState = this.reflect.onModalCancel(state).localState;
 
         if (isDelSingleItem) {
-            const { rules } = this.reflect.rmvRow(state, targetChildItemIdx, targetItemIdx);
+            const { rules, localState } = hsSearchResults ?
+                this.reflect.rmvSearchedRow(state, targetChildItemIdx, targetItemIdx) :
+                this.reflect.rmvRow(state, targetChildItemIdx, targetItemIdx);
+
             return {
-                ...baseResetLocalState,
-                rules
+                rules,
+                localState: {
+                    ...baseResetLocalState,
+                    ...localState
+                }
             };
 
         } else {
             const { rules, localState } = this.reflect.rmvRows(state);
             return {
                 localState: {
-                    ...baseResetLocalState.localState,
+                    ...baseResetLocalState,
                     ...localState
                 },
                 rules
@@ -476,19 +483,38 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     rmvRow({ rules }: AppState, idx: number, parentIdx?: number) {
-        const cloneRules = rules.concat();
-        const modItems = typeof parentIdx !== 'undefined' ?
-            cloneRules[parentIdx].paths :
-            cloneRules;
-
+        const rulesCopy = rules.concat();
+        const modItems = isNumber(parentIdx) ? rulesCopy[parentIdx].paths : rulesCopy;
         modItems.splice(idx, 1);
 
         return {
-            rules: cloneRules,
+            rules: rulesCopy,
             localState: {
                 selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
             }
         };
+    }
+
+    rmvSearchedRow({ rules: currRules, localState: currLocalState }: AppState, idx: number, parentIdx?: number) {
+        const { searchedRules } = currLocalState;
+        const searchedRulesCopy = searchedRules.concat();
+        const isPathRule = isNumber(parentIdx);
+        const idxInRules = currRules.indexOf(searchedRulesCopy[isPathRule ? parentIdx : idx], 0);
+
+        // modify the global rules
+        const { rules, localState } = this.reflect.rmvRow({ rules: currRules } as any, idxInRules, parentIdx);
+
+        // We only need to modify the searched rule if it is NOT a child item, in order to async with the global rules
+        if (!isPathRule) searchedRulesCopy.splice(idx, 1);
+
+        return {
+            rules,
+            localState: {
+                ...localState,
+                searchedRules: searchedRulesCopy,
+            }
+        }
+
     }
 
     rmvRows({ localState, rules }: AppState) {
