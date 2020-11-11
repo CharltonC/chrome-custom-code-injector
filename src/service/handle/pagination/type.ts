@@ -78,7 +78,7 @@ export interface ICmpAttr {
 }
 
 export interface ICmpAttrQuery {
-    data: any[];
+    totalRecord: number;
     option: IOption;
     state: IState;
     callback: TFn;
