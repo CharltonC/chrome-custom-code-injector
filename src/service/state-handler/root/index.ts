@@ -496,18 +496,21 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const totalRules = rules.length;
         const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
         const { startRowIdx, totalVisibleRows } = getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
-        let modRules: HostRuleConfig[];
+        let modRules: HostRuleConfig[] = rules.concat();
 
         // For all rows selected
         if (areAllRowsSelected) {
             // - if only 1 page regardless of pagination or not, remove all items
             // - if not, then only remove all items at that page
             const hsOnlyOnePage = totalRules <= totalVisibleRows;
-            modRules = hsOnlyOnePage ? [] : rules.concat().splice(startRowIdx, totalVisibleRows);
+            if (hsOnlyOnePage) {
+                modRules = [];
+            } else {
+                modRules.splice(startRowIdx, totalVisibleRows);
+            }
 
         // For partial rows selected
         } else {
-            modRules = rules.concat();
             const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
             const selectedRowsTotal: number = rowIndexes.length - 1;
 
