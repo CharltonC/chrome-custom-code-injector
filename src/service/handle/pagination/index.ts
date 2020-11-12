@@ -84,8 +84,7 @@ class PgnHandle {
         const hsRecord: boolean = totalRecord >= 1;
         return {
             startRecord: (hsRecord && Number.isInteger(startIdx)) ? startIdx + 1 : 0,
-            endRecord: (hsRecord && Number.isInteger(endIdx)) ? endIdx : totalRecord,
-            totalRecord
+            endRecord: (hsRecord && Number.isInteger(endIdx)) ? endIdx : totalRecord
         };
     }
 
@@ -365,7 +364,7 @@ class PgnHandle {
         return ((modOption: Partial<IOption>): void => {
             const pgnOption: IOption = this.getOption(modOption, option);
             const pgnState: IState = this.getState(totalRecord, pgnOption);
-            if (callback) callback({ pgnOption, pgnState });
+            if (callback) callback(pgnOption, pgnState);
         });
     }
 

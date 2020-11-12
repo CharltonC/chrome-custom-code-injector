@@ -31,7 +31,6 @@ export type IRelPage = {
 }
 
 export interface IRecordCtx {
-    totalRecord: number;
     startRecord: number;
     endRecord: number;
 }

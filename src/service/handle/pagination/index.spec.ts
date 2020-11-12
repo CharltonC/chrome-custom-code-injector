@@ -133,7 +133,6 @@ describe('Class - Paginate Handle', () => {
                         perPage: mockPerPage,
                         startRecord: 1,
                         endRecord: 4,
-                        totalRecord: mockTotalRecord,
                         ltSpread: null,
                         rtSpread: null,
                         maxSpread: 3,
@@ -155,7 +154,6 @@ describe('Class - Paginate Handle', () => {
                         perPage: mockPerPage,
                         startRecord: 5,
                         endRecord: 6,
-                        totalRecord: mockList.length,
                         ltSpread: null,
                         rtSpread: null,
                         maxSpread: 3,
@@ -218,12 +216,10 @@ describe('Class - Paginate Handle', () => {
                 expect(handle.getRecordCtx(mockTotalRecord, 1)).toEqual({
                     startRecord: mockTotalRecord,
                     endRecord: mockTotalRecord,
-                    totalRecord: mockTotalRecord
                 });
                 expect(handle.getRecordCtx(mockTotalRecord, 1, 2)).toEqual({
                     startRecord: mockTotalRecord,
                     endRecord: mockTotalRecord,
-                    totalRecord: mockTotalRecord
                 });
             });
 
@@ -235,12 +231,10 @@ describe('Class - Paginate Handle', () => {
                 expect(handle.getRecordCtx(mockTotalRecord, mockStartIdx)).toEqual({
                     startRecord: mockStartIdx+1,
                     endRecord: mockTotalRecord,
-                    totalRecord: mockTotalRecord
                 });
                 expect(handle.getRecordCtx(mockTotalRecord, mockStartIdx, mockEndIdx)).toEqual({
                     startRecord: mockStartIdx+1,
                     endRecord: mockEndIdx,
-                    totalRecord: mockTotalRecord
                 });
             });
         });
@@ -855,10 +849,7 @@ describe('Class - Paginate Handle', () => {
 
                 expect(spy.getOption).toHaveBeenCalledWith(mockModOption, mockOption);
                 expect(spy.getState).toHaveBeenCalledWith(mockTotalRecord, mockRtnPgnOption);
-                expect(mockEvtHandler).toHaveBeenCalledWith({
-                    pgnOption: mockRtnPgnOption,
-                    pgnState: mockRtnPgnState
-                });
+                expect(mockEvtHandler).toHaveBeenCalledWith(mockRtnPgnOption, mockRtnPgnState);
             });
 
             it('should return the event handler function when callback is not provided', () => {
@@ -871,7 +862,7 @@ describe('Class - Paginate Handle', () => {
 
                 expect(spy.getOption).toHaveBeenCalledWith(mockModOption, mockOption);
                 expect(spy.getState).toHaveBeenCalledWith(mockTotalRecord, mockRtnPgnOption);
-                expect(mockEvtHandler).not.toHaveBeenCalledWith();
+                expect(mockEvtHandler).not.toHaveBeenCalled();
             });
         });
 
