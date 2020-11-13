@@ -319,8 +319,12 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 }
             };
 
+        // If remove all items
         } else {
-            const { rules, localState } = this.reflect.rmvRows(state);
+            const { rules, localState } = hsSearchResults ?
+                this.reflect.rmvSearchedRows(state) :
+                this.reflect.rmvRows(state);
+
             return {
                 localState: {
                     ...baseResetLocalState,
@@ -549,6 +553,64 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 areAllRowsSelected: false,
                 selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            }
+        };
+    }
+
+    rmvSearchedRows({ localState, rules }: AppState) {
+        const { searchedRules,
+            areAllRowsSelected, selectedRowKeys,
+            pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx
+        } = localState;
+
+        // Contextual to Searched Rules (not the global rules)
+        const totalRules = searchedRules.length;
+        const { startRowIdx, totalVisibleRows } = this.reflect.getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
+
+        let modSearchedRules: HostRuleConfig[] = searchedRules.concat();
+        let modRules: HostRuleConfig[];
+
+        // For all rows selected
+        if (areAllRowsSelected) {
+            const hsOnlyOnePage = totalRules <= totalVisibleRows;
+
+            // If only 1 page, i.e. all selected
+            if (hsOnlyOnePage) {
+                modSearchedRules = [];
+                modRules = rules.filter((rule) => {
+                    // exclude all the rules that are in `searchRules` (i.e. the removed ones in `modSearchedRules`)
+                    return !searchedRules.includes(rule);
+                });
+
+            // If > 1 page, i.e. only all selected at that page
+            } else {
+                const rmvRules = searchedRules.slice(startRowIdx, pgnItemEndIdx);
+                modSearchedRules.splice(startRowIdx, totalVisibleRows);
+                modRules = rules.filter((rule) => !rmvRules.includes(rule));
+            }
+
+        // For partial rows selected
+        } else {
+            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
+            const selectedRowsTotal: number = rowIndexes.length - 1;
+
+            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
+            for (let i = selectedRowsTotal; i >= 0; i--) {
+                const rowIdx: number = Number(rowIndexes[i][0]);
+                modSearchedRules.splice(rowIdx, 1);
+            }
+
+            // Update the global rules
+            modRules = rules.filter((rule) => modSearchedRules.includes(rule));
+        }
+
+        // TODO: clear pagination index as well
+        return {
+            rules: modRules,
+            localState: {
+                searchedRules: modSearchedRules,
+                areAllRowsSelected: false,
+                selectedRowKeys: {},     // in case of side-effect on `selectedRowKeys` state
             }
         };
     }
