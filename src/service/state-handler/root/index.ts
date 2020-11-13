@@ -299,7 +299,12 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const { targetChildItemIdx, targetItemIdx, searchedRules } = state.localState;
         const isDelSingleItem = Number.isInteger(targetChildItemIdx);
         const hsSearchResults = searchedRules?.length;
-        const baseResetLocalState = this.reflect.onModalCancel(state).localState;
+        const baseResetLocalState = {
+            ...this.reflect.onModalCancel(state).localState,
+            pgnPageIdx: 0,
+            pgnItemStartIdx: 0,
+            pgnItemEndIdx: null
+        };
 
         if (isDelSingleItem) {
             const { rules, localState } = hsSearchResults ?
