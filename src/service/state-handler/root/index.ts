@@ -278,17 +278,10 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     // Delete
     onDelModal(appState: AppState, idx?: number, parentIdx?: number) {
-        const { rmvRow, rmvRows } = this.reflect;
         const { localState, setting } = appState;
+        const { showDeleteModal } = setting;
         const isDelSingleItem = typeof idx !== 'undefined';
-
-        // Direct delete w/o confirmation
-        if (!setting.showDeleteModal) return isDelSingleItem ?
-            rmvRow(appState, idx, parentIdx) :
-            rmvRows(appState);
-
-        // With confirmation (set the cache so when `onDelModalConfirm` know the context of the item)
-        return isDelSingleItem ? {
+        const partialModState: Partial<AppState> = isDelSingleItem ? {
             localState: {
                 ...localState,
                 currModalId: removeConfirm.id,
@@ -301,6 +294,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 currModalId: removeConfirm.id
             }
         };
+        return showDeleteModal ? partialModState : this.reflect.onDelModalConfirm({...appState, ...partialModState});
     }
 
     onDelModalConfirm(state: AppState) {
