@@ -5,7 +5,7 @@ import { IProps, IState, IValidationConfig, ICallback, TValidState } from './typ
 
 export class TextInput extends MemoComponent<IProps, IState> {
     readonly BASE_CLS: string = 'text-ipt';
-    inputElem: HTMLInputElement;
+    $input: HTMLInputElement;
 
     constructor(props: IProps) {
         super(props);
@@ -32,7 +32,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
                     <input
                         id={id}
                         type="text"
-                        ref={elem => this.inputElem = elem}
+                        ref={e => this.$input = e}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
                         {...inputProps}
@@ -103,6 +103,11 @@ export class TextInput extends MemoComponent<IProps, IState> {
     }
 
     onBlur(evt: React.ChangeEvent<HTMLInputElement>): void {
-        this.setValidState(evt, this.props.onInputBlur, 0);
+        // Wait some time in case its parent component is unmounted. dont update the state if there is any unmounting
+        // e.g. if inside a modal
+        setTimeout(e => {
+            if (!this.$input) return;
+            this.setValidState(e, this.props.onInputBlur, 0);
+        }, 100, {...evt});
     }
 }

@@ -3,6 +3,8 @@ import { IProps, IValidationConfig, TValidState } from './type';
 import { TextInput } from '.';
 
 describe('Component - Text Input', () => {
+    jest.useFakeTimers();
+
     beforeEach(() => {
     });
 
@@ -191,9 +193,17 @@ describe('Component - Text Input', () => {
                 expect(spySetValidState).toHaveBeenCalledWith(mockEvt, mockProps.onInputChange, 3);
             });
 
-            it('should call set valid state for `onBlur`', () => {
+            it('should call set valid state for `onBlur` when input elment exists (i.e. still mounted)', () => {
+                cmpInst.$input = document.createElement('input');   // mock exist
                 cmpInst.onBlur(mockEvt);
+                jest.runAllTimers();
                 expect(spySetValidState).toHaveBeenCalledWith(mockEvt, mockProps.onInputBlur, 0);
+            });
+
+            it('should not call set valid state for `onBlur` when input elment exists (i.e. still mounted)', () => {
+                cmpInst.onBlur(mockEvt);
+                jest.runAllTimers();
+                expect(spySetValidState).not.toHaveBeenCalled();
             });
         });
     });
@@ -273,6 +283,7 @@ describe('Component - Text Input', () => {
 
                 // Trigger invalid state
                 TestUtil.triggerEvt(inputElem, 'blur');
+                jest.runAllTimers();
                 getChildElem();
                 expect(wrapperElem.className).toContain('text-ipt--invalid');
                 expect(iconElem).toBeFalsy();
