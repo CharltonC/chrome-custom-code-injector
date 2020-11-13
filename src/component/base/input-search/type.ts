@@ -9,20 +9,6 @@
  */
 export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
-    text?: string;
-    disabled?: boolean;
-    onClear?: (...args: any[]) => void;
-    onChange?: (...args: any[]) => void;
-}
-
-/**
- * State
- *
- * @param hsText - whether the input has value (i.e. non-empty)
- * - internal only to control show/hide of certain element (instead of relying on external state, i.e. `IProps.text`)
- * - not named `text` as not to conflict in case there is an external state
- */
-export class IState {
-    hsExtState: boolean;
-    hsText: boolean = false;
+    onInputClear?: (...args: any[]) => void;
+    onInputChange?: (...args: any[]) => void;
 }

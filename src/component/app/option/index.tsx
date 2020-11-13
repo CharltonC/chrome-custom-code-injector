@@ -78,8 +78,8 @@ export class OptionApp extends MemoComponent<IProps> {
                         <SearchInput
                             id="search"
                             value={searchedText}
-                            onChange={onSearch}
-                            onClear={onSearchClear}
+                            onInputChange={onSearch}
+                            onInputClear={onSearchClear}
                             />
                         <IconBtn
                             icon="add-outline"
