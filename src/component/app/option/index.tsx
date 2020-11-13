@@ -77,7 +77,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     <div className="header__ctrl">
                         <SearchInput
                             id="search"
-                            text={searchedText}
+                            value={searchedText}
                             onChange={onSearch}
                             onClear={onSearchClear}
                             />
