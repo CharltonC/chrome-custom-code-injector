@@ -69,8 +69,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onRowSelectToggle({ localState, rules }: AppState, rowIdx: number) {
-        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
-        const totalRules: number = rules.length;
+        const { areAllRowsSelected, searchedRules, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
+        const totalRules: number = searchedRules?.length || rules.length;
 
         const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx({
             totalRules,
@@ -268,11 +268,11 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return this.reflect.onModalOpen(state, defSetting.id);
     }
 
-    onimportConfigModal(state: AppState) {
+    onImportConfigModal(state: AppState) {
         return this.reflect.onModalOpen(state, importConfig.id);
     }
 
-    onexportConfigModal(state: AppState) {
+    onExportConfigModal(state: AppState) {
         return this.reflect.onModalOpen(state, exportConfig.id);
     }
 

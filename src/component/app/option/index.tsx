@@ -48,7 +48,7 @@ export class OptionApp extends MemoComponent<IProps> {
         const {
             onListView,
             onSearch, onSearchClear,
-            onModalCancel, onSettingModal, onimportConfigModal, onexportConfigModal, onAddHostModal,
+            onModalCancel, onSettingModal, onImportConfigModal, onExportConfigModal, onAddHostModal,
             onAddHostConfirm, onDelModalConfirm,
             onAddPathConfirm,
             onEditItemValChange,
@@ -103,14 +103,14 @@ export class OptionApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="download"
                             theme="white"
-                            onClick={onimportConfigModal}
+                            onClick={onImportConfigModal}
                             />
                         <IconBtn
                             icon="download"
                             theme="white"
                             clsSuffix="upload"
                             disabled={!rules.length}
-                            onClick={onexportConfigModal}
+                            onClick={onExportConfigModal}
                             />
                     </div>
                 </header>
