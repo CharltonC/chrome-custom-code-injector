@@ -281,18 +281,16 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const { localState, setting } = appState;
         const { showDeleteModal } = setting;
         const isDelSingleItem = typeof idx !== 'undefined';
-        const partialModState: Partial<AppState> = isDelSingleItem ? {
-            localState: {
-                ...localState,
-                currModalId: removeConfirm.id,
-                targetChildItemIdx: idx,
-                targetItemIdx: parentIdx
-            }
-        } : {
-            localState: {
-                ...localState,
-                currModalId: removeConfirm.id
-            }
+        const partialModState: Partial<AppState> = {
+            localState: isDelSingleItem ? {
+                    ...localState,
+                    currModalId: removeConfirm.id,
+                    targetChildItemIdx: idx,
+                    targetItemIdx: parentIdx
+                } : {
+                    ...localState,
+                    currModalId: removeConfirm.id
+                }
         };
         return showDeleteModal ? partialModState : this.reflect.onDelModalConfirm({...appState, ...partialModState});
     }
