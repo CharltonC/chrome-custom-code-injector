@@ -277,20 +277,21 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     // Delete
-    onDelModal(appState: AppState, idx?: number, parentIdx?: number) {
+    onDelModal(appState: AppState, {sortedData, ctxIdx, parentCtxIdx}) {
         const { localState, setting } = appState;
         const { showDeleteModal } = setting;
-        const isDelSingleItem = typeof idx !== 'undefined';
+        const isDelSingleItem = typeof ctxIdx !== 'undefined';
+        const baseModState = {
+            ...localState,
+            sortedData: sortedData.concat(),
+            currModalId: removeConfirm.id,
+        };
         const partialModState: Partial<AppState> = {
             localState: isDelSingleItem ? {
-                    ...localState,
-                    currModalId: removeConfirm.id,
-                    targetChildItemIdx: idx,
-                    targetItemIdx: parentIdx
-                } : {
-                    ...localState,
-                    currModalId: removeConfirm.id
-                }
+                    ...baseModState,
+                    targetChildItemIdx: ctxIdx,
+                    targetItemIdx: parentCtxIdx
+                } : baseModState
         };
         return showDeleteModal ? partialModState : this.reflect.onDelModalConfirm({...appState, ...partialModState});
     }
@@ -304,7 +305,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             ...this.reflect.onModalCancel(state).localState,
             pgnPageIdx: 0,
             pgnItemStartIdx: 0,
-            pgnItemEndIdx: null
+            pgnItemEndIdx: null,
+            sortedData: null
         };
 
         if (isDelSingleItem) {
@@ -484,47 +486,69 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         return { rules: clone };
     }
 
-    rmvRow({ rules }: AppState, idx: number, parentIdx?: number) {
-        const rulesCopy = rules.concat();
-        const modItems = isNumber(parentIdx) ? rulesCopy[parentIdx].paths : rulesCopy;
+    rmvRow({ localState }: AppState, idx: number, parentIdx?: number) {
+        const { sortedData } = localState;
+        const modItems = isNumber(parentIdx) ? sortedData[parentIdx].paths : sortedData;
         modItems.splice(idx, 1);
 
         return {
-            rules: rulesCopy,
+            rules: sortedData,
             localState: {
                 selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
             }
         };
     }
 
-    rmvSearchedRow({ rules: currRules, localState: currLocalState }: AppState, idx: number, parentIdx?: number) {
+    rmvSearchedRow(appState: AppState, idx: number, parentIdx?: number) {
+        const { localState: currLocalState, rules: currRules } = appState;
         const { searchedRules } = currLocalState;
         const searchedRulesCopy = searchedRules.concat();
-        const isPathRule = isNumber(parentIdx);
-        const idxInRules = currRules.indexOf(searchedRulesCopy[isPathRule ? parentIdx : idx], 0);
+        const isRmvSubRow = isNumber(parentIdx);
 
-        // modify the global rules
-        const { rules, localState } = this.reflect.rmvRow({ rules: currRules } as any, idxInRules, parentIdx);
+        // Remove the matching item in global rules
+        if (isRmvSubRow) {
+            // Since both searchRules & rules points to the same array item and since we only modifying its array children,
+            // we dont need to copy the rules
+            const modRow = searchedRulesCopy[parentIdx];
+            modRow.paths.splice(idx, 1);
+            return { ...appState };
 
-        // We only need to modify the searched rule if it is NOT a child item, in order to async with the global rules
-        if (!isPathRule) searchedRulesCopy.splice(idx, 1);
+        } else {
+            const rmvRow = searchedRulesCopy[idx];
+            const idxInRules = currRules.indexOf(rmvRow, 0);
 
-        return {
-            rules,
-            localState: {
-                ...localState,
-                searchedRules: searchedRulesCopy,
+            // Remove the matching item in global rules
+            const { rules, localState } = this.reflect.rmvRow({
+                ...appState,
+                localState: {
+                    ...currLocalState,
+                    sortedData: currRules     // modify the global rules instead of  `sortedData` (which is eqv. to searched rules)
+                }
+            }, idxInRules, null);
+
+            // We only need to modify the searched rule if it is NOT a child item, in order to async with the global rules
+            searchedRulesCopy.splice(idx, 1);
+
+            return {
+                rules,
+                localState: {
+                    ...localState,
+                    searchedRules: searchedRulesCopy,
+                }
             }
         }
 
+
+
+
     }
 
-    rmvRows({ localState, rules }: AppState) {
+    rmvRows({ localState }: AppState) {
         const { getRowIndexCtx } = this.reflect;
-        const totalRules = rules.length;
-        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
+        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, sortedData } = localState;
+        const totalRules = sortedData.length;
         const { startRowIdx, totalVisibleRows } = getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
-        let modRules: HostRuleConfig[] = rules.concat();
+        let modRules: HostRuleConfig[] = sortedData.concat();
 
         // For all rows selected
         if (areAllRowsSelected) {
@@ -561,14 +585,14 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     rmvSearchedRows({ localState, rules }: AppState) {
         const { searchedRules,
             areAllRowsSelected, selectedRowKeys,
-            pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx
+            pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx,
+            sortedData
         } = localState;
 
         // Contextual to Searched Rules (not the global rules)
-        const totalRules = searchedRules.length;
+        const totalRules = sortedData.length;
         const { startRowIdx, totalVisibleRows } = this.reflect.getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
-
-        let modSearchedRules: HostRuleConfig[] = searchedRules.concat();
+        let modSearchedRules: HostRuleConfig[] = sortedData.concat();
         let modRules: HostRuleConfig[];
 
         // For all rows selected
