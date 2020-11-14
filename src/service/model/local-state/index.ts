@@ -10,7 +10,11 @@ export class LocalState {
     searchedText: string = '';
     searchedRules: HostRuleConfig[] = null;
 
-    // - Data Grid Rows
+    // Data Grid Rows
+    // temp storage which points to the current full set of sorted data if exist or plain data (either searched or non-search)
+    // - used by Modal Delete Confirm `onDelModalConfirm`
+    sortedData: HostRuleConfig[] = null;
+
     selectedRowKeys: Record<string, boolean> = {};
     pgnPageIdx: number = 0;
     pgnIncrmIdx: number = resultsPerPageIdx;

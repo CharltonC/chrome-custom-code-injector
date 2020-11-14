@@ -5,6 +5,7 @@ describe('Local State (Non-Persisting)', () => {
         expect(new LocalState()).toEqual({
             searchedText: '',
             searchedRules: null,
+            sortedData: null,
             selectedRowKeys: {},
             pgnPageIdx: 0,
             pgnIncrmIdx: 0,
