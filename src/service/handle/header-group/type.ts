@@ -19,8 +19,8 @@ export interface ITbHeaderCache extends IRowColTotal {
 }
 
 //// List Header
-export interface ICtxListHeader extends IRowColTotal {
-    headers: IListHeader[];
+export interface ICtxListHeader<T = string>  extends IRowColTotal {
+    headers: IListHeader<T>[];
     gridTemplateRows: string;
     gridTemplateColumns: string;
 }
@@ -38,7 +38,7 @@ export interface IBaseListHeader extends IOption {
     subHeader?: IBaseListHeader[];
 }
 
-export interface IListHeader extends IHeader {
+export interface IListHeader<T> extends IHeader<T> {
     gridColumn?: string;
     gridRow?: string;
 }
