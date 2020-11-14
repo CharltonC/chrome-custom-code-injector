@@ -20,7 +20,7 @@ export const TableHeaderGroup = () => {
 
     return (
         <table style={defStyle} >
-            <GridHeader rows={rows} />
+            <GridHeader rows={rows} data={[]} />
         </table>
     );
 };
@@ -59,6 +59,7 @@ export const ListHeaderGroup = () => {
             <GridHeader
                 type="list"
                 rows={rows}
+                data={[]}
                 sortBtnProps={sortBtnProps}
                 />
         </table>
