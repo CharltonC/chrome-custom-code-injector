@@ -96,7 +96,7 @@ describe('Component - Search', () => {
             mockOnChange = jest.fn();
             mockOnClear = jest.fn();
             elem = TestUtil.setupElem();
-            mockProps = {id: mockId, onChange: mockOnChange, onClear: mockOnClear};
+            mockProps = {id: mockId, onInputChange: mockOnChange, onInputClear: mockOnClear};
         });
 
         afterEach(() => {
