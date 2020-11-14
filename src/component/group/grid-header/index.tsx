@@ -13,9 +13,8 @@ export class GridHeader extends MemoComponent<IProps> {
     }
 
     renderTbHeader(): ReactElement {
-        const { BASE_CLS } = this;
-        const { rows, sortBtnProps } = this.props;
-        const { headers } = rows as TTbHeaderRows;
+        const { BASE_CLS, props } = this;
+        const { headers } = props.rows as TTbHeaderRows;
 
         return (
             <thead className={BASE_CLS}>{ headers.map((thCtxs, trIdx: number) => (
@@ -25,8 +24,7 @@ export class GridHeader extends MemoComponent<IProps> {
                         className={`${BASE_CLS}-cell`}
                         {...thProps}
                         >
-                        { typeof title === 'string' ? <span>{title}</span> : title }
-                        { sortKey && sortBtnProps && <SortBtn {...sortBtnProps(sortKey)} />}
+                        { this.getCellContent(title, sortKey) }
                     </th>))}
                 </tr>))}
             </thead>
@@ -34,9 +32,8 @@ export class GridHeader extends MemoComponent<IProps> {
     }
 
     renderListHeader(): ReactElement {
-        const { BASE_CLS } = this;
-        const { rows, sortBtnProps } = this.props;
-        const { headers, rowTotal, colTotal, ...wrapperCssGrid } = rows as TListHeaderRows;
+        const { BASE_CLS, props } = this;
+        const { headers, rowTotal, colTotal, ...wrapperCssGrid } = props.rows as TListHeaderRows;
         const wrapperCssGridVar = this.getCssGridVar(wrapperCssGrid);
 
         return (
@@ -49,8 +46,7 @@ export class GridHeader extends MemoComponent<IProps> {
                     className={`${BASE_CLS}-cell`}
                     style={this.getCssGridVar(cellCssGrid)}
                     >
-                    { typeof title === 'string' ? <span>{title}</span> : title }
-                    { sortKey && sortBtnProps && <SortBtn {...sortBtnProps(sortKey)} />}
+                    { this.getCellContent(title, sortKey) }
                 </li>))}
             </ul>
         );
@@ -64,5 +60,13 @@ export class GridHeader extends MemoComponent<IProps> {
                 cssGridVar[`--${key}`] = `${val}`;
             });
         return cssGridVar;
+    }
+
+    getCellContent(title: unknown, sortKey?: string): ReactElement {
+        const { data, sortBtnProps } = this.props;
+        return <>
+            { typeof title === 'function' ? title(data) : (typeof title === 'string' ? <span>{title}</span> : title) }
+            { sortKey && sortBtnProps && <SortBtn {...sortBtnProps(sortKey)} />}
+        </>;
     }
 }

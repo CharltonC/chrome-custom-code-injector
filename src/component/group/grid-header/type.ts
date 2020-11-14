@@ -9,5 +9,6 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     sortBtnProps?: (sortKey: string) => sortBtnType.IProps;
 }
 
-export type TListHeaderRows = headerGrpHandleType.ICtxListHeader;
-export type TTbHeaderRows = headerGrpHandleType.ICtxTbHeader<string | ReactElement>;
+export type TListHeaderRows = headerGrpHandleType.ICtxListHeader<TTitle>;
+export type TTbHeaderRows = headerGrpHandleType.ICtxTbHeader<TTitle>;
+export type TTitle = string | ReactElement | ((...args: any[]) => ReactElement);

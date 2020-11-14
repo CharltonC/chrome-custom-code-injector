@@ -113,14 +113,14 @@ describe('Component - Grid Header', () => {
     });
 
     describe('Methods', () => {
+        let cmp: GridHeader;
+
+        beforeEach(() => {
+            cmp = new GridHeader({} as any);
+            spy = TestUtil.spyProtoMethods(GridHeader);
+        });
+
         describe('Method - render', () => {
-            let cmp: GridHeader;
-
-            beforeEach(() => {
-                cmp = new GridHeader({} as any);
-                spy = TestUtil.spyProtoMethods(GridHeader);
-            });
-
             it('should default to render table when header type is not specified', () => {
                 spy.renderTbHeader.mockReturnValue('table');
                 spy.renderListHeader.mockReturnValue('list');
@@ -135,6 +135,39 @@ describe('Component - Grid Header', () => {
                     '--a': '1',
                     '--b': '2'
                 });
+            });
+        });
+
+        describe('Method - getCellContent: Get cell content', () => {
+            const mockData = [];
+            const mockSortKey = 'sum';
+            let mockTitle = 'lorem';
+
+            beforeEach(() => {
+                mockSortBtnProps.mockReturnValue({});
+                Object.assign(cmp.props, {
+                    data: mockData,
+                    sortBtnProps: mockSortBtnProps
+                });
+            });
+
+            it('should return cell content when title is a function', () => {
+                const mockTitleFn = jest.fn();
+                mockTitleFn.mockReturnValue(mockTitle);
+                const [ $title ] = cmp.getCellContent(mockTitleFn, mockSortKey).props.children;
+                expect($title).toBe(mockTitle);
+            });
+
+            it('should return cell content when title is react element ', () => {
+                const mockTitleElem = <p>{mockTitle}</p>;
+                const [ $title ] = cmp.getCellContent(mockTitleElem, mockSortKey).props.children;
+                expect($title).toBe(mockTitleElem);
+            });
+
+            it('should return cell content when title is string', () => {
+                const [ $title ] = cmp.getCellContent(mockTitle, mockSortKey).props.children;
+                expect($title.type).toBe('span');
+                expect($title.props.children).toBe(mockTitle);
             });
         });
     });
