@@ -14,7 +14,12 @@ import {
     rowHandleType, rowExpdHandleType, paginationType, sortBtnType, GridHeaderType
 } from './type';
 
-
+/**
+ * Data Context:
+ * - Rows: `data` in row props                  sorted data (from state if exists) or data source (from props)
+ * - Pagination, Sort, Expand, Select Handle    sorted data (from state if exists) or data source (from props)
+ * - visible rows                               paginated sliced data (from sorted data (from state if exists) or data source (from props))
+ */
 export class DataGrid extends MemoComponent<IProps, IState> {
     //// Dependency Injection
     readonly headerGrpHandle: HeaderGrpHandle = new HeaderGrpHandle();
@@ -163,13 +168,16 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     getRowCmpProps(itemCtx: TRowCtx): IRowComponentProps {
-        const { cssCls, BASE_CLS } = this;
-        const { commonProps } = this.props.component;
-        const { isTb, headerCtx } = this.state;
+        const { cssCls, BASE_CLS, props, state } = this;
+        const { commonProps } = props.component;
+        const { isTb, headerCtx } = state;
         const { itemId, itemLvl, nestedItems, rowType } = itemCtx;
         return {
             ...itemCtx,
             key: itemId,
+            // non-sliced full set data
+            // - reason this is deliberately passed is to event handler of each row (e.g. select, delete) have access to the internally processed data
+            data: this.getSortedData(),
             commonProps,
             expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
             rowColStyle: isTb  ? null : { '--cols': headerCtx.colTotal },
@@ -213,23 +221,26 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return this.state.sortState?.data || this.props.data;
     }
 
-    getHeaderProps(data: TDataOption): GridHeaderType.IProps {
+    getHeaderProps(sortedData: TDataOption): GridHeaderType.IProps {
         const { type } = this.props;
         const { headerCtx } = this.state;
         return {
             type,
+            // non-sliced full set data
+            // - reason this is deliberately passed is to event handler of each row (e.g. select, delete) have access to the internally processed data
+            data: sortedData,
             rows: headerCtx,
-            sortBtnProps: (sortKey: string) => this.getSortCmpProps(data, sortKey)
+            sortBtnProps: (sortKey: string) => this.getSortCmpProps(sortedData, sortKey)
         };
     }
 
-    getSortCmpProps(data: TDataOption, sortKey: string): sortBtnType.IProps {
+    getSortCmpProps(sortedData: TDataOption, sortKey: string): sortBtnType.IProps {
         const { sortOption } = this.state;
         if (!sortOption) return null;
 
         const { onSortChange } = this.props.callback ?? {};
         const { sortBtnAttr } = this.sortHandle.createGenericCmpAttr({
-            data,
+            data: sortedData,
             option: sortOption,
             callback: this.getOnStateChangeHandler(onSortChange)
         }, sortKey);
@@ -249,7 +260,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         });
     }
 
-    getPgnCmpProps(data: TDataOption): paginationType.IProps {
+    getPgnCmpProps(sortedData: TDataOption): paginationType.IProps {
         const { pgnOption, pgnState } = this.state;
         if (!pgnOption) return null;
 
@@ -257,7 +268,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
-                data,
+                data: sortedData,
                 callback: this.getOnStateChangeHandler(onPaginateChange),
                 option: pgnOption,
                 state: pgnState

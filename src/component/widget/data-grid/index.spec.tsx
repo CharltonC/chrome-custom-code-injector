@@ -370,7 +370,6 @@ describe('Component - Data Grid', () => {
             beforeEach(() => {
                 mockProps = { component: {} } as IProps;
                 mockState = { isTb: true, headerCtx: { colTotal: 1 }} as IState;
-
                 spy.getRowCmpExpdProps.mockReturnValue(mockExpdProps);
                 utilHandleSpy.cssCls.mockReturnValue(MOCK_CLS);
             });
@@ -390,6 +389,15 @@ describe('Component - Data Grid', () => {
                 mockStateProps(mockProps, mockState);
                 const { rowColStyle } = cmp.getRowCmpProps(mockBaseItemCtx);
                 expect(rowColStyle).toBeFalsy();
+            });
+
+            it('should return props containing the sorted data', () => {
+                const mockData = [];
+                spy.getSortedData.mockReturnValue(mockData);
+                mockStateProps(mockProps, mockState);
+
+                const { data } = cmp.getRowCmpProps(mockBaseItemCtx);
+                expect(data).toBe(mockData);
             });
 
             it('should return props when there are nested items', () => {
@@ -558,7 +566,11 @@ describe('Component - Data Grid', () => {
                 spy.getSortCmpProps.mockReturnValue(mockRtnSortBtnProps);
                 const { sortBtnProps, ...props } = cmp.getHeaderProps(mockData);
 
-                expect(props).toEqual({ type: mockProps.type, rows: mockState.headerCtx });
+                expect(props).toEqual({
+                    data: mockData,
+                    type: mockProps.type,
+                    rows: mockState.headerCtx
+                });
                 expect(sortBtnProps('lorem')).toBe(mockRtnSortBtnProps);
             });
         });
