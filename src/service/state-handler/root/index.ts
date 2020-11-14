@@ -299,12 +299,13 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onDelModalConfirm(state: AppState) {
+        const { onModalCancel, rmvSearchedRow, rmvSearchedRows, rmvRow, rmvRows } = this.reflect;
         const { targetChildItemIdx, targetItemIdx, searchedRules } = state.localState;
         const isDelSingleItem = Number.isInteger(targetChildItemIdx);
         const hsSearchResults = searchedRules?.length;
 
         const resetLocalState = {
-            ...this.reflect.onModalCancel(state).localState,
+            ...onModalCancel(state).localState,
             pgnPageIdx: 0,
             pgnItemStartIdx: 0,
             pgnItemEndIdx: null,
@@ -313,8 +314,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
         if (isDelSingleItem) {
             const { rules, localState } = hsSearchResults ?
-                this.reflect.rmvSearchedRow(state, targetChildItemIdx, targetItemIdx) :
-                this.reflect.rmvRow(state, targetChildItemIdx, targetItemIdx);
+                rmvSearchedRow(state, targetChildItemIdx, targetItemIdx) :
+                rmvRow(state, targetChildItemIdx, targetItemIdx);
 
             return {
                 rules,
@@ -327,8 +328,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         // If remove all items
         } else {
             const { rules, localState } = hsSearchResults ?
-                this.reflect.rmvSearchedRows(state) :
-                this.reflect.rmvRows(state);
+                rmvSearchedRows(state) :
+                rmvRows(state);
 
             return {
                 localState: {
@@ -539,10 +540,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
                 }
             }
         }
-
-
-
-
     }
 
     rmvRows({ localState }: AppState) {
