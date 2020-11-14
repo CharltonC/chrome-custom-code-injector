@@ -17,6 +17,7 @@ import {
 /**
  * Data Context:
  * - Rows: `data` in row props                  sorted data (from state if exists) or data source (from props)
+ * - Rows `ctxIdx` in row props                 sorted data (from state if exists) or data source (from props)
  * - Pagination, Sort, Expand, Select Handle    sorted data (from state if exists) or data source (from props)
  * - visible rows                               paginated sliced data (from sorted data (from state if exists) or data source (from props))
  */

@@ -3,6 +3,7 @@ import * as rowHandleType from '../../../service/handle/row/type';
 import * as rowExpdHandleType from '../../../service/handle/row-expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as headerGrpHandleType from '../../../service/handle/header-group/type';
+import * as GridHeaderType from '../../group/grid-header/type';
 import { ReactElement } from 'react';
 
 //// Props
@@ -62,8 +63,8 @@ export type TShallResetState = {
 }
 
 export type THeaderCtx = TTbHeaderCtx | TListHeaderCtx
-type TTbHeaderCtx = headerGrpHandleType.ICtxTbHeader;
-type TListHeaderCtx = headerGrpHandleType.ICtxListHeader;
+type TTbHeaderCtx = headerGrpHandleType.ICtxTbHeader<GridHeaderType.TTitle>;
+type TListHeaderCtx = headerGrpHandleType.ICtxListHeader<GridHeaderType.TTitle>;
 
 //// Generic
 export type TFn = (...args: any[]) => any;
