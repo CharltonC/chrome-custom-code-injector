@@ -16,22 +16,26 @@ const rowSelectHandle = new RowSelectHandle();
 
 export class StateHandler extends StateHandle.BaseStoreHandler {
     //// Router/Views
-    onListView(state: AppState): Partial<AppState> {
-        const { currView } = this.reflect.setView(state, 'LIST').localState;
-        const { pgnIncrmIdx } = state.localState;   // maintain the only pagination setting
+    onListView({localState}: AppState): Partial<AppState> {
+        const { pgnIncrmIdx } = localState;   // maintain the only pagination setting
         const resetLocalState = new LocalState();
 
         return {
             localState: {
                 ...resetLocalState,
                 pgnIncrmIdx,
-                currView,
+                currView: 'LIST',
             }
         };
     }
 
-    onEditView(state: AppState) {
-        return this.reflect.setView(state, 'EDIT');
+    onEditView({ localState }: AppState) {
+        return {
+            localState: {
+                ...localState,
+                currView: 'EDIT'
+            }
+        }
     }
 
     //// DataGrid
@@ -98,13 +102,11 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     onRowEdit(state: AppState, targetItem): Partial<AppState> {
         const { localState } = state;
-        const { currView } = this.reflect.onEditView(state).localState;
-
         return {
             localState: {
                 ...localState,
                 targetItem,
-                currView
+                currView: 'EDIT'
             }
         };
     }
@@ -668,15 +670,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             endRowIdx,
             totalVisibleRows: endRowIdx - pgnItemStartIdx,
             totalVisibleRowsAllowed
-        };
-    }
-
-    setView({ localState }: AppState, currView: AView): Partial<AppState> {
-        return {
-            localState: {
-                ...localState,
-                currView
-            }
         };
     }
 }
