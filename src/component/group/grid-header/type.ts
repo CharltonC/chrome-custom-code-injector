@@ -4,6 +4,7 @@ import { ReactElement } from 'react';
 
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     type?: 'table' | 'list';
+    data: Record<string, any>[];
     rows: TTbHeaderRows | TListHeaderRows;
     sortBtnProps?: (sortKey: string) => sortBtnType.IProps;
 }
