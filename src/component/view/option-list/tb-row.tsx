@@ -8,7 +8,7 @@ import { NumBadge } from '../../base/num-badge';
 import { ITbRowProps } from './type';
 
 export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
-    const { ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
+    const { data: sortedData, ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
     const { store, storeHandler } = commonProps;
     const { localState } = store;
 
@@ -115,7 +115,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         icon="delete"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onDelModal(ctxIdx, parentCtxIdx)}
+                        onClick={() => onDelModal({ sortedData, ctxIdx, parentCtxIdx })}
                         />
                 </td>
             </tr>{ nestedItems && isRowExp &&
