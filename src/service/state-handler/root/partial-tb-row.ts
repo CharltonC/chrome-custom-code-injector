@@ -7,8 +7,6 @@ import { resultsPerPage } from '../../constant/result-per-page';
 const rowSelectHandle = new RowSelectHandle();
 
 export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
-
-
     onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
         const { areAllRowsSelected, selectedRowKeys } = localState;
 
@@ -80,10 +78,11 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
+    //// HELPER (used only in `reflect`)
     /**
      * Remove row or sub row
      */
-    onRowRmv({ localState }: AppState, idx: number, parentIdx?: number) {
+    rmvRow({ localState }: AppState, idx: number, parentIdx?: number) {
         const { sortedData } = localState;      // set by `onDelModal`
         const isSubRow = Number.isInteger(parentIdx);
         const modItems = isSubRow ? sortedData[parentIdx].paths : sortedData;
@@ -95,7 +94,7 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onSearchedRowRmv(state: AppState, idx: number, parentIdx?: number) {
+    rmvSearchedRow(state: AppState, idx: number, parentIdx?: number) {
         const { reflect } = this;
         const { rules: currRules, localState } = state;
         const { searchedRules: currSearchedRules } = localState;
@@ -103,10 +102,10 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         const ruleIdx = isSubRow ? null : currRules.indexOf(currSearchedRules[idx]);
 
         // Remove either row or sub row for searched rules
-        const { rules: searchedRules } = reflect.onRowRmv(state, idx, parentIdx);
+        const { rules: searchedRules } = reflect.rmvRow(state, idx, parentIdx);
 
         // If Not sub row, Remove corresponding row in global rules as well
-        const modRules = isSubRow ? currRules : reflect.onRowRmv({
+        const modRules = isSubRow ? currRules : reflect.rmvRow({
             ...state,
             localState: {
                 ...localState,
@@ -122,13 +121,13 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onRowsRmv(state: AppState) {
+    rmvRows(state: AppState) {
         const { areAllRowsSelected } = state.localState;
         const { reflect } = this;
-        return areAllRowsSelected ? reflect.onAllRowsRmv(state) : reflect.onPartialRowsRmv(state);
+        return areAllRowsSelected ? reflect.rmvAllRows(state) : reflect.rmvPartialRows(state);
     }
 
-    onAllRowsRmv({ localState }: AppState) {
+    rmvAllRows({ localState }: AppState) {
         const { getRowIndexCtx } = this.reflect;
         const { pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, sortedData } = localState;
         const totalRules = sortedData.length;
@@ -150,7 +149,7 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onPartialRowsRmv({ localState }: AppState ) {
+    rmvPartialRows({ localState }: AppState ) {
         const { selectedRowKeys, sortedData } = localState;
         const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
         const selectedRowsTotal: number = rowIndexes.length - 1;
@@ -168,13 +167,13 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onSearchedRowsRmv(state: AppState) {
+    rmvSearchedRows(state: AppState) {
         const { reflect } = this;
         const { localState, rules } = state;
         const { searchedRules } = localState;
 
         // Update the searched rules
-        const { rules: modSearchedRules } = reflect.onRowsRmv(state);
+        const { rules: modSearchedRules } = reflect.rmvRows(state);
 
         // Update corresponding global rules by Excluding all removed searched rows
         const removedSearchedRules = searchedRules.filter(rule => !modSearchedRules.includes(rule));

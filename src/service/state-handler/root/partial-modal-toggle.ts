@@ -85,11 +85,11 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
         const { rules, localState } = isDelSingleItem ?
             ( isSearch ?
-                reflect.onSearchedRowRmv(state, targetChildItemIdx, targetItemIdx) :
-                reflect.onRowRmv(state, targetChildItemIdx, targetItemIdx) ) :
+                reflect.rmvSearchedRow(state, targetChildItemIdx, targetItemIdx) :
+                reflect.rmvRow(state, targetChildItemIdx, targetItemIdx) ) :
             ( isSearch ?
-                reflect.onSearchedRowsRmv(state) :
-                reflect.onRowsRmv(state)) ;
+                reflect.rmvSearchedRows(state) :
+                reflect.rmvRows(state)) ;
 
         return {
             localState: {
