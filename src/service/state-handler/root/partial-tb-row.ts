@@ -96,14 +96,15 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onSearchedRowRmv(appState: AppState, idx: number, parentIdx?: number) {
+        const { reflect } = this;
         const { rules: currRules } = appState;
         const isSubRow = Number.isInteger(parentIdx);
 
         // Remove either row or sub row for searched rules
-        const { rules: searchedRules } = this.reflect.onRowRmv(appState, idx, parentIdx);
+        const { rules: searchedRules } = reflect.onRowRmv(appState, idx, parentIdx);
 
         // If Not sub row, Remove corresponding row in global rules as well
-        const modRules = isSubRow ? currRules : this.reflect.onRowsRmv(appState).rules;
+        const modRules = isSubRow ? currRules : reflect.onRowsRmv(appState).rules;
 
         return {
             rules: modRules,
