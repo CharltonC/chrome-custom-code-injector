@@ -29,15 +29,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onEditView({ localState }: AppState) {
-        return {
-            localState: {
-                ...localState,
-                currView: 'EDIT'
-            }
-        }
-    }
-
     //// DataGrid
     onPaginate({ localState}: AppState, { curr, perPage, startIdx, endIdx }) {
         const pgnIncrmIdx: number = resultsPerPage.indexOf(perPage);
@@ -119,6 +110,163 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 expdRowId: id === expdRowId ? null : id
+            }
+        };
+    }
+
+    onRowSwitchToggle({ rules }: AppState, idx: number, key: string): Partial<AppState> {
+        const clone = rules.slice();
+        const value = clone[idx][key];
+        clone[idx][key] = !value;
+        return { rules: clone };
+    }
+
+    onRowRmv({ localState }: AppState, idx: number, parentIdx?: number) {
+        const { sortedData } = localState;
+        const modItems = isNumber(parentIdx) ? sortedData[parentIdx].paths : sortedData;
+        modItems.splice(idx, 1);
+
+        return {
+            rules: sortedData,
+            localState: {
+                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            }
+        };
+    }
+
+    onSearchedRowRmv(appState: AppState, idx: number, parentIdx?: number) {
+        const { localState: currLocalState, rules: currRules } = appState;
+        const { searchedRules } = currLocalState;
+        const searchedRulesCopy = searchedRules.concat();
+        const isRmvSubRow = isNumber(parentIdx);
+
+        // Remove the matching item in global rules
+        if (isRmvSubRow) {
+            // Since both searchRules & rules points to the same array item and since we only modifying its array children,
+            // we dont need to copy the rules
+            const modRow = searchedRulesCopy[parentIdx];
+            modRow.paths.splice(idx, 1);
+            return { ...appState };
+
+        } else {
+            const rmvRow = searchedRulesCopy[idx];
+            const idxInRules = currRules.indexOf(rmvRow, 0);
+
+            // Remove the matching item in global rules
+            const { rules, localState } = this.reflect.onRowRmv({
+                ...appState,
+                localState: {
+                    ...currLocalState,
+                    sortedData: currRules     // modify the global rules instead of  `sortedData` (which is eqv. to searched rules)
+                }
+            }, idxInRules, null);
+
+            // We only need to modify the searched rule if it is NOT a child item, in order to async with the global rules
+            searchedRulesCopy.splice(idx, 1);
+
+            return {
+                rules,
+                localState: {
+                    ...localState,
+                    searchedRules: searchedRulesCopy,
+                }
+            }
+        }
+    }
+
+    onRowsRmv({ localState }: AppState) {
+        const { getRowIndexCtx } = this.reflect;
+        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, sortedData } = localState;
+        const totalRules = sortedData.length;
+        const { startRowIdx, totalVisibleRows } = getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
+        let modRules: HostRuleConfig[] = sortedData.concat();
+
+        // For all rows selected
+        if (areAllRowsSelected) {
+            // - if only 1 page regardless of pagination or not, remove all items
+            // - if not, then only remove all items at that page
+            const hsOnlyOnePage = totalRules <= totalVisibleRows;
+            if (hsOnlyOnePage) {
+                modRules = [];
+            } else {
+                modRules.splice(startRowIdx, totalVisibleRows);
+            }
+
+        // For partial rows selected
+        } else {
+            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
+            const selectedRowsTotal: number = rowIndexes.length - 1;
+
+            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
+            for (let i = selectedRowsTotal; i >= 0; i--) {
+                const rowIdx: number = Number(rowIndexes[i][0]);
+                modRules.splice(rowIdx, 1);
+            }
+        }
+
+        return {
+            rules: modRules,
+            localState: {
+                areAllRowsSelected: false,
+                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            }
+        };
+    }
+
+    onSearchedRowsRmv({ localState, rules }: AppState) {
+        const { searchedRules,
+            areAllRowsSelected, selectedRowKeys,
+            pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx,
+            sortedData
+        } = localState;
+
+        // Contextual to Searched Rules (not the global rules)
+        const totalRules = sortedData.length;
+        const { startRowIdx, totalVisibleRows } = this.reflect.getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
+        let modSearchedRules: HostRuleConfig[] = sortedData.concat();
+        let modRules: HostRuleConfig[];
+
+        // For all rows selected
+        if (areAllRowsSelected) {
+            const hsOnlyOnePage = totalRules <= totalVisibleRows;
+
+            // If only 1 page, i.e. all selected
+            if (hsOnlyOnePage) {
+                modSearchedRules = [];
+                modRules = rules.filter((rule) => {
+                    // exclude all the rules that are in `searchRules` (i.e. the removed ones in `modSearchedRules`)
+                    return !searchedRules.includes(rule);
+                });
+
+            // If > 1 page, i.e. only all selected at that page
+            } else {
+                const rmvRules = searchedRules.slice(startRowIdx, pgnItemEndIdx);
+                modSearchedRules.splice(startRowIdx, totalVisibleRows);
+                modRules = rules.filter((rule) => !rmvRules.includes(rule));
+            }
+
+        // For partial rows selected
+        } else {
+            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
+            const selectedRowsTotal: number = rowIndexes.length - 1;
+
+            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
+            for (let i = selectedRowsTotal; i >= 0; i--) {
+                const rowIdx: number = Number(rowIndexes[i][0]);
+                modSearchedRules.splice(rowIdx, 1);
+            }
+
+            // Update the global rules
+            modRules = rules.filter((rule) => modSearchedRules.includes(rule));
+        }
+
+        // TODO: clear pagination index as well
+        return {
+            rules: modRules,
+            localState: {
+                searchedRules: modSearchedRules,
+                areAllRowsSelected: false,
+                selectedRowKeys: {},     // in case of side-effect on `selectedRowKeys` state
             }
         };
     }
@@ -299,7 +447,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onDelModalConfirm(state: AppState) {
-        const { onModalCancel, rmvSearchedRow, rmvSearchedRows, rmvRow, rmvRows } = this.reflect;
+        const { onModalCancel, onSearchedRowRmv, onSearchedRowsRmv, onRowRmv, onRowsRmv } = this.reflect;
         const { targetChildItemIdx, targetItemIdx, searchedRules } = state.localState;
         const isDelSingleItem = Number.isInteger(targetChildItemIdx);
         const hsSearchResults = searchedRules?.length;
@@ -314,8 +462,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
         if (isDelSingleItem) {
             const { rules, localState } = hsSearchResults ?
-                rmvSearchedRow(state, targetChildItemIdx, targetItemIdx) :
-                rmvRow(state, targetChildItemIdx, targetItemIdx);
+                onSearchedRowRmv(state, targetChildItemIdx, targetItemIdx) :
+                onRowRmv(state, targetChildItemIdx, targetItemIdx);
 
             return {
                 rules,
@@ -328,8 +476,8 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         // If remove all items
         } else {
             const { rules, localState } = hsSearchResults ?
-                rmvSearchedRows(state) :
-                rmvRows(state);
+                onSearchedRowsRmv(state) :
+                onRowsRmv(state);
 
             return {
                 localState: {
@@ -482,163 +630,6 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// Helper (used in Reflect only)
-    onRowSwitchToggle({ rules }: AppState, idx: number, key: string): Partial<AppState> {
-        const clone = rules.slice();
-        const value = clone[idx][key];
-        clone[idx][key] = !value;
-        return { rules: clone };
-    }
-
-    rmvRow({ localState }: AppState, idx: number, parentIdx?: number) {
-        const { sortedData } = localState;
-        const modItems = isNumber(parentIdx) ? sortedData[parentIdx].paths : sortedData;
-        modItems.splice(idx, 1);
-
-        return {
-            rules: sortedData,
-            localState: {
-                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
-            }
-        };
-    }
-
-    rmvSearchedRow(appState: AppState, idx: number, parentIdx?: number) {
-        const { localState: currLocalState, rules: currRules } = appState;
-        const { searchedRules } = currLocalState;
-        const searchedRulesCopy = searchedRules.concat();
-        const isRmvSubRow = isNumber(parentIdx);
-
-        // Remove the matching item in global rules
-        if (isRmvSubRow) {
-            // Since both searchRules & rules points to the same array item and since we only modifying its array children,
-            // we dont need to copy the rules
-            const modRow = searchedRulesCopy[parentIdx];
-            modRow.paths.splice(idx, 1);
-            return { ...appState };
-
-        } else {
-            const rmvRow = searchedRulesCopy[idx];
-            const idxInRules = currRules.indexOf(rmvRow, 0);
-
-            // Remove the matching item in global rules
-            const { rules, localState } = this.reflect.rmvRow({
-                ...appState,
-                localState: {
-                    ...currLocalState,
-                    sortedData: currRules     // modify the global rules instead of  `sortedData` (which is eqv. to searched rules)
-                }
-            }, idxInRules, null);
-
-            // We only need to modify the searched rule if it is NOT a child item, in order to async with the global rules
-            searchedRulesCopy.splice(idx, 1);
-
-            return {
-                rules,
-                localState: {
-                    ...localState,
-                    searchedRules: searchedRulesCopy,
-                }
-            }
-        }
-    }
-
-    rmvRows({ localState }: AppState) {
-        const { getRowIndexCtx } = this.reflect;
-        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, sortedData } = localState;
-        const totalRules = sortedData.length;
-        const { startRowIdx, totalVisibleRows } = getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
-        let modRules: HostRuleConfig[] = sortedData.concat();
-
-        // For all rows selected
-        if (areAllRowsSelected) {
-            // - if only 1 page regardless of pagination or not, remove all items
-            // - if not, then only remove all items at that page
-            const hsOnlyOnePage = totalRules <= totalVisibleRows;
-            if (hsOnlyOnePage) {
-                modRules = [];
-            } else {
-                modRules.splice(startRowIdx, totalVisibleRows);
-            }
-
-        // For partial rows selected
-        } else {
-            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
-            const selectedRowsTotal: number = rowIndexes.length - 1;
-
-            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
-            for (let i = selectedRowsTotal; i >= 0; i--) {
-                const rowIdx: number = Number(rowIndexes[i][0]);
-                modRules.splice(rowIdx, 1);
-            }
-        }
-
-        return {
-            rules: modRules,
-            localState: {
-                areAllRowsSelected: false,
-                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
-            }
-        };
-    }
-
-    rmvSearchedRows({ localState, rules }: AppState) {
-        const { searchedRules,
-            areAllRowsSelected, selectedRowKeys,
-            pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx,
-            sortedData
-        } = localState;
-
-        // Contextual to Searched Rules (not the global rules)
-        const totalRules = sortedData.length;
-        const { startRowIdx, totalVisibleRows } = this.reflect.getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
-        let modSearchedRules: HostRuleConfig[] = sortedData.concat();
-        let modRules: HostRuleConfig[];
-
-        // For all rows selected
-        if (areAllRowsSelected) {
-            const hsOnlyOnePage = totalRules <= totalVisibleRows;
-
-            // If only 1 page, i.e. all selected
-            if (hsOnlyOnePage) {
-                modSearchedRules = [];
-                modRules = rules.filter((rule) => {
-                    // exclude all the rules that are in `searchRules` (i.e. the removed ones in `modSearchedRules`)
-                    return !searchedRules.includes(rule);
-                });
-
-            // If > 1 page, i.e. only all selected at that page
-            } else {
-                const rmvRules = searchedRules.slice(startRowIdx, pgnItemEndIdx);
-                modSearchedRules.splice(startRowIdx, totalVisibleRows);
-                modRules = rules.filter((rule) => !rmvRules.includes(rule));
-            }
-
-        // For partial rows selected
-        } else {
-            const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
-            const selectedRowsTotal: number = rowIndexes.length - 1;
-
-            // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
-            for (let i = selectedRowsTotal; i >= 0; i--) {
-                const rowIdx: number = Number(rowIndexes[i][0]);
-                modSearchedRules.splice(rowIdx, 1);
-            }
-
-            // Update the global rules
-            modRules = rules.filter((rule) => modSearchedRules.includes(rule));
-        }
-
-        // TODO: clear pagination index as well
-        return {
-            rules: modRules,
-            localState: {
-                searchedRules: modSearchedRules,
-                areAllRowsSelected: false,
-                selectedRowKeys: {},     // in case of side-effect on `selectedRowKeys` state
-            }
-        };
-    }
-
     /**
      *
      * Formula for calculating a row's end index used for rows removal at a specific page when all rows are selected
