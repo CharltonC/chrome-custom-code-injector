@@ -78,7 +78,9 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             pgnItemStartIdx: 0,
             pgnItemEndIdx: null,
             sortedData: null,
-            currModalId: null
+            currModalId: null,
+            areAllRowsSelected: false,
+            selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
         };
 
         const { rules, localState } = isDelSingleItem ?
