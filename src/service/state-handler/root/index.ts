@@ -1,6 +1,5 @@
 import { RowSelectHandle } from '../../handle/row-select';
 import { StateHandle } from '../../handle/state';
-import { AView } from '../../model/local-state/type';
 import { AppState } from '../../model/app-state';
 import { LocalState } from '../../model/local-state';
 import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
@@ -8,7 +7,6 @@ import { modals } from '../../constant/modals';
 import { Setting } from '../../model/setting';
 import { resultsPerPage } from '../../constant/result-per-page';
 import { FileHandle } from '../../handle/file';
-import { isNumber } from 'util';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
@@ -123,7 +121,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
 
     onRowRmv({ localState }: AppState, idx: number, parentIdx?: number) {
         const { sortedData } = localState;
-        const modItems = isNumber(parentIdx) ? sortedData[parentIdx].paths : sortedData;
+        const modItems = Number.isInteger(parentIdx) ? sortedData[parentIdx].paths : sortedData;
         modItems.splice(idx, 1);
 
         return {
@@ -138,7 +136,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const { localState: currLocalState, rules: currRules } = appState;
         const { searchedRules } = currLocalState;
         const searchedRulesCopy = searchedRules.concat();
-        const isRmvSubRow = isNumber(parentIdx);
+        const isRmvSubRow = Number.isInteger(parentIdx);
 
         // Remove the matching item in global rules
         if (isRmvSubRow) {
@@ -650,7 +648,7 @@ export class StateHandler extends StateHandle.BaseStoreHandler {
         const totalVisibleRowsAllowed: number = Math.min(totalRules, resultsPerPage[pgnIncrmIdx]);
 
         // Find in the actual end index of the row in the actual data based on the pagination context
-        const assumeEndIdx: number = pgnItemStartIdx + (isNumber(pgnItemEndIdx) ? pgnItemEndIdx : totalVisibleRowsAllowed);
+        const assumeEndIdx: number = pgnItemStartIdx + (Number.isInteger(pgnItemEndIdx) ? pgnItemEndIdx : totalVisibleRowsAllowed);
         const endRowIdx: number = assumeEndIdx <= totalRules ? assumeEndIdx : totalRules;
 
         return {
