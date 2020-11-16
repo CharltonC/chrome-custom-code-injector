@@ -47,9 +47,10 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onDelModal(state: AppState, { sortedData, ctxIdx, parentCtxIdx }) {
+        const { reflect } = this;
         const { localState, setting } = state;
         const { showDeleteModal } = setting;
-        const isDelSingleItem = typeof ctxIdx !== 'undefined';
+        const isDelSingleItem = Number.isInteger(ctxIdx);
         const baseModState = {
             ...localState,
             sortedData: sortedData.concat(),
@@ -62,18 +63,17 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                     targetItemIdx: parentCtxIdx
                 } : baseModState
         };
-        return showDeleteModal ? partialModState : this.reflect.onDelModalConfirm({...state, ...partialModState});
+        return showDeleteModal ? partialModState : reflect.onDelModalConfirm({...state, ...partialModState});
     }
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { onModalCancel } = reflect;
-        const { targetChildItemIdx, targetItemIdx, searchedRules } = state.localState;
+        const { searchedRules, targetChildItemIdx, targetItemIdx, } = state.localState;
         const isDelSingleItem = Number.isInteger(targetChildItemIdx);
         const isSearch = searchedRules?.length;
 
         const resetLocalState: LocalState = {
-            ...onModalCancel(state).localState,
+            ...reflect.onModalCancel(state).localState,
             pgnPageIdx: 0,
             pgnItemStartIdx: 0,
             pgnItemEndIdx: null,
