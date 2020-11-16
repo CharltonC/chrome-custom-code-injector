@@ -5,7 +5,7 @@ export class BaseStoreHandler {
     readonly CHANGE_EVT: string = 'CHANGE';
     readonly PubSub: PubSub = PubSub;
 
-    static join<T extends BaseStoreHandler>(...Handlers: IStoreHandlerClass[]): IStoreHandlerClass<T> {
+    static join<T extends BaseStoreHandler>(Handlers: IStoreHandlerClass[]): IStoreHandlerClass<T> {
         class BaseClass extends BaseStoreHandler {}
         Handlers.forEach((Handler: IStoreHandlerClass) => {
             const { prototype: baseProto } = BaseClass;

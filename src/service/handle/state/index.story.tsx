@@ -164,7 +164,7 @@ export const SingleStateWithPartialHandlers = () => {
         }
     }
 
-    const SampleStoreHandler = BaseStoreHandler.join(PartialHandlerA, PartialHandlerB);
+    const SampleStoreHandler = BaseStoreHandler.join([PartialHandlerA, PartialHandlerB]);
 
     const SampleComponent = ({ store, storeHandler }) => {
         const { name, age } = store;

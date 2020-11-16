@@ -62,7 +62,7 @@ describe('State Handle', () => {
                 return { name: 'amy' }
             }
         }
-        const MockStoreHandler = BaseStoreHandler.join(MockPartialeHandlerA, MockPartialHandlerB);
+        const MockStoreHandler = BaseStoreHandler.join([MockPartialeHandlerA, MockPartialHandlerB]);
 
         let $h1: HTMLHeadingElement;
         let $h2: HTMLHeadingElement;
