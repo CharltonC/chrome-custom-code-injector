@@ -4,13 +4,15 @@ import { AppState } from '../../model/app-state';
 import { HostRuleConfig } from '../../model/rule-config';
 import { resultsPerPage } from '../../constant/result-per-page';
 
+const rowSelectHandle = new RowSelectHandle();
+
 export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
-    rowSelectHandle = new RowSelectHandle();
+
 
     onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
         const { areAllRowsSelected, selectedRowKeys } = localState;
 
-        const rowSelectState = this.rowSelectHandle.getState({
+        const rowSelectState = rowSelectHandle.getState({
             isAll: true,
             currState: { areAllRowsSelected, selectedRowKeys }
         });
@@ -31,7 +33,7 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
             pgnItemEndIdx
         });
 
-        const rowSelectState = this.rowSelectHandle.getState({
+        const rowSelectState = rowSelectHandle.getState({
             isAll: false,
             currState: { areAllRowsSelected, selectedRowKeys },
             rowsCtx: { startRowIdx, endRowIdx, rowIdx }
@@ -78,57 +80,37 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
+    /**
+     * Remove row or sub row
+     */
     onRowRmv({ localState }: AppState, idx: number, parentIdx?: number) {
-        const { sortedData } = localState;
-        const modItems = Number.isInteger(parentIdx) ? sortedData[parentIdx].paths : sortedData;
+        const { sortedData } = localState;      // set by `onDelModal`
+        const isSubRow = Number.isInteger(parentIdx);
+        const modItems = isSubRow ? sortedData[parentIdx].paths : sortedData;
         modItems.splice(idx, 1);
 
         return {
             rules: sortedData,
-            localState: {
-                selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
-            }
+            localState: {}
         };
     }
 
     onSearchedRowRmv(appState: AppState, idx: number, parentIdx?: number) {
-        const { localState: currLocalState, rules: currRules } = appState;
-        const { searchedRules } = currLocalState;
-        const searchedRulesCopy = searchedRules.concat();
-        const isRmvSubRow = Number.isInteger(parentIdx);
+        const { rules: currRules } = appState;
+        const isSubRow = Number.isInteger(parentIdx);
 
-        // Remove the matching item in global rules
-        if (isRmvSubRow) {
-            // Since both searchRules & rules points to the same array item and since we only modifying its array children,
-            // we dont need to copy the rules
-            const modRow = searchedRulesCopy[parentIdx];
-            modRow.paths.splice(idx, 1);
-            return { ...appState };
+        // Remove either row or sub row for searched rules
+        const { rules: modSearchedRules } = this.reflect.onRowRmv(appState, idx, parentIdx);
 
-        } else {
-            const rmvRow = searchedRulesCopy[idx];
-            const idxInRules = currRules.indexOf(rmvRow, 0);
+        // If Not sub row, Remove corresponding row in global rules as well
+        const modRules = isSubRow ? currRules : this.reflect.onRowsRmv(appState).rules;
 
-            // Remove the matching item in global rules
-            const { rules, localState } = this.reflect.onRowRmv({
-                ...appState,
-                localState: {
-                    ...currLocalState,
-                    sortedData: currRules     // modify the global rules instead of  `sortedData` (which is eqv. to searched rules)
-                }
-            }, idxInRules, null);
-
-            // We only need to modify the searched rule if it is NOT a child item, in order to async with the global rules
-            searchedRulesCopy.splice(idx, 1);
-
-            return {
-                rules,
-                localState: {
-                    ...localState,
-                    searchedRules: searchedRulesCopy,
-                }
+        return {
+            rules: modRules,
+            localState: {
+                searchedRules: modSearchedRules
             }
-        }
+        };
     }
 
     onRowsRmv({ localState }: AppState) {

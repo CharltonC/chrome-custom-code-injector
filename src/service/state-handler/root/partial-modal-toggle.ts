@@ -3,6 +3,8 @@ import { AppState } from '../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
 import { modals } from '../../constant/modals';
 import { FileHandle } from '../../handle/file';
+import { IStateHandler } from './type';
+import { LocalState } from '../../model/local-state';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
@@ -44,8 +46,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
         return this.reflect.onModalOpen(state, exportConfig.id);
     }
 
-    onDelModal(appState: AppState, {sortedData, ctxIdx, parentCtxIdx}) {
-        const { localState, setting } = appState;
+    onDelModal(state: AppState, { sortedData, ctxIdx, parentCtxIdx }) {
+        const { localState, setting } = state;
         const { showDeleteModal } = setting;
         const isDelSingleItem = typeof ctxIdx !== 'undefined';
         const baseModState = {
@@ -60,52 +62,40 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                     targetItemIdx: parentCtxIdx
                 } : baseModState
         };
-        return showDeleteModal ? partialModState : this.reflect.onDelModalConfirm({...appState, ...partialModState});
+        return showDeleteModal ? partialModState : this.reflect.onDelModalConfirm({...state, ...partialModState});
     }
 
     onDelModalConfirm(state: AppState) {
-        return false;
-        // TODO: Move condition logic to component
-        // const { onModalCancel, onSearchedRowRmv, onSearchedRowsRmv, onRowRmv, onRowsRmv } = this.reflect;
-        // const { targetChildItemIdx, targetItemIdx, searchedRules } = state.localState;
-        // const isDelSingleItem = Number.isInteger(targetChildItemIdx);
-        // const hsSearchResults = searchedRules?.length;
+        const { reflect } = this as unknown as IStateHandler;
+        const { onModalCancel } = reflect;
+        const { targetChildItemIdx, targetItemIdx, searchedRules } = state.localState;
+        const isDelSingleItem = Number.isInteger(targetChildItemIdx);
+        const isSearch = searchedRules?.length;
 
-        // const resetLocalState = {
-        //     ...onModalCancel(state).localState,
-        //     pgnPageIdx: 0,
-        //     pgnItemStartIdx: 0,
-        //     pgnItemEndIdx: null,
-        //     sortedData: null
-        // };
+        const resetLocalState: LocalState = {
+            ...onModalCancel(state).localState,
+            pgnPageIdx: 0,
+            pgnItemStartIdx: 0,
+            pgnItemEndIdx: null,
+            sortedData: null,
+            currModalId: null
+        };
 
-        // if (isDelSingleItem) {
-        //     const { rules, localState } = hsSearchResults ?
-        //         onSearchedRowRmv(state, targetChildItemIdx, targetItemIdx) :
-        //         onRowRmv(state, targetChildItemIdx, targetItemIdx);
+        const { rules, localState } = isDelSingleItem ?
+            ( isSearch ?
+                reflect.onSearchedRowRmv(state, targetChildItemIdx, targetItemIdx) :
+                reflect.onRowRmv(state, targetChildItemIdx, targetItemIdx) ) :
+            ( isSearch ?
+                reflect.onSearchedRowsRmv(state) :
+                reflect.onRowsRmv(state)) ;
 
-        //     return {
-        //         rules,
-        //         localState: {
-        //             ...localState,
-        //             ...resetLocalState,
-        //         }
-        //     };
-
-        // // If remove all items
-        // } else {
-        //     const { rules, localState } = hsSearchResults ?
-        //         onSearchedRowsRmv(state) :
-        //         onRowsRmv(state);
-
-        //     return {
-        //         localState: {
-        //             ...localState,
-        //             ...resetLocalState,
-        //         },
-        //         rules
-        //     };
-        // }
+        return {
+            localState: {
+                ...resetLocalState,
+                ...localState,
+            },
+            rules
+        };
     }
 
     onAddHostModal({ localState }: AppState) {
