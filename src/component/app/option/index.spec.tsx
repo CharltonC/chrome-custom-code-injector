@@ -87,11 +87,13 @@ describe('Component - Option App (UI/E2E)', () => {
                     it('should delete multiple partial rows', () => {
                         // Expand the sub row fist
                         const { $header, $rows } = getRows();
-                        TestUtil.triggerEvt(getCell($rows[0]).$expd, 'click');
-                        TestUtil.triggerEvt(getCell($rows[1]).$expd, 'click');
+                        TestUtil.triggerEvt(getCell($rows[0]).$select, 'click', MouseEvent);
+                        TestUtil.triggerEvt(getCell($rows[1]).$select, 'click', MouseEvent);
                         TestUtil.triggerEvt(getCell($header, true).$del, 'click');
 
-                        expect(hsTargetRow(getRows().$rows, [$rows[0], $rows[1]])).toBeFalsy();
+                        const { $rows: $modRows } = getRows();
+                        expect($modRows.length).toBe(2);
+                        expect(hsTargetRow($modRows, [$rows[0], $rows[1]])).toBeFalsy();
                     });
 
                     it('should delete all rows', () => {
@@ -99,7 +101,8 @@ describe('Component - Option App (UI/E2E)', () => {
                         TestUtil.triggerEvt($select, 'click', MouseEvent);
                         TestUtil.triggerEvt($del, 'click');
 
-                        expect(getRows().$rows.length).toBe(0);
+                        const { $rows } = getRows();
+                        expect($rows.length).toBeFalsy();
                     });
                 });
 
