@@ -87,8 +87,8 @@ describe('Component - Option App (UI/E2E)', () => {
                     it('should delete multiple partial rows', () => {
                         // Expand the sub row fist
                         const { $header, $rows } = getRows();
-                        TestUtil.triggerEvt(getCell($rows[0]).$select, 'click', MouseEvent);
-                        TestUtil.triggerEvt(getCell($rows[1]).$select, 'click', MouseEvent);
+                        TestUtil.triggerEvt(getCell($rows[0]).$select, 'click');
+                        TestUtil.triggerEvt(getCell($rows[1]).$select, 'click');
                         TestUtil.triggerEvt(getCell($header, true).$del, 'click');
 
                         const { $rows: $modRows } = getRows();
@@ -98,7 +98,7 @@ describe('Component - Option App (UI/E2E)', () => {
 
                     it('should delete all rows', () => {
                         const { $select, $del } = getCell(getRows().$header, true);
-                        TestUtil.triggerEvt($select, 'click', MouseEvent);
+                        TestUtil.triggerEvt($select, 'click');
                         TestUtil.triggerEvt($del, 'click');
 
                         const { $rows } = getRows();
