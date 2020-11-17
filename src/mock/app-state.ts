@@ -2,8 +2,8 @@ import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../service/model/
 import { AppState } from '../service/model/app-state';
 
 const mockHostRuleConfigs: [string, string][] = [
-    ['Amazon', 'www.amazon.com'],
     ['Ebay', 'www.ebay.com'],
+    ['Amazon', 'www.amazon.com'],
     ['Gumtree', 'www.gumtree.com'],
     ['JingDong', 'www.jd.com']
 ]
