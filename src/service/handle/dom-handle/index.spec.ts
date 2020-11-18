@@ -1,4 +1,4 @@
-import { DomHandle } from './';
+import { DomHandle } from '.';
 describe('Dom Handle', () => {
     let handle: DomHandle;
 
