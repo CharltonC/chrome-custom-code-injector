@@ -1,4 +1,4 @@
-import { StateHandle } from '../../handle/state';
+import { StateHandle } from '../../handle/state-handle';
 import { GeneralStateHandler } from './partial-general';
 import { ModalToggleStateHandler } from './partial-modal-toggle';
 import { ModalContentStateHandler } from './partial-modal-content';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { BaseStoreHandler } from './base-store-handler';
-import { StateHandle } from './';
+import { StateHandle } from '.';
 
 describe('State Handle', () => {
     let $elem: HTMLElement;

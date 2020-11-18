@@ -1,4 +1,4 @@
-import { StateHandle } from '../../handle/state';
+import { StateHandle } from '../../handle/state-handle';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../../constant/modals';
