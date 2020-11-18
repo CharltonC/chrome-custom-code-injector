@@ -2,7 +2,7 @@ import { StateHandle } from '../../state-handle';
 import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
 import { HostRuleConfig } from '../../../model/rule-config';
-import { resultsPerPage } from '../../../constant/result-per-page';
+import * as TPgn from '../../pagination-handle/type';
 
 export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
     //// Common
@@ -80,9 +80,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// Edit View
-    onPaginate({ localState}: AppState, { curr, perPage, startIdx, endIdx }) {
-        const pgnIncrmIdx: number = resultsPerPage.indexOf(perPage);
-
+    onPaginate({ localState}: AppState, { incrementIdx }: TPgn.IOption, { curr, startIdx, endIdx }: TPgn.IState) {
         return {
             localState: {
                 ...localState,
@@ -93,7 +91,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
 
                 // pagination state
                 pgnPageIdx: curr,
-                pgnIncrmIdx,
+                pgnIncrmIdx: incrementIdx,
                 pgnItemStartIdx: startIdx,
                 pgnItemEndIdx: endIdx,
             }
