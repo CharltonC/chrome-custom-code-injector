@@ -1,6 +1,6 @@
 import { StateHandle } from '../../handle/state';
-import { AppState } from '../../model/app-state';
-import { Setting } from '../../model/setting';
+import { AppState } from '../../../model/app-state';
+import { Setting } from '../../../model/setting';
 
 export class ModalContentStateHandler extends StateHandle.BaseStoreHandler {
     //// Settings

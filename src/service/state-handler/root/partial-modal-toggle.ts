@@ -1,10 +1,10 @@
 import { StateHandle } from '../../handle/state';
-import { AppState } from '../../model/app-state';
-import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
+import { AppState } from '../../../model/app-state';
+import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../constant/modals';
 import { FileHandle } from '../../handle/file';
 import { IStateHandler } from './type';
-import { LocalState } from '../../model/local-state';
+import { LocalState } from '../../../model/local-state';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();

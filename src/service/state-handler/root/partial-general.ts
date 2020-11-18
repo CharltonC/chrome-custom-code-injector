@@ -1,7 +1,7 @@
 import { StateHandle } from '../../handle/state';
-import { AppState } from '../../model/app-state';
-import { LocalState } from '../../model/local-state';
-import { HostRuleConfig } from '../../model/rule-config';
+import { AppState } from '../../../model/app-state';
+import { LocalState } from '../../../model/local-state';
+import { HostRuleConfig } from '../../../model/rule-config';
 import { resultsPerPage } from '../../constant/result-per-page';
 
 export class GeneralStateHandler extends StateHandle.BaseStoreHandler {

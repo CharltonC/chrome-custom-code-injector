@@ -1,6 +1,6 @@
 import { AView } from './type';
 import { HostRuleConfig } from '../rule-config';
-import { Setting } from '../../model/setting';
+import { Setting } from '../setting';
 
 const { resultsPerPageIdx } = new Setting();
 

@@ -1,5 +1,5 @@
-import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../service/model/rule-config';
-import { AppState } from '../service/model/app-state';
+import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../model/rule-config';
+import { AppState } from '../model/app-state';
 
 const mockHostRuleConfigs: [string, string][] = [
     ['Ebay', 'www.ebay.com'],
