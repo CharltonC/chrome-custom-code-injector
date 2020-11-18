@@ -1,6 +1,6 @@
 import * as sortHandleType from '../../../service/handle/sort/type';
 import * as rowTransformHandleType from '../../../service/handle/row-transform/type';
-import * as rowExpdHandleType from '../../../service/handle/row-expand/type';
+import * as rowExpdHandleType from '../../../service/handle/row-expand-handle/type';
 import * as pgnHandleType from '../../../service/handle/pagination-handle/type';
 import * as headerGrpHandleType from '../../../service/handle/header-group-handle/type';
 import * as GridHeaderType from '../../group/grid-header/type';
