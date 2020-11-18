@@ -3,7 +3,7 @@ import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/handle/util/index';
 import { RowExpdHandle } from '../../../service/handle/row-expand-handle';
-import { RowTransformHandle } from '../../../service/handle/row-transform';
+import { RowTransformHandle } from '../../../service/handle/row-transform-handle';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination-handle';
 import { HeaderGrpHandle } from '../../../service/handle/header-group-handle';
