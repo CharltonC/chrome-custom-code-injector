@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GridHeader } from '../../group/grid-header';
 import { Pagination as PaginationCmp } from '../../group/pagination';
 import { DataGrid } from '.';
 import { IRowComponentProps } from './type';
-
 
 export default {
     title: 'Widget - Data Grid',
@@ -181,19 +180,17 @@ const commonProps = {
     paginate: {
         page: 0,
         increment: [10, 5, 20],
-    },
-    callback: {
-        onPaginateChange: (modState) => console.log(modState),
-        onSortChange: (modState) => console.log(modState),
-        onExpandChange: (modState) => console.log(modState)
     }
 };
 
 export const TableGrid = () => {
-    const TrCmp = ({ item, nestedItems , classNames, expandProps }: IRowComponentProps) => {
+    const [ rowsExpdState, setRowsExpdState ] = useState({});
+
+    const TrCmp = ({ item, itemId, nestedItems , classNames, expandProps }: IRowComponentProps) => {
         const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
-        const { isOpen, onClick }: any = nestedItems ? expandProps : {};
+        const { onClick }: any = nestedItems ? expandProps : {};
         const { name, age, id } = item;
+        const isOpen = itemId in rowsExpdState;
 
         return <>
             <tr className={REG_ROW}>
@@ -240,6 +237,11 @@ export const TableGrid = () => {
                     ['lvl3key', TrCmp],
                     ['lvl4key', TrCmp]
                 ]
+            }}
+            callback={{
+                onPaginateChange: (modState) => console.log(modState),
+                onSortChange: (modState) => console.log(modState),
+                onExpandChange: ({expdState}) => setRowsExpdState(expdState)
             }}
             />
     </div>;
