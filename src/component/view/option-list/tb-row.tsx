@@ -43,7 +43,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`check-${ID_SUFFIX}`}
                         clsSuffix=""
                         checked={isSelected}
-                        onChange={() => onRowSelectToggle(ctxIdx)}
+                        onChange={() => onRowSelectToggle(ctxIdx, dataSrc.length)}
                         />}
                 </td><td>{ isParent &&
                     <SliderSwitch

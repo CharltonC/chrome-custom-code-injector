@@ -20,9 +20,8 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onRowSelectToggle({ localState, rules }: AppState, rowIdx: number) {
-        const { areAllRowsSelected, searchedRules, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
-        const totalRules: number = searchedRules?.length || rules.length;
+    onRowSelectToggle({ localState }: AppState, rowIdx: number, totalRules: number) {
+        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
 
         const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx({
             totalRules,
