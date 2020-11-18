@@ -74,7 +74,7 @@ export type TRowCtx = rowTransformHandleType.IRowItemCtx<ReactElement>;
 // User-Defined Row Template
 export interface IRowComponentProps extends TRowCtx {
     key: string;
-    data: TDataOption;
+    dataSrc: TDataOption;
     expandProps: rowExpdHandleType.IExpdBtnAttr;
     commonProps: Record<string, any>;
     rowColStyle?: Record<string, string | number>;

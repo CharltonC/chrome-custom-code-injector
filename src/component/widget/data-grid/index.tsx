@@ -178,7 +178,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             key: itemId,
             // non-sliced full set data
             // - reason this is deliberately passed is to event handler of each row (e.g. select, delete) have access to the internally processed data
-            data: this.getSortedData(),
+            dataSrc: this.getSortedData(),
             commonProps,
             expandProps: nestedItems ? this.getRowCmpExpdProps(itemCtx) : null,
             rowColStyle: isTb  ? null : { '--cols': headerCtx.colTotal },

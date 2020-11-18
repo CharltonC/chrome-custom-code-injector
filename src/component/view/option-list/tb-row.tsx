@@ -8,7 +8,7 @@ import { NumBadge } from '../../base/num-badge';
 import { ITbRowProps } from './type';
 
 export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
-    const { data: dataSrc, ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
+    const { dataSrc, ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
     const { store, storeHandler } = commonProps;
     const { localState } = store;
 

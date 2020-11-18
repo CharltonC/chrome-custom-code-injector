@@ -396,8 +396,8 @@ describe('Component - Data Grid', () => {
                 spy.getSortedData.mockReturnValue(mockData);
                 mockStateProps(mockProps, mockState);
 
-                const { data } = cmp.getRowCmpProps(mockBaseItemCtx);
-                expect(data).toBe(mockData);
+                const { dataSrc } = cmp.getRowCmpProps(mockBaseItemCtx);
+                expect(dataSrc).toBe(mockData);
             });
 
             it('should return props when there are nested items', () => {
