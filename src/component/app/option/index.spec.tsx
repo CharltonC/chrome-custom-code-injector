@@ -63,7 +63,7 @@ describe('Component - Option App (UI/E2E)', () => {
                 // };
             });
 
-            describe('Non-searched + Non-sorted rows', () => {
+            describe('Non-searched + Non-paginated', () => {
                 beforeEach(() => {
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new StateHandler() ],
@@ -128,8 +128,7 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
             });
 
-            // // TODO: sort, modal, pagination, searched context
-            describe('Paginated', () => {
+            describe('Non-searched + Paginated', () => {
                 beforeEach(() => {
                     mockAppState.localState.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
