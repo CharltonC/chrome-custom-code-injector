@@ -49,7 +49,7 @@ describe('Component - Option App (UI/E2E)', () => {
 
     describe('Row CRUD', () => {
         describe('Delete Row', () => {
-            describe('Delete non-searched rows', () => {
+            describe('Neither searched nor sorted rows', () => {
                 beforeEach(() => {
                     const mockAppState = createMockAppState();
                     mockAppState.setting.showDeleteModal = false;   // turn off modal so it wont popup
@@ -105,9 +105,9 @@ describe('Component - Option App (UI/E2E)', () => {
                         expect($rows.length).toBeFalsy();
                     });
                 });
-
-                // TODO: sort, modal, pagination, searched context
             });
+
+            // TODO: sort, modal, pagination, searched context
         });
 
         describe('Select Row', () => {
