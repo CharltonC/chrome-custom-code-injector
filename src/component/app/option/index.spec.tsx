@@ -72,15 +72,17 @@ describe('Component - Option App (UI/E2E)', () => {
 
                 it('should have 4 displayed rows of total 4 rows', () => {
                     const { $rows, totalRows } = getRows();
-                    expect($rows.length).toBe(4);
+
                     expect(totalRows).toBe(4);
+                    expect($rows.length).toBe(4);
                 });
 
                 it('should delete single row', () => {
                     const $targetRow = getRows().$rows[0];
                     TestUtil.triggerEvt(getCell($targetRow).$del, 'click');
+                    const { $rows, totalRows } = getRows();
 
-                    const { $rows } = getRows();
+                    expect(totalRows).toBe(3);
                     expect($rows.length).toBe(3);
                     expect(hsTargetRow($rows, $targetRow)).toBeFalsy();
                 });
@@ -95,8 +97,9 @@ describe('Component - Option App (UI/E2E)', () => {
                     const { $subRows } = getRows();
                     const $targetSubRow = $subRows[0];
                     TestUtil.triggerEvt(getCell($targetSubRow).$del, 'click');
+                    const { $subRows: $modSubRows, totalRows } = getRows();
 
-                    const { $subRows: $modSubRows } = getRows();
+                    expect(totalRows).toBe(4);
                     expect($modSubRows.length).toBe(2);
                     expect(hsTargetRow($modSubRows, $targetSubRow)).toBeFalsy();
                 });
@@ -107,8 +110,9 @@ describe('Component - Option App (UI/E2E)', () => {
                     TestUtil.triggerEvt(getCell($rows[0]).$select, 'click');
                     TestUtil.triggerEvt(getCell($rows[1]).$select, 'click');
                     TestUtil.triggerEvt(getCell($header, true).$del, 'click');
+                    const { $rows: $modRows, totalRows } = getRows();
 
-                    const { $rows: $modRows } = getRows();
+                    expect(totalRows).toBe(2);
                     expect($modRows.length).toBe(2);
                     expect(hsTargetRow($modRows, [$rows[0], $rows[1]])).toBeFalsy();
                 });
@@ -117,8 +121,9 @@ describe('Component - Option App (UI/E2E)', () => {
                     const { $select, $del } = getCell(getRows().$header, true);
                     TestUtil.triggerEvt($select, 'click');
                     TestUtil.triggerEvt($del, 'click');
+                    const { $rows, totalRows } = getRows();
 
-                    const { $rows } = getRows();
+                    expect(totalRows).toBe(0);
                     expect($rows.length).toBeFalsy();
                 });
             });
@@ -158,19 +163,20 @@ describe('Component - Option App (UI/E2E)', () => {
                     const { $subRows } = getRows();
                     const $targetSubRow = $subRows[0];
                     TestUtil.triggerEvt(getCell($targetSubRow).$del, 'click');
+                    const { $subRows: $modSubRows, totalRows } = getRows();
 
-                    const { $subRows: $modSubRows } = getRows();
+                    expect(totalRows).toBe(4);
                     expect($modSubRows.length).toBe(2);
                     expect(hsTargetRow($modSubRows, $targetSubRow)).toBeFalsy();
                 });
 
                 it('should delete multiple partial rows', () => {
-                    // Expand the sub row fist
                     const { $header, $rows } = getRows();
                     TestUtil.triggerEvt(getCell($rows[0]).$select, 'click');
                     TestUtil.triggerEvt(getCell($header, true).$del, 'click');
+                    const { $rows: $modRows, totalRows } = getRows();
 
-                    const { $rows: $modRows, } = getRows();
+                    expect(totalRows).toBe(3);
                     expect($modRows.length).toBe(2);        // 1st page has been replaced with 2 remianing rows
                     expect(hsTargetRow($modRows, $rows[0])).toBeFalsy();
                 });
@@ -179,8 +185,8 @@ describe('Component - Option App (UI/E2E)', () => {
                     const { $select, $del } = getCell(getRows().$header, true);
                     TestUtil.triggerEvt($select, 'click');
                     TestUtil.triggerEvt($del, 'click');
-
                     const { $rows, totalRows } = getRows();
+
                     expect(totalRows).toBe(2);
                     expect($rows.length).toBe(2);            // 1st page has been replaced with 2 remianing rows
                 });
