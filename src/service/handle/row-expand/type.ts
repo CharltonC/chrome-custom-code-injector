@@ -6,7 +6,7 @@ export interface IOption {
 
 //// State
 export interface IState {
-    [K: string]: number;
+    [K: string]: number;    // number value is the item level the row represents
 }
 
 //// Generic Component Attribute
