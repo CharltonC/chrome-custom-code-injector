@@ -192,6 +192,36 @@ describe('Component - Option App (UI/E2E)', () => {
                     expect($rows.length).toBe(2);            // 1st page has been replaced with 2 remianing rows
                 });
             });
+
+            describe('Searched + Paginated', () => {
+                beforeEach(() => {
+                    mockAppState.localState.pgnOption.increment = [ 2 ];    // 2 per page,
+                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
+                        root: [ mockAppState, new StateHandler() ],
+                    }));
+                });
+
+                it('should have 1 display row of total 1 row', () => {
+                    // Search
+                    const { $searchInput } = getElem();
+                    TestUtil.setInputVal($searchInput, 'ebay');
+                    TestUtil.triggerEvt($searchInput, 'change');
+                    const { $rows, totalRows } = getElem();
+
+                    expect(totalRows).toBe(1);
+                    expect($rows.length).toBe(1);
+
+                    // Delete search row
+                    const $targetRow = getElem().$rows[0];
+                    TestUtil.triggerEvt(getCell($targetRow).$del, 'click');
+                    TestUtil.triggerEvt(getElem().$searchClear, 'click');
+                    const { $rows: $modRows, totalRows: modTotalRows } = getElem();
+
+                    expect(modTotalRows).toBe(3);
+                    expect($modRows.length).toBe(2);
+                    expect(hsTargetRow($modRows, $targetRow)).toBeFalsy();
+                });
+            });
         });
 
         describe('Select Row', () => {
