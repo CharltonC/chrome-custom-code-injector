@@ -68,13 +68,14 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { searchedRules, targetChildItemIdx, targetItemIdx, } = state.localState;
+        const { searchedRules, targetChildItemIdx, targetItemIdx, pgnState } = state.localState;
         const isDelSingleItem = Number.isInteger(targetChildItemIdx);
         const isSearch = searchedRules?.length;
 
         const resetLocalState: LocalState = {
             ...reflect.onModalCancel(state).localState,
             pgnState: {
+                ...pgnState,
                 curr: 0,
                 startIdx: 0,
                 endIdx: null
