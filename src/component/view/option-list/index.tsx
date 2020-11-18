@@ -63,12 +63,12 @@ export class OptionListView extends MemoComponent<IProps> {
         );
 
         // TODO: required to get the sorted data from DataGrid component
-        const delAllHeader = (sortedData) => (
+        const delAllHeader = (dataSrc) => (
             <IconBtn
                 icon="delete"
                 theme="gray"
                 disabled={!allowDelAll}
-                onClick={() => onDelModal({ sortedData })}
+                onClick={() => onDelModal({ dataSrc })}
                 />
         );
 

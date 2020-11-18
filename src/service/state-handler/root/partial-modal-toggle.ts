@@ -46,14 +46,14 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
         return this.reflect.onModalOpen(state, exportConfig.id);
     }
 
-    onDelModal(state: AppState, { sortedData, ctxIdx, parentCtxIdx }) {
+    onDelModal(state: AppState, { dataSrc, ctxIdx, parentCtxIdx }) {
         const { reflect } = this;
         const { localState, setting } = state;
         const { showDeleteModal } = setting;
         const isDelSingleItem = Number.isInteger(ctxIdx);
         const baseModState = {
             ...localState,
-            sortedData: sortedData.concat(),
+            dataSrc: dataSrc.concat(),
             currModalId: removeConfirm.id,
         };
         const partialModState: Partial<AppState> = {
@@ -77,7 +77,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             pgnPageIdx: 0,
             pgnItemStartIdx: 0,
             pgnItemEndIdx: null,
-            sortedData: null,
+            dataSrc: null,
             currModalId: null,
             areAllRowsSelected: false,
             selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state

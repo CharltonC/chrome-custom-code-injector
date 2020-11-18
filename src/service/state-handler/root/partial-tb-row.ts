@@ -83,13 +83,13 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
      * Remove row or sub row
      */
     rmvRow({ localState }: AppState, idx: number, parentIdx?: number) {
-        const { sortedData } = localState;      // set by `onDelModal`
+        const { dataSrc } = localState;      // set by `onDelModal`
         const isSubRow = Number.isInteger(parentIdx);
-        const modItems = isSubRow ? sortedData[parentIdx].paths : sortedData;
+        const modItems = isSubRow ? dataSrc[parentIdx].paths : dataSrc;
         modItems.splice(idx, 1);
 
         return {
-            rules: sortedData,
+            rules: dataSrc,
             localState: {}
         };
     }
@@ -109,7 +109,7 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
             ...state,
             localState: {
                 ...localState,
-                sortedData: currRules       // replace the ref & point to global rules
+                dataSrc: currRules       // replace the ref & point to global rules
             }
         }, ruleIdx, null).rules;
 
@@ -129,10 +129,10 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
 
     rmvAllRows({ localState }: AppState) {
         const { getRowIndexCtx } = this.reflect;
-        const { pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, sortedData } = localState;
-        const totalRules = sortedData.length;
+        const { pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, dataSrc } = localState;
+        const totalRules = dataSrc.length;
         const { startRowIdx, totalVisibleRows } = getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
-        let modRules: HostRuleConfig[] = sortedData.concat();
+        let modRules: HostRuleConfig[] = dataSrc.concat();
 
         // - if only 1 page regardless of pagination or not, remove all items
         // - if not, then only remove all items at that page
@@ -150,10 +150,10 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     rmvPartialRows({ localState }: AppState ) {
-        const { selectedRowKeys, sortedData } = localState;
+        const { selectedRowKeys, dataSrc } = localState;
         const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
         const selectedRowsTotal: number = rowIndexes.length - 1;
-        let modRules: HostRuleConfig[] = sortedData.concat();
+        let modRules: HostRuleConfig[] = dataSrc.concat();
 
         // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
         for (let i = selectedRowsTotal; i >= 0; i--) {
