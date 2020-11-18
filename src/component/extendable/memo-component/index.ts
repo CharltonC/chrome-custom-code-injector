@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { UtilHandle } from '../../../service/handle/util';
+import { UtilHandle } from '../../../service/handle/util-handle';
 import { TObj, TObjEntry } from './type';
 
 /**
