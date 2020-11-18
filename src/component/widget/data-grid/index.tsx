@@ -3,7 +3,7 @@ import { MemoComponent } from '../../extendable/memo-component';
 import { HeaderGrpHandle } from '../../../service/handle/header-group-handle';
 import { RowTransformHandle } from '../../../service/handle/row-transform-handle'
 import { RowExpdHandle } from '../../../service/handle/row-expand-handle'
-import { SortHandle } from '../../../service/handle/sort';
+import { SortHandle } from '../../../service/handle/sort-handle';
 import { PgnHandle } from '../../../service/handle/pagination-handle';
 import { Pagination as DefPagination } from '../../group/pagination';
 import { GridHeader } from '../../group/grid-header';

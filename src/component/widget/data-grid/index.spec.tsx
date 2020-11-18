@@ -4,7 +4,7 @@ import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/handle/util/index';
 import { RowExpdHandle } from '../../../service/handle/row-expand-handle';
 import { RowTransformHandle } from '../../../service/handle/row-transform-handle';
-import { SortHandle } from '../../../service/handle/sort';
+import { SortHandle } from '../../../service/handle/sort-handle';
 import { PgnHandle } from '../../../service/handle/pagination-handle';
 import { HeaderGrpHandle } from '../../../service/handle/header-group-handle';
 import { Pagination } from '../../group/pagination';

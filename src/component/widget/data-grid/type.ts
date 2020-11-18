@@ -1,4 +1,4 @@
-import * as sortHandleType from '../../../service/handle/sort/type';
+import * as sortHandleType from '../../../service/handle/sort-handle/type';
 import * as rowTransformHandleType from '../../../service/handle/row-transform-handle/type';
 import * as rowExpdHandleType from '../../../service/handle/row-expand-handle/type';
 import * as pgnHandleType from '../../../service/handle/pagination-handle/type';
