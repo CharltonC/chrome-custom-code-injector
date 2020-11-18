@@ -9,12 +9,14 @@ describe('Component - Option App (UI/E2E)', () => {
     let $elem: HTMLElement;
     let mockAppState: AppState;
 
-    function getRows() {
+    function getElem() {
         const pgnRecordTxt = $elem.querySelector('.paginate__record').textContent;
         const pgnRecordTxtTotal = pgnRecordTxt.length;
 
         return {
             totalRows: Number(pgnRecordTxt.slice(pgnRecordTxtTotal - 1, pgnRecordTxtTotal)),
+            $searchInput: $elem.querySelector('.search__input') as HTMLInputElement,
+            $searchClear: $elem.querySelector('.search__clear') as HTMLButtonElement,
             $header: $elem.querySelector('.datagrid__head tr') as HTMLElement,
             $rows: $elem.querySelectorAll('.datagrid__body--root > tr') as NodeListOf<HTMLElement>,
             $subRows: $elem.querySelectorAll('.datagrid__body--nested-1 tbody > tr') as NodeListOf<HTMLElement>
@@ -71,16 +73,16 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
 
                 it('should have 4 displayed rows of total 4 rows', () => {
-                    const { $rows, totalRows } = getRows();
+                    const { $rows, totalRows } = getElem();
 
                     expect(totalRows).toBe(4);
                     expect($rows.length).toBe(4);
                 });
 
                 it('should delete single row', () => {
-                    const $targetRow = getRows().$rows[0];
+                    const $targetRow = getElem().$rows[0];
                     TestUtil.triggerEvt(getCell($targetRow).$del, 'click');
-                    const { $rows, totalRows } = getRows();
+                    const { $rows, totalRows } = getElem();
 
                     expect(totalRows).toBe(3);
                     expect($rows.length).toBe(3);
@@ -89,15 +91,15 @@ describe('Component - Option App (UI/E2E)', () => {
 
                 it('should delete single sub row (path)', () => {
                     // Expand the sub row fist
-                    const $row = getRows().$rows[0];
+                    const $row = getElem().$rows[0];
                     const { $expd } = getCell($row);
                     TestUtil.triggerEvt($expd, 'click');
 
                     // Delete the sub row
-                    const { $subRows } = getRows();
+                    const { $subRows } = getElem();
                     const $targetSubRow = $subRows[0];
                     TestUtil.triggerEvt(getCell($targetSubRow).$del, 'click');
-                    const { $subRows: $modSubRows, totalRows } = getRows();
+                    const { $subRows: $modSubRows, totalRows } = getElem();
 
                     expect(totalRows).toBe(4);
                     expect($modSubRows.length).toBe(2);
@@ -106,11 +108,11 @@ describe('Component - Option App (UI/E2E)', () => {
 
                 it('should delete multiple partial rows', () => {
                     // Expand the sub row fist
-                    const { $header, $rows } = getRows();
+                    const { $header, $rows } = getElem();
                     TestUtil.triggerEvt(getCell($rows[0]).$select, 'click');
                     TestUtil.triggerEvt(getCell($rows[1]).$select, 'click');
                     TestUtil.triggerEvt(getCell($header, true).$del, 'click');
-                    const { $rows: $modRows, totalRows } = getRows();
+                    const { $rows: $modRows, totalRows } = getElem();
 
                     expect(totalRows).toBe(2);
                     expect($modRows.length).toBe(2);
@@ -118,10 +120,10 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
 
                 it('should delete all rows', () => {
-                    const { $select, $del } = getCell(getRows().$header, true);
+                    const { $select, $del } = getCell(getElem().$header, true);
                     TestUtil.triggerEvt($select, 'click');
                     TestUtil.triggerEvt($del, 'click');
-                    const { $rows, totalRows } = getRows();
+                    const { $rows, totalRows } = getElem();
 
                     expect(totalRows).toBe(0);
                     expect($rows.length).toBeFalsy();
@@ -137,15 +139,15 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
 
                 it('should have 2 displayed rows of total 4 rows', () => {
-                    const { $rows, totalRows } = getRows();
+                    const { $rows, totalRows } = getElem();
                     expect($rows.length).toBe(2);
                     expect(totalRows).toBe(4);
                 });
 
                 it('should delete single row', () => {
-                    const $targetRow = getRows().$rows[0];
+                    const $targetRow = getElem().$rows[0];
                     TestUtil.triggerEvt(getCell($targetRow).$del, 'click');
-                    const { $rows, totalRows } = getRows();
+                    const { $rows, totalRows } = getElem();
 
                     expect(totalRows).toBe(3);
                     expect($rows.length).toBe(2);
@@ -154,15 +156,15 @@ describe('Component - Option App (UI/E2E)', () => {
 
                 it('should delete single sub row (path)', () => {
                     // Expand the sub row fist
-                    const $row = getRows().$rows[0];
+                    const $row = getElem().$rows[0];
                     const { $expd } = getCell($row);
                     TestUtil.triggerEvt($expd, 'click');
 
                     // Delete the sub row
-                    const { $subRows } = getRows();
+                    const { $subRows } = getElem();
                     const $targetSubRow = $subRows[0];
                     TestUtil.triggerEvt(getCell($targetSubRow).$del, 'click');
-                    const { $subRows: $modSubRows, totalRows } = getRows();
+                    const { $subRows: $modSubRows, totalRows } = getElem();
 
                     expect(totalRows).toBe(4);
                     expect($modSubRows.length).toBe(2);
@@ -170,10 +172,10 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
 
                 it('should delete multiple partial rows', () => {
-                    const { $header, $rows } = getRows();
+                    const { $header, $rows } = getElem();
                     TestUtil.triggerEvt(getCell($rows[0]).$select, 'click');
                     TestUtil.triggerEvt(getCell($header, true).$del, 'click');
-                    const { $rows: $modRows, totalRows } = getRows();
+                    const { $rows: $modRows, totalRows } = getElem();
 
                     expect(totalRows).toBe(3);
                     expect($modRows.length).toBe(2);        // 1st page has been replaced with 2 remianing rows
@@ -181,10 +183,10 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
 
                 it('should delete all rows', () => {
-                    const { $select, $del } = getCell(getRows().$header, true);
+                    const { $select, $del } = getCell(getElem().$header, true);
                     TestUtil.triggerEvt($select, 'click');
                     TestUtil.triggerEvt($del, 'click');
-                    const { $rows, totalRows } = getRows();
+                    const { $rows, totalRows } = getElem();
 
                     expect(totalRows).toBe(2);
                     expect($rows.length).toBe(2);            // 1st page has been replaced with 2 remianing rows
