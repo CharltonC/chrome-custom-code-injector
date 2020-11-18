@@ -1,5 +1,5 @@
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
-import { TestUtil } from '../../../asset/ts/test-util';
+import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { TestUtil } from '../../asset/ts/test-util';
 import {
     IOption,
     IBaseTbHeader, ITbHeaderCache,

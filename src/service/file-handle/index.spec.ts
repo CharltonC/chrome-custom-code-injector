@@ -1,6 +1,6 @@
-import { TestUtil } from '../../../asset/ts/test-util';
+import { TestUtil } from '../../asset/ts/test-util';
 import { FileHandle } from '.';
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { TMethodSpy } from '../../asset/ts/test-util/type';
 
 describe('File Handle', () => {
     let handle: FileHandle;

@@ -1,6 +1,6 @@
-import { TestUtil } from '../../../asset/ts/test-util';
+import { TestUtil } from '../../asset/ts/test-util';
 import { RowSelectHandle } from '.';
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { TMethodSpy } from '../../asset/ts/test-util/type';
 import { IState } from './type';
 
 describe('Row Select Handle', () => {

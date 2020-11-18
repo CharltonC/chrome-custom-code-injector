@@ -4,7 +4,7 @@ import React, { ReactElement } from 'react';
 import { modals } from '../../../constant/modals';
 import { urls } from '../../../constant/urls';
 import { resultsPerPage } from '../../../constant/result-per-page';
-import { validationHandle } from '../../../service/handle/validation-handle';
+import { validationHandle } from '../../../service/validation-handle';
 import { jsExecStage } from '../../../constant/js-exec-stage';
 
 import { MemoComponent } from '../../extendable/memo-component';

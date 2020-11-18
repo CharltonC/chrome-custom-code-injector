@@ -1,5 +1,5 @@
-import { RowSelectHandle } from '../../handle/row-select-handle';
-import { StateHandle } from '../../handle/state-handle';
+import { RowSelectHandle } from '../../row-select-handle';
+import { StateHandle } from '../../state-handle';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
 import { resultsPerPage } from '../../../constant/result-per-page';

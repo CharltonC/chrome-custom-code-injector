@@ -1,4 +1,4 @@
-import { IUiHandle } from '../../../asset/ts/type/ui-handle';
+import { IUiHandle } from '../../asset/ts/type/ui-handle';
 import {
     IOption,
     IState,

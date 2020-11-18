@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { DomHandle } from '../../../service/handle/dom-handle';
+import { DomHandle } from '../../../service/dom-handle';
 import { TextBtn } from '../../base/btn-text';
 import { Modal } from '.';
 

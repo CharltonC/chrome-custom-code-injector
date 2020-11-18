@@ -1,4 +1,4 @@
-import * as headerGrpHandleType from '../../../service/handle/header-group-handle/type';
+import * as headerGrpHandleType from '../../../service/header-group-handle/type';
 import * as sortBtnType from '../../base/btn-sort/type';
 import { ReactElement } from 'react';
 

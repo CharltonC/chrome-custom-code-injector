@@ -1,8 +1,8 @@
-import { StateHandle } from '../../handle/state-handle';
+import { StateHandle } from '../../state-handle';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../../constant/modals';
-import { FileHandle } from '../../handle/file-handle';
+import { FileHandle } from '../../file-handle';
 import { IStateHandler } from './type';
 import { LocalState } from '../../../model/local-state';
 
