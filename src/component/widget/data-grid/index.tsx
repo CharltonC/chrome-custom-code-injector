@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { HeaderGrpHandle } from '../../../service/handle/header-group';
-import { RowHandle } from '../../../service/handle/row'
+import { RowHandle } from '../../../service/handle/row-transform'
 import { RowExpdHandle } from '../../../service/handle/row-expand'
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
