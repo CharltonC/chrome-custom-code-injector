@@ -1,5 +1,5 @@
 import * as sortHandleType from '../../../service/handle/sort/type';
-import * as rowHandleType from '../../../service/handle/row-transform/type';
+import * as rowTransformHandleType from '../../../service/handle/row-transform/type';
 import * as rowExpdHandleType from '../../../service/handle/row-expand/type';
 import * as pgnHandleType from '../../../service/handle/pagination/type';
 import * as headerGrpHandleType from '../../../service/handle/header-group/type';
@@ -21,7 +21,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
 
 export type TDataOption = Record<string, any>[];
 export type TGridTypeOption = 'table' | 'list';
-export type TRowKeyOption = string | ((ctx: rowHandleType.IRowItemCtx<ReactElement>) => string);
+export type TRowKeyOption = string | ((ctx: rowTransformHandleType.IRowItemCtx<ReactElement>) => string);
 export type TRowsOption = [ TRootRowOption, ...Array<TNestedRowOption> ];
 export type TRowOption = TRootRowOption | TNestedRowOption;
 export type TRootRowOption = [ TFn ];
@@ -47,7 +47,7 @@ interface ICallbackOption {
 export interface IState {
     isTb: boolean;
     headerCtx: THeaderCtx;
-    rowsOption: rowHandleType.IRawRowsOption[];
+    rowsOption: rowTransformHandleType.IRawRowsOption[];
     expdState: rowExpdHandleType.IState;
     sortOption: sortHandleType.IOption;
     sortState: sortHandleType.IState;
@@ -69,7 +69,7 @@ type TListHeaderCtx = headerGrpHandleType.ICtxListHeader<GridHeaderType.TTitle>;
 //// Generic
 export type TFn = (...args: any[]) => any;
 export type TCmp = React.FC<any> | React.ComponentClass<any>;
-export type TRowCtx = rowHandleType.IRowItemCtx<ReactElement>;
+export type TRowCtx = rowTransformHandleType.IRowItemCtx<ReactElement>;
 
 // User-Defined Row Template
 export interface IRowComponentProps extends TRowCtx {
@@ -87,7 +87,7 @@ export interface IRowComponentProps extends TRowCtx {
 
 //// Reexport
 export { pgnHandleType };
-export { rowHandleType };
+export { rowTransformHandleType };
 export { rowExpdHandleType };
 export { sortHandleType };
 export { headerGrpHandleType };

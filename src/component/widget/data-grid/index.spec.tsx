@@ -3,7 +3,7 @@ import { TMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/handle/util/index';
 import { RowExpdHandle } from '../../../service/handle/row-expand';
-import { RowHandle } from '../../../service/handle/row-transform';
+import { RowTransformHandle } from '../../../service/handle/row-transform';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
 import { HeaderGrpHandle } from '../../../service/handle/header-group';
@@ -21,7 +21,7 @@ describe('Component - Data Grid', () => {
     let cmp: DataGrid;
     let spy: TMethodSpy<DataGrid>;
     let utilHandleSpy: TMethodSpy<UtilHandle>;
-    let rowHandleSpy: TMethodSpy<RowHandle>;
+    let rowTransformHandleSpy: TMethodSpy<RowTransformHandle>;
     let rowExpdHandleSpy: TMethodSpy<RowExpdHandle>;
     let sortHandleSpy: TMethodSpy<SortHandle>;
     let pgnHandleSpy: TMethodSpy<PgnHandle>;
@@ -33,7 +33,7 @@ describe('Component - Data Grid', () => {
         mockState = { isTb: true };
 
         utilHandleSpy = TestUtil.spyProtoMethods(UtilHandle);
-        rowHandleSpy = TestUtil.spyProtoMethods(RowHandle);
+        rowTransformHandleSpy = TestUtil.spyProtoMethods(RowTransformHandle);
         rowExpdHandleSpy = TestUtil.spyProtoMethods(RowExpdHandle);
         sortHandleSpy = TestUtil.spyProtoMethods(SortHandle);
         pgnHandleSpy = TestUtil.spyProtoMethods(PgnHandle);
@@ -454,13 +454,13 @@ describe('Component - Data Grid', () => {
 
                 sliceSpy = jest.spyOn(mockSortedData, 'slice' as any);
                 sliceSpy.mockReturnValue(mockSlicedData);
-                rowHandleSpy.createCtxRows.mockReturnValue(mockRtnRows);
+                rowTransformHandleSpy.createCtxRows.mockReturnValue(mockRtnRows);
             });
 
             it('should return row elements when there is paginate state', () => {
                 mockStateProps(mockProps, mockState);
                 expect(cmp.getRowElems(mockSortedData)).toEqual(mockRtnRows);
-                expect(rowHandleSpy.createCtxRows).toHaveBeenCalledWith({
+                expect(rowTransformHandleSpy.createCtxRows).toHaveBeenCalledWith({
                     pgnStartIdx: 0,
                     data: mockSlicedData,
                     rows: mockState.rowsOption,
@@ -472,7 +472,7 @@ describe('Component - Data Grid', () => {
             it('should return row elements when there is no paginate state', () => {
                 mockStateProps({ ...mockProps, expand: null }, { ...mockState, pgnState: null });
                 expect(cmp.getRowElems(mockSortedData)).toEqual(mockRtnRows);
-                expect(rowHandleSpy.createCtxRows).toHaveBeenCalledWith({
+                expect(rowTransformHandleSpy.createCtxRows).toHaveBeenCalledWith({
                     data: mockSortedData,
                     rows: mockState.rowsOption,
                     rowIdKey: mockProps.rowKey,

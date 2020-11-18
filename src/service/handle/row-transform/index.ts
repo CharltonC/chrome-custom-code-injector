@@ -3,7 +3,7 @@ import {
     IRowItemBaseCtx, TRowType, IErrMsg, TFn, ICtxRowsQuery, IRowItemCtx,
 } from './type';
 
-export class RowHandle {
+export class RowTransformHandle {
     readonly errMsg: IErrMsg = {
         ROW_KEY_MISSING: 'Key in Row Config is missing',
         ROW_KEY_TYPE: 'Key in Row Config must be a string',

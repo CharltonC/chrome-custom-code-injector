@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { HeaderGrpHandle } from '../../../service/handle/header-group';
-import { RowHandle } from '../../../service/handle/row-transform'
+import { RowTransformHandle } from '../../../service/handle/row-transform'
 import { RowExpdHandle } from '../../../service/handle/row-expand'
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
@@ -11,7 +11,7 @@ import {
     IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
     IState, TShallResetState,
     TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp,
-    rowHandleType, rowExpdHandleType, paginationType, sortBtnType, GridHeaderType
+    rowTransformHandleType, rowExpdHandleType, paginationType, sortBtnType, GridHeaderType
 } from './type';
 
 /**
@@ -26,7 +26,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     readonly headerGrpHandle: HeaderGrpHandle = new HeaderGrpHandle();
     readonly pgnHandle: PgnHandle = new PgnHandle();
     readonly sortHandle: SortHandle = new SortHandle();
-    readonly rowHandle: RowHandle = new RowHandle();
+    readonly rowTransformHandle: RowTransformHandle = new RowTransformHandle();
     readonly rowExpdHandle: RowExpdHandle = new RowExpdHandle();
     readonly BASE_CLS: string = 'datagrid';
 
@@ -155,12 +155,12 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     //// Altering Rows Option (so that it renders the corresponding Row Template Component)
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
     // - component state is not yet ready until `transformFn` is executed
-    transformRowOption(rows: TRowsOption): rowHandleType.IRawRowsOption[] {
+    transformRowOption(rows: TRowsOption): rowTransformHandleType.IRawRowsOption[] {
         return rows.map((row: TRowOption, idx: number) => {
             const isRootRowConfig: boolean = idx === 0;
             const RowCmp: TCmp = isRootRowConfig ? (row as TRootRowOption)[0] : (row as TNestedRowOption)[1];
             const transformFn: TFn = this.getRowTransformFn(RowCmp);
-            return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowHandleType.IRawRowsOption;
+            return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowTransformHandleType.IRawRowsOption;
         });
     }
 
@@ -196,7 +196,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { startIdx, endIdx } = pgnState ?? {};
         const { showAll } = expand ?? {};
         const data: TDataOption = pgnState ? sortedData.slice(startIdx, endIdx) : sortedData;
-        return this.rowHandle.createCtxRows<ReactElement>({ data, rows, rowIdKey, showAll, pgnStartIdx: startIdx });
+        return this.rowTransformHandle.createCtxRows<ReactElement>({ data, rows, rowIdKey, showAll, pgnStartIdx: startIdx });
     }
 
     //// Get/Wrap Conditional Components
