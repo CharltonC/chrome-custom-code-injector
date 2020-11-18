@@ -1,11 +1,13 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { StateHandler } from '../../../service/state-handler/root';
 import { StateHandle } from '../../../service/state-handle';
+import { AppState } from '../../../model/app-state';
 import { createMockAppState } from '../../../mock/app-state';
 import { OptionApp } from '.';
 
 describe('Component - Option App (UI/E2E)', () => {
     let $elem: HTMLElement;
+    let mockAppState: AppState;
 
     function getRows() {
         return {
@@ -36,10 +38,7 @@ describe('Component - Option App (UI/E2E)', () => {
 
     beforeEach(() => {
         $elem = TestUtil.setupElem();
-        const App = StateHandle.init(OptionApp, {
-            root: [ createMockAppState(), new StateHandler() ],
-        });
-        TestUtil.renderPlain($elem, App);
+        mockAppState = createMockAppState();
     });
 
     afterEach(() => {
@@ -51,7 +50,6 @@ describe('Component - Option App (UI/E2E)', () => {
         describe('Delete Row', () => {
             describe('Neither searched nor sorted rows', () => {
                 beforeEach(() => {
-                    const mockAppState = createMockAppState();
                     mockAppState.setting.showDeleteModal = false;   // turn off modal so it wont popup
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new StateHandler() ],
