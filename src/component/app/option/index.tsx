@@ -1,11 +1,11 @@
 import React, { ReactElement } from 'react';
 
 // import { debounce } from '../../../asset/ts/vendor/debounce';
-import { modals } from '../../../service/constant/modals';
-import { urls } from '../../../service/constant/urls';
-import { resultsPerPage } from '../../../service/constant/result-per-page';
+import { modals } from '../../../constant/modals';
+import { urls } from '../../../constant/urls';
+import { resultsPerPage } from '../../../constant/result-per-page';
 import { validationHandle } from '../../../service/handle/validation';
-import { jsExecStage } from '../../../service/constant/js-exec-stage';
+import { jsExecStage } from '../../../constant/js-exec-stage';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { IconBtn } from '../../base/btn-icon';

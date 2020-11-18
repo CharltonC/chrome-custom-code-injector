@@ -6,7 +6,7 @@ import { IconSwitch } from '../../base/checkbox-icon-switch';
 import { Dropdown } from '../../base/select-dropdown';
 import { SideNav } from '../../base/side-nav';
 import { DataGrid } from '../../widget/data-grid';
-import { jsExecStage } from '../../../service/constant/js-exec-stage';
+import { jsExecStage } from '../../../constant/js-exec-stage';
 import { TbRow } from './tb-row';
 import { IProps } from './type';
 

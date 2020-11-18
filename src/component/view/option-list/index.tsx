@@ -1,5 +1,5 @@
 import React from 'react';
-import { resultsPerPage } from '../../../service/constant/result-per-page';
+import { resultsPerPage } from '../../../constant/result-per-page';
 import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
 import { IconBtn } from '../../base/btn-icon';

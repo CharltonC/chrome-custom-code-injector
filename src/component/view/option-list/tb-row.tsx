@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { jsExecStage } from '../../../service/constant/js-exec-stage';
+import { jsExecStage } from '../../../constant/js-exec-stage';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';

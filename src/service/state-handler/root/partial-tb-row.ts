@@ -2,7 +2,7 @@ import { RowSelectHandle } from '../../handle/row-select';
 import { StateHandle } from '../../handle/state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
-import { resultsPerPage } from '../../constant/result-per-page';
+import { resultsPerPage } from '../../../constant/result-per-page';
 
 const rowSelectHandle = new RowSelectHandle();
 
