@@ -37,15 +37,15 @@ export class LocalState {
     expdRowId: string = null;
 
     // * pagination
-    pgnOption: Partial<TPgn.IOption> = {
+    pgnOption = {
         increment: resultsPerPage,
         incrementIdx: resultsPerPageIdx
-    };
-    pgnState: Partial<TPgn.IState> = {
+    } as TPgn.IOption;
+    pgnState = {
         curr: 0,
         startIdx: 0,
         endIdx: null
-    };
+    } as TPgn.IState;
 
     //// MODAL
     // * ID & Confirm disabled
