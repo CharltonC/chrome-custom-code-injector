@@ -3,7 +3,6 @@ import React, { ReactElement } from 'react';
 // import { debounce } from '../../../asset/ts/vendor/debounce';
 import { modals } from '../../../constant/modals';
 import { urls } from '../../../constant/urls';
-import { resultsPerPage } from '../../../constant/result-per-page';
 import { validationHandle } from '../../../service/validation-handle';
 import { jsExecStage } from '../../../constant/js-exec-stage';
 
@@ -37,6 +36,7 @@ export class OptionApp extends MemoComponent<IProps> {
             currModalId, allowModalConfirm,
             searchedText,
             targetItem,
+            pgnOption
         } = localState;
 
         const {
@@ -148,7 +148,7 @@ export class OptionApp extends MemoComponent<IProps> {
                                     id="result-per-page"
                                     label="Results per page"
                                     ltLabel
-                                    list={resultsPerPage}
+                                    list={pgnOption.increment}
                                     selectIdx={resultsPerPageIdx}
                                     border
                                     onSelect={(evt, idx) => onResultsPerPageChange(idx) }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { resultsPerPage } from '../../../constant/result-per-page';
 import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
 import * as TDataGrid from '../../widget/data-grid/type';
@@ -98,7 +97,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 sort={sortOption}
                 paginate={{
                     page: pgnState.curr,
-                    increment: resultsPerPage,
+                    increment: pgnOption.increment,
                     incrementIdx: pgnOption.incrementIdx,
                 }}
                 />
