@@ -74,9 +74,11 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
         const resetLocalState: LocalState = {
             ...reflect.onModalCancel(state).localState,
-            pgnPageIdx: 0,
-            pgnItemStartIdx: 0,
-            pgnItemEndIdx: null,
+            pgnState: {
+                curr: 0,
+                startIdx: 0,
+                endIdx: null
+            },
             dataSrc: null,
             currModalId: null,
             areAllRowsSelected: false,

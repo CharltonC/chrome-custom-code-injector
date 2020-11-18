@@ -1,7 +1,9 @@
+import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig } from '../rule-config';
 import { Setting } from '../setting';
 import { AView } from './type';
 import * as TSort from '../../service/sort-handle/type';
+import * as TPgn from '../../service/pagination-handle/type';
 
 const { resultsPerPageIdx } = new Setting();
 
@@ -21,23 +23,29 @@ export class LocalState {
     //// DATA GRID ROWS
     // * rows used by Modal Delete Confirm `onDelModalConfirm`
     // - temp storage which points to the current full set of sorted data if exist or plain data (either searched or non-search)
+    // - unpaginated
     dataSrc: HostRuleConfig[] = null;
 
     // * sort
     sortOption: Partial<TSort.IOption> = { reset: true };
 
-    // * select
+    // * select (TODO: make this an row select state object)
     areAllRowsSelected: boolean = false;
     selectedRowKeys: Record<string, boolean> = {};
 
     // * expand (only for allow 1 row to be expanded at the same time)
     expdRowId: string = null;
 
-    // * pagination (TODO: make this an pagination state object)
-    pgnPageIdx: number = 0;
-    pgnIncrmIdx: number = resultsPerPageIdx;
-    pgnItemStartIdx: number = 0;
-    pgnItemEndIdx: number = null;
+    // * pagination
+    pgnOption: Partial<TPgn.IOption> = {
+        increment: resultsPerPage,
+        incrementIdx: resultsPerPageIdx
+    };
+    pgnState: Partial<TPgn.IState> = {
+        curr: 0,
+        startIdx: 0,
+        endIdx: null
+    };
 
     //// MODAL
     // * ID & Confirm disabled

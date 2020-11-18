@@ -21,13 +21,13 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onRowSelectToggle({ localState }: AppState, rowIdx: number, totalRules: number) {
-        const { areAllRowsSelected, selectedRowKeys, pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx } = localState;
+        const { areAllRowsSelected, selectedRowKeys, pgnOption, pgnState } = localState;
 
         const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx({
             totalRules,
-            pgnIncrmIdx,
-            pgnItemStartIdx,
-            pgnItemEndIdx
+            pgnIncrmIdx: pgnOption.incrementIdx,
+            pgnItemStartIdx: pgnState.startIdx,
+            pgnItemEndIdx: pgnState.endIdx
         });
 
         const rowSelectState = rowSelectHandle.getState({
@@ -128,9 +128,14 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
 
     rmvAllRows({ localState }: AppState) {
         const { getRowIndexCtx } = this.reflect;
-        const { pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, dataSrc } = localState;
+        const { dataSrc, pgnOption, pgnState } = localState;
         const totalRules = dataSrc.length;
-        const { startRowIdx, totalVisibleRows } = getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules });
+        const { startRowIdx, totalVisibleRows } = getRowIndexCtx({
+            pgnIncrmIdx: pgnOption.incrementIdx,
+            pgnItemStartIdx: pgnState.startIdx,
+            pgnItemEndIdx: pgnState.endIdx,
+            totalRules
+        });
         let modRules: HostRuleConfig[] = dataSrc.concat();
 
         // - if only 1 page regardless of pagination or not, remove all items

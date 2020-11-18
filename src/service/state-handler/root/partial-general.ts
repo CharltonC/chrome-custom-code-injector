@@ -58,13 +58,13 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
 
     //// List View
     onListView({localState}: AppState): Partial<AppState> {
-        const { pgnIncrmIdx } = localState;   // maintain the only pagination setting
+        const { pgnOption } = localState;   // maintain the only pagination setting
         const resetLocalState = new LocalState();
 
         return {
             localState: {
                 ...resetLocalState,
-                pgnIncrmIdx,
+                pgnOption,
                 currView: 'LIST',
             }
         };
@@ -80,7 +80,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// Edit View
-    onPaginate({ localState}: AppState, { incrementIdx }: TPgn.IOption, { curr, startIdx, endIdx }: TPgn.IState) {
+    onPaginate({ localState}: AppState, pgnOption: TPgn.IOption, pgnState: TPgn.IState) {
         return {
             localState: {
                 ...localState,
@@ -89,11 +89,9 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
                 areAllRowsSelected: false,
                 selectedRowKeys: {},
 
-                // pagination state
-                pgnPageIdx: curr,
-                pgnIncrmIdx: incrementIdx,
-                pgnItemStartIdx: startIdx,
-                pgnItemEndIdx: endIdx,
+                // Update pagination
+                pgnOption,
+                pgnState
             }
         };
     }

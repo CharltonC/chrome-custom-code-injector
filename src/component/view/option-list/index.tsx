@@ -38,7 +38,7 @@ export class OptionListView extends MemoComponent<IProps> {
             areAllRowsSelected,
             searchedRules,
             selectedRowKeys,
-            pgnPageIdx, pgnIncrmIdx,
+            pgnOption, pgnState,
             sortOption,
         } = localState;
 
@@ -97,9 +97,9 @@ export class OptionListView extends MemoComponent<IProps> {
                 ]}
                 sort={sortOption}
                 paginate={{
-                    page: pgnPageIdx,
+                    page: pgnState.curr,
                     increment: resultsPerPage,
-                    incrementIdx: pgnIncrmIdx,
+                    incrementIdx: pgnOption.incrementIdx,
                 }}
                 />
         </>);
