@@ -5,7 +5,7 @@ import { UtilHandle } from '../../../service/handle/util/index';
 import { RowExpdHandle } from '../../../service/handle/row-expand';
 import { RowTransformHandle } from '../../../service/handle/row-transform';
 import { SortHandle } from '../../../service/handle/sort';
-import { PgnHandle } from '../../../service/handle/pagination';
+import { PgnHandle } from '../../../service/handle/pagination-handle';
 import { HeaderGrpHandle } from '../../../service/handle/header-group-handle';
 import { Pagination } from '../../group/pagination';
 import { GridHeader } from '../../group/grid-header';
