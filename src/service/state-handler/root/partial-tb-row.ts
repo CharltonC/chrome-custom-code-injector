@@ -1,4 +1,4 @@
-import { RowSelectHandle } from '../../handle/row-select';
+import { RowSelectHandle } from '../../handle/row-select-handle';
 import { StateHandle } from '../../handle/state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
