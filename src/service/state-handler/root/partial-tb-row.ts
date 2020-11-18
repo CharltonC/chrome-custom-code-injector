@@ -2,7 +2,7 @@ import { RowSelectHandle } from '../../row-select-handle';
 import { StateHandle } from '../../state-handle';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
-import { resultsPerPage } from '../../../constant/result-per-page';
+import * as TPgn from '../../pagination-handle/type';
 
 const rowSelectHandle = new RowSelectHandle();
 
@@ -22,13 +22,7 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
 
     onRowSelectToggle({ localState }: AppState, rowIdx: number, totalRules: number) {
         const { areAllRowsSelected, selectedRowKeys, pgnOption, pgnState } = localState;
-
-        const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx({
-            totalRules,
-            pgnIncrmIdx: pgnOption.incrementIdx,
-            pgnItemStartIdx: pgnState.startIdx,
-            pgnItemEndIdx: pgnState.endIdx
-        });
+        const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx(totalRules, pgnOption, pgnState);
 
         const rowSelectState = rowSelectHandle.getState({
             isAll: false,
@@ -127,15 +121,9 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     rmvAllRows({ localState }: AppState) {
-        const { getRowIndexCtx } = this.reflect;
         const { dataSrc, pgnOption, pgnState } = localState;
         const totalRules = dataSrc.length;
-        const { startRowIdx, totalVisibleRows } = getRowIndexCtx({
-            pgnIncrmIdx: pgnOption.incrementIdx,
-            pgnItemStartIdx: pgnState.startIdx,
-            pgnItemEndIdx: pgnState.endIdx,
-            totalRules
-        });
+        const { startRowIdx, totalVisibleRows } = this.reflect.getRowIndexCtx(totalRules, pgnOption, pgnState);
         let modRules: HostRuleConfig[] = dataSrc.concat();
 
         // - if only 1 page regardless of pagination or not, remove all items
@@ -203,20 +191,23 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
      * 2          | 1        | 0               | 0               | 1
      * 2          | 1        | 1               | 1               | 2
      */
-    getRowIndexCtx({ pgnIncrmIdx, pgnItemStartIdx, pgnItemEndIdx, totalRules }) {
+    getRowIndexCtx(totalRules: number, pgnOption: TPgn.IOption, pgnState: TPgn.IState) {
+        const { increment, incrementIdx } = pgnOption;
+        const { startIdx, endIdx } = pgnState;
+
         // either the total no. of results per page OR the total results
         // - e.g. 10 per page, 5 total results --> max no. of items shown on that page is 5
         // - e.g. 5 per page, 10 results --> max no. of items shown on that page is 5
-        const totalVisibleRowsAllowed: number = Math.min(totalRules, resultsPerPage[pgnIncrmIdx]);
+        const totalVisibleRowsAllowed: number = Math.min(totalRules, increment[incrementIdx]);
 
         // Find in the actual end index of the row in the actual data based on the pagination context
-        const assumeEndIdx: number = pgnItemStartIdx + (Number.isInteger(pgnItemEndIdx) ? pgnItemEndIdx : totalVisibleRowsAllowed);
+        const assumeEndIdx: number = startIdx + (Number.isInteger(endIdx) ? endIdx : totalVisibleRowsAllowed);
         const endRowIdx: number = assumeEndIdx <= totalRules ? assumeEndIdx : totalRules;
 
         return {
-            startRowIdx: pgnItemStartIdx,
+            startRowIdx: startIdx,
             endRowIdx,
-            totalVisibleRows: endRowIdx - pgnItemStartIdx,
+            totalVisibleRows: endRowIdx - startIdx,
             totalVisibleRowsAllowed
         };
     }
