@@ -99,4 +99,13 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
             }
         };
     }
+
+    onSort({ localState }: AppState, sortOption) {
+        return {
+            localState: {
+                ...localState,
+                sortOption
+            }
+        };
+    }
 }
