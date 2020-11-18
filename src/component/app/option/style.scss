@@ -54,33 +54,6 @@
         }
     }
 
-    .main {
-        // Common for both edit and list views
-        .datagrid {
-            &__head {
-                th {
-                    height: 50px;
-                    font: bold 14px $arial;
-                }
-            }
-
-            &__row {
-                td:not([colspan]) {
-                    height: 60px;
-                    vertical-align: middle;
-                }
-            }
-
-            th,
-            td:not([colspan]) {
-                // Checkbox
-                &:first-child {
-                    padding-left: 15px;
-                }
-            }
-        }
-    }
-
     .modal {
         &--setting {
             .slider-switch span,

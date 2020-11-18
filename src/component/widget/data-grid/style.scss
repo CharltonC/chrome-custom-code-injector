@@ -57,6 +57,20 @@
         padding: 25px 20px 20px 20px;
     }
 
+    &__head {
+        th {
+            height: 50px;
+            font: bold 14px $arial;
+        }
+    }
+
+    &__row {
+        td:not([colspan]) {
+            height: 60px;
+            vertical-align: middle;
+        }
+    }
+
     &__body {
         @include nested-table-bg('&--nested-', 4, $light-gray-400, 10px);
         text-align: left;
@@ -85,4 +99,13 @@
             color: $gray;
         }
     }
+
+    th,
+    td:not([colspan]) {
+        // Checkbox
+        &:first-child {
+            padding-left: 15px;
+        }
+    }
+
 }
