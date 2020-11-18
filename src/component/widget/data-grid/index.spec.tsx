@@ -6,7 +6,7 @@ import { RowExpdHandle } from '../../../service/handle/row-expand';
 import { RowTransformHandle } from '../../../service/handle/row-transform';
 import { SortHandle } from '../../../service/handle/sort';
 import { PgnHandle } from '../../../service/handle/pagination';
-import { HeaderGrpHandle } from '../../../service/handle/header-group';
+import { HeaderGrpHandle } from '../../../service/handle/header-group-handle';
 import { Pagination } from '../../group/pagination';
 import { GridHeader } from '../../group/grid-header';
 import { DataGrid } from '.';

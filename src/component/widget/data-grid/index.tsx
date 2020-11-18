@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
-import { HeaderGrpHandle } from '../../../service/handle/header-group';
+import { HeaderGrpHandle } from '../../../service/handle/header-group-handle';
 import { RowTransformHandle } from '../../../service/handle/row-transform'
 import { RowExpdHandle } from '../../../service/handle/row-expand'
 import { SortHandle } from '../../../service/handle/sort';
