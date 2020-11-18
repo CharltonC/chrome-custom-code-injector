@@ -2,18 +2,18 @@ import React from 'react';
 import { resultsPerPage } from '../../../constant/result-per-page';
 import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
+import * as TDataGrid from '../../widget/data-grid/type';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { TbRow } from './tb-row';
 import { IProps } from './type';
 
 export class OptionListView extends MemoComponent<IProps> {
-    dataGridProps;
+    dataGridProps: Partial<TDataGrid.IProps>;
 
     constructor(props: IProps) {
         super(props);
-
-        const { onPaginate } = props.storeHandler;
+        const { onPaginate, onSort } = props.storeHandler;
 
         // Fixed props for DataGrid component
         this.dataGridProps = {
@@ -22,11 +22,9 @@ export class OptionListView extends MemoComponent<IProps> {
             expand: {
                 onePerLevel: true
             },
-            sort: {
-                reset: true,
-            },
             callback: {
-                onPaginateChange: ({ pgnState }) => onPaginate(pgnState)
+                onPaginateChange: ({ pgnState }) => onPaginate(pgnState),
+                onSortChange: ({ sortOption }) => onSort(sortOption)
             }
         };
     }
@@ -41,6 +39,7 @@ export class OptionListView extends MemoComponent<IProps> {
             searchedRules,
             selectedRowKeys,
             pgnPageIdx, pgnIncrmIdx,
+            sortOption,
         } = localState;
 
         const {
@@ -96,6 +95,7 @@ export class OptionListView extends MemoComponent<IProps> {
                     { title: '' },
                     { title: delAllHeader as any}
                 ]}
+                sort={sortOption}
                 paginate={{
                     page: pgnPageIdx,
                     increment: resultsPerPage,
