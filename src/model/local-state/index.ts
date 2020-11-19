@@ -54,8 +54,8 @@ export class LocalState {
 
     // * Host/Path add/edit item (table row)
     targetItem: HostRuleConfig = null;
-    targetItemIdx: number = null;
-    targetChildItemIdx: number = null;
+    targetCtxIdx: number = null;
+    targetParentCtxIdx: number = null;
     isTargetItemIdValid: boolean = false;
     isTargetItemValValid: boolean = false;
 }

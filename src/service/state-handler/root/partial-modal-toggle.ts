@@ -26,8 +26,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                 currModalId: null,
                 allowModalConfirm: false,
                 targetItem: null,
-                targetItemIdx: null,
-                targetChildItemIdx: null,
+                targetParentCtxIdx: null,
+                targetCtxIdx: null,
                 isTargetItemIdValid:  false,
                 isTargetItemValValid:  false,
             }
@@ -59,8 +59,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
         const partialModState: Partial<AppState> = {
             localState: isDelSingleItem ? {
                     ...baseModState,
-                    targetChildItemIdx: ctxIdx,
-                    targetItemIdx: parentCtxIdx
+                    targetCtxIdx: ctxIdx,
+                    targetParentCtxIdx: parentCtxIdx
                 } : baseModState
         };
         return showDeleteModal ? partialModState : reflect.onDelModalConfirm({...state, ...partialModState});
@@ -68,8 +68,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { searchedRules, targetChildItemIdx, targetItemIdx, pgnState } = state.localState;
-        const isDelSingleItem = Number.isInteger(targetChildItemIdx);
+        const { searchedRules, targetCtxIdx, targetParentCtxIdx, pgnState } = state.localState;
+        const isDelSingleItem = Number.isInteger(targetCtxIdx);
         const isSearch = searchedRules?.length;
 
         const resetLocalState: LocalState = {
@@ -88,8 +88,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
         const { rules, localState } = isDelSingleItem ?
             ( isSearch ?
-                reflect.rmvSearchedRow(state, targetChildItemIdx, targetItemIdx) :
-                reflect.rmvRow(state, targetChildItemIdx, targetItemIdx) ) :
+                reflect.rmvSearchedRow(state, targetCtxIdx, targetParentCtxIdx) :
+                reflect.rmvRow(state, targetCtxIdx, targetParentCtxIdx) ) :
             ( isSearch ?
                 reflect.rmvSearchedRows(state) :
                 reflect.rmvRows(state)) ;
@@ -134,7 +134,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currModalId: editPath.id,
-                targetItemIdx: idx,
+                targetParentCtxIdx: idx,
                 targetItem: new PathRuleConfig('', '')
             }
         };
@@ -142,19 +142,19 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
     onAddPathConfirm({ localState, rules, setting }: AppState) {
         const cloneRules = rules.concat();
-        const { targetItem, targetItemIdx } = localState;
+        const { targetItem, targetParentCtxIdx } = localState;
         const { isHttps, ...defConfig } = setting.defRuleConfig
 
         // merge with user config before added
         Object.assign(targetItem, defConfig);
-        cloneRules[targetItemIdx].paths.push(targetItem);
+        cloneRules[targetParentCtxIdx].paths.push(targetItem);
 
         return {
             rules: cloneRules,
             localState: {
                 ...localState,
                 currModalId: null,
-                targetItemIdx: null,
+                targetParentCtxIdx: null,
                 allowModalConfirm: false,
                 isTargetItemIdValid: false,
                 isTargetItemValValid: false,
