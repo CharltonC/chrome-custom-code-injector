@@ -51,11 +51,13 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
         const { localState, setting } = state;
         const { showDeleteModal } = setting;
         const isDelSingleItem = Number.isInteger(ctxIdx);
+
         const baseModState = {
             ...localState,
             dataSrc: dataSrc.concat(),
             currModalId: removeConfirm.id,
         };
+
         const partialModState: Partial<AppState> = {
             localState: isDelSingleItem ? {
                     ...baseModState,
@@ -63,6 +65,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                     targetParentCtxIdx: parentCtxIdx
                 } : baseModState
         };
+
         return showDeleteModal ? partialModState : reflect.onDelModalConfirm({...state, ...partialModState});
     }
 
@@ -82,8 +85,10 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             },
             dataSrc: null,
             currModalId: null,
-            areAllRowsSelected: false,
-            selectedRowKeys: {}     // in case of side-effect on `selectedRowKeys` state
+            selectState: {              // in case of side-effect on `selectedRowKeys` state
+                areAllRowsSelected: false,
+                selectedRowKeys: {},
+            }
         };
 
         const { rules, localState } = isDelSingleItem ?

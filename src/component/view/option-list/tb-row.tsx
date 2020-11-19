@@ -13,8 +13,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { localState } = store;
 
     const {
-        areAllRowsSelected,
-        selectedRowKeys,
+        selectState,
         expdRowId,
     } = localState;
 
@@ -32,6 +31,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const isRowExp = isParent && id === expdRowId;
     const parentCtxIdx: number = parentItemCtx?.ctxIdx;
 
+    const { areAllRowsSelected, selectedRowKeys } = selectState;
     const isSelected = areAllRowsSelected || ctxIdx in selectedRowKeys;
     const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeys).length;
 

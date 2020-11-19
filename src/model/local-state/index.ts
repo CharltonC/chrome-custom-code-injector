@@ -4,6 +4,7 @@ import { Setting } from '../setting';
 import { AView } from './type';
 import * as TSort from '../../service/sort-handle/type';
 import * as TPgn from '../../service/pagination-handle/type';
+import * as TRowSelect from '../../service/row-select-handle/type';
 
 const { resultsPerPageIdx } = new Setting();
 
@@ -30,8 +31,10 @@ export class LocalState {
     sortOption: Partial<TSort.IOption> = { reset: true };
 
     // * select (TODO: make this an row select state object)
-    areAllRowsSelected: boolean = false;
-    selectedRowKeys: Record<string, boolean> = {};
+    selectState: TRowSelect.IState = {
+        areAllRowsSelected: false,
+        selectedRowKeys: {}
+    };
 
     // * expand (only for allow 1 row to be expanded at the same time)
     expdRowId: string = null;

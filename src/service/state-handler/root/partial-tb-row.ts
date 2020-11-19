@@ -7,31 +7,29 @@ import * as TPgn from '../../pagination-handle/type';
 const rowSelectHandle = new RowSelectHandle();
 
 export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
-    onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
-        const { areAllRowsSelected, selectedRowKeys } = localState;
-
-        const rowSelectState = rowSelectHandle.getState({
-            isAll: true,
-            currState: { areAllRowsSelected, selectedRowKeys }
-        });
-
-        return {
-            localState: { ...localState, ...rowSelectState }
-        };
-    }
-
     onRowSelectToggle({ localState }: AppState, rowIdx: number, totalRules: number) {
-        const { areAllRowsSelected, selectedRowKeys, pgnOption, pgnState } = localState;
+        const { pgnOption, pgnState } = localState;
         const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx(totalRules, pgnOption, pgnState);
 
         const rowSelectState = rowSelectHandle.getState({
             isAll: false,
-            currState: { areAllRowsSelected, selectedRowKeys },
+            currState: localState.selectState,
             rowsCtx: { startRowIdx, endRowIdx, rowIdx }
         });
 
         return {
-            localState: { ...localState, ...rowSelectState }
+            localState: { ...localState, selectState: rowSelectState }
+        };
+    }
+
+    onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
+        const rowSelectState = rowSelectHandle.getState({
+            isAll: true,
+            currState: localState.selectState
+        });
+
+        return {
+            localState: { ...localState, selectState: rowSelectState }
         };
     }
 
@@ -115,7 +113,7 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     rmvRows(state: AppState) {
-        const { areAllRowsSelected } = state.localState;
+        const { areAllRowsSelected } = state.localState.selectState;
         const { reflect } = this;
         return areAllRowsSelected ? reflect.rmvAllRows(state) : reflect.rmvPartialRows(state);
     }
@@ -142,8 +140,8 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     rmvPartialRows({ localState }: AppState ) {
-        const { selectedRowKeys, dataSrc } = localState;
-        const rowIndexes: [string, boolean][] = Object.entries(selectedRowKeys);
+        const { selectState, dataSrc } = localState;
+        const rowIndexes: [string, boolean][] = Object.entries(selectState.selectedRowKeys);
         const selectedRowsTotal: number = rowIndexes.length - 1;
         let modRules: HostRuleConfig[] = dataSrc.concat();
 

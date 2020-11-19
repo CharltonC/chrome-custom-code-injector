@@ -86,8 +86,10 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
                 ...localState,
 
                 // clear all selections
-                areAllRowsSelected: false,
-                selectedRowKeys: {},
+                selectState: {
+                    areAllRowsSelected: false,
+                    selectedRowKeys: {},
+                },
 
                 // Update pagination
                 pgnOption,

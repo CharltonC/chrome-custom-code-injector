@@ -34,9 +34,8 @@ export class OptionListView extends MemoComponent<IProps> {
         const { rules, localState } = store;
 
         const {
-            areAllRowsSelected,
             searchedRules,
-            selectedRowKeys,
+            selectState,
             pgnOption, pgnState,
             sortOption,
         } = localState;
@@ -45,6 +44,8 @@ export class OptionListView extends MemoComponent<IProps> {
             onRowsSelectToggle,
             onDelModal
         } = storeHandler;
+
+        const { areAllRowsSelected, selectedRowKeys } = selectState;
 
         const selectedTotal: number = Object.entries(selectedRowKeys).length;
         const allowDelAll: boolean = areAllRowsSelected || !!selectedTotal;
