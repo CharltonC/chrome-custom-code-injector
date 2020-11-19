@@ -33,6 +33,7 @@ export class OptionListView extends MemoComponent<IProps> {
         const { props, dataGridBaseProps } = this;
         const { rules, localState } = props.store;
         const { searchedRules, pgnOption, pgnState, sortOption, } = localState;
+        const { curr: page, increment, incrementIdx } = { ...pgnOption, ...pgnState };
         const { $selectAllHeader, $delAllHeader } = this.selectAndDelElems;
 
         return (<>
@@ -60,11 +61,7 @@ export class OptionListView extends MemoComponent<IProps> {
                     { title: $delAllHeader as any}
                 ]}
                 sort={sortOption}
-                paginate={{
-                    page: pgnState.curr,
-                    increment: pgnOption.increment,
-                    incrementIdx: pgnOption.incrementIdx,
-                }}
+                paginate={{ page, increment, incrementIdx }}
                 />
         </>);
     }
