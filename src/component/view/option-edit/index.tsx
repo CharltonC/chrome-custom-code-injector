@@ -5,24 +5,50 @@ import { TabSwitch } from '../../base/checkbox-tab-switch';
 import { IconSwitch } from '../../base/checkbox-icon-switch';
 import { Dropdown } from '../../base/select-dropdown';
 import { SideNav } from '../../base/side-nav';
+import { IconBtn } from '../../base/btn-icon';
 import { DataGrid } from '../../widget/data-grid';
 import { jsExecStage } from '../../../constant/js-exec-stage';
 import { TbRow } from './tb-row';
 import { IProps } from './type';
 
-// TODO: props type
 export const OptionEditView = memo((props: IProps) => {
     const { store, storeHandler } = props;
     const { rules, localState } = store;
-    const { onListItemClick } = storeHandler;
-    const { targetItem } = localState;
+    const { onListItemClick, onActiveTabChange, onTabEnable, onEditorCodeChange } = storeHandler;
+
+    const { editItem } = localState;
+    const { activeTabIdx, libs, jsCode, cssCode } = editItem;
+
+    const isLibTab = libs.length && activeTabIdx === 2;
+    const isJsCode = activeTabIdx === 0;
+    const isCssCode = activeTabIdx === 1;
+    const isCode = isJsCode || isCssCode;
+    const codeMode = isJsCode ? 'js' : 'css'
+    const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
+
+    // TODO: Refactor fixed props, refactor method
+
+    // TODO: disable, event handler
+    const $delAll = (
+        <IconBtn
+            icon="delete"
+            theme="gray"
+            />
+    );
+    const $addLib = (
+        <IconBtn
+            icon="add"
+            theme="gray"
+            clsSuffix="add-outline"
+            />
+    );
 
     return (<>
         <SideNav
             list={rules}
             itemKeys={['id', 'id']}
             childKey="paths"
-            activeItem={targetItem}
+            activeItem={editItem}
             onItemClick={onListItemClick}
             />
         <div className="main--edit__form">
@@ -61,38 +87,38 @@ export const OptionEditView = memo((props: IProps) => {
                     border={true}
                     list={jsExecStage}
                     selectIdx={0}
+                    /* TODO: selectIdx */
                     onSelect={() => {}} />
             </section>
             {/* TOD: section-form field? */}
             <TabSwitch
                 id="tab-switch"
-                data={targetItem}
+                data={editItem}
                 dataKeyMap={[
                     ['js', 'isJsOn'],
                     ['css', 'isCssOn'],
                     ['lib', 'isLibOn'],
                 ]}
-                /* TODO: callback update state */
-                onTabActive={(evt, tab, idx) => {}}
-                onTabEnable={(evt, tab, idx) => {}}
-                />
-            {/* TODO: Conditional CodeMirror */}
-{/*             <CodeMirror
-                value='console.log("done");'
+                activeTabIdx={activeTabIdx}
+                onTabActive={onActiveTabChange}
+                onTabEnable={onTabEnable}
+                />{ isCode &&
+            <CodeMirror
+                value={codeContent}
                 options={{
-                    mode: 'js',
+                    mode: codeMode,
                     theme: 'darcula',
                     lineNumbers: true
                 }}
-                onChange={(editor, data, value) => {}}
-                /> */}
-            {/* TODO: Conditional DataGrid */}
+                onChange={(editor, data, value) => onEditorCodeChange({ value, codeMode }) }
+                />}{ isLibTab &&
             <DataGrid
-                data={rules}
+                data={libs}
                 component={{
                     rows: [ [ TbRow ] ]
                 }}
                 rowKey="id"
+                /* TODO: event binding */
                 header={[
                     { title: '' },
                     { title: 'ID', sortKey: 'id' },
@@ -100,10 +126,10 @@ export const OptionEditView = memo((props: IProps) => {
                     { title: 'SUBFRAME', sortKey: 'isSubframe' },
                     { title: 'ASYNC', sortKey: 'isAsync' },
                     { title: 'ACTIVE', sortKey: 'isActive' },
-                    { title: '' },
-                    { title: '' }
+                    { title: $delAll as any },
+                    { title: $addLib as any }
                 ]}
-                />
+                />}
         </div>
     </>);
 });
