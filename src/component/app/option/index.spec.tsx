@@ -28,7 +28,6 @@ describe('Component - Option App (UI/E2E)', () => {
         return {
             $select: $row.querySelector(`${tag}:nth-child(1) input`) as HTMLInputElement,
             $expd: $row.querySelector('td:nth-child(3) button') as HTMLButtonElement,
-            id: $row.querySelector('td:nth-child(3) span:nth-child(3)')?.textContent,
             $badge: $row.querySelector('td:nth-child(3) .badge') as HTMLElement,
             $del: $row.querySelector(`${tag}:nth-child(11) button`) as HTMLButtonElement,
         };
@@ -44,7 +43,7 @@ describe('Component - Option App (UI/E2E)', () => {
 
     beforeEach(() => {
         $elem = TestUtil.setupElem();
-        mockAppState = createMockAppState();
+        mockAppState = createMockAppState();    // 4 rows w/ 3 sub rows for each row
     });
 
     afterEach(() => {
