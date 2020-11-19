@@ -199,27 +199,66 @@ describe('Component - Option App (UI/E2E)', () => {
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new StateHandler() ],
                     }));
-                });
 
-                it('should have 1 display row of total 1 row', () => {
-                    // Search
+                    // Mock Search
                     const { $searchInput } = getElem();
                     TestUtil.setInputVal($searchInput, 'ebay');
                     TestUtil.triggerEvt($searchInput, 'change');
+                });
+
+                it('should have 1 display row of total 1 row', () => {
                     const { $rows, totalRows } = getElem();
 
                     expect(totalRows).toBe(1);
                     expect($rows.length).toBe(1);
+                });
 
-                    // Delete search row
+                it('should delete single row and clear the search results', () => {
+                    // Delete the search row
                     const $targetRow = getElem().$rows[0];
                     TestUtil.triggerEvt(getCellElem($targetRow).$del, 'click');
-                    TestUtil.triggerEvt(getElem().$searchClear, 'click');
-                    const { $rows: $modRows, totalRows: modTotalRows } = getElem();
+                    const { $rows: $searchRows, totalRows: searchTotalRows } = getElem();
 
-                    expect(modTotalRows).toBe(3);
-                    expect($modRows.length).toBe(2);
-                    expect(hsTargetRow($modRows, $targetRow)).toBeFalsy();
+                    expect(searchTotalRows).toBe(0);
+                    expect($searchRows.length).toBe(0);
+                    expect(hsTargetRow($searchRows, $targetRow)).toBeFalsy();
+
+                    // Clear the search
+                    TestUtil.triggerEvt(getElem().$searchClear, 'click');
+                    const { $rows, totalRows } = getElem();
+
+                    expect(totalRows).toBe(3);
+                    expect($rows.length).toBe(2);
+                    expect(hsTargetRow($rows, $targetRow)).toBeFalsy();
+                });
+
+                it('should delete single sub row', () => {
+                    // Expand the sub row fist
+                    const $targetRow = getElem().$rows[0];
+                    TestUtil.triggerEvt(getCellElem($targetRow).$expd, 'click');
+
+                    // Delete the sub row
+                    const $targetSubRow =  getElem().$subRows[0];
+                    TestUtil.triggerEvt(getCellElem($targetSubRow).$del, 'click');
+                    const { $subRows, totalRows } = getElem();
+
+                    expect(totalRows).toBe(1);
+                    expect($subRows.length).toBe(2);
+                    expect(hsTargetRow($subRows, $targetSubRow)).toBeFalsy();
+                });
+
+                it('should delete all rows', () => {
+                    const $targetRow = getElem().$rows[0];
+
+                    // Select All & Delete
+                    const { $select, $del } = getCellElem(getElem().$header, true);
+                    TestUtil.triggerEvt($select, 'click');
+                    TestUtil.triggerEvt($del, 'click');
+                    const { $rows, totalRows } = getElem();
+
+                    expect($rows.length).toBe(0);
+                    expect(totalRows).toBe(0);
+                    expect(hsTargetRow($rows, $targetRow)).toBeFalsy();
                 });
             });
         });
