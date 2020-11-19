@@ -75,7 +75,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: {
                 ...localState,
-                targetItem: item,
+                editItem: item,
             }
         };
     }
