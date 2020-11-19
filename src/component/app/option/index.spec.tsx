@@ -194,16 +194,19 @@ describe('Component - Option App (UI/E2E)', () => {
             });
 
             describe('Searched + Paginated', () => {
+                function mockSearch(searchText: string) {
+                    const { $searchInput } = getElem();
+                    TestUtil.setInputVal($searchInput, searchText);
+                    TestUtil.triggerEvt($searchInput, 'change');
+                }
+
                 beforeEach(() => {
                     mockAppState.localState.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new StateHandler() ],
                     }));
 
-                    // Mock Search
-                    const { $searchInput } = getElem();
-                    TestUtil.setInputVal($searchInput, 'ebay');
-                    TestUtil.triggerEvt($searchInput, 'change');
+                    mockSearch('ebay');
                 });
 
                 it('should have 1 display row of total 1 row', () => {
