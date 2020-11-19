@@ -30,7 +30,7 @@ export class LocalState {
     // * sort
     sortOption: Partial<TSort.IOption> = { reset: true };
 
-    // * select (TODO: make this an row select state object)
+    // * select
     selectState: TRowSelect.IState = {
         areAllRowsSelected: false,
         selectedRowKeys: {}
