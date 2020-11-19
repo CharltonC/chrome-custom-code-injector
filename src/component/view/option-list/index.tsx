@@ -23,9 +23,8 @@ export class OptionListView extends MemoComponent<IProps> {
                 onePerLevel: true
             },
             callback: {
-                // TODO: Modify the callback param
-                onPaginateChange: ({ pgnOption, pgnState }) => onPaginate(pgnOption, pgnState),
-                onSortChange: ({ sortOption }) => onSort(sortOption)
+                onPaginateChange: onPaginate,
+                onSortChange: onSort,
             }
         };
     }

@@ -3,6 +3,7 @@ import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
 import { HostRuleConfig } from '../../../model/rule-config';
 import * as TPgn from '../../pagination-handle/type';
+import * as TSort from '../../sort-handle/type';
 
 export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
     //// Common
@@ -80,7 +81,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     //// Edit View
-    onPaginate({ localState}: AppState, pgnOption: TPgn.IOption, pgnState: TPgn.IState) {
+    onPaginate({ localState}: AppState, payload: { pgnOption: TPgn.IOption, pgnState: TPgn.IState }) {
         return {
             localState: {
                 ...localState,
@@ -92,13 +93,12 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
                 },
 
                 // Update pagination
-                pgnOption,
-                pgnState
+                ...payload
             }
         };
     }
 
-    onSort({ localState }: AppState, sortOption) {
+    onSort({ localState }: AppState, { sortOption }: { sortOption: TSort.IOption, sortState: TSort.IState }) {
         return {
             localState: {
                 ...localState,
