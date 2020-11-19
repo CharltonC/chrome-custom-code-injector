@@ -9,20 +9,21 @@ export const TbRow: React.FC<any> = memo((props) => {
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
     const { isOpen, onClick }: any = nestedItems ? expandProps : {};
     // TODO: Renamed the state prop
-    const { https, id, addr, script_exec, script_js, script_css, script_lib, paths } = item;
+    const { https, id, value, script_exec, script_js, script_css, script_lib } = item;
     const ID_SUFFIX: string = `${itemLvl}-${idx}`;
 
     return <>
             {/* Index required for each id */}
             <tr className={REG_ROW}>
                 <td><Checkbox id={`check-${ID_SUFFIX}`} /></td>
+                {/* TODO: Trim id if too long */}
                 <td>{id}</td>
-                <td>{addr}</td>
+                <td>{value}</td>
                 <td><SliderSwitch id={`js-${ID_SUFFIX}`} defaultChecked={script_js} /></td>
                 <td><SliderSwitch id={`css-${ID_SUFFIX}`} defaultChecked={script_css} /></td>
                 <td><SliderSwitch id={`lib-${ID_SUFFIX}`} defaultChecked={script_lib} /></td>
                 <td><IconBtn icon="delete" theme="gray" /></td>
-                <td><IconBtn icon="add" theme="gray" /></td>
+                <td><IconBtn icon="edit" theme="gray" /></td>
             </tr>
     </>;
 });
