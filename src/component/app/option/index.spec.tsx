@@ -28,18 +28,18 @@ describe('Component - Option App (UI/E2E)', () => {
         return {
             $select: $row.querySelector(`${tag}:nth-child(1) input`) as HTMLInputElement,
             $expd: $row.querySelector('td:nth-child(3) button') as HTMLButtonElement,
-            id: $row.querySelector('td:nth-child(3) span:last-child')?.textContent,
+            id: $row.querySelector('td:nth-child(3) span:nth-child(3)')?.textContent,
             $badge: $row.querySelector('td:nth-child(3) .badge') as HTMLElement,
             $del: $row.querySelector(`${tag}:nth-child(11) button`) as HTMLButtonElement,
         };
     }
 
     function hsTargetRow($rows: NodeListOf<HTMLElement>, $targetRows: HTMLElement | HTMLElement[]): boolean {
-        return !![].some.call($rows, (i, $row) => {
+        return !![].some.call($rows, ($row, i) => {
             return Array.isArray($targetRows) ?
-                $targetRows.some((j, $targetRow) => $row === $targetRow) :
+                $targetRows.some(($targetRow, j) => $row === $targetRow) :
                 $row === $targetRows;
-        }).length;
+        });
     }
 
     beforeEach(() => {
