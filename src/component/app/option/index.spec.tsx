@@ -265,9 +265,5 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
             });
         });
-
-        describe('Select Row', () => {
-
-        });
     });
 });
