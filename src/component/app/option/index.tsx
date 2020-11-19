@@ -57,13 +57,13 @@ export class OptionApp extends MemoComponent<IProps> {
             onExportFileNameChange, onExportModalConfirm,
         } = storeHandler;
 
-        const isEditView: boolean = currView === 'EDIT';
+        const isListView: boolean = currView === 'LIST';
         const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
-        const MAIN_CLS = cssCls('main', isEditView ? 'edit' : 'list');
+        const MAIN_CLS = cssCls('main', isListView ? 'list' : 'edit');
 
         return (
             <div className="app app--option">
-                <header className="header">{ isEditView &&
+                <header className="header">{ !isListView &&
                     <div className={EDIT_CTRL_CLS}>
                         <IconBtn
                             icon="arrow-lt"
@@ -74,19 +74,20 @@ export class OptionApp extends MemoComponent<IProps> {
                         <IconBtn icon="delete" theme="white" />{ targetItem?.paths &&
                         <IconBtn icon="add" theme="white" />}
                     </div>}
-                    <div className="header__ctrl">
+                    <div className="header__ctrl">{ isListView &&
                         <SearchInput
                             id="search"
                             value={searchedText}
+                            disabled={rules.length <= 1}
                             onInputChange={onSearch}
                             onInputClear={onSearchClear}
-                            />
+                            />} { isListView &&
                         <IconBtn
                             icon="add-outline"
                             theme="white"
                             title="add host rule"
                             onClick={onAddHostModal}
-                            />
+                            />}
                         <IconBtn
                             icon="setting"
                             theme="white"
@@ -115,7 +116,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     </div>
                 </header>
                 <main className={MAIN_CLS}>
-                    { isEditView ? <OptionEditView {...props} /> : <OptionListView {...props} /> }
+                    { isListView ? <OptionListView {...props} /> : <OptionEditView {...props} />  }
                 </main>
                 { currModalId && <form className="modals">
                     <Modal
