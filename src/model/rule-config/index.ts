@@ -17,6 +17,7 @@ export class PathRuleConfig extends BaseRuleConfig {
     jsCode: string = '';
     cssCode: string = '';
     libs: LibRuleConfig[] = [];
+    activeTabIdx: 0 | 1 | 2 = 0;
 
     constructor(id: string, value: string) {
         super();
