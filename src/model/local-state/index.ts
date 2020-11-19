@@ -1,5 +1,5 @@
 import { resultsPerPage } from '../../constant/result-per-page';
-import { HostRuleConfig } from '../rule-config';
+import { HostRuleConfig, PathRuleConfig } from '../rule-config';
 import { Setting } from '../setting';
 import { AView } from './type';
 import * as TSort from '../../service/sort-handle/type';
@@ -20,6 +20,7 @@ export class LocalState {
 
     // * Views
     currView: AView = 'LIST';
+    editItem: HostRuleConfig | PathRuleConfig = null;
 
     //// DATA GRID ROWS
     // * rows used by Modal Delete Confirm `onDelModalConfirm`
