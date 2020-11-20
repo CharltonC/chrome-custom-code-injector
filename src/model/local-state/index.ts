@@ -20,7 +20,7 @@ export class LocalState {
 
     // * Views
     currView: AView = 'LIST';
-    editItem: HostRuleConfig | PathRuleConfig = null;
+    editViewTarget: HostRuleConfig | PathRuleConfig = null;
 
     //// DATA GRID ROWS
     // * rows used by Modal Delete Confirm `onDelModalConfirm`
@@ -58,8 +58,10 @@ export class LocalState {
 
     // * Host/Path add/edit item (table row)
     targetItem: HostRuleConfig = null;
-    targetCtxIdx: number = null;
-    targetParentCtxIdx: number = null;
     isTargetItemIdValid: boolean = false;
     isTargetItemValValid: boolean = false;
+
+    // * Delete row
+    targetCtxIdx: number = null;
+    targetParentCtxIdx: number = null;
 }

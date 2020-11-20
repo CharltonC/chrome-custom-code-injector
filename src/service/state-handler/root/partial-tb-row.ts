@@ -58,12 +58,12 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         return { rules: clone };
     }
 
-    onRowEdit(state: AppState, editItem): Partial<AppState> {
+    onRowEdit(state: AppState, editViewTarget): Partial<AppState> {
         const { localState } = state;
         return {
             localState: {
                 ...localState,
-                editItem,
+                editViewTarget,
                 currView: 'EDIT'
             }
         };

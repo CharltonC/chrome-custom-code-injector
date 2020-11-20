@@ -16,8 +16,8 @@ export const OptionEditView = memo((props: IProps) => {
     const { rules, localState } = store;
     const { onListItemClick, onActiveTabChange, onTabEnable, onEditorCodeChange } = storeHandler;
 
-    const { editItem } = localState;
-    const { activeTabIdx, libs, jsCode, cssCode } = editItem;
+    const { editViewTarget } = localState;
+    const { activeTabIdx, libs, jsCode, cssCode } = editViewTarget;
 
     const isLibTab = libs.length && activeTabIdx === 2;
     const isJsCode = activeTabIdx === 0;
@@ -48,7 +48,7 @@ export const OptionEditView = memo((props: IProps) => {
             list={rules}
             itemKeys={['id', 'id']}
             childKey="paths"
-            activeItem={editItem}
+            activeItem={editViewTarget}
             onItemClick={onListItemClick}
             />
         <div className="main--edit__form">
@@ -93,7 +93,7 @@ export const OptionEditView = memo((props: IProps) => {
             {/* TOD: section-form field? */}
             <TabSwitch
                 id="tab-switch"
-                data={editItem}
+                data={editViewTarget}
                 dataKeyMap={[
                     ['js', 'isJsOn'],
                     ['css', 'isCssOn'],

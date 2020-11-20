@@ -76,7 +76,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: {
                 ...localState,
-                editItem: item,
+                editViewTarget: item,
             }
         };
     }
@@ -110,7 +110,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
 
     onActiveTabChange({ localState }: AppState, ...[,,idx]: any[]) {
         const modLocalState = { ...localState };
-        modLocalState.editItem.activeTabIdx = idx;
+        modLocalState.editViewTarget.activeTabIdx = idx;
 
         return {
             localState: modLocalState
@@ -135,7 +135,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
                 throw new Error('key does not match');
         }
 
-        modLocalState.editItem[key] = !isOn;
+        modLocalState.editViewTarget[key] = !isOn;
 
         return {
             localState: modLocalState
@@ -145,11 +145,11 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
     onEditorCodeChange({ localState }: AppState, { codeMode, value }) {
         const modLocalState = { ...localState };
         const key: string = `${codeMode}Code`;
-        const hsKey = key in modLocalState.editItem;
+        const hsKey = key in modLocalState.editViewTarget;
 
         if (!hsKey) throw new Error('key does not match');
 
-        modLocalState.editItem[key] = value;
+        modLocalState.editViewTarget[key] = value;
         return {
             localState: modLocalState
         };
