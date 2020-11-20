@@ -35,7 +35,7 @@ export class OptionApp extends MemoComponent<IProps> {
             currView,
             currModalId, allowModalConfirm,
             searchedText,
-            targetItem,
+            targetItem, editItem,
             pgnOption
         } = localState;
 
@@ -71,7 +71,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             onClick={onListView}
                             />
                         <IconBtn icon="save" theme="white" />
-                        <IconBtn icon="delete" theme="white" />{ targetItem?.paths &&
+                        <IconBtn icon="delete" theme="white" />{ ('paths' in editItem) &&
                         <IconBtn icon="add" theme="white" />}
                     </div>}
                     <div className="header__ctrl">{ isListView &&
