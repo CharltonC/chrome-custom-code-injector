@@ -12,7 +12,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: {
                 ...localState,
-                searchedText: val ? val : null,
+                searchedText: val,
                 searchedRules: val ? searchedRules : null
             }
         };
