@@ -1,7 +1,6 @@
 import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig, PathRuleConfig } from '../rule-config';
 import { Setting } from '../setting';
-import { AView } from './type';
 import * as TSort from '../../service/sort-handle/type';
 import * as TPgn from '../../service/pagination-handle/type';
 import * as TRowSelect from '../../service/row-select-handle/type';
@@ -19,7 +18,6 @@ export class LocalState {
     exportFileName: string = null;
 
     // * Views
-    currView: AView = 'LIST';
     editViewTarget: HostRuleConfig | PathRuleConfig = null;
 
     //// DATA GRID ROWS

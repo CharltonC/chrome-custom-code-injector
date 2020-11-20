@@ -67,7 +67,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...resetLocalState,
                 pgnOption,
-                currView: 'LIST',
+                editViewTarget: null
             }
         };
     }

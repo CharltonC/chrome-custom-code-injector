@@ -172,7 +172,6 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             rules: await fileHandle.readJson(localState.importFile),
             localState: {
                 ...localState,
-                currView: 'LIST',
                 allowModalConfirm: false,
                 importFile: null,
                 currModalId: null

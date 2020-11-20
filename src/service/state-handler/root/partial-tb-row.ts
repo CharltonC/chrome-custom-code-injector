@@ -64,7 +64,6 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 editViewTarget,
-                currView: 'EDIT'
             }
         };
     }

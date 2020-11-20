@@ -32,7 +32,6 @@ export class OptionApp extends MemoComponent<IProps> {
         } = this;
 
         const {
-            currView,
             currModalId, allowModalConfirm,
             searchedText,
             targetItem, editViewTarget,
@@ -57,13 +56,13 @@ export class OptionApp extends MemoComponent<IProps> {
             onExportFileNameChange, onExportModalConfirm,
         } = storeHandler;
 
-        const isListView: boolean = currView === 'LIST';
+        const isListView: boolean = !editViewTarget;
         const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
         const MAIN_CLS = cssCls('main', isListView ? 'list' : 'edit');
 
         return (
             <div className="app app--option">
-                <header className="header">{ !isListView &&
+                <header className="header">{ editViewTarget &&
                     <div className={EDIT_CTRL_CLS}>
                         <IconBtn
                             icon="arrow-lt"
