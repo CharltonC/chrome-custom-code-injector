@@ -3,8 +3,9 @@ import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../../constant/modals';
 import { FileHandle } from '../../file-handle';
-import { IStateHandler } from './type';
 import { LocalState } from '../../../model/local-state';
+import { RuleValidState } from '../../../model/rule-valid-state';
+import { IStateHandler } from './type';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
@@ -28,8 +29,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                 targetItem: null,
                 targetParentCtxIdx: null,
                 targetCtxIdx: null,
-                isTargetItemIdValid:  false,
-                isTargetItemValValid:  false,
+                targetValidState: new RuleValidState()
             }
         };
     }
@@ -161,8 +161,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                 currModalId: null,
                 targetParentCtxIdx: null,
                 allowModalConfirm: false,
-                isTargetItemIdValid: false,
-                isTargetItemValValid: false,
+                targetValidState: new RuleValidState()
             }
         };
     }

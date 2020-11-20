@@ -1,5 +1,6 @@
 import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig, PathRuleConfig } from '../rule-config';
+import { RuleValidState } from '../rule-valid-state';
 import { Setting } from '../setting';
 import * as TSort from '../../service/sort-handle/type';
 import * as TPgn from '../../service/pagination-handle/type';
@@ -56,8 +57,9 @@ export class LocalState {
 
     // * Host/Path add/edit item (table row)
     targetItem: HostRuleConfig = null;
-    isTargetItemIdValid: boolean = false;
-    isTargetItemValValid: boolean = false;
+
+    // * Rule Validation
+    targetValidState: RuleValidState = new RuleValidState();
 
     // * Delete row
     targetCtxIdx: number = null;
