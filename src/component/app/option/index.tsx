@@ -34,7 +34,7 @@ export class OptionApp extends MemoComponent<IProps> {
         const {
             currModalId, allowModalConfirm,
             searchedText,
-            editTarget, editViewTarget,
+            modalEditTarget, editViewTarget,
             pgnOption
         } = localState;
 
@@ -274,7 +274,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="host-value"
                             label="Host Value"
                             required
-                            value={editTarget?.value}
+                            value={modalEditTarget?.value}
                             validate={[ validationHandle.urlHost ]}
                             onInputChange={onEditItemValChange}
                             />
@@ -295,7 +295,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="path-url"
                             label="Path Value"
                             required
-                            value={editTarget?.value}
+                            value={modalEditTarget?.value}
                             validate={[ validationHandle.urlPath ]}
                             onInputChange={onEditItemValChange}
                             />
@@ -348,7 +348,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $ruleIdEdit() {
-        const { editTarget } = this.localState;
+        const { modalEditTarget } = this.localState;
         const { onEditItemIdChange } = this.storeHandler;
 
         return (
@@ -357,7 +357,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 label="ID"
                 required
                 autoFocus
-                value={editTarget?.id}
+                value={modalEditTarget?.id}
                 validate={[ validationHandle.gte3Char ]}
                 onInputChange={onEditItemIdChange}
                 />

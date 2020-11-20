@@ -5,7 +5,7 @@ import { Setting } from '../setting';
 import * as TSort from '../../service/sort-handle/type';
 import * as TPgn from '../../service/pagination-handle/type';
 import * as TRowSelect from '../../service/row-select-handle/type';
-import { DelTarget } from '../del-target';
+import { modalDelTarget } from '../del-target';
 
 const { resultsPerPageIdx } = new Setting();
 
@@ -58,12 +58,12 @@ export class LocalState {
     allowModalConfirm: boolean = false;
 
     // * Validation for Add/Edit
-    targetValidState: RuleValidState = new RuleValidState();
+    modalEditTargetValidState: RuleValidState = new RuleValidState();
 
     // * Add New Row/Sub-row or Edit Row/Sub-row (w/ Validation)
-    editTarget: HostRuleConfig = null;
-    addSubTargetIdx: number = null;     // index of rule for adding Sub-row only
+    modalEditTarget: HostRuleConfig = null;
+    modalAddSubTargetIdx: number = null;     // index of rule for adding Sub-row only
 
     // * Delete Row/Sub-row
-    delTarget: DelTarget = new DelTarget();
+    modalDelTarget: modalDelTarget = new modalDelTarget();
 }

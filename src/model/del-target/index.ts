@@ -1,4 +1,4 @@
-export class DelTarget {
+export class modalDelTarget {
     ctxIdx: number;
     parentCtxIdx: number;
 

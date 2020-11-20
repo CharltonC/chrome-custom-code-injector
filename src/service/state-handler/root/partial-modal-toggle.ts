@@ -5,7 +5,7 @@ import { modals } from '../../../constant/modals';
 import { FileHandle } from '../../file-handle';
 import { LocalState } from '../../../model/local-state';
 import { RuleValidState } from '../../../model/rule-valid-state';
-import { DelTarget } from '../../../model/del-target';
+import { modalDelTarget } from '../../../model/del-target';
 import { IStateHandler } from './type';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
@@ -27,9 +27,9 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                 ...localState,
                 currModalId: null,
                 allowModalConfirm: false,
-                editTarget: null,
-                delTarget: new DelTarget(),
-                targetValidState: new RuleValidState()
+                modalEditTarget: null,
+                modalDelTarget: new modalDelTarget(),
+                modalEditTargetValidState: new RuleValidState()
             }
         };
     }
@@ -61,7 +61,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
         const partialModState: Partial<AppState> = {
             localState: isDelSingleItem ? {
                     ...baseModState,
-                    delTarget: new DelTarget(ctxIdx, parentCtxIdx),
+                    modalDelTarget: new modalDelTarget(ctxIdx, parentCtxIdx),
                 } : baseModState
         };
 
@@ -70,8 +70,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { searchedRules, delTarget, pgnState } = state.localState;
-        const { ctxIdx, parentCtxIdx } = delTarget;
+        const { searchedRules, modalDelTarget, pgnState } = state.localState;
+        const { ctxIdx, parentCtxIdx } = modalDelTarget;
         const isDelSingleItem = Number.isInteger(ctxIdx);
         const isSearch = searchedRules?.length;
 
@@ -113,7 +113,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currModalId: editHost.id,
-                editTarget: new HostRuleConfig('', '')
+                modalEditTarget: new HostRuleConfig('', '')
             }
         };
     }
@@ -121,12 +121,12 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
     onAddHostConfirm(state: AppState) {
         const { localState, rules, setting } = state;
         const cloneRules = rules.concat();
-        const { editTarget } = localState;
+        const { modalEditTarget } = localState;
         const resetState = this.reflect.onModalCancel(state);
 
         // merge with user config before added
-        Object.assign(editTarget, setting.defRuleConfig);
-        cloneRules.push(localState.editTarget);
+        Object.assign(modalEditTarget, setting.defRuleConfig);
+        cloneRules.push(localState.modalEditTarget);
 
         return {
             ...resetState,
@@ -139,29 +139,29 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currModalId: editPath.id,
-                addSubTargetIdx: idx,
-                editTarget: new PathRuleConfig('', '')
+                modalAddSubTargetIdx: idx,
+                modalEditTarget: new PathRuleConfig('', '')
             }
         };
     }
 
     onAddPathConfirm({ localState, rules, setting }: AppState) {
         const cloneRules = rules.concat();
-        const { editTarget, addSubTargetIdx } = localState;
+        const { modalEditTarget, modalAddSubTargetIdx } = localState;
         const { isHttps, ...defConfig } = setting.defRuleConfig
 
         // merge with user config before added
-        Object.assign(editTarget, defConfig);
-        cloneRules[addSubTargetIdx].paths.push(editTarget);
+        Object.assign(modalEditTarget, defConfig);
+        cloneRules[modalAddSubTargetIdx].paths.push(modalEditTarget);
 
         return {
             rules: cloneRules,
             localState: {
                 ...localState,
                 currModalId: null,
-                addSubTargetIdx: null,
+                modalAddSubTargetIdx: null,
                 allowModalConfirm: false,
-                targetValidState: new RuleValidState()
+                modalEditTargetValidState: new RuleValidState()
             }
         };
     }

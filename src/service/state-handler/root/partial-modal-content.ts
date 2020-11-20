@@ -60,20 +60,20 @@ export class ModalContentStateHandler extends StateHandle.BaseStoreHandler {
 
     //// Add/Edit Rule
     onEditItemIdChange({ localState }: AppState, { val, validState }) {
-        const { editTarget, targetValidState } = localState;
-        const { isValueValid } = targetValidState;
+        const { modalEditTarget, modalEditTargetValidState } = localState;
+        const { isValueValid } = modalEditTargetValidState;
         const { isValid } = validState;
 
         return {
             localState: {
                 ...localState,
-                targetValidState: {
-                    ...targetValidState,
+                modalEditTargetValidState: {
+                    ...modalEditTargetValidState,
                     isIdValid: isValid
                 },
                 allowModalConfirm: isValueValid && isValid,
-                editTarget: {
-                    ...editTarget,
+                modalEditTarget: {
+                    ...modalEditTarget,
                     id: val
                 },
             }
@@ -81,20 +81,20 @@ export class ModalContentStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onEditItemValChange({ localState }: AppState, { val, validState }) {
-        const { editTarget, targetValidState } = localState;
-        const { isIdValid } = targetValidState;
+        const { modalEditTarget, modalEditTargetValidState } = localState;
+        const { isIdValid } = modalEditTargetValidState;
         const { isValid } = validState;
 
         return {
             localState: {
                 ...localState,
-                targetValidState: {
-                    ...targetValidState,
+                modalEditTargetValidState: {
+                    ...modalEditTargetValidState,
                     isValueValid: isValid
                 },
                 allowModalConfirm: isIdValid && isValid,
-                editTarget: {
-                    ...editTarget,
+                modalEditTarget: {
+                    ...modalEditTarget,
                     value: val
                 },
             }
