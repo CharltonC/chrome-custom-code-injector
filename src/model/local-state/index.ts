@@ -5,6 +5,7 @@ import { Setting } from '../setting';
 import * as TSort from '../../service/sort-handle/type';
 import * as TPgn from '../../service/pagination-handle/type';
 import * as TRowSelect from '../../service/row-select-handle/type';
+import { DelTarget } from '../del-target';
 
 const { resultsPerPageIdx } = new Setting();
 
@@ -44,6 +45,7 @@ export class LocalState {
         increment: resultsPerPage,
         incrementIdx: resultsPerPageIdx
     } as TPgn.IOption;
+
     pgnState = {
         curr: 0,
         startIdx: 0,
@@ -55,13 +57,13 @@ export class LocalState {
     currModalId: string = null;
     allowModalConfirm: boolean = false;
 
-    // * Host/Path add/edit item (table row)
-    targetItem: HostRuleConfig = null;
-
-    // * Rule Validation
+    // * Validation for Add/Edit
     targetValidState: RuleValidState = new RuleValidState();
 
-    // * Delete row
-    targetCtxIdx: number = null;
-    targetParentCtxIdx: number = null;
+    // * Add New Row/Sub-row or Edit Row/Sub-row (w/ Validation)
+    editTarget: HostRuleConfig = null;
+    addSubTargetIdx: number = null;     // index of rule for adding Sub-row only
+
+    // * Delete Row/Sub-row
+    delTarget: DelTarget = new DelTarget();
 }

@@ -5,6 +5,7 @@ import { modals } from '../../../constant/modals';
 import { FileHandle } from '../../file-handle';
 import { LocalState } from '../../../model/local-state';
 import { RuleValidState } from '../../../model/rule-valid-state';
+import { DelTarget } from '../../../model/del-target';
 import { IStateHandler } from './type';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
@@ -26,9 +27,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
                 ...localState,
                 currModalId: null,
                 allowModalConfirm: false,
-                targetItem: null,
-                targetParentCtxIdx: null,
-                targetCtxIdx: null,
+                editTarget: null,
+                delTarget: new DelTarget(),
                 targetValidState: new RuleValidState()
             }
         };
@@ -61,8 +61,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
         const partialModState: Partial<AppState> = {
             localState: isDelSingleItem ? {
                     ...baseModState,
-                    targetCtxIdx: ctxIdx,
-                    targetParentCtxIdx: parentCtxIdx
+                    delTarget: new DelTarget(ctxIdx, parentCtxIdx),
                 } : baseModState
         };
 
@@ -71,8 +70,9 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { searchedRules, targetCtxIdx, targetParentCtxIdx, pgnState } = state.localState;
-        const isDelSingleItem = Number.isInteger(targetCtxIdx);
+        const { searchedRules, delTarget, pgnState } = state.localState;
+        const { ctxIdx, parentCtxIdx } = delTarget;
+        const isDelSingleItem = Number.isInteger(ctxIdx);
         const isSearch = searchedRules?.length;
 
         const resetLocalState: LocalState = {
@@ -93,8 +93,8 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
 
         const { rules, localState } = isDelSingleItem ?
             ( isSearch ?
-                reflect.rmvSearchedRow(state, targetCtxIdx, targetParentCtxIdx) :
-                reflect.rmvRow(state, targetCtxIdx, targetParentCtxIdx) ) :
+                reflect.rmvSearchedRow(state, ctxIdx, parentCtxIdx) :
+                reflect.rmvRow(state, ctxIdx, parentCtxIdx) ) :
             ( isSearch ?
                 reflect.rmvSearchedRows(state) :
                 reflect.rmvRows(state)) ;
@@ -113,7 +113,7 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currModalId: editHost.id,
-                targetItem: new HostRuleConfig('', '')
+                editTarget: new HostRuleConfig('', '')
             }
         };
     }
@@ -121,12 +121,12 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
     onAddHostConfirm(state: AppState) {
         const { localState, rules, setting } = state;
         const cloneRules = rules.concat();
-        const { targetItem } = localState;
+        const { editTarget } = localState;
         const resetState = this.reflect.onModalCancel(state);
 
         // merge with user config before added
-        Object.assign(targetItem, setting.defRuleConfig);
-        cloneRules.push(localState.targetItem);
+        Object.assign(editTarget, setting.defRuleConfig);
+        cloneRules.push(localState.editTarget);
 
         return {
             ...resetState,
@@ -139,27 +139,27 @@ export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 currModalId: editPath.id,
-                targetParentCtxIdx: idx,
-                targetItem: new PathRuleConfig('', '')
+                addSubTargetIdx: idx,
+                editTarget: new PathRuleConfig('', '')
             }
         };
     }
 
     onAddPathConfirm({ localState, rules, setting }: AppState) {
         const cloneRules = rules.concat();
-        const { targetItem, targetParentCtxIdx } = localState;
+        const { editTarget, addSubTargetIdx } = localState;
         const { isHttps, ...defConfig } = setting.defRuleConfig
 
         // merge with user config before added
-        Object.assign(targetItem, defConfig);
-        cloneRules[targetParentCtxIdx].paths.push(targetItem);
+        Object.assign(editTarget, defConfig);
+        cloneRules[addSubTargetIdx].paths.push(editTarget);
 
         return {
             rules: cloneRules,
             localState: {
                 ...localState,
                 currModalId: null,
-                targetParentCtxIdx: null,
+                addSubTargetIdx: null,
                 allowModalConfirm: false,
                 targetValidState: new RuleValidState()
             }

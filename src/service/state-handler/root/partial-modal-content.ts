@@ -60,7 +60,7 @@ export class ModalContentStateHandler extends StateHandle.BaseStoreHandler {
 
     //// Add/Edit Rule
     onEditItemIdChange({ localState }: AppState, { val, validState }) {
-        const { targetItem, targetValidState } = localState;
+        const { editTarget, targetValidState } = localState;
         const { isValueValid } = targetValidState;
         const { isValid } = validState;
 
@@ -72,8 +72,8 @@ export class ModalContentStateHandler extends StateHandle.BaseStoreHandler {
                     isIdValid: isValid
                 },
                 allowModalConfirm: isValueValid && isValid,
-                targetItem: {
-                    ...targetItem,
+                editTarget: {
+                    ...editTarget,
                     id: val
                 },
             }
@@ -81,7 +81,7 @@ export class ModalContentStateHandler extends StateHandle.BaseStoreHandler {
     }
 
     onEditItemValChange({ localState }: AppState, { val, validState }) {
-        const { targetItem, targetValidState } = localState;
+        const { editTarget, targetValidState } = localState;
         const { isIdValid } = targetValidState;
         const { isValid } = validState;
 
@@ -93,8 +93,8 @@ export class ModalContentStateHandler extends StateHandle.BaseStoreHandler {
                     isValueValid: isValid
                 },
                 allowModalConfirm: isIdValid && isValid,
-                targetItem: {
-                    ...targetItem,
+                editTarget: {
+                    ...editTarget,
                     value: val
                 },
             }
