@@ -1,19 +1,19 @@
 import { StateHandle } from '../../state-handle';
 import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
-import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
+import { HostRuleConfig } from '../../../model/rule-config';
 import * as TPgn from '../../pagination-handle/type';
 import * as TSort from '../../sort-handle/type';
 
 export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
     //// Common
-    // TODO: debounce at component
     onSearch({ localState, rules }: AppState, evt, val: string, gte3Char: boolean): Partial<AppState> {
         const baseLocalState = {
             ...localState,
             searchedText: val
         };
 
+        // Clear the search (if not clicking the clear button)
         if (!val) return {
             localState: {
                 ...baseLocalState,
@@ -21,22 +21,22 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
             }
         };
 
-        if (!gte3Char) return { localState: baseLocalState };
+        if (!gte3Char) return {
+            localState: baseLocalState
+        };
 
+        const { hsText } = this.reflect;
         const searchedRules: HostRuleConfig[] = val
             .split(/\s+/)
             .reduce((filteredRules: HostRuleConfig[], text: string) => {
-                // TODO: case insensitive
+                text = text.toLowerCase();
+
                 return filteredRules.filter(({ id, value, paths }: HostRuleConfig) => {
-                    const isIdMatch = id.indexOf(text) !== -1;
-                    if (isIdMatch) return true;
+                    // Check Row Id, Value
+                    if (hsText([id, value], text)) return true;
 
-                    const isValMatch = value.indexOf(text) !== -1;
-                    if (isValMatch) return true;
-
-                    return paths.some(({ id: childId, value: childValue}) => {
-                        return (childId.indexOf(text) !== -1) || (childValue.indexOf(text) !== -1);
-                    });
+                    // Check Sub Row Id, Value
+                    return paths.some(({ id: subId, value: subValue }) => hsText([subId, subValue], text));
                 });
             }, rules);
 
@@ -58,7 +58,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    //// List View
+    //// Edit View
     onListView({localState}: AppState): Partial<AppState> {
         const { pgnOption } = localState;   // maintain the only pagination setting
         const resetLocalState = new LocalState();
@@ -81,7 +81,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    //// Edit View
+    //// List View
     onPaginate({ localState}: AppState, payload: { pgnOption: TPgn.IOption, pgnState: TPgn.IState }) {
         return {
             localState: {
@@ -153,5 +153,11 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         return {
             localState: modLocalState
         };
+    }
+
+
+    //// HELPER
+    hsText(vals: string[], text: string): boolean {
+        return vals.some((val: string) => (val.toLowerCase().indexOf(text) !== -1));
     }
 }
