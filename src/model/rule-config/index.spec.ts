@@ -21,6 +21,7 @@ describe('Rule Config Model', () => {
             jsCode: '',
             cssCode: '',
             libs: [],
+            activeTabIdx: 0
         });
 
     });
