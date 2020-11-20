@@ -6,25 +6,29 @@ import * as TPgn from '../../pagination-handle/type';
 import * as TSort from '../../sort-handle/type';
 
 export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
-    //// Common
-    onSearch({ localState, rules }: AppState, evt, val: string, gte3Char: boolean): Partial<AppState> {
-        const baseLocalState = {
-            ...localState,
-            searchedText: val
-        };
-
-        // Clear the search (if not clicking the clear button)
-        if (!val) return {
+    //// SEARCH
+    onSearchTextChange({ localState }: AppState, val: string): Partial<AppState> {
+        const { searchedRules } = localState;
+        return {
             localState: {
-                ...baseLocalState,
-                searchedRules: null,
+                ...localState,
+                searchedText: val ? val : null,
+                searchedRules: val ? searchedRules : null
             }
         };
+    }
 
-        if (!gte3Char) return {
-            localState: baseLocalState
+    onSearchTextClear({ localState }: AppState) {
+        return {
+            localState: {
+                ...localState,
+                searchedRules: null,
+                searchedText: ''
+            }
         };
+    }
 
+    onSearchPerform({ localState, rules }: AppState, val: string) {
         const { hsText } = this.reflect;
         const searchedRules: HostRuleConfig[] = val
             .split(/\s+/)
@@ -42,23 +46,13 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
 
         return {
             localState: {
-                ...baseLocalState,
+                ...localState,
                 searchedRules,
             }
         };
     }
 
-    onSearchClear({ localState }: AppState) {
-        return {
-            localState: {
-                ...localState,
-                searchedRules: null,
-                searchedText: ''
-            }
-        };
-    }
-
-    //// Edit View
+    //// EDIT VIEW
     onListView({localState}: AppState): Partial<AppState> {
         const { pgnOption } = localState;   // maintain the only pagination setting
         const resetLocalState = new LocalState();
@@ -81,7 +75,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    //// List View
+    //// LIST VIEW
     onPaginate({ localState}: AppState, payload: { pgnOption: TPgn.IOption, pgnState: TPgn.IState }) {
         return {
             localState: {

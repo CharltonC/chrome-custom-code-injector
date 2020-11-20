@@ -1,11 +1,9 @@
 import React, { ReactElement } from 'react';
-
-// import { debounce } from '../../../asset/ts/vendor/debounce';
+import { debounce } from '../../../asset/ts/vendor/debounce';
 import { modals } from '../../../constant/modals';
 import { urls } from '../../../constant/urls';
-import { validationHandle } from '../../../service/validation-handle';
 import { jsExecStage } from '../../../constant/js-exec-stage';
-
+import { validationHandle } from '../../../service/validation-handle';
 import { MemoComponent } from '../../extendable/memo-component';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
@@ -22,10 +20,24 @@ import { IProps } from './type';
 
 export class OptionApp extends MemoComponent<IProps> {
     readonly $docIcon: ReactElement = inclStaticIcon('doc', 'white');
+    readonly onSearchPerform: (...args: any[]) => any;
+
+    constructor(props: IProps) {
+        super(props);
+        this.onSearchPerform = debounce(props.storeHandler.onSearchPerform, 250);
+        this.onSearch = this.onSearch.bind(this);
+    }
+
+    onSearch(e, val: string, gte3Char: boolean): void {
+        const { onSearchTextChange } = this.props.storeHandler;
+        onSearchTextChange(val);
+        if (!gte3Char) return;
+        this.onSearchPerform(val);
+    }
 
     render() {
         const {
-            props, cssCls,
+            props, cssCls, onSearch,
             $docIcon, $ruleIdEdit, $libEdit,
             localState, setting, rules,
             storeHandler
@@ -46,7 +58,7 @@ export class OptionApp extends MemoComponent<IProps> {
 
         const {
             onListView,
-            onSearch, onSearchClear,
+            onSearchTextClear,
             onModalCancel, onSettingModal, onImportConfigModal, onExportConfigModal, onAddHostModal,
             onAddHostConfirm, onDelModalConfirm,
             onAddPathConfirm,
@@ -79,7 +91,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             value={searchedText}
                             disabled={rules.length <= 1}
                             onInputChange={onSearch}
-                            onInputClear={onSearchClear}
+                            onInputClear={onSearchTextClear}
                             />} { isListView &&
                         <IconBtn
                             icon="add-outline"
