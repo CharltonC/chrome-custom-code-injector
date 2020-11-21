@@ -154,8 +154,10 @@ describe('Component - Grid Header', () => {
             it('should return cell content when title is a function', () => {
                 const mockTitleFn = jest.fn();
                 mockTitleFn.mockReturnValue(mockTitle);
-                const [ $title ] = cmp.getCellContent(mockTitleFn, mockSortKey).props.children;
-                expect($title).toBe(mockTitle);
+                const title = cmp.getCellContent(mockTitleFn, mockSortKey);
+
+                expect(title).toBe(mockTitle);
+                expect(mockTitleFn).toHaveBeenCalledWith(mockData, {});
             });
 
             it('should return cell content when title is react element ', () => {

@@ -64,9 +64,18 @@ export class GridHeader extends MemoComponent<IProps> {
 
     getCellContent(title: unknown, sortKey?: string): ReactElement {
         const { data, sortBtnProps } = this.props;
-        return <>
-            { typeof title === 'function' ? title(data) : (typeof title === 'string' ? <span>{title}</span> : title) }
-            { sortKey && sortBtnProps && <SortBtn {...sortBtnProps(sortKey)} />}
-        </>;
+
+        // Custom render function
+        if (typeof title === 'function') {
+            const btnProps = (sortKey && sortBtnProps) ? sortBtnProps(sortKey) : null;
+            return title(data, btnProps);
+
+        // String or React element
+        } else {
+            return <>
+                { typeof title === 'string' ? <span>{title}</span> : title }
+                { sortKey && sortBtnProps && <SortBtn {...sortBtnProps(sortKey)} />}
+            </>;
+        }
     }
 }
