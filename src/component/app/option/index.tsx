@@ -59,7 +59,7 @@ export class OptionApp extends MemoComponent<IProps> {
         const {
             onListView,
             onSearchTextClear,
-            onModalCancel, onSettingModal, onImportConfigModal, onExportConfigModal, onAddHostModal,
+            onModalCancel, onSettingModal, onImportConfigModal, onExportConfigModal,
             onAddHostConfirm, onDelModalConfirm,
             onAddPathConfirm,
             onEditItemValChange,
