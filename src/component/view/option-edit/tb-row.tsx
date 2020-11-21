@@ -22,8 +22,8 @@ export const TbRow: React.FC<any> = memo((props) => {
                 <td><SliderSwitch id={`js-${ID_SUFFIX}`} defaultChecked={script_js} /></td>
                 <td><SliderSwitch id={`css-${ID_SUFFIX}`} defaultChecked={script_css} /></td>
                 <td><SliderSwitch id={`lib-${ID_SUFFIX}`} defaultChecked={script_lib} /></td>
-                <td><IconBtn icon="delete" theme="gray" /></td>
                 <td><IconBtn icon="edit" theme="gray" /></td>
+                <td><IconBtn icon="delete" theme="gray" /></td>
             </tr>
     </>;
 });
