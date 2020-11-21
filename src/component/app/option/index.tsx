@@ -3,7 +3,7 @@ import { debounce } from '../../../asset/ts/vendor/debounce';
 import { modals } from '../../../constant/modals';
 import { urls } from '../../../constant/urls';
 import { jsExecStage } from '../../../constant/js-exec-stage';
-import { validationHandle } from '../../../service/validation-handle';
+import { validationRule } from '../../../constant/validation-rule';
 import { MemoComponent } from '../../extendable/memo-component';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
@@ -220,10 +220,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="json-import-input"
                             fileType="application/json"
                             required
-                            validate={[
-                                validationHandle.nonEmptyFile,
-                                validationHandle.maxFileSize
-                            ]}
+                            validate={validationRule.importConfig}
                             onFileChange={onImportFileChange}
                             />
                     </Modal>
@@ -243,7 +240,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             label="Filename"
                             required
                             autoFocus
-                            validate={[ validationHandle.fileName ]}
+                            validate={validationRule.exportConfig}
                             onInputChange={onExportFileNameChange}
                             />
                     </Modal>
@@ -281,7 +278,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             label="Host Value"
                             required
                             value={modalEditTarget?.value}
-                            validate={[ validationHandle.urlHost ]}
+                            validate={validationRule.ruleUrlHost}
                             onInputChange={onEditItemValChange}
                             />
                     </Modal>
@@ -302,7 +299,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             label="Path Value"
                             required
                             value={modalEditTarget?.value}
-                            validate={[ validationHandle.urlPath ]}
+                            validate={validationRule.ruleUrlPath}
                             onInputChange={onEditItemValChange}
                             />
                     </Modal>
@@ -364,7 +361,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 required
                 autoFocus
                 value={modalEditTarget?.id}
-                validate={[ validationHandle.gte3Char ]}
+                validate={validationRule.ruleId}
                 onInputChange={onEditItemIdChange}
                 />
         );
@@ -378,7 +375,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     label="ID"
                     required
                     autoFocus
-                    validate={[]}
+                    validate={validationRule.ruleId}
                     onInputChange={({ validState }) => {
                         // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
                     }}
@@ -387,7 +384,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     id="path-url"
                     label="Url"
                     required
-                    validate={[]}
+                    validate={validationRule.libUrl}
                     onInputChange={({ validState }) => {
                         // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
                     }}
