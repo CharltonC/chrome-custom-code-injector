@@ -92,12 +92,6 @@ export class OptionApp extends MemoComponent<IProps> {
                             disabled={rules.length <= 1}
                             onInputChange={onSearch}
                             onInputClear={onSearchTextClear}
-                            />} { isListView &&
-                        <IconBtn
-                            icon="add-outline"
-                            theme="white"
-                            title="add host rule"
-                            onClick={onAddHostModal}
                             />}
                         <IconBtn
                             icon="setting"
