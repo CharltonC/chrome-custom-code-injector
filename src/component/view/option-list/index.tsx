@@ -3,9 +3,10 @@ import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
+import { SortBtn } from '../../base/btn-sort';
 import { TbRow } from './tb-row';
-
 import * as TDataGrid from '../../widget/data-grid/type';
+import * as TSortHandle from '../../../service/sort-handle/type';
 import { IProps } from './type';
 
 export class OptionListView extends MemoComponent<IProps> {
@@ -30,11 +31,10 @@ export class OptionListView extends MemoComponent<IProps> {
     }
 
     render() {
-        const { props, dataGridBaseProps } = this;
+        const { props, dataGridBaseProps, headerProps } = this;
         const { rules, localState } = props.store;
         const { searchedRules, pgnOption, pgnState, sortOption, } = localState;
         const { curr: page, increment, incrementIdx } = { ...pgnOption, ...pgnState };
-        const { $selectAllHeader, $addHostRule, $delAllHeader } = this.headerElems;
 
         return (<>
             <DataGrid
@@ -47,27 +47,14 @@ export class OptionListView extends MemoComponent<IProps> {
                     ],
                     commonProps: props
                 }}
-                header={[
-                    { title: $selectAllHeader as any},
-                    { title: 'HTTPS' },
-                    { title: 'ID', sortKey: 'id' },
-                    { title: 'ADDRESS', sortKey: 'value' },
-                    { title: 'SCRIPT EXECUTION' },
-                    { title: 'JS' },
-                    { title: 'CSS' },
-                    { title: 'LIBRARY' },
-                    { title: $addHostRule as any },
-                    { title: '' },
-                    { title: $delAllHeader as any}
-                ]}
+                header={headerProps}
                 sort={sortOption}
                 paginate={{ page, increment, incrementIdx }}
                 />
         </>);
     }
 
-    // Dynamic react elements based on current state
-    get headerElems() {
+    get headerProps() {
         const { props } = this;
         const { store, storeHandler } = props;
         const { rules, localState } = store;
@@ -90,6 +77,9 @@ export class OptionListView extends MemoComponent<IProps> {
                 />
         );
 
+        const $id = this.getHeaderColRenderFn('ID', hsSelected);
+        const $addr = this.getHeaderColRenderFn('ADDRESS', hsSelected);
+
         const $addHostRule = (
             <IconBtn
                 icon="add-outline"
@@ -109,6 +99,25 @@ export class OptionListView extends MemoComponent<IProps> {
                 />
         );
 
-        return { $selectAllHeader, $addHostRule, $delAllHeader };
+        return [
+            { title: $selectAllHeader as any },
+            { title: 'HTTPS' },
+            { title: $id as any, sortKey: 'id' },
+            { title: $addr as any, sortKey: 'value' },
+            { title: 'SCRIPT EXECUTION' },
+            { title: 'JS' },
+            { title: 'CSS' },
+            { title: 'LIBRARY' },
+            { title: $addHostRule as any },
+            { title: '' },
+            { title: $delAllHeader as any }
+        ];
+    }
+
+    getHeaderColRenderFn(title: string, disabled: boolean) {
+        return (data, sortBtnProps: TSortHandle.ICmpSortBtnAttr) => <>
+            <span>{title}</span>
+            <SortBtn {...sortBtnProps} disabled={disabled} />
+        </>;
     }
 }
