@@ -34,7 +34,7 @@ export class OptionListView extends MemoComponent<IProps> {
         const { rules, localState } = props.store;
         const { searchedRules, pgnOption, pgnState, sortOption, } = localState;
         const { curr: page, increment, incrementIdx } = { ...pgnOption, ...pgnState };
-        const { $selectAllHeader, $delAllHeader } = this.selectAndDelElems;
+        const { $selectAllHeader, $addHostRule, $delAllHeader } = this.headerElems;
 
         return (<>
             <DataGrid
@@ -56,7 +56,7 @@ export class OptionListView extends MemoComponent<IProps> {
                     { title: 'JS' },
                     { title: 'CSS' },
                     { title: 'LIBRARY' },
-                    { title: '' },
+                    { title: $addHostRule as any },
                     { title: '' },
                     { title: $delAllHeader as any}
                 ]}
@@ -66,25 +66,37 @@ export class OptionListView extends MemoComponent<IProps> {
         </>);
     }
 
-    get selectAndDelElems() {
+    // Dynamic react elements based on current state
+    get headerElems() {
         const { props } = this;
         const { store, storeHandler } = props;
         const { rules, localState } = store;
         const { searchedRules, selectState } = localState;
-        const { onRowsSelectToggle, onDelModal } = storeHandler;
+        const { onRowsSelectToggle, onAddHostModal, onDelModal } = storeHandler;
 
+        const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
         const { areAllRowsSelected, selectedRowKeys } = selectState;
-        const selectedTotal: number = Object.entries(selectedRowKeys).length;
-        const allowDelAll: boolean = areAllRowsSelected || !!selectedTotal;
-        const isPartialSelected = !areAllRowsSelected && !!selectedTotal;
+        const totalSelected: number = Object.entries(selectedRowKeys).length;
+        const hsSelected: boolean = areAllRowsSelected || !!totalSelected;
+        const isPartialSelected = !areAllRowsSelected && !!totalSelected;
 
         const $selectAllHeader = (
             <Checkbox
                 id="check-all"
                 clsSuffix={isPartialSelected ? 'partial' : ''}
-                disabled={!(searchedRules ? searchedRules : rules).length}
-                checked={areAllRowsSelected || isPartialSelected}
+                disabled={!hsDataSrc}
+                checked={hsSelected}
                 onChange={onRowsSelectToggle}
+                />
+        );
+
+        const $addHostRule = (
+            <IconBtn
+                icon="add-outline"
+                theme="gray"
+                title="add host rule"
+                disabled={hsSelected}
+                onClick={onAddHostModal}
                 />
         );
 
@@ -92,11 +104,11 @@ export class OptionListView extends MemoComponent<IProps> {
             <IconBtn
                 icon="delete"
                 theme="gray"
-                disabled={!allowDelAll}
+                disabled={!hsSelected}
                 onClick={() => onDelModal({ dataSrc })}
                 />
         );
 
-        return { $selectAllHeader, $delAllHeader };
+        return { $selectAllHeader, $addHostRule, $delAllHeader };
     }
 }
