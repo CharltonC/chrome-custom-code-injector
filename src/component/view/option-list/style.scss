@@ -57,7 +57,7 @@
 
         th,
         td:not([colspan]) {
-            @include gen-tb-cells-width( (65, 80, (270, 2), 220, (75, 3), (50, 3)) );
+            @include gen-tb-cells-width( (65, 80, (270, 2), 200, (75, 2), 95, (50, 3)) );
         }
 
         .slider-switch,
