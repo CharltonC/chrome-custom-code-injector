@@ -1,8 +1,17 @@
-import { validationHandle } from ".";
+import { ValidationHandle } from ".";
 
 describe('Validation Rules', () => {
-    describe('3 or more alphabets only', () => {
-        const { rule } = validationHandle.gte3Char;
+    let validationHandle: ValidationHandle;
+    let rule;
+
+    beforeEach(() => {
+        validationHandle = new ValidationHandle();
+    });
+
+    describe('minimum number of alphabets only', () => {
+        beforeEach(() => {
+            ({ rule } = validationHandle.gteChar(3));
+        });
 
         it('should test truthy when value has 3 or more alphabets only', () => {
             expect(rule.test('abc')).toBeTruthy();
@@ -18,36 +27,60 @@ describe('Validation Rules', () => {
         });
     });
 
-    describe('host of a URL', () => {
-       const { rule } = validationHandle.urlHost;
+    describe('URL', () => {
+        beforeEach(() => {
+            ({ rule } = validationHandle.url);
+        });
 
-        it('shold test truthy when value is valid', () => {
+        it('should test truthy when value is valid', () => {
+            expect(rule.test('www.google.com')).toBeTruthy();
+            expect(rule.test('google.com')).toBeTruthy();
+            expect(rule.test('https://google.com')).toBeTruthy();
+            expect(rule.test('https://google.com/file.ext')).toBeTruthy();
+            expect(rule.test('google.com/abc')).toBeTruthy();
+        });
+
+        it('should test falsy when value is invalid', () => {
+            expect(rule.test('google')).toBeFalsy();
+        });
+    });
+
+    describe('host of a URL', () => {
+       beforeEach(() => {
+           ({ rule } = validationHandle.urlHost);
+       });
+
+        it('should test truthy when value is valid', () => {
             expect(rule.test('www.google.com')).toBeTruthy();
             expect(rule.test('google.com')).toBeTruthy();
         });
 
-        it('shold test falsy when value is invalid', () => {
+        it('should test falsy when value is invalid', () => {
             expect(rule.test('google')).toBeFalsy();
             expect(rule.test('google.com/abc')).toBeFalsy();
         });
     });
 
     describe('path of a URL', () => {
-        const { rule } = validationHandle.urlPath;
+        beforeEach(() => {
+            ({ rule } = validationHandle.urlPath);
+        });
 
-        it('shold test truthy when value is valid', () => {
+        it('should test truthy when value is valid', () => {
             expect(rule.test('/a')).toBeTruthy();
             expect(rule.test('/abc/')).toBeTruthy();
         });
 
-        it('shold test falsy when value is invalid', () => {
+        it('should test falsy when value is invalid', () => {
             expect(rule.test('/')).toBeFalsy();
             expect(rule.test('abc/')).toBeFalsy();
         });
     });
 
     describe('empty file', () => {
-        const { rule } = validationHandle.nonEmptyFile;
+        beforeEach(() => {
+            ({ rule } = validationHandle.nonEmptyFile);
+        });
 
         it('should return true if file is not empty', () => {
             expect(rule({ size: 1 } as File)).toBeTruthy();
@@ -59,7 +92,9 @@ describe('Validation Rules', () => {
     });
 
     describe('file size less than 2mb', () => {
-        const { rule } = validationHandle.maxFileSize;
+        beforeEach(() => {
+            ({ rule } = validationHandle.maxFileSize);
+        });
 
         it('should return true if less than or equal to 2mb', () => {
             expect(rule({ size: 1 } as File)).toBeTruthy();
@@ -71,7 +106,9 @@ describe('Validation Rules', () => {
     });
 
     describe('file name', () => {
-        const { rule } = validationHandle.fileName;
+        beforeEach(() => {
+            ({ rule } = validationHandle.fileName);
+        });
 
         it('should test true if file name is valid', () => {
             expect(rule.test('a')).toBeTruthy();
