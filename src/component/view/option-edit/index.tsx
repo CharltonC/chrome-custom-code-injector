@@ -19,7 +19,7 @@ export const OptionEditView = memo((props: IProps) => {
     const { editViewTarget } = localState;
     const { activeTabIdx, libs, jsCode, cssCode } = editViewTarget;
 
-    const isLibTab = libs.length && activeTabIdx === 2;
+    const isLibTab = !!libs.length && activeTabIdx === 2;
     const isJsCode = activeTabIdx === 0;
     const isCssCode = activeTabIdx === 1;
     const isCode = isJsCode || isCssCode;
