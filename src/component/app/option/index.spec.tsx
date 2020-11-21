@@ -41,6 +41,8 @@ describe('Component - Option App (UI/E2E)', () => {
         });
     }
 
+    jest.useFakeTimers();
+
     beforeEach(() => {
         $elem = TestUtil.setupElem();
         mockAppState = createMockAppState();    // 4 rows w/ 3 sub rows for each row
@@ -198,6 +200,10 @@ describe('Component - Option App (UI/E2E)', () => {
                     const { $searchInput } = getElem();
                     TestUtil.setInputVal($searchInput, searchText);
                     TestUtil.triggerEvt($searchInput, 'change');
+
+                    // Mocking debounce fn causes inconsistent testing issue compared to the UI
+                    // therefore we use timer to deal with `setTimeout` in debounce involved in search
+                    jest.runAllTimers();
                 }
 
                 beforeEach(() => {
@@ -220,14 +226,14 @@ describe('Component - Option App (UI/E2E)', () => {
                     // Delete the search row
                     const $targetRow = getElem().$rows[0];
                     TestUtil.triggerEvt(getCellElem($targetRow).$del, 'click');
-                    const { $rows: $searchRows, totalRows: searchTotalRows } = getElem();
+                    const { $rows: $searchRows, totalRows: searchTotalRows, $searchClear } = getElem();
 
                     expect(searchTotalRows).toBe(0);
                     expect($searchRows.length).toBe(0);
                     expect(hsTargetRow($searchRows, $targetRow)).toBeFalsy();
 
                     // Clear the search
-                    TestUtil.triggerEvt(getElem().$searchClear, 'click');
+                    TestUtil.triggerEvt($searchClear, 'click');
                     const { $rows, totalRows } = getElem();
 
                     expect(totalRows).toBe(3);
