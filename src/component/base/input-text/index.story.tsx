@@ -34,6 +34,7 @@ export const WithValidationAndPassedInitialValue  = () => {
     const [ text, setText ] = useState('lorem sum');
     const onInputChange = ({evt, val, validState}) => {
         // Only update the value when text is valid
+        // - instead of mimic 2-way binding such as `setText(val);` to set text directly
         if (!validState.isValid) return;
         setText(val);
     };
