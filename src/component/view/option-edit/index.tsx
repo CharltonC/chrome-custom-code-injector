@@ -67,6 +67,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         autoFocus
                         value={id}
                         validate={validationRule.ruleId}
+                        fixedPosErrMsg
                         />
                 </section>
                 <section className="fm-field">
@@ -77,6 +78,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         required
                         value={value}
                         validate={isHostRule ? validationRule.ruleUrlHost : validationRule.ruleUrlPath}
+                        fixedPosErrMsg
                         />
                     {/*
                         <div className="fm-field__ctrl">{ isHostRule &&
