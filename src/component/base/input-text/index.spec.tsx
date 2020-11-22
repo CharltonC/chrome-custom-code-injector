@@ -34,24 +34,24 @@ describe('Component - Text Input', () => {
             it('should get Initial state when text is not provided', () => {
                 expect(getInitialState( undefined)).toEqual({
                     ...mockInitialBaseState,
-                    hsValidationRules: false
+                    hsValidation: false
                 });
 
                 expect(getInitialState([])).toEqual({
                     ...mockInitialBaseState,
-                    hsValidationRules: false
+                    hsValidation: false
                 });
             });
 
             it('should get Initial state when text is provided', () => {
                 expect(getInitialState(undefined)).toEqual({
                     ...mockInitialBaseState,
-                    hsValidationRules: false
+                    hsValidation: false
                 });
 
                 expect(getInitialState(mockValidationRules)).toEqual({
                     ...mockInitialBaseState,
-                    hsValidationRules: true
+                    hsValidation: true
                 });
             });
         });
@@ -149,14 +149,14 @@ describe('Component - Text Input', () => {
             });
 
             it('should set valid state when validation rules exist, valid state has not been previously set and input text characters are more than the specified limit', () => {
-                (cmpInst.state as any).hsValidationRules = true;    // force set private property
+                (cmpInst.state as any).hsValidation = true;    // force set private property
                 cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
 
                 expect(spySetState).toHaveBeenCalledWith({...cmpInst.state, ...mockRtnState});
             });
 
             it('should set valid state when validation rules exist and valid state has been previously set (regardless of character limit)', () => {
-                (cmpInst.state as any).hsValidationRules = true;
+                (cmpInst.state as any).hsValidation = true;
                 (cmpInst.state as any).isValid = true;          // force set read-only property
                 cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
 
@@ -164,14 +164,14 @@ describe('Component - Text Input', () => {
             });
 
             it('should not set valid state when validation rules dont exist', () => {
-                (cmpInst as any).hsValidationRules = false;
+                (cmpInst as any).hsValidation = false;
                 cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
 
                 expect(spySetState).not.toHaveBeenCalled();
             });
 
             it('should not set valid state when validation rules exist, valid state has been previously set and input text character is less than the specified limit', () => {
-                (cmpInst as any).hsValidationRules = true;
+                (cmpInst as any).hsValidation = true;
                 cmpInst.setValidState(mockEvt, mockEvtCbFn, 100);
                 expect(spySetState).not.toHaveBeenCalled();
             });

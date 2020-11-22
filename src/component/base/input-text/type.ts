@@ -9,7 +9,7 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export interface IState {
-    hsValidationRules: boolean;
+    hsValidation: boolean;
     isValid: boolean;       // null` is used for indicating if it has been set for the 1st time or not
     errMsg: string[];
 }
