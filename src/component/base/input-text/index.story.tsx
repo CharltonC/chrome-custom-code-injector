@@ -14,7 +14,7 @@ const validationRules = [
     {rule: /(abc)/g , msg: 'must contain character `abc`'},
 ];
 
-export const WithValidationAndFixedPosErrMsg = () => {
+export const WithValidation = () => {
     return (
         <div style={defStyle} >
             <TextInput
@@ -26,17 +26,26 @@ export const WithValidationAndFixedPosErrMsg = () => {
     )
 };
 
-export const WithPassedInput  = () => {
+/**
+ * This is suitable for passing an existing text value BUT only change value WHEN text is valid
+ */
+export const WithValidationAndPassedInitialValue  = () => {
     // Ext state & 2way binding
     const [ text, setText ] = useState('lorem sum');
-    const onInputChange = ({evt, val}) => setText(val);
+    const onInputChange = ({evt, val, validState}) => {
+        // Only update the value when text is valid
+        if (!validState.isValid) return;
+        setText(val);
+    };
 
+    // Only re-render when text is valid
     return (
         <div style={defStyle} >
             <TextInput
                 id="lorem2"
                 placeholder="some text"
                 defaultValue={text}
+                validate={validationRules}
                 onInputChange={onInputChange}
                 />
         </div>
