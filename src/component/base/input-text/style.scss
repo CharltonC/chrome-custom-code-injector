@@ -76,6 +76,12 @@
         margin-top: 5px;
         font: 12px $roboto-reg;
         color: $red;
+
+        &--pos-fixed {
+            position: absolute;
+            left: 0;
+            top: 100%;
+        }
     }
 
     &--invalid {

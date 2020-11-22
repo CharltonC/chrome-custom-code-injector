@@ -18,7 +18,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
 
     render() {
         const { BASE_CLS, cssCls, $validIcon } = this;
-        const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
+        const { id, label, onInputChange, onInputBlur, validate, fixedPosErrMsg, ...inputProps } = this.props;
         const { isValid, hsValidation, errMsg } = this.state;
 
         const showValidation: boolean = hsValidation && (isValid !== null);
@@ -28,6 +28,13 @@ export class TextInput extends MemoComponent<IProps, IState> {
         const validateCls: string = showValidation ? (isValid ? 'valid' : 'invalid') : '';
         const wrapperCls: string = cssCls(BASE_CLS, (label ? 'label' : '') + ` ${validateCls}`);
         const labelCls: string = cssCls(`${BASE_CLS}__label`, inputProps?.required ? 'req' : '');
+        const errMsgCls: string = cssCls(`${BASE_CLS}__err`, fixedPosErrMsg ? 'pos-fixed' : '');
+
+        const $errMsgList: ReactElement = showErrMsg ? (
+            <ul className={errMsgCls}>{ errMsg.map((msg, idx) =>
+                <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>)}
+            </ul>
+        ) : null;
 
         return (
             <div className={wrapperCls}>{ label &&
@@ -42,10 +49,9 @@ export class TextInput extends MemoComponent<IProps, IState> {
                         {...inputProps}
                         />
                     { showValidIcon && $validIcon }
-                </div>{ showErrMsg &&
-                <ul className="text-ipt__err">{ errMsg.map((msg, idx) =>
-                    <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>)}
-                </ul>}
+                    { fixedPosErrMsg && $errMsgList }
+                </div>
+                { !fixedPosErrMsg && $errMsgList }
             </div>
         );
     }

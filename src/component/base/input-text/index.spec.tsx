@@ -287,35 +287,66 @@ describe('Component - Text Input', () => {
         });
 
         describe('props: validation rules', () => {
-            it('should render class names, validated icon and error list correctly when rules are not provided', () => {
-                TestUtil.renderPlain(elem, TextInput, mockProps);
-                getChildElem();
-
-                expect(wrapperElem.className).not.toContain('text-ipt--valid');
-                expect(wrapperElem.className).not.toContain('text-ipt--invalid');
-                expect(iconElem).toBeFalsy();
-                expect(listElem).toBeFalsy();
-            });
-
-            it('should render class names, validated icon and error list correctly when rules are provided', () => {
-                TestUtil.renderPlain(elem, TextInput, {...mockProps, validate: mockValidationRules});
-                getChildElem();
-
-                // Trigger invalid state
+            //// Helper
+            function triggerBlur() {
                 TestUtil.triggerEvt(inputElem, 'blur');
                 jest.runAllTimers();
                 getChildElem();
-                expect(wrapperElem.className).toContain('text-ipt--invalid');
-                expect(iconElem).toBeFalsy();
-                expect(listElem.textContent).toContain(mockValidationRules[0].msg);
+            }
 
-                // Trigger valid state
-                TestUtil.setInputVal(inputElem, mockValidTxtInput);
+            function triggerChange(text) {
+                TestUtil.setInputVal(inputElem, text);
                 TestUtil.triggerEvt(inputElem, 'change');
                 getChildElem();
-                expect(wrapperElem.className).toContain('text-ipt--valid');
-                expect(iconElem).toBeTruthy();
-                expect(listElem).toBeFalsy();
+            }
+
+            describe('Validation', () => {
+                it('should render class names, validated icon and error list correctly when rules are not provided', () => {
+                    TestUtil.renderPlain(elem, TextInput, mockProps);
+                    getChildElem();
+
+                    expect(wrapperElem.className).not.toContain('text-ipt--valid');
+                    expect(wrapperElem.className).not.toContain('text-ipt--invalid');
+                    expect(iconElem).toBeFalsy();
+                    expect(listElem).toBeFalsy();
+                });
+
+                it('should render class names, validated icon and error list correctly when rules are provided', () => {
+                    TestUtil.renderPlain(elem, TextInput, {...mockProps, validate: mockValidationRules});
+                    getChildElem();
+
+                    triggerBlur();
+                    expect(wrapperElem.className).toContain('text-ipt--invalid');
+                    expect(iconElem).toBeFalsy();
+                    expect(listElem.textContent).toContain(mockValidationRules[0].msg);
+
+                    triggerChange(mockValidTxtInput);
+                    expect(wrapperElem.className).toContain('text-ipt--valid');
+                    expect(iconElem).toBeTruthy();
+                    expect(listElem).toBeFalsy();
+                });
+            });
+
+            describe('Error Message position', () => {
+                const mockBaseProps =  {...mockProps, validate: mockValidationRules};
+
+                it('should render error msg outside of input container by default', () => {
+                    TestUtil.renderPlain(elem, TextInput, mockBaseProps);
+                    getChildElem();
+                    triggerBlur();
+
+                    expect(wrapperElem.children.length).toBe(3);
+                    expect(wrapperElem.lastElementChild.tagName).toBe('UL');
+                });
+
+                it('should render error inside input container', () => {
+                    TestUtil.renderPlain(elem, TextInput, {...mockBaseProps, fixedPosErrMsg: true });
+                    getChildElem();
+                    triggerBlur();
+
+                    expect(wrapperElem.children.length).toBe(2);
+                    expect(wrapperElem.lastElementChild.tagName).toBe('DIV');
+                });
             });
         });
 
