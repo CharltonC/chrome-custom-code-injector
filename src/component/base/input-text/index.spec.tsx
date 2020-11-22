@@ -177,6 +177,26 @@ describe('Component - Text Input', () => {
             });
         });
 
+        describe('Method - clearValidState', () => {
+            let cmp: TextInput;
+            let setStateSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                cmp = new TextInput({} as any);
+                setStateSpy = jest.spyOn(cmp, 'setState');
+                setStateSpy.mockImplementation(() => {});
+            });
+
+            it('should clear valid state', () => {
+                cmp.clearValidState();
+                expect(setStateSpy).toHaveBeenCalledWith({
+                    hsValidation: false,
+                    isValid: null,
+                    errMsg: []
+                });
+            });
+        });
+
         describe('Method - Event handlers', () => {
             let spySetValidState: jest.SpyInstance;
             let cmpInst: TextInput;

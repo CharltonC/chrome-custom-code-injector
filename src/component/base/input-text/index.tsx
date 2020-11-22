@@ -101,7 +101,10 @@ export class TextInput extends MemoComponent<IProps, IState> {
         });
     }
 
-    //// EVENT HANDLE ////
+    clearValidState(): void {
+        this.setState(this.getInitialState(this.props.validate));
+    }
+
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
         this.setValidState(evt, this.props.onInputChange, 3);
     }
