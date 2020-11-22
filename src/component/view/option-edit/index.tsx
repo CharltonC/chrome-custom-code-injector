@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef, RefObject } from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationRule } from '../../../constant/validation-rule';
 import { MemoComponent } from '../../extendable/memo-component';
@@ -17,11 +17,21 @@ import * as TSortHandle from '../../../service/sort-handle/type';
 import { IProps } from './type';
 
 export class OptionEditView extends MemoComponent<IProps> {
+    $idInputRef: RefObject<TextInput>;
+    $valueInputRef: RefObject<TextInput>;
+
+    constructor(props: IProps) {
+        super(props);
+        this.$idInputRef = createRef();
+        this.$valueInputRef = createRef();
+        this.onListItemChange = this.onListItemChange.bind(this);
+    }
+
     render() {
         const { headerProps, props } = this;
         const { store, storeHandler } = props;
         const { rules, localState } = store;
-        const { onListItemClick, onActiveTabChange, onTabEnable, onEditorCodeChange } = storeHandler;
+        const { onActiveTabChange, onTabEnable, onEditorCodeChange } = storeHandler;
 
         const { editViewTarget } = localState;
         const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase, id, value } = editViewTarget;
@@ -43,30 +53,30 @@ export class OptionEditView extends MemoComponent<IProps> {
                 itemKeys={['id', 'id']}
                 childKey="paths"
                 activeItem={editViewTarget}
-                onItemClick={onListItemClick}
+                onItemClick={this.onListItemChange}
                 /* TODO: clear validation state */
                 />
             <div className="main--edit__form">
                 {/* TODO: placeholder text variation */}
                 <section className="fm-field">
                     <TextInput
+                        ref={this.$idInputRef}
                         id="edit-target-id"
                         label="ID"
                         required
                         autoFocus
                         value={id}
                         validate={validationRule.ruleId}
-                        onInputChange={() => {}}
                         />
                 </section>
                 <section className="fm-field">
                     <TextInput
+                        ref={this.$valueInputRef}
                         id="edit-target-value"
                         label={isHostRule ? 'Host' : 'Path'}
                         required
                         value={value}
                         validate={isHostRule ? validationRule.ruleUrlHost : validationRule.ruleUrlPath}
-                        onInputChange={() => {}}
                         />
                     {/*
                         <div className="fm-field__ctrl">{ isHostRule &&
@@ -179,5 +189,13 @@ export class OptionEditView extends MemoComponent<IProps> {
             <span>{title}</span>
             <SortBtn {...sortBtnProps} disabled={disabled} />
         </>;
+    }
+
+    onListItemChange(...[, { item }]): void {
+        this.$idInputRef.current.clearValidState();
+        this.$valueInputRef.current.clearValidState();
+        setTimeout(() => {
+            this.props.storeHandler.onListItemChange(item);
+        }, 200);
     }
 }
