@@ -66,7 +66,7 @@ export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
         };
     }
 
-    onListItemClick({ localState }: AppState, ...[, { item }]) {
+    onListItemChange({ localState }: AppState, item) {
         return {
             localState: {
                 ...localState,
