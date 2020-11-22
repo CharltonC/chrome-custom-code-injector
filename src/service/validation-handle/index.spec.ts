@@ -13,6 +13,11 @@ describe('Validation Rules', () => {
             ({ rule } = validationHandle.gteChar(3));
         });
 
+        it('should throw an error if minimum no. of characters is less than equal to 1 or is not an integer', () => {
+            expect(() => validationHandle.gteChar(0)).toThrowError();
+            expect(() => validationHandle.gteChar(1.23)).toThrowError();
+        });
+
         it('should test truthy when value has 3 or more alphabets only', () => {
             expect(rule.test('abc')).toBeTruthy();
         });
