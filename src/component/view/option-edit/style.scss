@@ -29,7 +29,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 45px;
 
             &:nth-child(2) {
                 position: relative;
@@ -42,18 +42,23 @@
                 }
             }
 
-            &__label {
-                width: 170px;
+            &__label,
+            .text-ipt__label {
                 font: bold 14px $arial;
                 color: $dark-gray-100;
             }
 
+            &__label {
+                width: 170px;
+            }
+
             .text-ipt {
                 width: 100%;
+                grid-template-columns: 170px 1fr;
             }
 
             .dropdown {
-                width: 180px;
+                width: 200px;
             }
         }
 
