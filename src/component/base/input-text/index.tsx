@@ -19,15 +19,18 @@ export class TextInput extends MemoComponent<IProps, IState> {
     render() {
         const { BASE_CLS, cssCls, $validIcon } = this;
         const { id, label, onInputChange, onInputBlur, validate, ...inputProps } = this.props;
-        const { required } = inputProps;
         const { isValid, hsValidation, errMsg } = this.state;
-        const hsValidState: boolean = hsValidation && (isValid !== null);
-        const validateCls: string = hsValidState ? (isValid ? 'valid' : 'invalid') : '';
-        const className: string = cssCls(BASE_CLS, (label ? 'label' : '') + ` ${validateCls}`);
-        const labelCls: string = cssCls(`${BASE_CLS}__label`, required ? 'req' : '');
+
+        const showValidation: boolean = hsValidation && (isValid !== null);
+        const showValidIcon: boolean = showValidation && isValid;
+        const showErrMsg: boolean = showValidation && !isValid;
+
+        const validateCls: string = showValidation ? (isValid ? 'valid' : 'invalid') : '';
+        const wrapperCls: string = cssCls(BASE_CLS, (label ? 'label' : '') + ` ${validateCls}`);
+        const labelCls: string = cssCls(`${BASE_CLS}__label`, inputProps?.required ? 'req' : '');
 
         return (
-            <div className={className}>{ label &&
+            <div className={wrapperCls}>{ label &&
                 <label className={labelCls} htmlFor={id}>{label}</label>}
                 <div className="text-ipt__input">
                     <input
@@ -38,8 +41,8 @@ export class TextInput extends MemoComponent<IProps, IState> {
                         onBlur={this.onBlur}
                         {...inputProps}
                         />
-                    { hsValidState && isValid && $validIcon }
-                </div>{ hsValidState && !isValid &&
+                    { showValidIcon && $validIcon }
+                </div>{ showErrMsg &&
                 <ul className="text-ipt__err">{ errMsg.map((msg, idx) =>
                     <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>)}
                 </ul>}
