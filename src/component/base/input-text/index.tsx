@@ -18,7 +18,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
 
     render() {
         const { BASE_CLS, cssCls, $validIcon } = this;
-        const { id, label, onInputChange, onInputBlur, validate, fixedPosErrMsg, ...inputProps } = this.props;
+        const { id, label, onInputChange, onInputBlur, validate, fixedPosErrMsg, defaultValue, ...inputProps } = this.props;
         const { isValid, hsValidation, errMsg } = this.state;
 
         const showValidation: boolean = hsValidation && (isValid !== null);
@@ -41,9 +41,12 @@ export class TextInput extends MemoComponent<IProps, IState> {
                 <label className={labelCls} htmlFor={id}>{label}</label>}
                 <div className="text-ipt__input">
                     <input
+                        /* `key` is used to trigger re-render when `defaultValue` value changes */
+                        key={defaultValue as string}
                         id={id}
                         type="text"
                         ref={e => this.$input = e}
+                        defaultValue={defaultValue}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
                         {...inputProps}
