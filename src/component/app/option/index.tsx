@@ -277,7 +277,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="host-value"
                             label="Host Value"
                             required
-                            value={modalEditTarget?.value}
+                            defaultValue={modalEditTarget?.value}
                             validate={validationRule.ruleUrlHost}
                             onInputChange={onEditItemValChange}
                             />
@@ -298,7 +298,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="path-url"
                             label="Path Value"
                             required
-                            value={modalEditTarget?.value}
+                            defaultValue={modalEditTarget?.value}
                             validate={validationRule.ruleUrlPath}
                             onInputChange={onEditItemValChange}
                             />
@@ -360,7 +360,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 label="ID"
                 required
                 autoFocus
-                value={modalEditTarget?.id}
+                defaultValue={modalEditTarget?.id}
                 validate={validationRule.ruleId}
                 onInputChange={onEditItemIdChange}
                 />
@@ -370,6 +370,7 @@ export class OptionApp extends MemoComponent<IProps> {
     get $libEdit() {
         return (
             <>
+                {/* TODO: value binding */}
                 <TextInput
                     id="path-id"
                     label="ID"
