@@ -53,18 +53,22 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         onChange={() => onRowSwitchToggle(ctxIdx, 'isHttps')}
                         />}
                 </td><td>
-                    <div>{ isParent && <>
-                        <IconBtn
-                            icon="arrow-rt"
-                            clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
-                            disabled={!paths?.length}
-                            onClick={() => onRowExpand({[id]: itemLvl})}
-                            />
-                        <NumBadge total={paths?.length} /> </>}
-                        <span>{id}</span>
+                    <div>{ isParent &&
+                        <>
+                            <IconBtn
+                                icon="arrow-rt"
+                                clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
+                                disabled={!paths?.length}
+                                onClick={() => onRowExpand({[id]: itemLvl})}
+                                />
+                            <NumBadge total={paths?.length} />
+                        </>}
+                        <span className="datagrid__cell datagrid__cell--id">{id}</span>
                     </div>
                 </td><td>
-                    {value}
+                    <span className="datagrid__cell datagrid__cell--addr">
+                        {value}
+                    </span>
                 </td><td>
                     <Dropdown
                         id={`select-${ID_SUFFIX}`}
