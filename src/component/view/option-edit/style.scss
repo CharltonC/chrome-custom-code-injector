@@ -1,6 +1,7 @@
 .main--edit {
     display: grid;
     grid-template-columns: 220px auto;
+    height: calc(100% - 60px);
 
     .text-ipt input {
         padding-right: 70px;
@@ -63,7 +64,7 @@
         }
 
         .tab-switch {
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
     }
 
