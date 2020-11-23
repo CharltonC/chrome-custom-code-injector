@@ -3,7 +3,7 @@
         &__row {
             &--nested {
                 td:nth-child(3) {
-                    text-indent: 60px;
+                    padding-left: 60px;
                 }
             }
 
@@ -52,6 +52,23 @@
             .dropdown__select--cell {
                 background-color: transparent;
                 padding: 0 35px 0 8px;
+            }
+        }
+
+        &__cell {
+            &--id,
+            &--addr {
+                @extend %text-trim-ellipsis;
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            &--id {
+                max-width: 200px;
+            }
+
+            &--addr {
+                max-width: 250px;
             }
         }
 
