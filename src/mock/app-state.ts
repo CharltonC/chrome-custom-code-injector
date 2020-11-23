@@ -27,16 +27,16 @@ export const createMockAppState = (): AppState =>  {
         const hostRuleConfig = new HostRuleConfig(hostId, hostValue);
 
         mockPathRuleConfigs.forEach(([ pathId, pathValue]) => {
-            const pathRuleConfig = new PathRuleConfig(`${hostId}-${pathId}`, pathValue);
+            const pathRuleConfig = new PathRuleConfig(`${hostId}${pathId}`, pathValue);
             hostRuleConfig.paths.push(pathRuleConfig);
 
             mockLibRuleConfigs.forEach(([ libId, libValue ]) => {
-                pathRuleConfig.libs.push(new LibRuleConfig(`${hostId}-${pathId}-${libId}`, libValue));
+                pathRuleConfig.libs.push(new LibRuleConfig(`${hostId}${pathId}${libId}`, libValue));
             });
         })
 
         mockLibRuleConfigs.forEach(([ libId, libValue ]) => {
-            hostRuleConfig.libs.push(new LibRuleConfig(`${hostId}-${libId}`, libValue));
+            hostRuleConfig.libs.push(new LibRuleConfig(`${hostId}${libId}`, libValue));
         });
 
         rules.push(hostRuleConfig);
