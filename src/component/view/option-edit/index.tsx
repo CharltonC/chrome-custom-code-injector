@@ -65,7 +65,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         label="ID"
                         required
                         autoFocus
-                        value={id}
+                        defaultValue={id}
                         validate={validationRule.ruleId}
                         fixedPosErrMsg
                         />
@@ -76,7 +76,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-value"
                         label={isHostRule ? 'Host' : 'Path'}
                         required
-                        value={value}
+                        defaultValue={value}
                         validate={isHostRule ? validationRule.ruleUrlHost : validationRule.ruleUrlPath}
                         fixedPosErrMsg
                         />
