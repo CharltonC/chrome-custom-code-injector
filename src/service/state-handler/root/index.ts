@@ -1,8 +1,8 @@
 import { StateHandle } from '../../state-handle';
-import { GeneralStateHandler } from './partial-general';
-import { ModalToggleStateHandler } from './partial-modal-toggle';
-import { ModalContentStateHandler } from './partial-modal-content';
-import { TbRowStateHandler } from './partial-tb-row';
+import { GeneralStateHandler } from './general.partial';
+import { ModalToggleStateHandler } from './modal-toggle.partial';
+import { ModalContentStateHandler } from './modal-content.partial';
+import { TbRowStateHandler } from './tb-row.partial';
 import { IStateHandler } from './type';
 
 export const StateHandler = StateHandle.BaseStoreHandler.join<IStateHandler>([
