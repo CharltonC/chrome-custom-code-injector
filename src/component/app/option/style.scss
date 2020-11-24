@@ -5,6 +5,7 @@
     --header-height: 60px;
 
     width: 1280px;
+    height: 100vh;
 
     .header {
         @include bg-img-retina($logo-path-1x, $logo-path-2x);
