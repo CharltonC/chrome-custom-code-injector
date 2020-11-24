@@ -53,8 +53,8 @@ export class OptionEditView extends MemoComponent<IProps> {
                 itemKeys={['id', 'id']}
                 childKey="paths"
                 activeItem={editViewTarget}
+                /* TODO: input change causes active item changes causes list to collapse */
                 onItemClick={this.onListItemChange}
-                /* TODO: clear validation state */
                 />
             <div className="main--edit__form">
                 {/* TODO: placeholder text variation */}
