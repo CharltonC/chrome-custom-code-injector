@@ -64,6 +64,7 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
             localState: {
                 ...localState,
                 editViewTarget,
+                selectState: rowSelectHandle.defState,      // clear the row select state ready for use for DataGrid component in Edit View
             }
         };
     }
