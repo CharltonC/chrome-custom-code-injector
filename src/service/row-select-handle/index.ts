@@ -58,14 +58,18 @@ export class RowSelectHandle {
         if (!doSelect) delete selectedRowKeys[rowIdx];
     }
 
+    get defState(): IState {
+        return {
+            areAllRowsSelected: false,
+            selectedRowKeys: {}
+        };
+    }
+
     get defOption(): IOption {
         return {
             isAll: true,
             rowsCtx: null,
-            currState: {
-                areAllRowsSelected: false,
-                selectedRowKeys: {},
-            }
+            currState: this.defState
         };
     }
 }

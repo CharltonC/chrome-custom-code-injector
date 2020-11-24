@@ -155,4 +155,24 @@ describe('Row Select Handle', () => {
             expect(mockSelectIndexes[mockRowIdx]).toBeFalsy();
         });
     });
+
+    describe('Method - Getters', () => {
+        it('should return default option', () => {
+            expect(handle.defOption).toEqual({
+                isAll: true,
+                rowsCtx: null,
+                currState: {
+                    areAllRowsSelected: false,
+                    selectedRowKeys: {},
+                }
+            });
+        });
+
+        it('should return default state', () => {
+            expect(handle.defState).toEqual({
+                areAllRowsSelected: false,
+                selectedRowKeys: {}
+            });
+        });
+    });
 });
