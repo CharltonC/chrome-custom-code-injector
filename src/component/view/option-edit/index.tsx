@@ -123,7 +123,8 @@ export class OptionEditView extends MemoComponent<IProps> {
                     data={libs}
                     /* TODO: constant props */
                     component={{
-                        rows: [ [ TbRow ] ]
+                        rows: [ [ TbRow ] ],
+                        commonProps: { store, storeHandler }
                     }}
                     rowKey="id"
                     sort={{ reset: true }}
