@@ -7,32 +7,6 @@ import * as TPgn from '../../pagination-handle/type';
 const rowSelectHandle = new RowSelectHandle();
 
 export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
-    onRowSelectToggle({ localState }: AppState, rowIdx: number, totalRules: number) {
-        const { pgnOption, pgnState } = localState;
-        const { startRowIdx, endRowIdx } = this.reflect.getRowIndexCtx(totalRules, pgnOption, pgnState);
-
-        const rowSelectState = rowSelectHandle.getState({
-            isAll: false,
-            currState: localState.selectState,
-            rowsCtx: { startRowIdx, endRowIdx, rowIdx }
-        });
-
-        return {
-            localState: { ...localState, selectState: rowSelectState }
-        };
-    }
-
-    onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
-        const rowSelectState = rowSelectHandle.getState({
-            isAll: true,
-            currState: localState.selectState
-        });
-
-        return {
-            localState: { ...localState, selectState: rowSelectState }
-        };
-    }
-
     onRowExpand({ localState }: AppState, expdState: Record<string, number>) {
         const { expdRowId } = localState;
         const [ id ]: string[] = Object.getOwnPropertyNames(expdState);
