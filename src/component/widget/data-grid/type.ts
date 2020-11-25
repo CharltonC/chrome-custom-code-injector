@@ -24,8 +24,8 @@ export type TGridTypeOption = 'table' | 'list';
 export type TRowKeyOption = string | ((ctx: rowTransformHandleType.IRowItemCtx<ReactElement>) => string);
 export type TRowsOption = [ TRootRowOption, ...Array<TNestedRowOption> ];
 export type TRowOption = TRootRowOption | TNestedRowOption;
-export type TRootRowOption = [ TFn ];
-export type TNestedRowOption = [ string, TFn ];
+export type TRootRowOption = [ TReactCmp ];
+export type TNestedRowOption = [ string, TReactCmp ];
 
 export interface IComponentOption extends IPreferredCmp {
     rows: TRowsOption;
@@ -70,6 +70,7 @@ type TListHeaderCtx = headerGrpHandleType.ICtxListHeader<GridHeaderType.TTitle>;
 export type TFn = (...args: any[]) => any;
 export type TCmp = React.FC<any> | React.ComponentClass<any>;
 export type TRowCtx = rowTransformHandleType.IRowItemCtx<ReactElement>;
+export type TReactCmp = React.FC<any> | React.ComponentClass<any>;
 
 // User-Defined Row Template
 export interface IRowComponentProps extends TRowCtx {
