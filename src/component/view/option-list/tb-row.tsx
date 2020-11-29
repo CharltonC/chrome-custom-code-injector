@@ -50,7 +50,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle(ctxIdx, 'isHttps')}
+                        onChange={() => onRowSwitchToggle({ item, key: 'isHttps'})}
                         />}
                 </td><td>
                     <div>{ isParent &&
@@ -83,21 +83,21 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle(ctxIdx, 'isJsOn')}
+                        onChange={() => onRowSwitchToggle({ item, key: 'isJsOn'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle(ctxIdx, 'isCssOn')}
+                        onChange={() => onRowSwitchToggle({ item, key: 'isCssOn'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle(ctxIdx, 'isLibOn')}
+                        onChange={() => onRowSwitchToggle({ item, key: 'isLibOn'})}
                         />
                 </td><td>{ isParent &&
                     <IconBtn

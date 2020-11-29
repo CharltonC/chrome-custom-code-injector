@@ -25,11 +25,9 @@ export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
         return { rules: clone };
     }
 
-    onRowSwitchToggle({ rules }: AppState, idx: number, key: string): Partial<AppState> {
-        const clone = rules.slice();
-        const value = clone[idx][key];
-        clone[idx][key] = !value;
-        return { rules: clone };
+    onRowSwitchToggle(state: AppState, { item, key }): Partial<AppState> {
+        item[key] = !item[key];
+        return {};
     }
 
     onRowEdit(state: AppState, editViewTarget): Partial<AppState> {
