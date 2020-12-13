@@ -31,6 +31,10 @@
                 flex: auto;
                 margin-left: calc(var(--logo-width) + 40px);
             }
+
+            .icon-btn--link {
+                color: transparent;
+            }
         }
 
         .search {

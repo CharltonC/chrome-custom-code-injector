@@ -102,7 +102,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             target="_blank"
                             href={urls.DOC}
                             rel="noopener noreferrer"
-                            className="icon-btn"
+                            className="icon-btn icon-btn--link"
                             >
                             {$docIcon}
                         </a>
