@@ -53,7 +53,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                 >{ isParent ?
                 <>
                     <p className={ITEM_TIER_CLS}>
-                        { isActive ? dnIconElem : rtIconElem }
+                        { (isActive || showNestedItems) ? dnIconElem : rtIconElem }
                         { itemTitle }
                         <NumBadge total={nestedItemsTotal} />
                     </p>

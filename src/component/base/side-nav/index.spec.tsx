@@ -38,7 +38,6 @@ describe('Component - Side Nav', () => {
         let $1stItem: HTMLElement;
         let $2ndItem: HTMLElement;
 
-
         function assignChildElem() {
             $listItems = $elem.querySelectorAll('aside > ul > li');
             $nestLists = $elem.querySelectorAll('aside li > ul');
@@ -49,8 +48,6 @@ describe('Component - Side Nav', () => {
 
         beforeEach(() => {
             $elem = TestUtil.setupElem();
-            TestUtil.renderPlain($elem, SideNav, mockDefProps);
-            assignChildElem();
         });
 
         afterEach(() => {
@@ -58,49 +55,77 @@ describe('Component - Side Nav', () => {
             $elem = null;
         });
 
-        it('should render by default', () => {
-            expect($1stItem.className).toContain('side-nav__item--atv');
-            expect($1stItem.className).toContain('side-nav__item--parent');
-            expect($1stItem.querySelector('.side-nav__title').textContent).toBe(mockDefProps.list[0].id);
-            expect($1stItem.querySelector('.icon--arrow-dn')).toBeTruthy();
-            expect($1stItem.querySelector('.icon--arrow-rt')).toBeFalsy();
-            expect($1stItem.querySelector('.badge').textContent).toBe('2');
-            expect($1stItem.querySelector('ul').style.maxHeight).toBe('320px');
-            expect($1stItem.querySelectorAll('li').length).toBeTruthy();
-            expect($2ndItem.querySelector('ul').style.maxHeight).toBe('0');
-            expect($2ndItem.querySelectorAll('li').length).toBeFalsy();
-        });
+        describe('general', () => {
+            beforeEach(() => {
+                TestUtil.renderPlain($elem, SideNav, mockDefProps);
+                assignChildElem();
+            });
 
-        it('should only render the current active/1st list item`s nested list items', () => {
-            expect($nestLists.length).toBe(2);
-            expect($nestListItems.length).toBe(2);
-            expect($1stItem.querySelectorAll('li').length).toBe(2);
-            expect($2ndItem.querySelectorAll('li').length).toBe(0);
-        });
+            it('should render by default', () => {
+                expect($1stItem.className).toContain('side-nav__item--atv');
+                expect($1stItem.className).toContain('side-nav__item--parent');
 
-        it('should make the clicked list item active if it`s not active', () => {
-            TestUtil.triggerEvt($2ndItem, 'click');
-            assignChildElem();
+                expect($1stItem.querySelector('.side-nav__title').textContent).toBe(mockDefProps.list[0].id);
+                expect($1stItem.querySelector('.badge').textContent).toBe('2');
+                expect($1stItem.querySelector('ul').style.maxHeight).toBe('320px');
+                expect($1stItem.querySelectorAll('li').length).toBeTruthy();
 
-            expect(onClickSpy).toHaveBeenCalled();
-            expect(onClickSpy.mock.calls[0][1]).toEqual({
-                idx: 1,
-                parentIdx: undefined,
-                item: mockList[1]
+                expect($2ndItem.querySelector('ul').style.maxHeight).toBe('0');
+                expect($2ndItem.querySelectorAll('li').length).toBeFalsy();
+            });
+
+            it('should only render the current active/1st list item`s nested list items', () => {
+                expect($nestLists.length).toBe(2);
+                expect($nestListItems.length).toBe(2);
+                expect($1stItem.querySelectorAll('li').length).toBe(2);
+                expect($2ndItem.querySelectorAll('li').length).toBe(0);
+            });
+
+            it('should make the clicked list item active if it`s not active', () => {
+                TestUtil.triggerEvt($2ndItem, 'click');
+                assignChildElem();
+
+                expect(onClickSpy).toHaveBeenCalled();
+                expect(onClickSpy.mock.calls[0][1]).toEqual({
+                    idx: 1,
+                    parentIdx: undefined,
+                    item: mockList[1]
+                });
+            });
+
+            it('should make the clicked nested list item active if it`s not active', () => {
+                TestUtil.triggerEvt($nestListItems[1], 'click');
+                assignChildElem();
+
+                expect(onClickSpy).toHaveBeenCalled();
+                expect(onClickSpy.mock.calls[0][1]).toEqual({
+                    idx: 1,
+                    parentIdx: 0,
+                    item: mockList[0].nestList[1]
+                });
             });
         });
 
-        it('should make the clicked nested list item active if it`s not active', () => {
-            TestUtil.triggerEvt($nestListItems[1], 'click');
-            assignChildElem();
+        describe('downward arrow for parent item ', () => {
+            it('should appear when the itself is active', () => {
+                TestUtil.renderPlain($elem, SideNav, {
+                    ...mockDefProps,
+                    activeItem: mockList[0]
+                });
+                assignChildElem();
 
-            expect(onClickSpy).toHaveBeenCalled();
-            expect(onClickSpy.mock.calls[0][1]).toEqual({
-                idx: 1,
-                parentIdx: 0,
-                item: mockList[0].nestList[1]
+                expect($1stItem.querySelector('.icon--arrow-dn')).toBeTruthy();
+            });
+
+            it('should appear when a nested list item is active', () => {
+                TestUtil.renderPlain($elem, SideNav, {
+                    ...mockDefProps,
+                    activeItem: mockList[1].nestList[0]
+                });
+                assignChildElem();
+
+                expect($2ndItem.querySelector('.icon--arrow-dn')).toBeTruthy();
             });
         });
     });
 });
-
