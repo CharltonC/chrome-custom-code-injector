@@ -53,10 +53,3 @@ button {
 input[type="checkbox"] {
     margin: 0;
 }
-
-a {
-    &:visited,
-    &:active {
-        color: transparent;
-    }
-}
