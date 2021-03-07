@@ -1,8 +1,8 @@
 import React from 'react';
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
-import { TestUtil } from '../../../asset/ts/test-util';
+import { TMethodSpy } from '../../../../asset/ts/test-util/type';
+import { TestUtil } from '../../../../asset/ts/test-util';
 import { IProps, pgnHandleType } from './type';
-import { Pagination } from '.';
+import { DataGridPagination } from '.';
 
 jest.mock('../../base/select-dropdown', () => {
     return {
@@ -11,9 +11,9 @@ jest.mock('../../base/select-dropdown', () => {
     };
 });
 
-describe('Component - Pagination', () => {
+describe('Component - DataGridPagination', () => {
     const CLS_PREFIX: string = 'paginate';
-    let spy: TMethodSpy<Pagination>;
+    let spy: TMethodSpy<DataGridPagination>;
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -22,10 +22,10 @@ describe('Component - Pagination', () => {
 
     describe('Component Class', () => {
         const mockProps = {} as IProps;
-        let cmp: Pagination;
+        let cmp: DataGridPagination;
 
         beforeEach(() => {
-            cmp = new Pagination(mockProps);
+            cmp = new DataGridPagination(mockProps);
             spy = TestUtil.spyMethods(cmp);
         });
 
@@ -132,12 +132,12 @@ describe('Component - Pagination', () => {
         }
 
         beforeEach(() => {
-            spy = TestUtil.spyProtoMethods(Pagination);
+            spy = TestUtil.spyProtoMethods(DataGridPagination);
             spy.getMappedBtnProps.mockReturnValue(mockElemProps);
             spy.getMappedSelectProps.mockReturnValue(mockElemProps);
 
             $elem = TestUtil.setupElem();
-            TestUtil.renderPlain($elem, Pagination, mockProps);
+            TestUtil.renderPlain($elem, DataGridPagination, mockProps);
             syncChildElem();
         });
 

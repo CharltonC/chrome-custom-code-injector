@@ -3,7 +3,7 @@ import * as rowTransformHandleType from '../../../service/row-transform-handle/t
 import * as rowExpdHandleType from '../../../service/row-expand-handle/type';
 import * as pgnHandleType from '../../../service/pagination-handle/type';
 import * as headerGrpHandleType from '../../../service/header-group-handle/type';
-import * as GridHeaderType from '../../group/grid-header/type';
+import * as DataGridHeaderType from './contextual-header/type';
 import { ReactElement } from 'react';
 
 //// Props
@@ -63,8 +63,8 @@ export type TShallResetState = {
 }
 
 export type THeaderCtx = TTbHeaderCtx | TListHeaderCtx
-type TTbHeaderCtx = headerGrpHandleType.ICtxTbHeader<GridHeaderType.TTitle>;
-type TListHeaderCtx = headerGrpHandleType.ICtxListHeader<GridHeaderType.TTitle>;
+type TTbHeaderCtx = headerGrpHandleType.ICtxTbHeader<DataGridHeaderType.TTitle>;
+type TListHeaderCtx = headerGrpHandleType.ICtxListHeader<DataGridHeaderType.TTitle>;
 
 //// Generic
 export type TFn = (...args: any[]) => any;
@@ -93,5 +93,5 @@ export { rowExpdHandleType };
 export { sortHandleType };
 export { headerGrpHandleType };
 export * as sortBtnType from '../../base/btn-sort/type';
-export * as paginationType from '../../group/pagination/type';
-export * as GridHeaderType from '../../group/grid-header/type';
+export * as paginationType from './contextual-pagination/type';
+export * as DataGridHeaderType from './contextual-header/type';

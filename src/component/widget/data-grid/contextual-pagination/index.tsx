@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
-import { MemoComponent } from '../../extendable/memo-component';
-import { Dropdown } from '../../base/select-dropdown';
-import { inclStaticIcon } from '../../static/icon';
+import { MemoComponent } from '../../../extendable/memo-component';
+import { Dropdown } from '../../../base/select-dropdown';
+import { inclStaticIcon } from '../../../static/icon';
 
 import {
     IProps, IBtnProps, ISelectProps,
@@ -12,7 +12,7 @@ const CLS_PREFIX: string = 'paginate';
 const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
 const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
 
-export class Pagination extends MemoComponent<IProps> {
+export class DataGridPagination extends MemoComponent<IProps> {
     render() {
         const {
             startRecord, endRecord, totalRecord,

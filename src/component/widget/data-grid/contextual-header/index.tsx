@@ -1,9 +1,9 @@
 import React, { ReactElement } from 'react';
-import { MemoComponent } from '../../extendable/memo-component';
-import { SortBtn } from '../../base/btn-sort';
+import { MemoComponent } from '../../../extendable/memo-component';
+import { SortBtn } from '../../../base/btn-sort';
 import { IProps, TTbHeaderRows, TListHeaderRows } from './type';
 
-export class GridHeader extends MemoComponent<IProps> {
+export class DataGridHeader extends MemoComponent<IProps> {
     readonly BASE_CLS: string = 'datagrid__head';
 
     render() {

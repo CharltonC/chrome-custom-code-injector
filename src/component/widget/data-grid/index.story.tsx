@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { GridHeader } from '../../group/grid-header';
-import { Pagination as PaginationCmp } from '../../group/pagination';
+import { DataGridHeader } from './contextual-header';
+import { DataGridPagination as PaginationCmp } from './contextual-pagination';
 import { DataGrid } from '.';
 import { IRowComponentProps } from './type';
 
@@ -228,7 +228,7 @@ export const TableGrid = () => {
                 { title: '' },
             ]}
             component={{
-                Header: GridHeader,
+                Header: DataGridHeader,
                 Pagination: PaginationCmp,
                 rows: [
                     [TrCmp],
@@ -278,7 +278,7 @@ export const ListGrid = () => {
         <DataGrid
             type="list"
             component={{
-                Header: GridHeader,
+                Header: DataGridHeader,
                 Pagination: PaginationCmp,
                 rows: [
                     [ListCmp],

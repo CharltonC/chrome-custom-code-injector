@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react';
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
-import { TestUtil } from '../../../asset/ts/test-util';
-import { GridHeader } from '.';
+import { TMethodSpy } from '../../../../asset/ts/test-util/type';
+import { TestUtil } from '../../../../asset/ts/test-util';
+import { DataGridHeader } from '.';
 
 describe('Component - Grid Header', () => {
     const MOCK_TEXT = 'mockth';
     const mockThTitleElem: ReactElement = <span className="mock-th">{MOCK_TEXT}</span>;
-    let spy: TMethodSpy<GridHeader>;
+    let spy: TMethodSpy<DataGridHeader>;
     let mockSortBtnProps: jest.Mock;
     let $elem: HTMLElement;
     let $rows: NodeListOf<HTMLElement>;
@@ -30,7 +30,7 @@ describe('Component - Grid Header', () => {
 
         beforeEach(() => {
             $elem = TestUtil.setupElem('table');
-            TestUtil.renderPlain($elem, GridHeader, {
+            TestUtil.renderPlain($elem, DataGridHeader, {
                 type: 'table',
                 sortBtnProps: mockSortBtnProps,
                 rows: {
@@ -74,11 +74,11 @@ describe('Component - Grid Header', () => {
         let $3rdRowCell;
 
         beforeEach(() => {
-            spy = TestUtil.spyProtoMethods(GridHeader);
+            spy = TestUtil.spyProtoMethods(DataGridHeader);
             spy.getCssGridVar.mockReturnValue({});
 
             $elem = TestUtil.setupElem('div');
-            TestUtil.renderPlain($elem, GridHeader, {
+            TestUtil.renderPlain($elem, DataGridHeader, {
                 type: 'list',
                 sortBtnProps: mockSortBtnProps,
                 rows: {
@@ -113,11 +113,11 @@ describe('Component - Grid Header', () => {
     });
 
     describe('Methods', () => {
-        let cmp: GridHeader;
+        let cmp: DataGridHeader;
 
         beforeEach(() => {
-            cmp = new GridHeader({} as any);
-            spy = TestUtil.spyProtoMethods(GridHeader);
+            cmp = new DataGridHeader({} as any);
+            spy = TestUtil.spyProtoMethods(DataGridHeader);
         });
 
         describe('Method - render', () => {

@@ -7,15 +7,15 @@ import { RowTransformHandle } from '../../../service/row-transform-handle';
 import { SortHandle } from '../../../service/sort-handle';
 import { PgnHandle } from '../../../service/pagination-handle';
 import { HeaderGrpHandle } from '../../../service/header-group-handle';
-import { Pagination } from '../../group/pagination';
-import { GridHeader } from '../../group/grid-header';
+import { DataGridPagination as Pagination } from './contextual-pagination';
+import { DataGridHeader } from './contextual-header';
 import { DataGrid } from '.';
 import { IProps, IState, TShallResetState } from './type';
 
 
 describe('Component - Data Grid', () => {
     const MockPagination = () => <div className="pagination"/>;
-    const MockGridHeader = () => <div className="header"/>;
+    const MockDataGridHeader = () => <div className="header"/>;
     let mockProps: any;
     let mockState: any;
     let cmp: DataGrid;
@@ -98,7 +98,7 @@ describe('Component - Data Grid', () => {
                 spy.getRowElems.mockReturnValue(mockElem);
                 spy.getGridBodyElem.mockReturnValue(mockElem);
                 spy.getPreferredCmp.mockReturnValue({
-                    Header: MockGridHeader,
+                    Header: MockDataGridHeader,
                     Pagination: MockPagination,
                 });
             });
@@ -509,7 +509,7 @@ describe('Component - Data Grid', () => {
         describe('Method - getPreferredCmp: Get User provided component or Default builtin component for header and pagination', () => {
             it('should return builtin components when there is no User provided components', () => {
                 expect(cmp.getPreferredCmp({})).toEqual({
-                    Header: GridHeader,
+                    Header: DataGridHeader,
                     Pagination,
                 });
             });
