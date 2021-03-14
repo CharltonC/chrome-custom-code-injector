@@ -1,6 +1,6 @@
 import {
     IOption, IRawRowsOption, IParsedRowsOption,
-    IRowItemBaseCtx, TRowType, IErrMsg, TFn, ICtxRowsQuery, IRowItemCtx,
+    IRowItemBaseCtx, TRowType, IErrMsg, AFn, ICtxRowsQuery, IRowItemCtx,
 } from './type';
 
 export class RowTransformHandle {
@@ -104,7 +104,7 @@ export class RowTransformHandle {
         const transformFn = (isTopLvl ?
             (typeof itemOne === 'function' ? itemOne : null) :
             itemTwo ? itemTwo : null
-        ) as TFn;
+        ) as AFn;
 
         return { rowKey, transformFn };
     }

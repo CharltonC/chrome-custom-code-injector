@@ -1,2 +1,2 @@
-export type TObj = Record<string, any>;
-export type TObjEntry = [string, any];
+export type AObj = Record<string, any>;
+export type AObjEntry = [string, any];

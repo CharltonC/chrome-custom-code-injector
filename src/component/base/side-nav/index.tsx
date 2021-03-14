@@ -4,7 +4,7 @@ import { inclStaticIcon } from '../../static/icon';
 import { NumBadge } from '../num-badge';
 import { IProps, IState, IObj } from './type';
 
-const rtIconElem: ReactElement = inclStaticIcon('arrow-rt');
+const rAIconElem: ReactElement = inclStaticIcon('arrow-rt');
 const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
 
 export class SideNav extends MemoComponent<IProps, IState> {
@@ -53,7 +53,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                 >{ isParent ?
                 <>
                     <p className={ITEM_TIER_CLS}>
-                        { (isActive || showNestedItems) ? dnIconElem : rtIconElem }
+                        { (isActive || showNestedItems) ? dnIconElem : rAIconElem }
                         { itemTitle }
                         <NumBadge total={nestedItemsTotal} />
                     </p>

@@ -1,5 +1,5 @@
 import PubSub from 'pubsub-js';
-import { TFn, IStoreHandlerClass } from './type';
+import { AFn, IStoreHandlerClass } from './type';
 
 export class BaseStoreHandler {
     readonly CHANGE_EVT: string = 'CHANGE';
@@ -26,7 +26,7 @@ export class BaseStoreHandler {
         return this;
     }
 
-    sub(callback: TFn, subTopic?: string): string {
+    sub(callback: AFn, subTopic?: string): string {
         const TOPIC: string = this.getTopic(subTopic);
         const token: string = this.PubSub.subscribe(TOPIC, callback);
         return token;

@@ -13,13 +13,13 @@ export interface IState {
 export interface IExpdBtnAttrQuery {
     itemCtx: TItemCtx;
     expdState: IState;
-    callback: TFn;
+    callback: AFn;
     option: Partial<IOption>;
 }
 
 export interface IExpdBtnAttr {
     isOpen: boolean;
-    onClick: TFn;
+    onClick: AFn;
 }
 
 //// Misc
@@ -31,4 +31,4 @@ export type TItemCtx = {
     parentItemCtx: TItemCtx;
 };
 
-export type TFn = (...args: any[]) => any;
+export type AFn = (...args: any[]) => any;

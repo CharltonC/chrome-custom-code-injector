@@ -3,7 +3,7 @@ import {
     IOption,
     IState,
     ICmpAttrQuery, ICmpAttr, ICmpSortBtnAttr,
-    TLsItem, TStrSortOrder, TFn
+    TLsItem, TStrSortOrder, AFn
 } from './type';
 
 export class SortHandle implements IUiHandle {
@@ -91,7 +91,7 @@ export class SortHandle implements IUiHandle {
     //// UI - Generic Component Attribute
     createGenericCmpAttr({ data, option, callback }: ICmpAttrQuery, sortKey: string): ICmpAttr {
         const dataTotal: number = data.length;
-        const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
+        const onEvt: AFn = this.getGenericCmpEvtHandler(data, option, callback);
         const sortBtnAttr = this.createSortBtnAttr({ dataTotal, onEvt, option, sortKey });
         return { sortBtnAttr };
     }
@@ -111,7 +111,7 @@ export class SortHandle implements IUiHandle {
         };
     }
 
-    getGenericCmpEvtHandler(data: TLsItem[], option: IOption, callback?: TFn): TFn {
+    getGenericCmpEvtHandler(data: TLsItem[], option: IOption, callback?: AFn): AFn {
         return ((modOption: Partial<IOption>): void => {
             const sortOption: IOption = this.createOption(modOption, option);
             const sortState: IState = this.createState(data, sortOption);

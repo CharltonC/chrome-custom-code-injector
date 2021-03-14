@@ -2,7 +2,7 @@ import React, { Component, ReactElement } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { ShallowRenderer, createRenderer } from 'react-test-renderer/shallow';
-import { IEvtCls, ICmpInst, TCmpCls, TCmpProps, TStateProps, TFn } from './type';
+import { IEvtCls, ICmpInst, TCmpCls, TCmpProps, TStateProps, AFn } from './type';
 
 export const TestUtil = {
     setupElem(tagName: string = 'div'): HTMLElement {
@@ -104,7 +104,7 @@ export const TestUtil = {
         return $spy;
     },
 
-    getStatePropsMocker<P = TStateProps, S = TStateProps>(cmpInstance: ICmpInst): TFn {
+    getStatePropsMocker<P = TStateProps, S = TStateProps>(cmpInstance: ICmpInst): AFn {
         return (props: P, state: S): void => {
             if (typeof props !== 'undefined') {
                 (cmpInstance as any).props = props;

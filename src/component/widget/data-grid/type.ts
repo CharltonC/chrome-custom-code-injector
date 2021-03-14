@@ -8,10 +8,10 @@ import { ReactElement } from 'react';
 
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-    data: TDataOption;
-    type?: TGridTypeOption;
+    data: ADataOption;
+    type?: AGridTypeOption;
     header?: headerGrpHandleType.IOption[];
-    rowKey?: TRowKeyOption;
+    rowKey?: ARowKeyOption;
     component: IComponentOption;
     expand?: Partial<rowExpdHandleType.IOption>;
     sort?: Partial<sortHandleType.IOption>;
@@ -19,34 +19,34 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     callback?: ICallbackOption;
 }
 
-export type TDataOption = Record<string, any>[];
-export type TGridTypeOption = 'table' | 'list';
-export type TRowKeyOption = string | ((ctx: rowTransformHandleType.IRowItemCtx<ReactElement>) => string);
-export type TRowsOption = [ TRootRowOption, ...Array<TNestedRowOption> ];
-export type TRowOption = TRootRowOption | TNestedRowOption;
-export type TRootRowOption = [ TReactCmp ];
-export type TNestedRowOption = [ string, TReactCmp ];
+export type ADataOption = Record<string, any>[];
+export type AGridTypeOption = 'table' | 'list';
+export type ARowKeyOption = string | ((ctx: rowTransformHandleType.IRowItemCtx<ReactElement>) => string);
+export type ARowsOption = [ ARootRowOption, ...Array<ANestedRowOption> ];
+export type ARowOption = ARootRowOption | ANestedRowOption;
+export type ARootRowOption = [ ACmp ];
+export type ANestedRowOption = [ string, ACmp ];
 
 export interface IComponentOption extends IPreferredCmp {
-    rows: TRowsOption;
+    rows: ARowsOption;
     commonProps?: Record<string, any>;
 }
 
 export interface IPreferredCmp {
-    Header?: TCmp;
-    Pagination?: TCmp;
+    Header?: ACmp;
+    Pagination?: ACmp;
 }
 
 interface ICallbackOption {
-    onPaginateChange?: TFn;
-    onSortChange?: TFn;
-    onExpandChange?: TFn;
+    onPaginateChange?: AFn;
+    onSortChange?: AFn;
+    onExpandChange?: AFn;
 }
 
 //// State
 export interface IState {
     isTb: boolean;
-    headerCtx: THeaderCtx;
+    headerCtx: AHeaderCtx;
     rowsOption: rowTransformHandleType.IRawRowsOption[];
     expdState: rowExpdHandleType.IState;
     sortOption: sortHandleType.IOption;
@@ -55,27 +55,26 @@ export interface IState {
     pgnState: pgnHandleType.IState;
 }
 
-export type TModPgnState = Pick<IState, 'pgnOption' | 'pgnState'>;
-export type TModExpdState = Pick<IState, 'expdState'>;
-export type TModSortState = Pick<IState, 'sortOption' | 'sortState'>;
-export type TShallResetState = {
+export type AModPgnState = Pick<IState, 'pgnOption' | 'pgnState'>;
+export type AModExpdState = Pick<IState, 'expdState'>;
+export type AModSortState = Pick<IState, 'sortOption' | 'sortState'>;
+export type AShallResetState = {
     [K in keyof IState]: boolean;
 }
 
-export type THeaderCtx = TTbHeaderCtx | TListHeaderCtx
-type TTbHeaderCtx = headerGrpHandleType.ICtxTbHeader<DataGridHeaderType.TTitle>;
-type TListHeaderCtx = headerGrpHandleType.ICtxListHeader<DataGridHeaderType.TTitle>;
+export type AHeaderCtx = ATbHeaderCtx | AListHeaderCtx
+type ATbHeaderCtx = headerGrpHandleType.ICtxTbHeader<DataGridHeaderType.TTitle>;
+type AListHeaderCtx = headerGrpHandleType.ICtxListHeader<DataGridHeaderType.TTitle>;
 
 //// Generic
-export type TFn = (...args: any[]) => any;
-export type TCmp = React.FC<any> | React.ComponentClass<any>;
-export type TRowCtx = rowTransformHandleType.IRowItemCtx<ReactElement>;
-export type TReactCmp = React.FC<any> | React.ComponentClass<any>;
+export type AFn = (...args: any[]) => any;
+export type ACmp = React.FC<any> | React.ComponentClass<any>;
+export type ARowCtx = rowTransformHandleType.IRowItemCtx<ReactElement>;
 
 // User-Defined Row Template
-export interface IRowComponentProps extends TRowCtx {
+export interface IRowComponentProps extends ARowCtx {
     key: string;
-    dataSrc: TDataOption;
+    dataSrc: ADataOption;
     expandProps: rowExpdHandleType.IExpdBtnAttr;
     commonProps: Record<string, any>;
     rowColStyle?: Record<string, string | number>;

@@ -81,19 +81,19 @@ export interface ICmpAttrQuery {
     data: any[];
     option: IOption;
     state: IState;
-    callback: TFn;
+    callback: AFn;
 }
 
 export interface ICmpBtnAttr extends ICommonCmpAttr {
     isSpread?: boolean;
-    onClick: TFn;
+    onClick: AFn;
 }
 
 export interface ICmpSelectAttr extends ICommonCmpAttr {
     options: (string | number)[];
     selectedOptionValue: string | number;
     selectedOptionIdx: number;
-    onSelect: TFn;
+    onSelect: AFn;
 }
 
 interface ICommonCmpAttr {
@@ -110,4 +110,4 @@ export type TPageList = (string | number)[];
 
 
 //// Misc
-export type TFn = (...args: any[]) => any;
+export type AFn = (...args: any[]) => any;

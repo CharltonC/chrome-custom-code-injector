@@ -1,7 +1,6 @@
-// export type TTheme = 'light' | 'dark' | 'plain';
-export type TTheme = 'white' | 'gray' | 'black';
+export type ATheme = 'white' | 'gray' | 'black';
 
-export type TIcon =
+export type AIcon =
     'setting' |
     'valid' |
     'close' |

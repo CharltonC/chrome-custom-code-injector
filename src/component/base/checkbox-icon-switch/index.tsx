@@ -21,7 +21,7 @@ export const IconSwitch: React.FC<IProps> = memo((props: IProps) => {
                 {...inputProps}
                 />
             { icon ?
-                inclStaticIcon(label as NIcon.TIcon, 'gray') :
+                inclStaticIcon(label as NIcon.AIcon, 'gray') :
                 <span className="icon-switch__label">{label}</span> }
         </label>
     );

@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { BaseStoreHandler } from './base-store-handler';
-import { IStoreConfigs, ITransfmStoreConfigs, TObj, TFn } from './type';
+import { IStoreConfigs, ITransfmStoreConfigs, AObj, AFn } from './type';
 
-export class BaseStoreComponent extends Component<any, TObj> {
+export class BaseStoreComponent extends Component<any, AObj> {
     readonly STORE_NAME_ERR: string = 'already exists in store or store handler';
 
     transformStoreConfigs(storeConfigs: IStoreConfigs): ITransfmStoreConfigs {
@@ -50,7 +50,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
 
                 // If proxied method is called, then return a wrapped method which includes setting the state
                 return async (...args: any[]) => {
-                    const modPartialState: TObj = getModPartialState(method, proxy, args);
+                    const modPartialState: AObj = getModPartialState(method, proxy, args);
 
                     if (!modPartialState) return;   // skip state update if `falsy` value is returned
 
@@ -69,7 +69,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
         });
     }
 
-    getAllowedMethodNames(obj: TObj): string[] {
+    getAllowedMethodNames(obj: AObj): string[] {
         const proto = Object.getPrototypeOf(obj);
         return Object
             .getOwnPropertyNames(proto)
@@ -79,11 +79,11 @@ export class BaseStoreComponent extends Component<any, TObj> {
             });
     }
 
-    getModPartialState(fn: TFn, proxy: BaseStoreHandler, args: any[]): TObj {
+    getModPartialState(fn: AFn, proxy: BaseStoreHandler, args: any[]): AObj {
         return fn.apply(proxy, [this.state, ...args]);
     }
 
-    updateState(modPartialState: TObj, storeHandler: BaseStoreHandler, storeName?: string): void {
+    updateState(modPartialState: AObj, storeHandler: BaseStoreHandler, storeName?: string): void {
         const { state } = this;
         const modState = storeName ?
             { ...state, [storeName]: { ...state[storeName] , ...modPartialState } } :
@@ -92,7 +92,7 @@ export class BaseStoreComponent extends Component<any, TObj> {
         this.setState(modState, () => storeHandler.pub(diffState, storeName));
     }
 
-    checkStoreName(storeName: string, store: TObj, storeHandler: TObj): void {
+    checkStoreName(storeName: string, store: AObj, storeHandler: AObj): void {
         const isInStore: boolean = storeName in store;
         const isInHandler: boolean = storeName in storeHandler;
         if (isInStore || isInHandler) throw new Error(`${storeName} ${this.STORE_NAME_ERR}`);

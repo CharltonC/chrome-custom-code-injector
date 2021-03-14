@@ -15,7 +15,7 @@ export interface IState {
 export interface ICmpAttrQuery {
     data: TLsItem[];
     option: IOption;
-    callback: TFn;
+    callback: AFn;
 }
 
 export interface ICmpAttr {
@@ -30,10 +30,10 @@ export interface ICmpSortBtnAttr {
     isAsc: boolean;
 
     // // handler for sort btn
-    onClick: TFn;
+    onClick: AFn;
 }
 
 //// Misc
 export type TLsItem = Record<string, any>;
-export type TFn = (...args: any[]) => any;
+export type AFn = (...args: any[]) => any;
 export type TStrSortOrder = 0 | 1 | -1;

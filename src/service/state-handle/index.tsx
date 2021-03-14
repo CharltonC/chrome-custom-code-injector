@@ -1,7 +1,7 @@
 import React, { ComponentClass } from 'react';
 import { BaseStoreHandler } from './base-store-handler';
 import { BaseStoreComponent } from './base-store-component';
-import { IStoreConfigs, TObj, TCmp } from './type';
+import { IStoreConfigs, AObj, ACmp } from './type';
 
 /**
  * Usage:
@@ -16,11 +16,11 @@ import { IStoreConfigs, TObj, TCmp } from './type';
 export const StateHandle = {
     BaseStoreHandler,
 
-    init(Cmp: TCmp, storeConfigs: IStoreConfigs): ComponentClass {
+    init(Cmp: ACmp, storeConfigs: IStoreConfigs): ComponentClass {
         return class extends BaseStoreComponent {
-            storeHandler: TObj;
+            storeHandler: AObj;
 
-            constructor(props: TObj) {
+            constructor(props: AObj) {
                 super(props);
                 const { store, storeHandler } = this.transformStoreConfigs(storeConfigs);
                 this.state = store;

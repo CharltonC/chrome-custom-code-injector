@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, IValidationConfig, TValidState } from './type';
+import { IProps, IValidationConfig, AValidState } from './type';
 import { TextInput } from '.';
 
 describe('Component - Text Input', () => {
@@ -27,7 +27,7 @@ describe('Component - Text Input', () => {
         });
 
         describe('Method - getInitialState', () => {
-            const mockInitialBaseState: TValidState = {isValid: null, errMsg: []};
+            const mockInitialBaseState: AValidState = {isValid: null, errMsg: []};
             const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
             const { getInitialState } = TextInput.prototype;
 
@@ -62,7 +62,7 @@ describe('Component - Text Input', () => {
             let mockFnRule: jest.Mock;
             let mockRegexRule: RegExp;
             let spyStrSearch: jest.SpyInstance;
-            let validState: TValidState;
+            let validState: AValidState;
 
             beforeEach(() => {
                 mockFnRule = jest.fn();
@@ -120,7 +120,7 @@ describe('Component - Text Input', () => {
 
         describe('Method - Set valid state', () => {
             const mockText: string = 'lorem';
-            const mockRtnState: TValidState = {isValid: true, errMsg: []};
+            const mockRtnState: AValidState = {isValid: true, errMsg: []};
             const mockEvtCbFn: jest.Mock = jest.fn();
             const mockEvt: any = { target: { value: mockText }};
             const mockProps: IProps = {id: ''};

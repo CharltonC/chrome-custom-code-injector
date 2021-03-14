@@ -33,8 +33,6 @@ const icons: string[] = [
     'option',
 ];
 
-const darkMode: boolean = true;
-
 export const Light = () => (
     <div style={{ backgroundColor: '#5AB3AD' }}>
         { icons.map((name: any) =>

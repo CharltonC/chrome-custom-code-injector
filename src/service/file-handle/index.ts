@@ -1,7 +1,7 @@
-import { AObj, ASuccessFn, TFn } from './type';
+import { AObj, ASuccessFn, AFn } from './type';
 
 export class FileHandle {
-    async readJson(file: File, onError?: TFn) {
+    async readJson(file: File, onError?: AFn) {
         try {
             return await new Promise((resolve) => this.readFile(file, resolve));
         } catch (e) {
@@ -26,7 +26,7 @@ export class FileHandle {
         reader.readAsText(file);
     }
 
-    onFileLoad(callback: ASuccessFn): TFn {
+    onFileLoad(callback: ASuccessFn): AFn {
         const evtHandler = ({ target }: ProgressEvent<FileReader>) => {
             const parsedData = JSON.parse(target.result as string);
             callback(parsedData);

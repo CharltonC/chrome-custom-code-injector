@@ -1,4 +1,3 @@
-
 export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
     label?: string;
@@ -19,10 +18,10 @@ export interface ICallback {
     evt: React.ChangeEvent<HTMLInputElement>;
     val: string;
     isGte3: boolean;
-    validState: TValidState;
+    validState: AValidState;
 }
 
-export type TValidState = Pick<IState, 'isValid' | 'errMsg'>;
+export type AValidState = Pick<IState, 'isValid' | 'errMsg'>;
 
 export interface IValidationConfig {
     rule: ((val: string) => boolean) | RegExp;

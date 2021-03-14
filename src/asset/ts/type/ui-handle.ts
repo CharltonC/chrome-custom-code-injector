@@ -1,10 +1,10 @@
 export interface IUiHandle {
-    createState: TFn;
-    getDefState: TFn;
-    createOption: TFn;
-    getDefOption: TFn;
-    createGenericCmpAttr?: TFn;
-    getGenericCmpEvtHandler?: TFn;
+    createState: AFn;
+    getDefState: AFn;
+    createOption: AFn;
+    getDefOption: AFn;
+    createGenericCmpAttr?: AFn;
+    getGenericCmpEvtHandler?: AFn;
 }
 
-type TFn = (...args: any[]) => any;
+type AFn = (...args: any[]) => any;

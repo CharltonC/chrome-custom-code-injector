@@ -8,9 +8,9 @@ import { PgnHandle } from '../../../service/pagination-handle';
 import { DataGridPagination as DefPagination } from './contextual-pagination';
 import { DataGridHeader } from './contextual-header';
 import {
-    IProps, TRowsOption, TDataOption, TRowOption, TRootRowOption, TNestedRowOption,
-    IState, TShallResetState,
-    TCmp, TFn, TRowCtx, IRowComponentProps, IPreferredCmp,
+    IProps, ARowsOption, ADataOption, ARowOption, ARootRowOption, ANestedRowOption,
+    IState, AShallResetState,
+    ACmp, AFn, ARowCtx, IRowComponentProps, IPreferredCmp,
     rowTransformHandleType, rowExpdHandleType, paginationType, sortBtnType, DataGridHeaderType
 } from './type';
 
@@ -39,7 +39,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     UNSAFE_componentWillReceiveProps(modProps: IProps): void {
-        const shallReset: TShallResetState = this.shallResetState(modProps, this.props);
+        const shallReset: AShallResetState = this.shallResetState(modProps, this.props);
         const modState: Partial<IState> = this.createState(modProps, shallReset);
         this.setState({ ...this.state, ...modState });
     }
@@ -51,7 +51,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { commonProps, rows, ...defCmp } = component;
 
         const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
-        const sortedData: TDataOption = this.getSortedData();
+        const sortedData: ADataOption = this.getSortedData();
         const headerProps = { commonProps, ...this.getHeaderProps(sortedData) };
         const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
         const { Header, Pagination } = this.getPreferredCmp(defCmp);
@@ -68,7 +68,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     //// State
-    createState(props: IProps, shallResetState?: TShallResetState): IState {
+    createState(props: IProps, shallResetState?: AShallResetState): IState {
         const { type, component, data, sort, paginate, expand, header } = props;
         const { rows } = component;
         const { headerGrpHandle, rowExpdHandle, sortHandle, pgnHandle } = this;
@@ -130,7 +130,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
      * | callback - onSortChange (R)       |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
      * | callback - onPaginationChange (R) |     x     |     x     |      x     |      x     |     x     |     x     |     x    |       x       |
      */
-    shallResetState(modProps: IProps, props: IProps): TShallResetState {
+    shallResetState(modProps: IProps, props: IProps): AShallResetState {
         const { data, type, header, component, sort, paginate, expand } = modProps;
         const isDiffData: boolean = data !== props.data;
         const isDiffGridType: boolean = type !== props.type;
@@ -155,20 +155,20 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     //// Altering Rows Option (so that it renders the corresponding Row Template Component)
     // Transform the Component Row Option (from Props) to align its input with Row Handle Service
     // - component state is not yet ready until `transformFn` is executed
-    transformRowOption(rows: TRowsOption): rowTransformHandleType.IRawRowsOption[] {
-        return rows.map((row: TRowOption, idx: number) => {
+    transformRowOption(rows: ARowsOption): rowTransformHandleType.IRawRowsOption[] {
+        return rows.map((row: ARowOption, idx: number) => {
             const isRootRowConfig: boolean = idx === 0;
-            const RowCmp: TCmp = isRootRowConfig ? (row as TRootRowOption)[0] : (row as TNestedRowOption)[1];
-            const transformFn: TFn = this.getRowTransformFn(RowCmp);
+            const RowCmp: ACmp = isRootRowConfig ? (row as ARootRowOption)[0] : (row as ANestedRowOption)[1];
+            const transformFn: AFn = this.getRowTransformFn(RowCmp);
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as rowTransformHandleType.IRawRowsOption;
         });
     }
 
-    getRowTransformFn(RowCmp: TCmp): TFn {
-        return (itemCtx: TRowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx)} />;
+    getRowTransformFn(RowCmp: ACmp): AFn {
+        return (itemCtx: ARowCtx) => <RowCmp {...this.getRowCmpProps(itemCtx)} />;
     }
 
-    getRowCmpProps(itemCtx: TRowCtx): IRowComponentProps {
+    getRowCmpProps(itemCtx: ARowCtx): IRowComponentProps {
         const { cssCls, BASE_CLS, props, state } = this;
         const { commonProps } = props.component;
         const { isTb, headerCtx } = state;
@@ -190,12 +190,12 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    getRowElems(sortedData: TDataOption): ReactElement[] {
+    getRowElems(sortedData: ADataOption): ReactElement[] {
         const { rowKey: rowIdKey, expand } = this.props;
         const { pgnState, rowsOption: rows } = this.state;
         const { startIdx, endIdx } = pgnState ?? {};
         const { showAll } = expand ?? {};
-        const data: TDataOption = pgnState ? sortedData.slice(startIdx, endIdx) : sortedData;
+        const data: ADataOption = pgnState ? sortedData.slice(startIdx, endIdx) : sortedData;
         return this.rowTransformHandle.createCtxRows<ReactElement>({ data, rows, rowIdKey, showAll, pgnStartIdx: startIdx });
     }
 
@@ -218,11 +218,11 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     //// Sort, Expand, Pagination
-    getSortedData(): TDataOption {
+    getSortedData(): ADataOption {
         return this.state.sortState?.data || this.props.data;
     }
 
-    getHeaderProps(sortedData: TDataOption): DataGridHeaderType.IProps {
+    getHeaderProps(sortedData: ADataOption): DataGridHeaderType.IProps {
         const { type } = this.props;
         const { headerCtx } = this.state;
         return {
@@ -235,7 +235,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    getSortCmpProps(sortedData: TDataOption, sortKey: string): sortBtnType.IProps {
+    getSortCmpProps(sortedData: ADataOption, sortKey: string): sortBtnType.IProps {
         const { sortOption } = this.state;
         if (!sortOption) return null;
 
@@ -249,7 +249,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return sortBtnAttr;
     }
 
-    getRowCmpExpdProps(itemCtx: TRowCtx) {
+    getRowCmpExpdProps(itemCtx: ARowCtx) {
         const { expdState } = this.state;
         const { expand, callback } = this.props;
         const { onExpandChange } = callback ?? {};
@@ -261,7 +261,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         });
     }
 
-    getPgnCmpProps(sortedData: TDataOption): paginationType.IProps {
+    getPgnCmpProps(sortedData: ADataOption): paginationType.IProps {
         const { pgnOption, pgnState } = this.state;
         if (!pgnOption) return null;
 
@@ -277,7 +277,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         };
     }
 
-    getOnStateChangeHandler(userCallback: TFn): TFn {
+    getOnStateChangeHandler(userCallback: AFn): AFn {
         return (modState: Partial<IState>): void => {
             this.setState({ ...this.state, ...modState });
             userCallback?.(modState);

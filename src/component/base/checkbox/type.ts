@@ -4,5 +4,3 @@ export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     ltLabel?: boolean;
     clsSuffix?: string;
 }
-
-type TFn = (...args: any[]) => void;

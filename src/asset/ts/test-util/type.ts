@@ -14,4 +14,4 @@ export type TStateProps = Record<string, any>;
 
 export type TMethodSpy<T> = Record<keyof T, jest.SpyInstance>;
 
-export type TFn = (...args: any[]) => void;
+export type AFn = (...args: any[]) => void;

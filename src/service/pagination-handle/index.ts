@@ -4,7 +4,7 @@ import {
     IPageNavQuery,
     IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx,
     ICmpAttrQuery, ICmpAttr, ICmpBtnAttr, ICmpSelectAttr, ISelectEvt, TPageList,
-    TFn
+    AFn
 } from './type';
 
 /**
@@ -263,7 +263,7 @@ export class PgnHandle implements IUiHandle {
      */
     createGenericCmpAttr({ data, option, state, callback }: ICmpAttrQuery): ICmpAttr {
         const { first, prev, next, last, ltSpread, rtSpread } = state;
-        const onEvt: TFn = this.getGenericCmpEvtHandler(data, option, callback);
+        const onEvt: AFn = this.getGenericCmpEvtHandler(data, option, callback);
 
         return {
             // Attr. for First/Prev/Next/Last as Button
@@ -286,7 +286,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getTextBtnAttr(onEvt: TFn, [title, pageIdx]: [string, number]): ICmpBtnAttr {
+    getTextBtnAttr(onEvt: AFn, [title, pageIdx]: [string, number]): ICmpBtnAttr {
         return {
             title,
             disabled: !Number.isInteger(pageIdx),
@@ -296,7 +296,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [any, boolean]): ICmpBtnAttr {
+    getSpreadBtnAttr(onEvt: AFn, state: IState, [page, isLtSpread]: [any, boolean]): ICmpBtnAttr {
         const { curr, maxSpread } = state;
 
         // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
@@ -317,7 +317,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getPageSelectAttr(onEvt: TFn, state: IState): ICmpSelectAttr {
+    getPageSelectAttr(onEvt: AFn, state: IState): ICmpSelectAttr {
         const { pageNo, totalPage, ltSpread, rtSpread } = state;
 
         const isLteOnePage: boolean = totalPage <= 1;
@@ -351,7 +351,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getPerPageSelectAttr(onEvt: TFn, option: IOption): ICmpSelectAttr {
+    getPerPageSelectAttr(onEvt: AFn, option: IOption): ICmpSelectAttr {
         const { increment, incrementIdx } = option;
         return {
             title: 'per page select',
@@ -366,7 +366,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getGenericCmpEvtHandler(data: any[], option: IOption, callback?: TFn): TFn {
+    getGenericCmpEvtHandler(data: any[], option: IOption, callback?: AFn): AFn {
         return ((modOption: Partial<IOption>): void => {
             const pgnOption: IOption = this.createOption(modOption, option);
             const pgnState: IState = this.createState(data, pgnOption);

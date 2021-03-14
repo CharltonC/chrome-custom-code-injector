@@ -10,7 +10,7 @@ import { HeaderGrpHandle } from '../../../service/header-group-handle';
 import { DataGridPagination as Pagination } from './contextual-pagination';
 import { DataGridHeader } from './contextual-header';
 import { DataGrid } from '.';
-import { IProps, IState, TShallResetState } from './type';
+import { IProps, IState, AShallResetState } from './type';
 
 
 describe('Component - Data Grid', () => {
@@ -220,7 +220,7 @@ describe('Component - Data Grid', () => {
             });
 
             it('should return filtered state when provided which part of state should be reset', () => {
-                const mockShallResetState = { isTb: true, headerCtx: false } as TShallResetState;
+                const mockShallResetState = { isTb: true, headerCtx: false } as AShallResetState;
                 expect(cmp.createState(
                     { ...mockProps, type: 'table' },
                      mockShallResetState

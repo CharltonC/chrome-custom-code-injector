@@ -1,12 +1,12 @@
 import { BaseStoreHandler } from './base-store-handler';
 
 export interface IStoreConfigs {
-    root?: [ TObj, BaseStoreHandler ];
-    [k: string]: [ TObj, BaseStoreHandler ];
+    root?: [ AObj, BaseStoreHandler ];
+    [k: string]: [ AObj, BaseStoreHandler ];
 }
 
 export interface ITransfmStoreConfigs {
-    store: TObj;
+    store: AObj;
     storeHandler: BaseStoreHandler | Record<string, BaseStoreHandler>;
 }
 
@@ -19,6 +19,6 @@ export interface IAppProps<T, U> {
     storeHandler: Record<keyof U, (...args: any[]) => any>;
 }
 
-export type TCmp = React.FC<any> | React.ComponentClass<any>;
-export type TFn = (...args: any[]) => any;
-export type TObj = Record<string, any>;
+export type ACmp = React.FC<any> | React.ComponentClass<any>;
+export type AFn = (...args: any[]) => any;
+export type AObj = Record<string, any>;

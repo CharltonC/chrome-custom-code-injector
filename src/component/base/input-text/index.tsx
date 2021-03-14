@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
-import { IProps, IState, IValidationConfig, ICallback, TValidState } from './type';
+import { IProps, IState, IValidationConfig, ICallback, AValidState } from './type';
 
 export class TextInput extends MemoComponent<IProps, IState> {
     readonly BASE_CLS: string = 'text-ipt';
@@ -67,7 +67,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
         };
     }
 
-    getValidState(text: string, rules: IValidationConfig[]): TValidState {
+    getValidState(text: string, rules: IValidationConfig[]): AValidState {
         const errMsg: string[] = [];
         rules.forEach(({rule, msg}: IValidationConfig) => {
             let isValid: boolean = true;
@@ -93,7 +93,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
         const val: string = evt.target.value;
 
         // Get validate state anyway
-        const validState: TValidState = hsValidation ? this.getValidState(val, validate) : null;
+        const validState: AValidState = hsValidation ? this.getValidState(val, validate) : null;
 
         // Only set validate state only when there r validation rules & either of the following:
         // - when its 1st time focus & there r more than or eq. to 3 characters + validation rules exist

@@ -8,12 +8,12 @@ export interface IOption {
 }
 
 export interface IRawRowsOption extends Array<any> {
-    0?: string | TFn;
-    1?: TFn;
+    0?: string | AFn;
+    1?: AFn;
 }
 export interface IParsedRowsOption {
     rowKey?: string;
-    transformFn?: TFn;
+    transformFn?: AFn;
 }
 
 export type TRowIdKeyOption = string | ((...args: any[]) => string);
@@ -58,4 +58,4 @@ export interface IErrMsg {
     PROP_DATA_TYPE: string;
 }
 
-export type TFn = (...args: any[]) => any;
+export type AFn = (...args: any[]) => any;

@@ -1,9 +1,9 @@
 import React from "react";
 import { inclStaticIcon } from "./";
-import { TIcon } from './type';
+import { AIcon } from './type';
 
 describe('Static Component - Icon', () => {
-    const mockIconName: TIcon = 'setting';
+    const mockIconName: AIcon = 'setting';
     const ICON_BASE_CLS: string = `icon icon--${mockIconName}`;
 
     it("should render the icon in default black theme", () => {
