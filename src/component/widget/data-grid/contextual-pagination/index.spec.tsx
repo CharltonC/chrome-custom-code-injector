@@ -1,7 +1,7 @@
 import React from 'react';
 import { TMethodSpy } from '../../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../../asset/ts/test-util';
-import { IProps, pgnHandleType } from './type';
+import { IProps, TPgnHandle } from './type';
 import { DataGridPagination } from '.';
 
 jest.mock('../../../base/select-dropdown', () => {
@@ -45,7 +45,7 @@ describe('Component - DataGridPagination', () => {
 
         describe('Method - getMappedBtnProps: Get Mapped Props for Button Element', () => {
             const mockBtnName: string  = 'lorem';
-            const mockBtnAttr: pgnHandleType.ICmpBtnAttr = {
+            const mockBtnAttr: TPgnHandle.ICmpBtnAttr = {
                 title: '',
                 disabled: true,
                 onClick: jest.fn()
@@ -62,7 +62,7 @@ describe('Component - DataGridPagination', () => {
         });
 
         describe('Method - getMappedSelectProps: Get Mapped Props for Select Element', () => {
-            const mockSelectAttr: pgnHandleType.ICmpSelectAttr = {
+            const mockSelectAttr: TPgnHandle.ICmpSelectAttr = {
                 title: '',
                 disabled: true,
                 options: [],

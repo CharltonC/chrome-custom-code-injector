@@ -1,10 +1,10 @@
 import { ReactElement } from 'react';
-import * as pgnHandleType from '../../../../service/pagination-handle/type';
+import * as TPgnHandle from '../../../../service/pagination-handle/type';
 import * as dropdownType from '../../../base/select-dropdown/type';
 
 
 //// Props
-export interface IProps extends pgnHandleType.ICmpAttr, pgnHandleType.IState {
+export interface IProps extends TPgnHandle.ICmpAttr, TPgnHandle.IState {
 }
 
 
@@ -22,4 +22,4 @@ export interface ISelectProps extends dropdownType.IProps {
 }
 
 //// Reexport
-export { pgnHandleType };
+export { TPgnHandle };

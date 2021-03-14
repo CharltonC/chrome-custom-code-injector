@@ -1,27 +1,27 @@
-import * as sortHandleType from '../../../service/sort-handle/type';
-import * as rowTransformHandleType from '../../../service/row-transform-handle/type';
-import * as rowExpdHandleType from '../../../service/row-expand-handle/type';
-import * as pgnHandleType from '../../../service/pagination-handle/type';
-import * as headerGrpHandleType from '../../../service/header-group-handle/type';
-import * as DataGridHeaderType from './contextual-header/type';
+import * as TSortHandle from '../../../service/sort-handle/type';
+import * as TRowTransformHandle from '../../../service/row-transform-handle/type';
+import * as TRowExpdHandle from '../../../service/row-expand-handle/type';
+import * as TPgnHandle from '../../../service/pagination-handle/type';
+import * as THeaderGrpHandle from '../../../service/header-group-handle/type';
+import * as TDataGridHeader from './contextual-header/type';
 import { ReactElement } from 'react';
 
 //// Props
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     data: ADataOption;
     type?: AGridTypeOption;
-    header?: headerGrpHandleType.IOption[];
+    header?: THeaderGrpHandle.IOption[];
     rowKey?: ARowKeyOption;
     component: IComponentOption;
-    expand?: Partial<rowExpdHandleType.IOption>;
-    sort?: Partial<sortHandleType.IOption>;
-    paginate?: Partial<pgnHandleType.IOption>;
+    expand?: Partial<TRowExpdHandle.IOption>;
+    sort?: Partial<TSortHandle.IOption>;
+    paginate?: Partial<TPgnHandle.IOption>;
     callback?: ICallbackOption;
 }
 
 export type ADataOption = Record<string, any>[];
 export type AGridTypeOption = 'table' | 'list';
-export type ARowKeyOption = string | ((ctx: rowTransformHandleType.IRowItemCtx<ReactElement>) => string);
+export type ARowKeyOption = string | ((ctx: TRowTransformHandle.IRowItemCtx<ReactElement>) => string);
 export type ARowsOption = [ ARootRowOption, ...Array<ANestedRowOption> ];
 export type ARowOption = ARootRowOption | ANestedRowOption;
 export type ARootRowOption = [ ACmp ];
@@ -47,12 +47,12 @@ interface ICallbackOption {
 export interface IState {
     isTb: boolean;
     headerCtx: AHeaderCtx;
-    rowsOption: rowTransformHandleType.IRawRowsOption[];
-    expdState: rowExpdHandleType.IState;
-    sortOption: sortHandleType.IOption;
-    sortState: sortHandleType.IState;
-    pgnOption: pgnHandleType.IOption;
-    pgnState: pgnHandleType.IState;
+    rowsOption: TRowTransformHandle.IRawRowsOption[];
+    expdState: TRowExpdHandle.IState;
+    sortOption: TSortHandle.IOption;
+    sortState: TSortHandle.IState;
+    pgnOption: TPgnHandle.IOption;
+    pgnState: TPgnHandle.IState;
 }
 
 export type AModPgnState = Pick<IState, 'pgnOption' | 'pgnState'>;
@@ -63,19 +63,19 @@ export type AShallResetState = {
 }
 
 export type AHeaderCtx = ATbHeaderCtx | AListHeaderCtx
-type ATbHeaderCtx = headerGrpHandleType.ICtxTbHeader<DataGridHeaderType.TTitle>;
-type AListHeaderCtx = headerGrpHandleType.ICtxListHeader<DataGridHeaderType.TTitle>;
+type ATbHeaderCtx = THeaderGrpHandle.ICtxTbHeader<TDataGridHeader.TTitle>;
+type AListHeaderCtx = THeaderGrpHandle.ICtxListHeader<TDataGridHeader.TTitle>;
 
 //// Generic
 export type AFn = (...args: any[]) => any;
 export type ACmp = React.FC<any> | React.ComponentClass<any>;
-export type ARowCtx = rowTransformHandleType.IRowItemCtx<ReactElement>;
+export type ARowCtx = TRowTransformHandle.IRowItemCtx<ReactElement>;
 
 // User-Defined Row Template
 export interface IRowComponentProps extends ARowCtx {
     key: string;
     dataSrc: ADataOption;
-    expandProps: rowExpdHandleType.IExpdBtnAttr;
+    expandProps: TRowExpdHandle.IExpdBtnAttr;
     commonProps: Record<string, any>;
     rowColStyle?: Record<string, string | number>;
     classNames: {
@@ -86,11 +86,11 @@ export interface IRowComponentProps extends ARowCtx {
 }
 
 //// Reexport
-export { pgnHandleType };
-export { rowTransformHandleType };
-export { rowExpdHandleType };
-export { sortHandleType };
-export { headerGrpHandleType };
-export * as sortBtnType from '../../base/btn-sort/type';
-export * as paginationType from './contextual-pagination/type';
-export * as DataGridHeaderType from './contextual-header/type';
+export { TPgnHandle };
+export { TRowTransformHandle };
+export { TRowExpdHandle };
+export { TSortHandle };
+export { THeaderGrpHandle };
+export * as TSortBtn from '../../base/btn-sort/type';
+export * as TPagination from './contextual-pagination/type';
+export * as TDataGridHeader from './contextual-header/type';

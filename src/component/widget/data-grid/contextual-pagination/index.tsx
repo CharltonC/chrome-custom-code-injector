@@ -5,7 +5,7 @@ import { inclStaticIcon } from '../../../static/icon';
 
 import {
     IProps, IBtnProps, ISelectProps,
-    pgnHandleType
+    TPgnHandle
  } from './type';
 
 const CLS_PREFIX: string = 'paginate';
@@ -46,7 +46,7 @@ export class DataGridPagination extends MemoComponent<IProps> {
             (text: string | number) => Number.isInteger(text as number) ? `Page ${text}` : `${text}`;
     }
 
-    getMappedBtnProps(btnAttr: pgnHandleType.ICmpBtnAttr, btnName: string): IBtnProps {
+    getMappedBtnProps(btnAttr: TPgnHandle.ICmpBtnAttr, btnName: string): IBtnProps {
         const { disabled, onClick } = btnAttr;
         return {
             type: 'button',
@@ -56,7 +56,7 @@ export class DataGridPagination extends MemoComponent<IProps> {
         }
     }
 
-    getMappedSelectProps(selectAttr: pgnHandleType.ICmpSelectAttr, isPerPage: boolean): ISelectProps {
+    getMappedSelectProps(selectAttr: TPgnHandle.ICmpSelectAttr, isPerPage: boolean): ISelectProps {
         const { disabled, options, selectedOptionIdx, onSelect, } = selectAttr;
         return {
             clsSuffix: isPerPage ? 'perpage' : 'page',

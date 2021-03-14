@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { UtilHandle } from '../../../service/util-handle';
 import { inclStaticIcon } from '../../static/icon';
-import * as NIcon from '../../static/icon/type';
+import * as TIcon from '../../static/icon/type';
 import { IProps } from './type';
 
 
@@ -21,7 +21,7 @@ export const IconSwitch: React.FC<IProps> = memo((props: IProps) => {
                 {...inputProps}
                 />
             { icon ?
-                inclStaticIcon(label as NIcon.AIcon, 'gray') :
+                inclStaticIcon(label as TIcon.AIcon, 'gray') :
                 <span className="icon-switch__label">{label}</span> }
         </label>
     );

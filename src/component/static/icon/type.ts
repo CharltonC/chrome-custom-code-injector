@@ -25,5 +25,4 @@ export type AIcon =
     'doc' |
     'option';
 
-export interface IProps extends React.HTMLAttributes<HTMLSpanElement> {
-}
+export interface IProps extends React.HTMLAttributes<HTMLSpanElement> {}
