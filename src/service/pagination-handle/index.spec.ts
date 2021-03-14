@@ -4,7 +4,7 @@ import {
     IState, IOption,
     IPageNavQuery,
     IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, ISpreadCtx,
-    ICmpAttrQuery, TPageList,
+    ICmpAttrQuery, APageList,
 } from './type';
 import { PgnHandle } from '.';
 
@@ -692,8 +692,8 @@ describe('Class - Paginate Handle', () => {
         describe('Method - getPageSelectAttr: Get Generic Attributes of a Pagination Page Select Element', () => {
             const pageNo: number = 4;
             const totalPage: number = 10;
-            const ltSpread: TPageList = [2,3];
-            const rtSpread: TPageList = [5,6];
+            const ltSpread: APageList = [2,3];
+            const rtSpread: APageList = [5,6];
             const mockEvt = { target: { value: 0 }};
             const mockTargetPageIdx: number = 99;
             let mockState;
@@ -757,7 +757,7 @@ describe('Class - Paginate Handle', () => {
                     onSelect(mockEvt);
 
                     const expectOptionIdx: number = 0;
-                    const expectOptions: TPageList = [ mockPageNo, ...rtSpread, totalPage ];
+                    const expectOptions: APageList = [ mockPageNo, ...rtSpread, totalPage ];
 
                     expect(attrs).toEqual({
                         title: 'page select',
@@ -771,7 +771,7 @@ describe('Class - Paginate Handle', () => {
 
                 it('should return attributes when current page is last page', () => {
                     mockState = {...mockState, totalPage: pageNo };
-                    const expectOptions: TPageList = [ 1, ...ltSpread, pageNo ];
+                    const expectOptions: APageList = [ 1, ...ltSpread, pageNo ];
                     const expectOptionIdx: number = 1 + ltSpread.length;
                     const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
                     onSelect(mockEvt);
@@ -788,7 +788,7 @@ describe('Class - Paginate Handle', () => {
 
                 it('should return attributes when total page is 1', () => {
                     mockState = {...mockState, totalPage: 1 };
-                    const expectOptions: TPageList = [ 1 ];
+                    const expectOptions: APageList = [ 1 ];
                     const expectOptionIdx: number = 0;
                     const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
                     onSelect(mockEvt);

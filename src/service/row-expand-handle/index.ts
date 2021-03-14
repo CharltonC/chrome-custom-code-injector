@@ -1,7 +1,7 @@
 import {
     IOption, IState,
     IExpdBtnAttr, IExpdBtnAttrQuery,
-    TExpdStateEntry, TItemCtx
+    AExpdStateEntry, TItemCtx
 } from './type';
 
 export class RowExpdHandle {
@@ -140,13 +140,13 @@ export class RowExpdHandle {
 
     getFilteredCurrExpdState(expdState: IState, relExpdState: IState): IState  {
         const filteredCurrExpdState: IState = { ...expdState } ;
-        const currIdMaps: TExpdStateEntry[] = Object.entries(filteredCurrExpdState);
+        const currIdMaps: AExpdStateEntry[] = Object.entries(filteredCurrExpdState);
         Object
             .entries(relExpdState)
-            .forEach(([relId, rowLvl]: TExpdStateEntry) => {
+            .forEach(([relId, rowLvl]: AExpdStateEntry) => {
                 // Check if impacted item is in current expand state by checking row level
                 // - if row level matches (same), it is impacted as we can only allow ONE Expand per level
-                currIdMaps.forEach(([currId, currRowLvl]: TExpdStateEntry) => {
+                currIdMaps.forEach(([currId, currRowLvl]: AExpdStateEntry) => {
                     if (rowLvl !== currRowLvl) return;
                     this.rmvRowInExpdState(filteredCurrExpdState, currId);
                 });

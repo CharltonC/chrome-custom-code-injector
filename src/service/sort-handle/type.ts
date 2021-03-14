@@ -8,12 +8,12 @@ export interface IOption {
 
 //// State
 export interface IState {
-    data: TLsItem[];
+    data: ALsItem[];
 }
 
 //// Generic UI Component Attribute Related
 export interface ICmpAttrQuery {
-    data: TLsItem[];
+    data: ALsItem[];
     option: IOption;
     callback: AFn;
 }
@@ -34,6 +34,6 @@ export interface ICmpSortBtnAttr {
 }
 
 //// Misc
-export type TLsItem = Record<string, any>;
+export type ALsItem = Record<string, any>;
 export type AFn = (...args: any[]) => any;
-export type TStrSortOrder = 0 | 1 | -1;
+export type AStrSortOrder = 0 | 1 | -1;

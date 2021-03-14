@@ -2,7 +2,7 @@
 export interface IOption {
     data: any[];
     rows: IRawRowsOption[];
-    rowIdKey: TRowIdKeyOption;
+    rowIdKey: ARowIdKeyOption;
     showAll?: boolean;
     pgnStartIdx: number;   // actual inclusive index of item in the array when there is pagination (def: 0)
 }
@@ -16,21 +16,21 @@ export interface IParsedRowsOption {
     transformFn?: AFn;
 }
 
-export type TRowIdKeyOption = string | ((...args: any[]) => string);
+export type ARowIdKeyOption = string | ((...args: any[]) => string);
 
 //// Other
 export interface ICtxRowsQuery {
     data: any;
     rows: IRawRowsOption[];
     rowLvl: number;
-    rowIdKey: TRowIdKeyOption;
+    rowIdKey: ARowIdKeyOption;
     pgnStartIdx: number;
     parentPath?: string;
     parentItemCtx?: IRowItemCtx<any>;
     showAll: boolean;
 }
 
-export interface IRowItemCtx<T = TDefNestdItems> extends IRowItemBaseCtx {
+export interface IRowItemCtx<T = ADefNestdItems> extends IRowItemBaseCtx {
     itemId: string;
     isExpdByDef: boolean;
     nestedItems: T;
@@ -48,7 +48,7 @@ export interface IRowItemBaseCtx {
     parentPath: string;
 }
 
-type TDefNestdItems = IRowItemCtx[];
+type ADefNestdItems = IRowItemCtx[];
 
 export type TRowType = 'odd' | 'even';
 

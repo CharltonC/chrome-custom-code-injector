@@ -3,17 +3,17 @@ import {
     IOption,
     IState,
     ICmpAttrQuery, ICmpAttr, ICmpSortBtnAttr,
-    TLsItem, TStrSortOrder, AFn
+    ALsItem, AStrSortOrder, AFn
 } from './type';
 
 export class SortHandle implements IUiHandle {
-    readonly noOrder: TStrSortOrder = 0;
-    readonly baOrder: TStrSortOrder = 1;
-    readonly abOrder: TStrSortOrder = -1;
+    readonly noOrder: AStrSortOrder = 0;
+    readonly baOrder: AStrSortOrder = 1;
+    readonly abOrder: AStrSortOrder = -1;
 
     //// Core
-    sortByObjKey(list: TLsItem[], {key, isAsc, hsLocale}: IOption): TLsItem[] {
-        return list.sort((a: TLsItem, b: TLsItem) => {
+    sortByObjKey(list: ALsItem[], {key, isAsc, hsLocale}: IOption): ALsItem[] {
+        return list.sort((a: ALsItem, b: ALsItem) => {
             const valA: any = a[key];
             const valB: any = b[key];
             const isNum: boolean = this.isValSameType(valA, valB, 'number');
@@ -33,7 +33,7 @@ export class SortHandle implements IUiHandle {
         return isAsc ? diff : -diff;
     }
 
-    // compareStr(a: string, b: string, isAsc: boolean): TStrSortOrder {
+    // compareStr(a: string, b: string, isAsc: boolean): AStrSortOrder {
     //     const { noOrder, abOrder, baOrder } = this;
     //     const isCurrAsc: boolean = a < b;
     //     const isCurrDsc: boolean = a > b;
@@ -57,7 +57,7 @@ export class SortHandle implements IUiHandle {
         return typeof valA === type && typeof valB === type;
     }
 
-    shallSort(data: TLsItem[], { key, isAsc }: IOption): boolean {
+    shallSort(data: ALsItem[], { key, isAsc }: IOption): boolean {
         return key && typeof isAsc !== 'undefined' && data.length > 1;
     }
 
@@ -76,9 +76,9 @@ export class SortHandle implements IUiHandle {
         };
     }
 
-    createState(data: TLsItem[], option: IOption): IState {
+    createState(data: ALsItem[], option: IOption): IState {
         const shallSort: boolean = this.shallSort(data, option);
-        const dataCopy: TLsItem[] = data.slice(0);
+        const dataCopy: ALsItem[] = data.slice(0);
         return {
             data: shallSort ? this.sortByObjKey(dataCopy, option) : null
         };
@@ -111,7 +111,7 @@ export class SortHandle implements IUiHandle {
         };
     }
 
-    getGenericCmpEvtHandler(data: TLsItem[], option: IOption, callback?: AFn): AFn {
+    getGenericCmpEvtHandler(data: ALsItem[], option: IOption, callback?: AFn): AFn {
         return ((modOption: Partial<IOption>): void => {
             const sortOption: IOption = this.createOption(modOption, option);
             const sortState: IState = this.createState(data, sortOption);

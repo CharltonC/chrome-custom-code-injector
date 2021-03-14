@@ -1,12 +1,12 @@
 import { TMethodSpy } from '../../asset/ts/test-util/type';
 import { TestUtil } from '../../asset/ts/test-util';
-import { IOption, TLsItem, ICmpAttrQuery } from './type';
+import { IOption, ALsItem, ICmpAttrQuery } from './type';
 import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {
     let handle: SortHandle;
     let spy: TMethodSpy<SortHandle>;
-    let sortedList: TLsItem[];
+    let sortedList: ALsItem[];
 
     beforeEach(() => {
         handle = new SortHandle();
@@ -20,10 +20,10 @@ describe('Handle Service - Default Sorter', () => {
 
     describe('Core', () => {
         describe('Method: sortByObjKey - Sort a list of object based on an object key', () => {
-            const mockInvalidList: TLsItem[] = [{key: []}, {key: ()=>{}}, {key: 'y'}];
-            const mockStrList: TLsItem[] = [{key: 'z'}, {key: 'X'}, {key: 'x'}, {key: 'y'}];
-            const mockNumList: TLsItem[] = [{key: 5}, {key: 1}, {key: 19},];
-            const mockLocaleStrList: TLsItem[] = [{key: 'cqé'}, {key: 'rév'}, {key: 'écl'}];
+            const mockInvalidList: ALsItem[] = [{key: []}, {key: ()=>{}}, {key: 'y'}];
+            const mockStrList: ALsItem[] = [{key: 'z'}, {key: 'X'}, {key: 'x'}, {key: 'y'}];
+            const mockNumList: ALsItem[] = [{key: 5}, {key: 1}, {key: 19},];
+            const mockLocaleStrList: ALsItem[] = [{key: 'cqé'}, {key: 'rév'}, {key: 'écl'}];
             const mockOption: IOption = { key: 'key', isAsc: true, hsLocale: false };
 
             it('should not sort if values are not same type of number, string', () => {

@@ -2,8 +2,8 @@ import { IUiHandle } from '../../asset/ts/type/ui-handle';
 import {
     IState, IOption,
     IPageNavQuery,
-    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx,
-    ICmpAttrQuery, ICmpAttr, ICmpBtnAttr, ICmpSelectAttr, ISelectEvt, TPageList,
+    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, ASpreadCtx,
+    ICmpAttrQuery, ICmpAttr, ICmpBtnAttr, ICmpSelectAttr, ISelectEvt, APageList,
     AFn
 } from './type';
 
@@ -171,8 +171,8 @@ export class PgnHandle implements IUiHandle {
         const hsRtSpread: boolean = rtTotalRemain > 1 && rtTotalRemain < totalPage;
         const hsLtSpread: boolean = ltTotalRemain > 1 && ltTotalRemain < totalPage;
 
-        const rtSpread: TSpreadCtx = hsRtSpread ?
-            spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
+        const rtSpread: ASpreadCtx = hsRtSpread ?
+            spreadRange.reduce((container: ASpreadCtx, item, idx: number) => {
                 const pageNo: number = currPageNo + idx + 1;
 
                 // We exclude the 1st page or last page since its already available in the Pagination state
@@ -188,8 +188,8 @@ export class PgnHandle implements IUiHandle {
             }, []) :
             null;
 
-        const ltSpread: TSpreadCtx = hsLtSpread ?
-            spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
+        const ltSpread: ASpreadCtx = hsLtSpread ?
+            spreadRange.reduce((container: ASpreadCtx, item, idx: number) => {
                 const pageNo: number = currPageNo - idx - 1;
                 const isInRange: boolean = pageNo > 1 && pageNo < totalPage;
                 const hsGtOnePageTilFirstPage: boolean = idx === maxSpread && (currPageNo - pageNo) >= 1;
@@ -323,15 +323,15 @@ export class PgnHandle implements IUiHandle {
         const isLteOnePage: boolean = totalPage <= 1;
 
         // Options (inclusive of all pages here)
-        const leftOptions: TPageList = (isLteOnePage || pageNo === 1) ?
+        const leftOptions: APageList = (isLteOnePage || pageNo === 1) ?
             [ 1 ] :
             [ 1, ...(ltSpread ? ltSpread : []), pageNo ];
 
-        const rightOptions: TPageList = (isLteOnePage || pageNo === totalPage) ?
+        const rightOptions: APageList = (isLteOnePage || pageNo === totalPage) ?
             [] :
             [ ...(rtSpread ? rtSpread : []), totalPage ];
 
-        const options: TPageList = [ ...leftOptions, ...rightOptions ];
+        const options: APageList = [ ...leftOptions, ...rightOptions ];
         const selectedOptionIdx: number = leftOptions.length - 1;
 
         return {
@@ -374,7 +374,7 @@ export class PgnHandle implements IUiHandle {
         });
     }
 
-    getTargetPageIdxByPos(state: IState, pages: TPageList, [currPos, activePos]: [number, number]): number {
+    getTargetPageIdxByPos(state: IState, pages: APageList, [currPos, activePos]: [number, number]): number {
         const { curr, maxSpread } = state;
         const page: string | number = pages[currPos];
         const targetPageIdx: number = typeof page === 'number' ?

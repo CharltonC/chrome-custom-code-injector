@@ -23,7 +23,7 @@ export interface IExpdBtnAttr {
 }
 
 //// Misc
-export type TExpdStateEntry = [ string, number ];
+export type AExpdStateEntry = [ string, number ];
 
 export type TItemCtx = {
     itemLvl: number;

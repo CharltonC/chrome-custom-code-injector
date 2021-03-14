@@ -37,12 +37,12 @@ export interface IRecordCtx {
 }
 
 export interface ISpreadCtx {
-    ltSpread: TSpreadCtx;
-    rtSpread: TSpreadCtx;
+    ltSpread: ASpreadCtx;
+    rtSpread: ASpreadCtx;
     maxSpread: number;
 }
 
-export type TSpreadCtx = (number | '...')[];
+export type ASpreadCtx = (number | '...')[];
 
 
 //// Pagination Request/Query
@@ -106,7 +106,7 @@ export interface ISelectEvt extends Event {
     target: HTMLSelectElement;
 }
 
-export type TPageList = (string | number)[];
+export type APageList = (string | number)[];
 
 
 //// Misc
