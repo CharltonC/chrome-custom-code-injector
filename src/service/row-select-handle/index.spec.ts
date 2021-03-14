@@ -36,15 +36,26 @@ describe('Row Select Handle', () => {
     });
 
     describe('Method - toggleSelectAll: Select/Unselect all rows', () => {
-        it('should return all selected', () => {
+        it('should return all selected if no rows are currently selected', () => {
             expect(handle.toggleSelectAll({ areAllRowsSelected: false } as IState)).toEqual({
                 areAllRowsSelected: true,
                 selectedRowKeys: {},
             });
         });
 
-        it('should return all unselected', () => {
+        it('should return all unselected if no rows are currently selected', () => {
             expect(handle.toggleSelectAll({ areAllRowsSelected: true } as IState)).toEqual({
+                areAllRowsSelected: false,
+                selectedRowKeys: {},
+            });
+        });
+
+        it('should return all unselected if 1 or more rows are selected', () => {
+            const mockSelectedRowKeys = { '0': true };
+            expect(handle.toggleSelectAll({
+                areAllRowsSelected: false,
+                selectedRowKeys: mockSelectedRowKeys
+            } as IState)).toEqual({
                 areAllRowsSelected: false,
                 selectedRowKeys: {},
             });

@@ -8,9 +8,16 @@ export class RowSelectHandle {
         return isAll ? this.toggleSelectAll(currState) : this.toggleSelectOne(currState, rowsCtx);
     }
 
-    toggleSelectAll({ areAllRowsSelected }: IState): IState {
+    /**
+     * Toggle Selection (checkboxes) for all rows:
+     * - if 1 or more rows are already selected, Unselect them all
+     * - if all rows are selected, Unselect them all
+     * - if no rows are selected, Select them all
+     */
+    toggleSelectAll({ areAllRowsSelected, selectedRowKeys }: IState): IState {
+        const isPartiallySelected = selectedRowKeys ? Object.getOwnPropertyNames(selectedRowKeys).length : false;
         return {
-            areAllRowsSelected: !areAllRowsSelected,
+            areAllRowsSelected: isPartiallySelected ? false : !areAllRowsSelected,
             selectedRowKeys: {},
         };
     }
