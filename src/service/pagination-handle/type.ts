@@ -59,8 +59,8 @@ export interface IPageNavQuery {
 }
 
 // Whether relevant pages are navigatable
-export interface IRelPageCtx extends TRelPageCtx {}
-type TRelPageCtx = {
+export interface IRelPageCtx extends ARelPageCtx {}
+type ARelPageCtx = {
     [K in keyof IRelPage]: boolean;
 }
 
