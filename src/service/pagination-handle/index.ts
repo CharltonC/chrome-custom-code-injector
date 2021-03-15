@@ -4,7 +4,6 @@ import {
     IPageNavQuery,
     IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, ASpreadCtx,
     ICmpAttrQuery, ICmpAttr, ICmpBtnAttr, ICmpSelectAttr, ISelectEvt, APageList,
-    AFn
 } from './type';
 
 /**

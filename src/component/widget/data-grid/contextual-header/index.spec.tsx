@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react';
-import { TMethodSpy } from '../../../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../../asset/ts/test-util';
 import { DataGridHeader } from '.';
 
 describe('Component - Grid Header', () => {
     const MOCK_TEXT = 'mockth';
     const mockThTitleElem: ReactElement = <span className="mock-th">{MOCK_TEXT}</span>;
-    let spy: TMethodSpy<DataGridHeader>;
+    let spy: AMethodSpy<DataGridHeader>;
     let mockSortBtnProps: jest.Mock;
     let $elem: HTMLElement;
     let $rows: NodeListOf<HTMLElement>;

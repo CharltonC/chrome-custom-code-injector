@@ -1,6 +1,6 @@
 import {
     IOption, IRawRowsOption, IParsedRowsOption,
-    IRowItemBaseCtx, TRowType, IErrMsg, AFn, ICtxRowsQuery, IRowItemCtx,
+    IRowItemBaseCtx, TRowType, IErrMsg, ICtxRowsQuery, IRowItemCtx,
 } from './type';
 
 export class RowTransformHandle {

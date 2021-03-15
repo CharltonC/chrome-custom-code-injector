@@ -1,11 +1,11 @@
 import { TestUtil } from '../../asset/ts/test-util';
 import { RowSelectHandle } from '.';
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { IState } from './type';
 
 describe('Row Select Handle', () => {
     let handle: RowSelectHandle;
-    let spy: TMethodSpy<RowSelectHandle>;
+    let spy: AMethodSpy<RowSelectHandle>;
 
     beforeEach(() => {
         handle = new RowSelectHandle();

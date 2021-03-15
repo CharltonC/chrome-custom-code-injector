@@ -1,10 +1,10 @@
 import { TestUtil } from '../../asset/ts/test-util';
 import { FileHandle } from '.';
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 
 describe('File Handle', () => {
     let handle: FileHandle;
-    let spy: TMethodSpy<FileHandle>;
+    let spy: AMethodSpy<FileHandle>;
     let Url;
 
     beforeEach(() => {

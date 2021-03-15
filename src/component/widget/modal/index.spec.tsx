@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../../asset/ts/test-util/type';
 import { Modal } from '.';
 import { IProps } from './type';
 
@@ -57,7 +57,7 @@ describe('Component - Modal', () => {
     });
 
     describe('Render', () => {
-        let spy: TMethodSpy<Modal>;
+        let spy: AMethodSpy<Modal>;
         let $elem: HTMLElement;
         let $modal: HTMLElement;
         let $subHeader: HTMLElement;

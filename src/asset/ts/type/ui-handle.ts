@@ -6,5 +6,3 @@ export interface IUiHandle {
     createGenericCmpAttr?: AFn;
     getGenericCmpEvtHandler?: AFn;
 }
-
-type AFn = (...args: any[]) => any;

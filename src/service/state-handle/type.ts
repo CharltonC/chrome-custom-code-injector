@@ -18,7 +18,3 @@ export interface IAppProps<T, U> {
     store: T;
     storeHandler: Record<keyof U, (...args: any[]) => any>;
 }
-
-export type ACmp = React.FC<any> | React.ComponentClass<any>;
-export type AFn = (...args: any[]) => any;
-export type AObj = Record<string, any>;

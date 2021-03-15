@@ -1,4 +1,4 @@
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { TestUtil } from '../../asset/ts/test-util';
 import {
     IOption,
@@ -9,7 +9,7 @@ import { HeaderGrpHandle } from '.';
 
 describe('Header Group Handle', () => {
     let handle: HeaderGrpHandle;
-    let spy: TMethodSpy<HeaderGrpHandle>;
+    let spy: AMethodSpy<HeaderGrpHandle>;
 
     beforeEach(() => {
         handle = new HeaderGrpHandle();

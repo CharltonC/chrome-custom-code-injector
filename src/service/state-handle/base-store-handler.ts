@@ -1,5 +1,5 @@
 import PubSub from 'pubsub-js';
-import { AFn, IStoreHandlerClass } from './type';
+import { IStoreHandlerClass } from './type';
 
 export class BaseStoreHandler {
     readonly CHANGE_EVT: string = 'CHANGE';

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { BaseStoreHandler } from './base-store-handler';
-import { IStoreConfigs, ITransfmStoreConfigs, AObj, AFn } from './type';
+import { IStoreConfigs, ITransfmStoreConfigs } from './type';
 
 export class BaseStoreComponent extends Component<any, AObj> {
     readonly STORE_NAME_ERR: string = 'already exists in store or store handler';

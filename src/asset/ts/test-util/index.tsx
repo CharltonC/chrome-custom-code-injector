@@ -2,7 +2,7 @@ import React, { Component, ReactElement } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { ShallowRenderer, createRenderer } from 'react-test-renderer/shallow';
-import { IEvtCls, ICmpInst, TCmpCls, TCmpProps, TStateProps, AFn } from './type';
+import { IEvtCls, ICmpInst, ACmpCls } from './type';
 
 export const TestUtil = {
     setupElem(tagName: string = 'div'): HTMLElement {
@@ -30,13 +30,13 @@ export const TestUtil = {
         return shallow.getRenderOutput();
     },
 
-    renderPlain(elem: HTMLElement, Cmp: TCmpCls, stateProps: TCmpProps = {}): void {
+    renderPlain(elem: HTMLElement, Cmp: ACmpCls, stateProps: AObj = {}): void {
         act(() => {
             render(<Cmp {...stateProps} />, elem);
         });
     },
 
-    renderInStatefulWrapper(elem: HTMLElement, Cmp: TCmpCls, stateProps: TCmpProps = {}): void {
+    renderInStatefulWrapper(elem: HTMLElement, Cmp: ACmpCls, stateProps: AObj = {}): void {
         class Wrapper extends Component<any, any> {
             constructor(props) {
                 super(props);
@@ -104,7 +104,7 @@ export const TestUtil = {
         return $spy;
     },
 
-    getStatePropsMocker<P = TStateProps, S = TStateProps>(cmpInstance: ICmpInst): AFn {
+    getStatePropsMocker<P = AObj, S = AObj>(cmpInstance: ICmpInst): AFn<void> {
         return (props: P, state: S): void => {
             if (typeof props !== 'undefined') {
                 (cmpInstance as any).props = props;

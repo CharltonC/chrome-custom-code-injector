@@ -1,4 +1,4 @@
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { TestUtil } from '../../asset/ts/test-util';
 import { IOption, IState, TItemCtx } from './type';
 import { RowExpdHandle } from '.';
@@ -7,7 +7,7 @@ describe('Expand Handle', () => {
     const mockItemCtx = { itemId: 'lorem', itemLvl: 1 };
     const mockExpState = { [mockItemCtx.itemId]: mockItemCtx.itemLvl };
     let handle: RowExpdHandle;
-    let spy: TMethodSpy<RowExpdHandle>;
+    let spy: AMethodSpy<RowExpdHandle>;
     let mockCallback: jest.Mock;
     let mockExpdBtnAttrQuery: any;
 

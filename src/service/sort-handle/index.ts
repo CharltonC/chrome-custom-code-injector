@@ -3,7 +3,7 @@ import {
     IOption,
     IState,
     ICmpAttrQuery, ICmpAttr, ICmpSortBtnAttr,
-    ALsItem, AStrSortOrder, AFn
+    ALsItem, AStrSortOrder
 } from './type';
 
 export class SortHandle implements IUiHandle {

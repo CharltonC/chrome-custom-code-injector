@@ -1,4 +1,4 @@
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { TestUtil } from '../../asset/ts/test-util';
 import {
     IState, IOption,
@@ -11,7 +11,7 @@ import { PgnHandle } from '.';
 describe('Class - Paginate Handle', () => {
     let handle: PgnHandle;
     let defOption: IOption;
-    let spy: TMethodSpy<PgnHandle>;
+    let spy: AMethodSpy<PgnHandle>;
 
     beforeEach(() => {
         handle = new PgnHandle();

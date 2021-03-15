@@ -6,12 +6,5 @@ export interface IEvtCls<TCls = Event> {
 
 export interface ICmpInst extends Component {}
 
-export type TCmpCls = FC | ComponentClass | MemoExoticComponent<any>;
-
-export type TCmpProps = Record<string, any>;
-
-export type TStateProps = Record<string, any>;
-
-export type TMethodSpy<T> = Record<keyof T, jest.SpyInstance>;
-
-export type AFn = (...args: any[]) => void;
+export type ACmpCls = FC | ComponentClass | MemoExoticComponent<any>;
+export type AMethodSpy<T> = Record<keyof T, jest.SpyInstance>;

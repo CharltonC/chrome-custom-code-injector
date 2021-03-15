@@ -1,7 +1,7 @@
 import React, { ComponentClass } from 'react';
 import { BaseStoreHandler } from './base-store-handler';
 import { BaseStoreComponent } from './base-store-component';
-import { IStoreConfigs, AObj, ACmp } from './type';
+import { IStoreConfigs } from './type';
 
 /**
  * Usage:

@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { UtilHandle } from '../../../service/util-handle';
-import { AObj, AObjEntry } from './type';
 
 /**
  * Used for Component Class Inheritance only for React Component

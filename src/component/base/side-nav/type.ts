@@ -1,14 +1,9 @@
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
-    list: IObj[];
+    list: AObj[];
     childKey: string;
     itemKeys: [ string, string ];
-    activeItem: IObj;
+    activeItem: AObj;
     onItemClick?: (...args: any[]) => void;
 }
 
-export interface IState {
-}
-
-export interface IObj {
-    [k: string]: any;
-}
+export interface IState {}

@@ -1,4 +1,4 @@
-import { AObj, ASuccessFn, AFn } from './type';
+import { ASuccessFn } from './type';
 
 export class FileHandle {
     async readJson(file: File, onError?: AFn) {

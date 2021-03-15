@@ -30,5 +30,3 @@ export type TItemCtx = {
     itemId: string;
     parentItemCtx: TItemCtx;
 };
-
-export type AFn = (...args: any[]) => any;

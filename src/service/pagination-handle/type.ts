@@ -107,7 +107,3 @@ export interface ISelectEvt extends Event {
 }
 
 export type APageList = (string | number)[];
-
-
-//// Misc
-export type AFn = (...args: any[]) => any;

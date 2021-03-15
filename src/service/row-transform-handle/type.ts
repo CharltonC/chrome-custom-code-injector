@@ -57,5 +57,3 @@ export interface IErrMsg {
     ROW_KEY_TYPE: string;
     PROP_DATA_TYPE: string;
 }
-
-export type AFn = (...args: any[]) => any;

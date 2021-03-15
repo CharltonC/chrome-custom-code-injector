@@ -1,11 +1,11 @@
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { TestUtil } from '../../asset/ts/test-util';
 import { IOption, ALsItem, ICmpAttrQuery } from './type';
 import { SortHandle } from '.';
 
 describe('Handle Service - Default Sorter', () => {
     let handle: SortHandle;
-    let spy: TMethodSpy<SortHandle>;
+    let spy: AMethodSpy<SortHandle>;
     let sortedList: ALsItem[];
 
     beforeEach(() => {

@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { UtilHandle } from '../../../service/util-handle/index';
 import { RowExpdHandle } from '../../../service/row-expand-handle';
@@ -19,13 +19,13 @@ describe('Component - Data Grid', () => {
     let mockProps: any;
     let mockState: any;
     let cmp: DataGrid;
-    let spy: TMethodSpy<DataGrid>;
-    let utilHandleSpy: TMethodSpy<UtilHandle>;
-    let rowTransformHandleSpy: TMethodSpy<RowTransformHandle>;
-    let rowExpdHandleSpy: TMethodSpy<RowExpdHandle>;
-    let sortHandleSpy: TMethodSpy<SortHandle>;
-    let pgnHandleSpy: TMethodSpy<PgnHandle>;
-    let headerGrpHandleSpy: TMethodSpy<HeaderGrpHandle>;
+    let spy: AMethodSpy<DataGrid>;
+    let utilHandleSpy: AMethodSpy<UtilHandle>;
+    let rowTransformHandleSpy: AMethodSpy<RowTransformHandle>;
+    let rowExpdHandleSpy: AMethodSpy<RowExpdHandle>;
+    let sortHandleSpy: AMethodSpy<SortHandle>;
+    let pgnHandleSpy: AMethodSpy<PgnHandle>;
+    let headerGrpHandleSpy: AMethodSpy<HeaderGrpHandle>;
     let mockStateProps: (...args: any[]) => void;
 
     beforeEach(() => {

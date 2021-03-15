@@ -1,11 +1,11 @@
 import { TestUtil } from '../../asset/ts/test-util';
 import { BaseStoreComponent } from './base-store-component';
 import { BaseStoreHandler } from './base-store-handler';
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 
 describe('Base Store Component', () => {
     let cmp: BaseStoreComponent;
-    let spy: TMethodSpy<BaseStoreComponent>;
+    let spy: AMethodSpy<BaseStoreComponent>;
 
     beforeEach(() => {
         cmp = new BaseStoreComponent({});

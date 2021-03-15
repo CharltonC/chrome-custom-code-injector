@@ -1,12 +1,12 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { TMethodSpy } from '../../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../../asset/ts/test-util/type';
 import { IProps, IState } from './type';
 import { Dropdown } from '.';
 
 describe('Component - Dropdown', () => {
     const mockBareProps: IProps = {id: 'id', list: []};
     const mockDefProps: IProps = {id: 'id', list: ['a', 'b']};
-    let spy: TMethodSpy<Dropdown>;
+    let spy: AMethodSpy<Dropdown>;
     let setStateSpy: jest.SpyInstance;
 
     beforeEach(() => {

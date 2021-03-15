@@ -1,5 +1,5 @@
 import React from 'react';
-import { TMethodSpy } from '../../../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../../asset/ts/test-util';
 import { IProps, TPgnHandle } from './type';
 import { DataGridPagination } from '.';
@@ -13,7 +13,7 @@ jest.mock('../../../base/select-dropdown', () => {
 
 describe('Component - DataGridPagination', () => {
     const CLS_PREFIX: string = 'paginate';
-    let spy: TMethodSpy<DataGridPagination>;
+    let spy: AMethodSpy<DataGridPagination>;
 
     afterEach(() => {
         jest.clearAllMocks();

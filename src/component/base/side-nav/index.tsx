@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { NumBadge } from '../num-badge';
-import { IProps, IState, IObj } from './type';
+import { IProps, IState } from './type';
 
 const rAIconElem: ReactElement = inclStaticIcon('arrow-rt');
 const dnIconElem: ReactElement = inclStaticIcon('arrow-dn');
@@ -20,13 +20,13 @@ export class SideNav extends MemoComponent<IProps, IState> {
         return (
             <aside className={BASE_CLS}>
                 <ul className={LIST_CLS}>
-                    {list.map((item: IObj, idx: number) => this.getListItem(item, idx))}
+                    {list.map((item: AObj, idx: number) => this.getListItem(item, idx))}
                 </ul>
             </aside>
         );
     }
 
-    getListItem(item: IObj, idx: number, parentIdx?: number): ReactElement {
+    getListItem(item: AObj, idx: number, parentIdx?: number): ReactElement {
         const { props, BASE_CLS, PARENT_CLS_SUFFIX, CHILD_CLS_SUFFIX, cssCls } = this;
         const { activeItem, itemKeys, childKey } = props;
         const [ idKey, childIdKey ] = itemKeys;
@@ -62,7 +62,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
                         style={{ maxHeight: showNestedItems ? '320px' : '0' }}
                         >
                         {/* only render nested list under active list for performance */}
-                        { showNestedItems && nestedItems.map((childItem: IObj, childIdx: number) => this.getListItem(childItem, childIdx, idx)) }
+                        { showNestedItems && nestedItems.map((childItem: AObj, childIdx: number) => this.getListItem(childItem, childIdx, idx)) }
                     </ul>
                 </> :
                 itemTitle }

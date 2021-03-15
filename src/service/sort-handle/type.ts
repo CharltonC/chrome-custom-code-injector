@@ -35,5 +35,4 @@ export interface ICmpSortBtnAttr {
 
 //// Misc
 export type ALsItem = Record<string, any>;
-export type AFn = (...args: any[]) => any;
 export type AStrSortOrder = 0 | 1 | -1;

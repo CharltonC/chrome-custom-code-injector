@@ -1,4 +1,4 @@
-import { TMethodSpy } from '../../asset/ts/test-util/type';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { TestUtil } from '../../asset/ts/test-util';
 import { IRawRowsOption, IParsedRowsOption, ICtxRowsQuery, IOption, } from './type';
 import { RowTransformHandle } from '.';
@@ -6,7 +6,7 @@ import { RowTransformHandle } from '.';
 describe('Service - Row Handle', () => {
     const { getItemPath, parseRowConfig, isGteZeroInt, getRowType } = RowTransformHandle.prototype;
     let handle: RowTransformHandle;
-    let spy: TMethodSpy<RowTransformHandle>;
+    let spy: AMethodSpy<RowTransformHandle>;
 
     beforeEach(() => {
         handle = new RowTransformHandle();
