@@ -235,14 +235,14 @@ export class OptionApp extends MemoComponent<IProps> {
                         onCancel={onModalCancel}
                         onConfirm={onExportModalConfirm}
                         >
-                        <TextInput
+                        {/* <TextInput
                             id=""
                             label="Filename"
                             required
                             autoFocus
                             validate={validationRule.exportConfig}
                             onInputChange={onExportFileNameChange}
-                            />
+                            /> */}
                     </Modal>
                     <Modal
                         currModalId={currModalId}
@@ -273,14 +273,14 @@ export class OptionApp extends MemoComponent<IProps> {
                         onConfirm={onAddHostConfirm}
                         >
                         { $ruleIdEdit }
-                        <TextInput
+                        {/* <TextInput
                             id="host-value"
                             label="Host Value"
                             required
                             defaultValue={modalEditTarget?.value}
                             validate={validationRule.ruleUrlHost}
                             onInputChange={onEditItemValChange}
-                            />
+                            /> */}
                     </Modal>
                     <Modal
                         currModalId={currModalId}
@@ -294,14 +294,14 @@ export class OptionApp extends MemoComponent<IProps> {
                         onConfirm={onAddPathConfirm}
                         >
                         { $ruleIdEdit }
-                        <TextInput
+                        {/* <TextInput
                             id="path-url"
                             label="Path Value"
                             required
                             defaultValue={modalEditTarget?.value}
                             validate={validationRule.ruleUrlPath}
                             onInputChange={onEditItemValChange}
-                            />
+                            /> */}
                     </Modal>
                     <Modal
                         currModalId={currModalId}
@@ -354,24 +354,25 @@ export class OptionApp extends MemoComponent<IProps> {
         const { modalEditTarget } = this.localState;
         const { onEditItemIdChange } = this.storeHandler;
 
-        return (
-            <TextInput
-                id="rule-id"
-                label="ID"
-                required
-                autoFocus
-                defaultValue={modalEditTarget?.id}
-                validate={validationRule.ruleId}
-                onInputChange={onEditItemIdChange}
-                />
-        );
+        return;
+        // return (
+            // <TextInput
+            //     id="rule-id"
+            //     label="ID"
+            //     required
+            //     autoFocus
+            //     defaultValue={modalEditTarget?.id}
+            //     validate={validationRule.ruleId}
+            //     onInputChange={onEditItemIdChange}
+            //     />
+        // );
     }
 
     get $libEdit() {
         return (
             <>
                 {/* TODO: value binding */}
-                <TextInput
+                {/* <TextInput
                     id="path-id"
                     label="ID"
                     required
@@ -389,7 +390,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     onInputChange={({ validState }) => {
                         // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
                     }}
-                    />
+                    /> */}
             </>
         );
     }

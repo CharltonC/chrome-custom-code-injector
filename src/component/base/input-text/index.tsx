@@ -1,27 +1,29 @@
 import React, { ReactElement } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
-import { IProps, IState, IValidationConfig, ICallback, AValidState } from './type';
+import { IProps, IValidationRule, IValidationState } from './type';
 
-export class TextInput extends MemoComponent<IProps, IState> {
+export class TextInput extends MemoComponent<IProps> {
     readonly BASE_CLS: string = 'text-ipt';
     readonly $validIcon: ReactElement = inclStaticIcon('valid');
     $input: HTMLInputElement;
 
+    static defaultProps: Partial<IProps> = {
+        validation: {}
+    };
+
     constructor(props: IProps) {
         super(props);
-        const { validate } = this.props;
-        this.state = this.getInitialState(validate);
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
 
     render() {
         const { BASE_CLS, cssCls, $validIcon } = this;
-        const { id, label, onInputChange, onInputBlur, validate, fixedPosErrMsg, defaultValue, ...inputProps } = this.props;
-        const { isValid, hsValidation, errMsg } = this.state;
+        const { id, label, onInputChange, onInputBlur, validation, defaultValue,...inputProps } = this.props;
+        const { rules, fixedPosErrMsg, isValid, errMsg, } = Object.assign(this.defValidationConfig, validation);
 
-        const showValidation: boolean = hsValidation && (isValid !== null);
+        const showValidation: boolean = this.hsValidation(rules) && typeof isValid === 'boolean';
         const showValidIcon: boolean = showValidation && isValid;
         const showErrMsg: boolean = showValidation && !isValid;
 
@@ -30,7 +32,7 @@ export class TextInput extends MemoComponent<IProps, IState> {
         const labelCls: string = cssCls(`${BASE_CLS}__label`, inputProps?.required ? 'req' : '');
         const errMsgCls: string = cssCls(`${BASE_CLS}__err`, fixedPosErrMsg ? 'pos-fixed' : '');
 
-        const $errMsgList: ReactElement = showErrMsg ? (
+        const $errMsgList: ReactElement = showErrMsg && errMsg ? (
             <ul className={errMsgCls}>{ errMsg.map((msg, idx) =>
                 <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>)}
             </ul>
@@ -59,17 +61,36 @@ export class TextInput extends MemoComponent<IProps, IState> {
         );
     }
 
-    getInitialState(validate: IValidationConfig[]): IState {
-        return {
-            hsValidation: validate?.length > 0,
-            isValid: null,
-            errMsg: []
-        };
+    // - only when its 1st time focus & there r more than or eq. to 3 characters
+    onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
+        this.onCallback(evt, this.props.onInputChange, 3);
     }
 
-    getValidState(text: string, rules: IValidationConfig[]): AValidState {
+    // - only when its blurred (regardless of character limit)
+    onBlur(evt: React.ChangeEvent<HTMLInputElement>): void {
+        this.onCallback(evt, this.props.onInputBlur, 0);
+    }
+
+    onCallback(evt: React.ChangeEvent<HTMLInputElement>, cbFn: AFn<void>, charLimit: number): void {
+        if (!cbFn) return;
+
+        const { rules } = this.props.validation;
+        const val = evt.target.value;
+        const isGte3 = val.length >= 3;
+        const validState = val.length >= charLimit ? this.getValidState(val, rules) : null;
+        cbFn({
+            evt: { ...evt },
+            val,
+            validState,
+            isGte3
+        });
+    }
+
+    getValidState(text: string, rules: IValidationRule[]): IValidationState {
+        if (!this.hsValidation(rules)) return;
+
         const errMsg: string[] = [];
-        rules.forEach(({rule, msg}: IValidationConfig) => {
+        rules.forEach(({rule, msg}: IValidationRule) => {
             let isValid: boolean = true;
 
             if (typeof rule === 'function') {
@@ -87,43 +108,16 @@ export class TextInput extends MemoComponent<IProps, IState> {
         };
     }
 
-    setValidState(evt: React.ChangeEvent<HTMLInputElement>, evtCbFn: (arg: ICallback) => void, charLimit: number): void {
-        const { validate } = this.props;
-        const { isValid, hsValidation } = this.state;
-        const val: string = evt.target.value;
-
-        // Get validate state anyway
-        const validState: AValidState = hsValidation ? this.getValidState(val, validate) : null;
-
-        // Only set validate state only when there r validation rules & either of the following:
-        // - when its 1st time focus & there r more than or eq. to 3 characters + validation rules exist
-        // - when its blurred (regardless of character limit, i.e. `charLimit=0`) + validation rules exist
-        const isFitForValidation: boolean = hsValidation && ((isValid === null && val.length >= charLimit) || isValid !== null);
-        if (isFitForValidation) this.setState({...this.state, ...validState});
-
-        // handle two way binding internally if needed for external state
-        evtCbFn?.({
-            evt,
-            val,
-            isGte3: val.length >= 3,
-            validState
-        });
+    hsValidation(rules: IValidationRule[]): boolean {
+        return rules?.length > 0;
     }
 
-    clearValidState(): void {
-        this.setState(this.getInitialState(this.props.validate));
-    }
-
-    onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
-        this.setValidState(evt, this.props.onInputChange, 3);
-    }
-
-    onBlur(evt: React.ChangeEvent<HTMLInputElement>): void {
-        // Wait some time in case its parent component is unmounted. dont update the state if there is any unmounting
-        // e.g. if inside a modal
-        setTimeout(e => {
-            if (!this.$input) return;
-            this.setValidState(e, this.props.onInputBlur, 0);
-        }, 100, {...evt});
+    get defValidationConfig() {
+        return {
+            rules: [],
+            isValid: null,
+            errMsg: [],
+            fixedPosErrMsg: true,
+        };
     }
 }

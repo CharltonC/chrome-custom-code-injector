@@ -8,36 +8,9 @@ export default {
 
 const defStyle = { padding: '20px', width: '500px', border: '1px solid gray'};
 
-const validationRules = [
-    {rule: val => !!val, msg: 'must not be empty' },
-    {rule: val => val.length >=3 , msg: 'must be more than or equal to 3 characters' },
-    {rule: /(abc)/g , msg: 'must contain character `abc`'},
-];
-
-export const WithValidation = () => {
-    return (
-        <div style={defStyle} >
-            <TextInput
-                id="lorem1"
-                placeholder="some text"
-                validate={validationRules}
-                />
-        </div>
-    )
-};
-
-/**
- * This is suitable for passing an existing text value BUT only change value WHEN text is valid
- */
-export const WithValidationAndPassedInitialValue  = () => {
-    // Ext state & 2way binding
+export const ExternalStateWithoutValidation = () => {
     const [ text, setText ] = useState('lorem sum');
-    const onInputChange = ({evt, val, validState}) => {
-        // Only update the value when text is valid
-        // - instead of mimic 2-way binding such as `setText(val);` to set text directly
-        if (!validState.isValid) return;
-        setText(val);
-    };
+    const onInputChange = ({val}) => setText(val);
 
     // Only re-render when text is valid
     return (
@@ -45,18 +18,31 @@ export const WithValidationAndPassedInitialValue  = () => {
             <TextInput
                 id="lorem2"
                 placeholder="some text"
-                defaultValue={text}
-                validate={validationRules}
+                value={text}
                 onInputChange={onInputChange}
                 />
         </div>
-    )
+    );
 };
 
-export const WithLabelAndRequiredAndFixedPosErrMsg = () => {
-    // Ext state & 2way binding
+export const ExternalStateWithValidationAndLabel = () => {
+    const validationRules = [
+        {rule: val => !!val, msg: 'must not be empty' },
+        {rule: val => val.length >=3 , msg: 'must be more than or equal to 3 characters' },
+        {rule: /(abc)/g , msg: 'must contain character `abc`'},
+    ];
     const [ text, setText ] = useState('lorem sum');
-    const onInputChange = ({evt, val}) => setText(val);
+    const [ validationState, setValidionState ] = useState({
+        isValid: null,
+        errMsg: [],
+    });
+    const onInputChange = ({ val, validState}) => {
+        setText(val);
+        setValidionState({ ...validState });
+    };
+    const onInputBlur = ({ validState}) => {
+        setValidionState({ ...validState });
+    };
 
     return (
         <div style={defStyle} >
@@ -65,30 +51,15 @@ export const WithLabelAndRequiredAndFixedPosErrMsg = () => {
                 label="label"
                 value={text}
                 required
-                validate={validationRules}
-                fixedPosErrMsg
                 onInputChange={onInputChange}
+                onInputBlur={onInputBlur}
+                validation={{
+                    rules: validationRules,
+                    isValid: validationState.isValid,
+                    errMsg: validationState.errMsg,
+                    fixedPosErrMsg: true,
+                }}
                 />
         </div>
     );
-};
-
-export const WithPassedInputAndValidation  = () => {
-    // Ext state & 2way binding
-    const [ text, setText ] = useState('lorem sum');
-    const onInputChange = ({ evt, val }) => setText(val);
-
-    return (
-        <div style={defStyle} >
-            <p>Passed input: {text}</p>
-            <TextInput
-                id="lorem3"
-                placeholder="some text"
-                label="label"
-                defaultValue={text}
-                onInputChange={onInputChange}
-                validate={validationRules}
-                />
-        </div>
-    )
 };

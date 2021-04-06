@@ -59,7 +59,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             <div className="main--edit__form">
                 {/* TODO: placeholder text variation */}
                 <section className="fm-field">
-                    <TextInput
+                    {/* <TextInput
                         ref={this.$idInputRef}
                         id="edit-target-id"
                         label="ID"
@@ -68,10 +68,10 @@ export class OptionEditView extends MemoComponent<IProps> {
                         defaultValue={id}
                         validate={validationRule.ruleId}
                         fixedPosErrMsg
-                        />
+                        /> */}
                 </section>
                 <section className="fm-field">
-                    <TextInput
+                    {/* <TextInput
                         ref={this.$valueInputRef}
                         id="edit-target-value"
                         label={isHostRule ? 'Host' : 'Path'}
@@ -79,7 +79,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         defaultValue={value}
                         validate={isHostRule ? validationRule.ruleUrlHost : validationRule.ruleUrlPath}
                         fixedPosErrMsg
-                        />
+                        /> */}
                     {/*
                         <div className="fm-field__ctrl">{ isHostRule &&
                             <IconSwitch id="https-switch" label="lock-close" icon /> }
@@ -195,8 +195,8 @@ export class OptionEditView extends MemoComponent<IProps> {
     }
 
     onListItemChange(...[, { item }]): void {
-        this.$idInputRef.current.clearValidState();
-        this.$valueInputRef.current.clearValidState();
+        // this.$idInputRef.current.clearValidState();
+        // this.$valueInputRef.current.clearValidState();
         setTimeout(() => {
             this.props.storeHandler.onListItemChange(item);
         }, 200);

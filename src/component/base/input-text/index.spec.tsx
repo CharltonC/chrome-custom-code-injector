@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { IProps, IValidationConfig, AValidState } from './type';
+import { IProps, IValidationRule, IValidationState } from './type';
 import { TextInput } from '.';
 
 describe('Component - Text Input', () => {
@@ -14,55 +14,20 @@ describe('Component - Text Input', () => {
     });
 
     describe('Component Class', () => {
-        describe('Constructor', () => {
-            it('should init', () => {
-                const mockInitialState: any = {};
-                const mockProps: IProps = {id: '', defaultValue: 'abc'};
-                let spyGetInitialState: jest.SpyInstance = jest.spyOn(TextInput.prototype, 'getInitialState').mockReturnValue(mockInitialState);
-                const cmpInst: any = new TextInput(mockProps);
+        // mock with the default validation value asd we are not rendering the component
+        const mockProps: any = { validation: {} };
+        let cmpInst: TextInput;
 
-                expect(spyGetInitialState).toHaveBeenCalledWith(undefined);
-                expect(cmpInst.state).toEqual(mockInitialState);
-            });
-        });
-
-        describe('Method - getInitialState', () => {
-            const mockInitialBaseState: AValidState = {isValid: null, errMsg: []};
-            const mockValidationRules: IValidationConfig[] = [{rule: () => true, msg: 'wrong'}];
-            const { getInitialState } = TextInput.prototype;
-
-            it('should get Initial state when text is not provided', () => {
-                expect(getInitialState( undefined)).toEqual({
-                    ...mockInitialBaseState,
-                    hsValidation: false
-                });
-
-                expect(getInitialState([])).toEqual({
-                    ...mockInitialBaseState,
-                    hsValidation: false
-                });
-            });
-
-            it('should get Initial state when text is provided', () => {
-                expect(getInitialState(undefined)).toEqual({
-                    ...mockInitialBaseState,
-                    hsValidation: false
-                });
-
-                expect(getInitialState(mockValidationRules)).toEqual({
-                    ...mockInitialBaseState,
-                    hsValidation: true
-                });
-            });
+        beforeEach(() => {
+            cmpInst = new TextInput(mockProps);
         });
 
         describe('Method - Get Valid State', () => {
             const mockTextVal: string = 'lorem';
-            const getValidState = TextInput.prototype.getValidState;
             let mockFnRule: jest.Mock;
             let mockRegexRule: RegExp;
             let spyStrSearch: jest.SpyInstance;
-            let validState: AValidState;
+            let validState: IValidationState;
 
             beforeEach(() => {
                 mockFnRule = jest.fn();
@@ -71,20 +36,20 @@ describe('Component - Text Input', () => {
             });
 
             it('should return valid state when rules are empty', () => {
-                const mockRules: IValidationConfig[] = [];
-                validState = getValidState(mockTextVal, mockRules);
-                expect(validState).toEqual({isValid: true, errMsg: []});
+                const mockRules: IValidationRule[] = [];
+                validState = cmpInst.getValidState(mockTextVal, mockRules);
+                expect(validState).toBeFalsy();
             });
 
             it('should return valid state when rule is a function', () => {
-                const mockRules: IValidationConfig[] = [{rule: mockFnRule, msg: 'msg'}];
+                const mockRules: IValidationRule[] = [{rule: mockFnRule, msg: 'msg'}];
 
                 mockFnRule.mockReturnValue(false);
-                validState = getValidState(mockTextVal, mockRules);
+                validState = cmpInst.getValidState(mockTextVal, mockRules);
                 expect(validState).toEqual({isValid: false, errMsg: ['msg']});
 
                 mockFnRule.mockReturnValue(true);
-                validState = getValidState(mockTextVal, mockRules);
+                validState = cmpInst.getValidState(mockTextVal, mockRules);
                 expect(validState).toEqual({isValid: true, errMsg: []});
 
                 expect(mockFnRule).toHaveBeenCalledWith(mockTextVal);
@@ -93,14 +58,14 @@ describe('Component - Text Input', () => {
             });
 
             it('should return valid state when rule is a regex', () => {
-                const mockRules: IValidationConfig[] = [{rule: mockRegexRule, msg: 'rule'}];
+                const mockRules: IValidationRule[] = [{rule: mockRegexRule, msg: 'rule'}];
 
                 spyStrSearch.mockReturnValue(-1);
-                validState = getValidState(mockTextVal, mockRules);
+                validState = cmpInst.getValidState(mockTextVal, mockRules);
                 expect(validState).toEqual({isValid: false, errMsg: ['rule']});
 
                 spyStrSearch.mockReturnValue(1);
-                validState = getValidState(mockTextVal, mockRules);
+                validState = cmpInst.getValidState(mockTextVal, mockRules);
                 expect(validState).toEqual({isValid: true, errMsg: []});
 
                 expect(spyStrSearch).toHaveBeenCalledWith(mockRegexRule);
@@ -111,119 +76,75 @@ describe('Component - Text Input', () => {
             it('should return valid state when rule is neither regex or function', () => {
                 const mockRules: any = [{rule: 'some string', msg: 'rule'}];
 
-                validState = getValidState(mockTextVal, mockRules);
+                validState = cmpInst.getValidState(mockTextVal, mockRules);
                 expect(validState).toEqual({isValid: true, errMsg: []});
                 expect(mockFnRule).not.toHaveBeenCalled();
                 expect(spyStrSearch).not.toHaveBeenCalled();
             });
         });
 
-        describe('Method - Set valid state', () => {
-            const mockText: string = 'lorem';
-            const mockRtnState: AValidState = {isValid: true, errMsg: []};
-            const mockEvtCbFn: jest.Mock = jest.fn();
-            const mockEvt: any = { target: { value: mockText }};
-            const mockProps: IProps = {id: ''};
-            const mockCharLimit: number = 3;
-
-            let spySetState: jest.SpyInstance;
-            let cmpInst: TextInput;
+        describe('Method - Common Event Handler', () => {
+            const mockEvt: any = { target: { value: 'lorem' } };
+            const mockValidState: any = {};
+            const mockCharLimit = 5;
+            let mockCbFn: jest.Mock;
 
             beforeEach(() => {
-                jest.spyOn(TextInput.prototype, 'getValidState').mockReturnValue(mockRtnState);
-                spySetState = jest.spyOn(TextInput.prototype, 'setState').mockImplementation(() => {});
-                cmpInst = new TextInput(mockProps);
+                mockCbFn = jest.fn();
+                jest.spyOn(cmpInst, 'getValidState').mockReturnValue(mockValidState);
             });
 
-            it('should trigger callback if provided', () => {
-                cmpInst.setValidState(mockEvt, null, mockCharLimit);
-                expect(mockEvtCbFn).not.toHaveBeenCalled();
+            it('should skip when callback is not provided', () => {
+                cmpInst.onCallback(mockEvt, null, mockCharLimit);
+                expect(mockCbFn).not.toHaveBeenCalled();
+            });
 
-                cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
-                expect(mockEvtCbFn).toHaveBeenCalledWith({
+            it('should trigger passed callback with valid state if it is greater than character limit', () => {
+                cmpInst.onCallback(mockEvt, mockCbFn, mockCharLimit);
+                expect(mockCbFn).toHaveBeenCalledWith({
                     evt: mockEvt,
-                    val: mockText,
-                    isGte3: mockText.length >=3,
-                    validState: null
+                    val: mockEvt.target.value,
+                    validState: mockValidState,
+                    isGte3: true
                 });
             });
 
-            it('should set valid state when validation rules exist, valid state has not been previously set and input text characters are more than the specified limit', () => {
-                (cmpInst.state as any).hsValidation = true;    // force set private property
-                cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
-
-                expect(spySetState).toHaveBeenCalledWith({...cmpInst.state, ...mockRtnState});
-            });
-
-            it('should set valid state when validation rules exist and valid state has been previously set (regardless of character limit)', () => {
-                (cmpInst.state as any).hsValidation = true;
-                (cmpInst.state as any).isValid = true;          // force set read-only property
-                cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
-
-                expect(spySetState).toHaveBeenCalledWith({...cmpInst.state, ...mockRtnState});
-            });
-
-            it('should not set valid state when validation rules dont exist', () => {
-                (cmpInst as any).hsValidation = false;
-                cmpInst.setValidState(mockEvt, mockEvtCbFn, mockCharLimit);
-
-                expect(spySetState).not.toHaveBeenCalled();
-            });
-
-            it('should not set valid state when validation rules exist, valid state has been previously set and input text character is less than the specified limit', () => {
-                (cmpInst as any).hsValidation = true;
-                cmpInst.setValidState(mockEvt, mockEvtCbFn, 100);
-                expect(spySetState).not.toHaveBeenCalled();
-            });
-        });
-
-        describe('Method - clearValidState', () => {
-            let cmp: TextInput;
-            let setStateSpy: jest.SpyInstance;
-
-            beforeEach(() => {
-                cmp = new TextInput({} as any);
-                setStateSpy = jest.spyOn(cmp, 'setState');
-                setStateSpy.mockImplementation(() => {});
-            });
-
-            it('should clear valid state', () => {
-                cmp.clearValidState();
-                expect(setStateSpy).toHaveBeenCalledWith({
-                    hsValidation: false,
-                    isValid: null,
-                    errMsg: []
+            it('should trigger passed callback without valid state if it is less than character limit', () => {
+                const mockOverrideCharLimit = 10;
+                cmpInst.onCallback(mockEvt, mockCbFn, mockOverrideCharLimit);
+                expect(mockCbFn).toHaveBeenCalledWith({
+                    evt: mockEvt,
+                    val: mockEvt.target.value,
+                    validState: null,
+                    isGte3: true
                 });
             });
         });
 
         describe('Method - Event handlers', () => {
-            let spySetValidState: jest.SpyInstance;
+            let spyOnCallback: jest.SpyInstance;
             let cmpInst: TextInput;
+
             const mockEvt: any = {};
-            const mockProps: IProps = {id: '', onInputChange: jest.fn(), onInputBlur: jest.fn() };
+            const mockProps: IProps = {
+                id: '',
+                onInputChange: jest.fn(),
+                onInputBlur: jest.fn()
+            };
 
             beforeEach(() => {
-                spySetValidState = jest.spyOn(TextInput.prototype, 'setValidState').mockImplementation(() => {});
+                spyOnCallback = jest.spyOn(TextInput.prototype, 'onCallback').mockImplementation(() => {});
                 cmpInst = new TextInput(mockProps);
             });
 
             it('should call set valid state for `onChange`', () => {
                 cmpInst.onChange(mockEvt);
-                expect(spySetValidState).toHaveBeenCalledWith(mockEvt, mockProps.onInputChange, 3);
+                expect(spyOnCallback).toHaveBeenCalledWith(mockEvt, mockProps.onInputChange, 3);
             });
 
-            it('should call set valid state for `onBlur` when input elment exists (i.e. still mounted)', () => {
-                cmpInst.$input = document.createElement('input');   // mock exist
+            it('should call set valid state for `onBlur`', () => {
                 cmpInst.onBlur(mockEvt);
-                jest.runAllTimers();
-                expect(spySetValidState).toHaveBeenCalledWith(mockEvt, mockProps.onInputBlur, 0);
-            });
-
-            it('should not call set valid state for `onBlur` when input elment exists (i.e. still mounted)', () => {
-                cmpInst.onBlur(mockEvt);
-                jest.runAllTimers();
-                expect(spySetValidState).not.toHaveBeenCalled();
+                expect(spyOnCallback).toHaveBeenCalledWith(mockEvt, mockProps.onInputBlur, 0);
             });
         });
     });
@@ -238,8 +159,7 @@ describe('Component - Text Input', () => {
 
         const mockId: string = 'lorem';
         const mockTxtInput: string = 'some';
-        const mockValidTxtInput: string  = 'abc';
-        const mockValidationRules: IValidationConfig[] = [
+        const mockValidationRules: IValidationRule[] = [
             {rule: /abc/g, msg: 'should contain abc'}
         ];
         const mockProps: IProps = { id: mockId, label: 'mock-label' };
@@ -286,22 +206,9 @@ describe('Component - Text Input', () => {
             });
         });
 
-        describe('props: validation rules', () => {
-            //// Helper
-            function triggerBlur() {
-                TestUtil.triggerEvt(inputElem, 'blur');
-                jest.runAllTimers();
-                getChildElem();
-            }
-
-            function triggerChange(text) {
-                TestUtil.setInputVal(inputElem, text);
-                TestUtil.triggerEvt(inputElem, 'change');
-                getChildElem();
-            }
-
-            describe('Validation', () => {
-                it('should render class names, validated icon and error list correctly when rules are not provided', () => {
+        describe('props: validation', () => {
+            describe('without validation config', () => {
+                it('should render class names, validated icon and error list correctly when validation config is not provided', () => {
                     TestUtil.renderPlain(elem, TextInput, mockProps);
                     getChildElem();
 
@@ -310,42 +217,66 @@ describe('Component - Text Input', () => {
                     expect(iconElem).toBeFalsy();
                     expect(listElem).toBeFalsy();
                 });
+            });
 
-                it('should render class names, validated icon and error list correctly when rules are provided', () => {
-                    TestUtil.renderPlain(elem, TextInput, {...mockProps, validate: mockValidationRules});
+            describe('with validation config', () => {
+                const MOCK_ERR_MSG = 'lorem';
+                const mockValidationProps = {
+                    isValid: false,
+                    rules: mockValidationRules,
+                    errMsg: [MOCK_ERR_MSG]
+                };
+
+                it('should render class names, validated icon and error list correctly for valid state', () => {
+                    TestUtil.renderPlain(elem, TextInput, {
+                        ...mockProps,
+                        validation: {
+                            ...mockValidationProps,
+                            isValid: true,
+                        }
+                    });
                     getChildElem();
 
-                    triggerBlur();
-                    expect(wrapperElem.className).toContain('text-ipt--invalid');
-                    expect(iconElem).toBeFalsy();
-                    expect(listElem.textContent).toContain(mockValidationRules[0].msg);
-
-                    triggerChange(mockValidTxtInput);
                     expect(wrapperElem.className).toContain('text-ipt--valid');
                     expect(iconElem).toBeTruthy();
                     expect(listElem).toBeFalsy();
                 });
-            });
 
-            describe('Error Message position', () => {
-                const mockBaseProps =  {...mockProps, validate: mockValidationRules};
-
-                it('should render error msg outside of input container by default', () => {
-                    TestUtil.renderPlain(elem, TextInput, mockBaseProps);
+                it('should render class names, validated icon and error list correctly for invalid state', () => {
+                    TestUtil.renderPlain(elem, TextInput, {
+                        ...mockProps,
+                        validation: mockValidationProps
+                    });
                     getChildElem();
-                    triggerBlur();
 
-                    expect(wrapperElem.children.length).toBe(3);
-                    expect(wrapperElem.lastElementChild.tagName).toBe('UL');
+                    expect(wrapperElem.className).toContain('text-ipt--invalid');
+                    expect(iconElem).toBeFalsy();
+                    expect(listElem.textContent).toContain(MOCK_ERR_MSG);
                 });
 
-                it('should render error inside input container', () => {
-                    TestUtil.renderPlain(elem, TextInput, {...mockBaseProps, fixedPosErrMsg: true });
+                it('should render error messages inside input container by default', () => {
+                    TestUtil.renderPlain(elem, TextInput, {
+                        ...mockProps,
+                        validation: mockValidationProps
+                    });
                     getChildElem();
-                    triggerBlur();
 
                     expect(wrapperElem.children.length).toBe(2);
                     expect(wrapperElem.lastElementChild.tagName).toBe('DIV');
+                });
+
+                it('should render error messages outside of input container', () => {
+                    TestUtil.renderPlain(elem, TextInput, {
+                        ...mockProps,
+                        validation: {
+                            ...mockValidationProps,
+                            fixedPosErrMsg: false
+                        }
+                    });
+                    getChildElem();
+
+                    expect(wrapperElem.children.length).toBe(3);
+                    expect(wrapperElem.lastElementChild.tagName).toBe('UL');
                 });
             });
         });
