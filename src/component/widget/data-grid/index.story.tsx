@@ -5,7 +5,7 @@ import { DataGrid } from '.';
 import { IRowComponentProps } from './type';
 
 export default {
-    title: 'Widget - Data Grid',
+    title: 'Widget/Data Grid',
     component: DataGrid,
 };
 

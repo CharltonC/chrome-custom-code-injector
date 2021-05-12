@@ -2,7 +2,7 @@ import React from "react";
 import { NumBadge } from '.';
 
 export default {
-    title: 'Number Badge'
+    title: 'Base/Number Badge'
 };
 
 export const NoNumber = <NumBadge />;

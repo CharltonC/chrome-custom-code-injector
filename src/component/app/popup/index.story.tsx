@@ -2,7 +2,7 @@ import React from 'react';
 import { PopupApp } from '.';
 
 export default {
-    title: 'App - Popup',
+    title: 'App/Popup',
     component: PopupApp
 };
 

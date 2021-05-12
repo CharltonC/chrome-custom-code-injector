@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TabSwitch } from '.';
 
 export default {
-    title: 'Checkbox - Tab Switch',
+    title: 'Base/Form/Checkbox/Tab Switch',
     component: TabSwitch,
 };
 

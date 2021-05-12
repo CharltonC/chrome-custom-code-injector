@@ -9,7 +9,7 @@ const App = StateHandle.init(OptionApp, {
 });
 
 export default {
-    title: 'App - Option',
+    title: 'App/Option',
     component: OptionApp,
 };
 

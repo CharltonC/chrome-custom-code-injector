@@ -3,7 +3,7 @@ import { inclStaticIcon } from '.';
 import { AIcon } from './type';
 
 export default {
-    title: 'Static Icon',
+    title: 'Static/Icon',
     // component: inclStaticIcon('setting')
 };
 

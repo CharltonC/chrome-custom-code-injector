@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { SideNav } from '.';
 
 export default {
-    title: 'Side Nav',
+    title: 'Base/Side Nav',
     component: SideNav,
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextInput } from '.';
 
 export default {
-    title: 'Input - Text Input',
+    title: 'Base/Form/Input/Text Input',
     component: TextInput,
 };
 

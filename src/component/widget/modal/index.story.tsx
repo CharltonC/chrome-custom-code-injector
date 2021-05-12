@@ -4,7 +4,7 @@ import { TextBtn } from '../../base/btn-text';
 import { Modal } from '.';
 
 export default {
-    title: 'Widget - Modal',
+    title: 'Widget/Modal',
     component: Modal,
 };
 
