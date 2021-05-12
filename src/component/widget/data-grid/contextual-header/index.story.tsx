@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DataGridHeader } from '.';
 
 export default {
-    title: 'Widget/Data Grid/Table Header',
+    title: 'Widget/Data Grid/Table Grid Header',
     component: DataGridHeader,
 };
 
