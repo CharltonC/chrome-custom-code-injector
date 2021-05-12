@@ -89,7 +89,7 @@
     "gulp.spritesmith": "6.11.0",
     "jest": "25.5.3",
     "minify-stream": "2.0.1",
-    "pug": "2.0.4",
+    "pug": "3.0.1",
     "react-test-renderer": "16.13.1",
     "tinyify": "2.5.2",
     "tree-cli": "0.4.12",
