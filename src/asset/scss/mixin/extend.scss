@@ -13,3 +13,29 @@
     display: inline-block;
     position: absolute;
 }
+
+%blank-input {
+    -webkit-appearance: none;
+    margin: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+}
+
+%blank-button {
+    -webkit-appearance: none;
+    background-color: transparent;
+    border-width: 0;
+    border-color: transparent;
+    padding: 0;
+
+    &:not(:disabled):hover {
+        cursor: pointer;
+    }
+}
+
+%text-trim-ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

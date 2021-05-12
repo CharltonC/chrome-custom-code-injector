@@ -1,0 +1,102 @@
+.text-ipt {
+    --label-width: 100px;
+    min-width: 300px;
+
+    &--label {
+        display: grid;
+        grid-template-areas: 'label input'
+                             'label error';
+        grid-template-columns: var(--label-width) 1fr;
+        justify-content: start;
+        align-items: baseline;
+    }
+
+    &__label {
+        position: relative;
+        width: var(--label-width);
+        grid-area: label;
+        font: 14px $roboto-bld;
+        color: $gray-200;
+
+        &--req {
+            &:before {
+                content: '*';
+                display: inline;
+                position: relative;
+                margin-right: 5px;
+                vertical-align: super;
+                color: $red;
+                font-size: 12px;
+            }
+        }
+    }
+
+    &__input {
+        grid-area: input;
+        position: relative;
+
+        input {
+            -webkit-appearance: none;
+            display: block;
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid $light-gray;
+            padding: 5px 30px 5px 10px;
+            clear: both;
+            font: 14px $roboto-reg;
+            color: $dark-gray-100;
+            transition: border 0.2s ease;
+            will-change: border;
+
+            &::-webkit-input-placeholder {
+                font: 14px $roboto-reg;
+                color: $light-gray;
+            }
+
+            &:not(:disabled):focus {
+                outline: none;
+                border-bottom: 1px solid $teal;
+            }
+        }
+
+        .icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 100;
+            color: $green;
+            display: none;
+        }
+    }
+
+    &__err {
+        grid-area: error;
+        list-style-type: disc;
+        list-style-position: inside;
+        margin-top: 5px;
+        font: 12px $roboto-reg;
+        color: $red;
+
+        &--pos-fixed {
+            position: absolute;
+            left: 0;
+            top: 100%;
+        }
+    }
+
+    &--invalid {
+        input:not(:disabled):focus {
+            border-bottom: 1px solid $red;
+        }
+
+        .text-ipt__err {
+            display: block;
+        }
+    }
+
+    &--valid {
+        input:not(:disabled):focus ~ .icon {
+            display: inline-flex;
+        }
+    }
+}

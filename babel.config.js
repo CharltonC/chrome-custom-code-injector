@@ -1,5 +1,5 @@
 /*
- * Used by JEST (where this config file is auto pickedup) & Build/Bundle (where this config file is imported)
+ * Used by JEST Unit Test (where this config file is auto pickedup) & Build/Bundle (where this config file is imported)
  */
 module.exports = {
     plugins: [
@@ -15,7 +15,17 @@ module.exports = {
          *
          *   `import Button from 'antd/lib/button';`    works for both Prod build (Browserify) + JEST
          */
-        ["import", {"libraryName": "antd"}]
+        ["import", {"libraryName": "antd"}],
+
+        /**
+         * For ES6 Class property defined on top of `constructor`
+         */
+        ["@babel/plugin-proposal-class-properties", { "loose": true }],
+
+        /*
+         * For Code that uses `async/await`
+         */
+        ["@babel/plugin-transform-runtime"]
     ],
 
     presets: [
@@ -25,5 +35,15 @@ module.exports = {
          */
         "@babel/preset-env", "@babel/preset-react",
         '@babel/preset-typescript'
-    ]
+    ],
+
+    /**
+     * Support for importing from a Library in "node_modules"which uses ES6 via `import/export`
+     * - `ignore` requires `global: true`
+     * - `ignore` filters down the allowed path
+     */
+    // global: true,
+    // ignore: [
+    //     './node_modules/<ui-library-path-where-it-is-imported-in-your-js/ts-file>'
+    // ]
 };

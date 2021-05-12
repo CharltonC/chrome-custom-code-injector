@@ -1,0 +1,24 @@
+/* Checkbox tick symbol for checked state */
+@mixin checkbox-input-tick($thickness: 2px, $color: white) {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 5px;
+    width: 4px;
+    height: 10px;
+    border: solid $color;
+    border-width: 0 $thickness $thickness 0;
+    transform: translateZ(0) rotate(45deg);
+}
+
+/* Checkbox tick symbol for partial checked state */
+@mixin checkbox-input-box($color: white) {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: $teal;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+}

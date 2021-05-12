@@ -2,16 +2,35 @@ const { $ } = require('../common');
 const babelConfig = require('../../babel.config');
 
 module.exports = {
+    //// Browserify & Plugins Config
     defOption: {
+        // General
         basePath: './src',
-        // babel settings for compiling only, not used for unit testing via Jest
+        outputPath: './',
+
+        // Babel settings for compiling only, not used for unit testing via Jest
         babel: babelConfig,
-        tinyify: {
-            env: { NODE_ENV: 'production' }
+
+        // Prod Build Optimization
+        minifyStream: { sourceMap: false },
+        envify: {NODE_ENV: 'production'},
+        brwsrfyTrnsfm: { global: true },
+
+        // Dev Build Optimization
+        watchify: {
+            // './path' does not work, use '**' instead
+            ignoreWatch: [
+                '**/node_modules/**',
+                '**/schematic/**',
+                '**/dist/**',
+                '**/doc/**',
+                '**/gulp/**',
+                '**/package.json'
+            ]
         }
     },
 
-    // NOTE: as this is supposed to be entry file, wildcard `**` or `*` is not allowed
+    //// NOTE: as this is supposed to be entry file, wildcard `**` or `*` is not allowed
     /* Exclude Test files, e.g. '!ts/service/elem-selector/*.spec.ts' */
     /* jQuery: required if you import it - does not make diff. if you do `import * as $ from 'jquery';` */
     /* AngularJs:
@@ -30,29 +49,25 @@ module.exports = {
             inputFiles: [
                 'page/bg-script/main.ts'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/bg-script',
+            outputFile: 'dist/build/bg-script/main.min.js',
         },
         contentScript: {
             inputFiles: [
                 'page/ct-script/main.ts'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/ct-script',
+            outputFile: 'dist/build/ct-script/main.min.js',
         },
         popup: {
             inputFiles: [
                 'page/popup/main.tsx'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/popup',
+            outputFile: 'dist/build/popup/main.min.js',
         },
         option: {
             inputFiles: [
                 'page/option/main.tsx'
             ],
-            outputFile: 'main.min.js',
-            outputPath: 'dist/build/option',
+            outputFile: 'dist/build/option/main.min.js',
         }
     }
 };

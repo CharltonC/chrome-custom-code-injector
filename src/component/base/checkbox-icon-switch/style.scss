@@ -1,0 +1,54 @@
+@mixin icon-switch-content() {
+    & + .icon,
+    & + span {
+        @content;
+    }
+}
+
+.icon-switch {
+    display: inline-block;
+    vertical-align: middle;
+
+    input {
+        -webkit-appearance: none;
+        margin: 0;
+
+        &:focus {
+            outline: none;
+        }
+
+        &:checked {
+            @include icon-switch-content {
+                color: $teal;
+            }
+        }
+
+        &:not(:disabled) {
+            @include icon-switch-content {
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+
+            &:focus {
+                @include icon-switch-content {
+                    outline: 2px solid $light-blue-200;
+                }
+            }
+        }
+
+        &:disabled {
+            @include icon-switch-content {
+                opacity: 0.4;
+            }
+        }
+    }
+
+    &__label {
+        display: inline-block;
+        width: 30px;
+        text-align: center;
+        line-height: 30px;
+        color: $gray;
+    }
+}

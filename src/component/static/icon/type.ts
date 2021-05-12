@@ -1,9 +1,6 @@
-export enum EMode {
-    light = 'light',
-    dark = 'dark'
-}
+export type ATheme = 'white' | 'gray' | 'black';
 
-export type TName =
+export type AIcon =
     'setting' |
     'valid' |
     'close' |
@@ -25,6 +22,7 @@ export type TName =
     'edit' |
     'delete' |
     'save' |
-    'doc';
+    'doc' |
+    'option';
 
-export type unknProps = Record<string, any>;
+export interface IProps extends React.HTMLAttributes<HTMLSpanElement> {}

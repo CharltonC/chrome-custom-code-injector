@@ -1,11 +1,12 @@
 const { $ } = require('../common');
 
-const serveUI = $.yargs.serveidx === 'ui';
+const { startIdxPage } = $.yargs;
+const indexPage = startIdxPage ? startIdxPage : '';
 
 module.exports = {
     defOption: {
         server: {
-            baseDir: serveUI ? 'doc/ui-component/' : 'dist/build/option',
+            baseDir: `dist/build/${indexPage}`,
         },
         // startPath:
         reloadDelay: 1000,
@@ -28,6 +29,6 @@ module.exports = {
      gulpTask: {
          html: 'build-html',
          css: 'build-css',
-         ts: 'build-ts'
+         ts: ['build-ts:lint', 'build-ts:test']
      }
 };

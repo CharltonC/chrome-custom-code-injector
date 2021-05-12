@@ -1,0 +1,1 @@
+export type ASuccessFn = (data: AObj) => any;

@@ -1,0 +1,49 @@
+.paginate {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font: 14px $roboto-reg;
+    color: $gray-200;
+
+    &__record {
+        margin-right: auto;
+    }
+
+    &__btn,
+    .dropdown--page {
+        margin-left: 10px;
+    }
+
+    &__btn {
+        width: 36px;
+        height: 36px;
+        vertical-align: middle;
+
+        &:not(:disabled) {
+            background: $teal;
+            color: white;
+        }
+
+        &:disabled {
+            border: 1px solid $light-gray;
+        }
+
+        &--first,
+        &--last {
+            position: relative;
+
+            .icon {
+                position: absolute;
+                transform: translate(-50%, -50%);
+
+                &:first-child {
+                    margin-left: -2px;
+                }
+
+                &:last-child {
+                    margin-left: 3px;
+                }
+            }
+        }
+    }
+}

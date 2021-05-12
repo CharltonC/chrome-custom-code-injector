@@ -14,11 +14,13 @@
         ],
         "lib": [
             "es2017",
-            "dom"
+            "dom",
+            "dom.iterable"
         ],
-        "noUnusedLocals": true,
         "jsx": "react",
         "esModuleInterop": true
     },
-    "exclude": []
+    "exclude": [
+        "./schematic"
+    ]
 }

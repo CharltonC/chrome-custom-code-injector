@@ -1,0 +1,137 @@
+.app--option {
+    --offset-x: 10px;
+    --offset-y: 8px;
+    --logo-width: 190px;
+    --header-height: 60px;
+
+    width: 1280px;
+    height: 100vh;
+
+    .header {
+        @include bg-img-retina($logo-path-1x, $logo-path-2x);
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: var(--offset-y);
+        height: var(--header-height);
+        background-color: $teal;
+        background-size: var(--logo-width) 45px;
+        background-repeat: no-repeat;
+        background-position: var(--offset-x) center;
+
+        &,
+        &__ctrl {
+            display: flex;
+            align-items: center;
+        }
+
+        &__ctrl {
+            &--edit {
+                flex: auto;
+                margin-left: calc(var(--logo-width) + 40px);
+            }
+
+            .icon-btn--link {
+                color: transparent;
+            }
+        }
+
+        .search {
+            margin-right: 10px;
+        }
+
+        .icon-btn {
+            &:not(:first-child) {
+                margin-left: var(--offset-x);
+            }
+
+            // override data-grid def. styling for <span>
+            .icon {
+                font-size: 20px;
+            }
+
+            &--upload {
+                .icon {
+                    transform: rotate(180deg) translateZ(0);
+                }
+            }
+        }
+    }
+
+    .modal {
+        &--setting {
+            .slider-switch span,
+            .dropdown label,
+            p {
+                width: 250px;
+            }
+
+            .slider-switch,
+            .dropdown {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            li {
+                margin-top: 25px;
+
+                &:first-child {
+                    display: flex;
+                    justify-content: flex-end;
+                }
+
+                &:last-child {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+            }
+
+            h4 {
+                margin-top: 25px;
+                font: 16px $roboto-bld;
+                color: $dark-gray;
+            }
+
+            p {
+                font: 14px $roboto-reg;
+                color: $gray;
+            }
+
+            .btn--reset {
+                outline-offset: 5px;
+                font: 12px $roboto-bld;
+                color: $teal;
+            }
+
+            .dropdown select {
+                width: 180px;
+                margin: 0;
+            }
+        }
+
+        &--json-export {
+            .text-ipt {
+                grid-template-columns: 100px 1fr;
+            }
+        }
+
+        &--host-add,
+        &--path-add {
+            .text-ipt:last-child {
+                margin-top: 40px;
+            }
+        }
+
+        &--lib-add,
+        &--lib-edit {
+            .text-ipt {
+                &:not(:first-child) {
+                    margin-top: 40px;
+                }
+            }
+        }
+    }
+}

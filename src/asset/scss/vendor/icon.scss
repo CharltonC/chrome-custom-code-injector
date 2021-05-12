@@ -1,7 +1,7 @@
 // somehow the "woff/woff2/svg" is not working hence using "ttf" only
 @font-face {
     font-family: "cci-icomoon";
-    src: url('font/cci-icomoon.ttf') format('truetype');
+    src: url("font/cci-icomoon.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -19,68 +19,71 @@
 }
 
 .icon--setting:before {
-    content: "\e900";
-}
-.icon--valid:before {
     content: "\e901";
 }
-.icon--close:before {
+.icon--valid:before {
     content: "\e902";
 }
-.icon--power:before {
+.icon--close:before {
     content: "\e903";
 }
-.icon--lock-close:before {
+.icon--power:before {
     content: "\e904";
 }
-.icon--lock-open:before {
+.icon--lock-close:before {
     content: "\e905";
 }
-.icon--radio-on:before {
+.icon--lock-open:before {
     content: "\e906";
 }
-.icon--radio-off:before {
+.icon--radio-on:before {
     content: "\e907";
 }
-.icon--download:before {
+.icon--radio-off:before {
     content: "\e908";
 }
-.icon--add-outline:before {
+.icon--download:before {
     content: "\e909";
 }
-.icon--add:before {
+.icon--add-outline:before {
     content: "\e90a";
 }
-.icon--checkbox-off:before {
+.icon--add:before {
     content: "\e90b";
 }
-.icon--checkbox-on:before {
+.icon--checkbox-off:before {
     content: "\e90c";
 }
-.icon--arrow-up:before {
+.icon--checkbox-on:before {
     content: "\e90d";
 }
-.icon--arrow-dn:before {
+.icon--arrow-up:before {
     content: "\e90e";
 }
-.icon--search:before {
+.icon--arrow-dn:before {
     content: "\e90f";
 }
-.icon--arrow-rt:before {
+.icon--search:before {
     content: "\e910";
 }
-.icon--arrow-lt:before {
+.icon--arrow-rt:before {
     content: "\e911";
 }
-.icon--edit:before {
+.icon--arrow-lt:before {
     content: "\e912";
 }
-.icon--delete:before {
+.icon--edit:before {
     content: "\e913";
 }
-.icon--save:before {
+.icon--delete:before {
     content: "\e914";
 }
-.icon--doc:before {
+.icon--save:before {
     content: "\e915";
+}
+.icon--doc:before {
+    content: "\e916";
+}
+.icon--option:before {
+    content: "\e900";
 }

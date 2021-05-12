@@ -1,0 +1,35 @@
+// Allow style ONLY IF directly within a non-disabled button
+@mixin hover-icon-state($fontColor, $bgColor) {
+    color: $fontColor;
+    background-color: $bgColor;
+}
+
+.icon-btn {
+    &:focus {
+        outline: none;
+    }
+
+    &:not(:disabled) {
+        &:focus {
+            outline: 2px solid $light-blue-200;
+        }
+
+        &:hover {
+            .icon {
+                &--white {
+                    @include hover-icon-state($teal, $white);
+                }
+
+                &--gray {
+                    @include hover-icon-state($white, $teal);
+                }
+            }
+        }
+    }
+
+    .icon {
+        transition: color .15s, background-color .15s;
+        will-change: color, background-color;
+        transform: translateZ(0);
+    }
+}

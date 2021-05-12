@@ -15,6 +15,7 @@ const $ = {
     size:           require('gulp-size'),
     flatmap:        require('gulp-flatmap'),
     sourcemaps:     require('gulp-sourcemaps'),
+    chalk:          require('chalk'),
 
     // Util: Log
     taskListing:    require('gulp-task-listing'),
@@ -27,14 +28,20 @@ const $ = {
     pug:            require('gulp-pug'),
 
     // Typescript, Babel, TreeShake/Optimize
-    browserify:     require('browserify'),
     vinylBuffer:    require('vinyl-buffer'),
     vinylStream:    require('vinyl-source-stream'),
-    tsify:          require('tsify'),
-    tinyify:        require('tinyify'),
-    babelify:       require('babelify'),
     eslint:         require('gulp-eslint'),
     uglify:         require('gulp-uglify'),
+    browserify:     require('browserify'),
+    watchify:       require('watchify'),
+    tsify:          require('tsify'),
+    babelify:       require('babelify'),
+    unassertify:    require('unassertify'),
+    envify:         require('envify/custom'),
+    uglifyify:      require('uglifyify'),
+    shakeify:       require('common-shakeify'),
+    packFlat:       require('browser-pack-flat/plugin'),
+    minifyStream:   require('minify-stream'),
 
     // Unit Test
     jestRun:        require("jest").run,
@@ -68,29 +75,6 @@ const util = {
 
         // Required - this allos the watch to continue after you fix the file
         this.emit('end');
-    },
-
-    logColor(msg, color) {
-        let colorCode = color || '\x1b[32m';    // green by default
-
-        switch (color) {
-            case 'red':
-                colorCode = '\x1b[31m';
-                break;
-
-            case 'cyan':
-                colorCode = '\x1b[36m';
-                break;
-
-            case 'magenta':
-                colorCode = '\x1b[35m';
-                break;
-
-            case 'green':
-            default:
-                break;
-        }
-        console.log(`${colorCode}%s\x1b[0m`, msg);
     }
 }
 

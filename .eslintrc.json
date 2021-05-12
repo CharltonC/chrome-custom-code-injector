@@ -4,5 +4,9 @@
 {
     "extends": [
         "react-app"
+    ],
+    "ignorePatterns": [
+        "./src/test-util/*.ts(x)",
+        "./schematic/*.ts(x)"
     ]
 }

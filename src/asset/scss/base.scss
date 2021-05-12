@@ -1,8 +1,53 @@
-@import './var/color-and-bg.scss';
+@import './mixin/extend';
+@import './mixin/img';
+@import './mixin/form';
+@import './mixin/table';
+@import './mixin/general';
+@import './mixin/responsive';
 
-@import './vendor/reset.2.0.min.scss';
-@import './vendor/font.scss';
-@import './vendor/icon.scss';
+@import './var/font';
+@import './var/color-and-bg';
 
-@import '../../component/static/icon/style.scss';
-@import '../../component/prsntn/icon-btn/style.scss';
+@import './vendor/reset.2.0.min';
+@import './vendor/font';
+@import './vendor/icon';
+@import './vendor/codemirror.min';
+@import './vendor/codemirror-theme-dracula';
+
+@import '../../component/static/icon/style';
+@import '../../component/base/num-badge/style';
+@import '../../component/base/btn-icon/style';
+@import '../../component/base/btn-sort/style';
+@import '../../component/base/btn-text/style';
+@import '../../component/base/checkbox/style';
+@import '../../component/base/checkbox-symbol-switch/style';
+@import '../../component/base/checkbox-tab-switch/style';
+@import '../../component/base/checkbox-slider-switch/style';
+@import '../../component/base/checkbox-icon-switch/style';
+@import '../../component/base/input-search/style';
+@import '../../component/base/input-text/style';
+@import '../../component/base/input-file/style';
+@import '../../component/base/select-dropdown/style';
+@import '../../component/base/side-nav/style';
+@import '../../component/widget/data-grid/style';
+@import '../../component/widget/modal/style';
+@import '../../component/view/option-list/style';
+@import '../../component/view/option-edit/style';
+@import '../../component/app/popup/style';
+@import '../../component/app/option/style';
+
+* {
+    box-sizing: border-box;
+}
+
+button {
+    @extend %blank-button;
+
+    &:disabled {
+        opacity: 0.4;
+    }
+}
+
+input[type="checkbox"] {
+    margin: 0;
+}

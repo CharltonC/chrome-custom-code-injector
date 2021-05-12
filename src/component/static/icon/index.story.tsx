@@ -1,12 +1,10 @@
 import React from 'react';
-
-import * as NIcon from './type';
-import { staticIconElem } from '.';
-
+import { inclStaticIcon } from '.';
+import { AIcon } from './type';
 
 export default {
-    title: 'Icon',
-    component: staticIconElem('setting')
+    title: 'Static Icon',
+    // component: inclStaticIcon('setting')
 };
 
 const icons: string[] = [
@@ -31,18 +29,25 @@ const icons: string[] = [
     'edit',
     'delete',
     'save',
-    'doc'
+    'doc',
+    'option'
 ];
 
-export const Light = () => (
-    <div style={{ backgroundColor: '#5AB3AD' }}>
-        {/* `id` is the html attr. not specified however still passed here */}
-        {icons.map((name: NIcon.TName) => staticIconElem(name, false, {key: `light-${name}`}))}
-    </div>
+export const DefaultBlackTheme = () => (
+    <ul>
+        { icons.map((icon: AIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon)}</li>)}
+    </ul>
 );
 
-export const Dark = () => (
-    <div>
-        {icons.map((name: NIcon.TName) => staticIconElem(name, true, {key: `dark-${name}`}))}
-    </div>
+export const WhiteTheme = () => (
+    <ul style={{ backgroundColor: '#5AB3AD' }}>
+        {/* `id` is the html attr. not specified however still passed here */}
+        { icons.map((icon: AIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, 'white')}</li>)}
+    </ul>
+);
+
+export const GrayTheme = () => (
+    <ul>
+        { icons.map((icon: AIcon) => <li key={`plain-${icon}`}>{inclStaticIcon(icon, 'gray')}</li>)}
+    </ul>
 );

@@ -1,0 +1,54 @@
+.symbol-switch {
+    display: inline-block;
+
+    input {
+        -webkit-appearance: none;
+        margin: 0;
+
+        &:not(:checked) {
+            & + span::before {
+                content: '';
+                position: absolute;
+                z-index: 100;
+                width: 24px;
+                height: 2px;
+                background: $teal-100;
+                transform: rotateZ(-45deg);
+            }
+        }
+
+
+        &:not(:disabled) {
+            & + span:hover {
+                cursor: pointer;
+            }
+        }
+
+        &:disabled {
+            & + span {
+                opacity: 0.4;
+                color: $dark-gray;
+                border-color: $dark-gray;
+
+                &::before {
+                    background: $dark-gray;
+                }
+            }
+        }
+    }
+
+    span {
+        position: relative;
+        z-index: 0;
+        display: inline-flex;
+        align-content: center;
+        align-items: center;
+        justify-content: space-evenly;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        border: 2px solid $teal-100;
+        font: bold 9px $arial;
+        color: $teal-100;
+    }
+}

@@ -11,7 +11,7 @@ module.exports = {
     // # Mock & Global variable
     clearMocks: true,
     globals: {
-        // e.g. "someGlobalVar": true
+        // e.g. 'someGlobalVar': true
     },
 
     // # Coverage & Report
@@ -20,7 +20,19 @@ module.exports = {
 
     // # File to test (either use `testMatch` or `tesstRegex`)
     testMatch: [
-        // "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[jt]s?(x)"
+        // '**/__tests__/**/*.[jt]s?(x)',
+        '**/?(*.)+(spec|test).[jt]s?(x)'
+    ],
+
+    // # Folder/File to ignored
+    testPathIgnorePatterns: [
+        ...defaults.testPathIgnorePatterns,
+        './schematic/',
+
+    ],
+    coveragePathIgnorePatterns: [
+        ...defaults.coveragePathIgnorePatterns,
+        './src/asset/ts/test-util/',
+        './src/asset/ts/',
     ]
 };

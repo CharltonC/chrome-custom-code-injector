@@ -1,0 +1,114 @@
+@import './contextual-pagination/style';
+@import './contextual-header/style';
+
+.datagrid {
+    &--table {
+        table {
+            width: 100%;
+        }
+    }
+
+    &--list {
+        // Grid (Responsive NOT part of current Scope for now)
+        .datagrid__row {
+            display: grid;
+            grid-template-columns: repeat(var(--cols), 1fr);
+
+            span {
+                display: inline-block;
+            }
+        }
+
+/*         @include mq('mt') {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            .datagrid__head {
+                display: none;
+            }
+
+            .datagrid__row {
+                grid-template-columns: repeat(1fr, var(--cols));
+
+                span {
+                    display: block;
+                    width: 100%;
+                    position: relative;
+                    padding-left: 100px;
+
+                    &::before {
+                        position: absolute;
+                        left: 10px;
+                        margin-right: 10px;
+                        content: attr(data-header);
+                        font-weight: bold;
+                        font-variant: small-caps;
+                    }
+                }
+            }
+        }
+
+        @include mq('d') {
+            .datagrid__row {
+                grid-template-columns: repeat(var(--cols), 1fr);
+            }
+        } */
+        // - END Grid Specific
+    }
+
+    .paginate {
+        padding: 25px 20px 20px 20px;
+    }
+
+    &__head {
+        th {
+            height: 50px;
+            font: bold 14px $arial;
+        }
+    }
+
+    &__row {
+        td:not([colspan]) {
+            height: 60px;
+            vertical-align: middle;
+        }
+    }
+
+    &__body {
+        @include nested-table-bg('&--nested-', 4, $light-gray-400, 10px);
+        text-align: left;
+
+        &--root {
+            background: transparent;
+
+            > .datagrid__row {
+                &--odd,
+                &--even {
+                    border-top: 1px solid $light-gray-500;
+                }
+
+                &--even {
+                    background: $light-gray-600;
+                }
+            }
+        }
+    }
+
+    &__row:not(&__row--nested) {
+        > td,
+        .cell {
+            vertical-align: middle;
+            font: 14px Helvetica;
+            color: $gray;
+        }
+    }
+
+    th,
+    td:not([colspan]) {
+        // Checkbox
+        &:first-child {
+            padding-left: 15px;
+        }
+    }
+
+}

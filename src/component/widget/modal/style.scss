@@ -1,0 +1,111 @@
+body.modal-open {
+    overflow: hidden;
+}
+
+.modal {
+    @keyframes slide-down-content {
+        from {
+            opacity: .3;
+            transform: translate3d(0, 0, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 30px, 0);
+        }
+    }
+
+    @keyframes slide-down-overlay {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: .5;
+        }
+    }
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    &__content {
+        position: absolute;
+        z-index: 9999;
+        padding: 25px;
+        border-radius: 2px;
+        background-color: $white;
+        box-shadow: 0px 10px 20px -20px $black;
+        width: 640px;
+        animation: slide-down-content .1s ease-in-out;
+        animation-fill-mode: forwards;
+        will-change: opacity, transform;
+    }
+
+    &__header {
+        display: grid;
+        grid-template-areas: "main-header close"
+                             "sub-header sub-header";
+        justify-content: space-between;
+        align-items: center;
+
+        h3 {
+            grid-area: main-header;
+            font: 600 20px $roboto-reg;
+            color: $black;
+        }
+
+        h4 {
+            grid-area: sub-header;
+            margin-top: 20px;
+            font: 16px $roboto-reg;
+            color: $dark-gray;
+        }
+
+        button {
+            grid-area: close;
+            justify-self: end;
+            color: $gray;
+
+            &,
+            .icon {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+
+    &__body {
+        margin-top: 40px;
+    }
+
+    &__footer {
+        display: flex;
+        margin-top: 40px;
+        justify-content: flex-end;
+
+        .text-btn {
+            &:last-child {
+                margin-left: 25px;
+            }
+        }
+    }
+
+    &__overlay {
+        position: absolute;
+        z-index: 9000;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        background-color: $black;
+        transform: translateZ(0);
+        animation: slide-down-overlay .2s ease-in;
+        animation-fill-mode: forwards;
+        will-change: opacity;
+    }
+}

@@ -1,0 +1,33 @@
+.datagrid__head {
+    background: $light-gray-300;
+    text-transform: uppercase;
+    font: 14px $roboto-bld;
+    text-align: left;
+
+    // Grid (Desktop only, Responsive not part of current Scope for now)
+    .datagrid--list & {
+        display: grid;
+        grid-template-rows: var(--gridTemplateRows);
+        grid-template-columns: var(--gridTemplateColumns);
+
+        .datagrid__head-cell {
+            grid-column: var(--gridColumn);
+            grid-row: var(--gridRow);
+        }
+    }
+    // END - Grid
+
+    &-cell {
+        vertical-align: middle;
+        color: $dark-gray-100;
+
+        span, .sort-btn {
+            vertical-align: middle;
+        }
+    }
+
+    .sort-btn {
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+}

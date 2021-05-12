@@ -1,22 +1,22 @@
-import React, { ReactElement } from 'react';
+import React from "react";
+import { inclStaticIcon } from "./";
+import { AIcon } from './type';
 
-import { staticIconElem } from './';
-import * as NIcon from './type';
+describe('Static Component - Icon', () => {
+    const mockIconName: AIcon = 'setting';
+    const ICON_BASE_CLS: string = `icon icon--${mockIconName}`;
 
-describe('icon (static react element)', () => {
-    it('should render the icon with default light mode', () => {
-        const iconName: NIcon.TName = 'setting';
-        const clsName: string = `icon icon--${iconName} icon--${NIcon.EMode.light}`;
-        const expIconElem: ReactElement = <span className={clsName} />
-
-        expect(staticIconElem(iconName)).toEqual(expIconElem);
+    it("should render the icon in default black theme", () => {
+        expect(inclStaticIcon(mockIconName)).toEqual(<span className={ICON_BASE_CLS} />);
     });
 
-    it('should render the icon with dark mode', () => {
-        const iconName: NIcon.TName = 'setting';
-        const clsName: string = `icon icon--${iconName} icon--${NIcon.EMode.dark}`;
-        const expIconElem: ReactElement = <span className={clsName} />
+    it("should render the icon with white mode", () => {
+        const clsName: string = `${ICON_BASE_CLS} icon--white`;
+        expect(inclStaticIcon(mockIconName, 'white')).toEqual(<span className={clsName} />);
+    });
 
-        expect(staticIconElem(iconName, true)).toEqual(expIconElem);
+    it('should render the icon in gray mode', () => {
+        const clsName: string = `${ICON_BASE_CLS} icon--gray`;
+        expect(inclStaticIcon(mockIconName, 'gray')).toEqual(<span className={clsName} />);
     });
 });

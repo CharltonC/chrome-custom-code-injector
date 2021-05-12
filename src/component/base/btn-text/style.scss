@@ -1,0 +1,18 @@
+.text-btn {
+    width: 92px;
+    height: 36px;
+    border-radius: 5px;
+    font: 12px $roboto-reg;
+    text-transform: uppercase;
+    text-align: center;
+
+    &--outline {
+        border: 1px solid $gray;
+        color: $gray;
+    }
+
+    &--fill {
+        background-color: $teal;
+        color: $white;
+    }
+}

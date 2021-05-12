@@ -1,0 +1,61 @@
+.app--popup {
+    --offset-x: 10px;
+    --offset-y: 8px;
+
+    width: 300px;
+
+    .icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    header {
+        @include bg-img-retina($logo-path-1x, $logo-path-2x);
+
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: var(--offset-y);
+        height: 60px;
+        background-color: $teal;
+        background-size: 190px 45px;
+        background-repeat: no-repeat;
+        background-position: var(--offset-x) center;
+
+        .icon {
+            font-size: 16px;
+
+            &--option {
+                margin-left: 5px;
+                transform: rotate(90deg) translateZ(0);
+            }
+        }
+    }
+
+    main {
+        padding: 25px var(--offset-x);
+
+        section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            &:last-child {
+                margin-top: 15px;
+            }
+        }
+
+        h3 {
+            display: inline-block;
+            width: 75px;
+            font: 13px $roboto-bld;
+            color: $dark-gray;
+        }
+
+        .icon {
+            &--add {
+                font-weight: bold;
+            }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+.badge {
+    display: inline-block;
+    background-color: $dark-blue-100;
+    min-width: 24px;
+    height: 18px;
+    border-radius: 18px;
+    text-align: center;
+    font: 12px $roboto-reg;
+    color: $light-blue-100;
+}
