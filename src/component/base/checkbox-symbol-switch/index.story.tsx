@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SymbolSwitch } from '.';
 
 export default {
-    title: 'Base/Form/Checkbox/Symbol Switch',
+    title: 'Base/Form - Checkbox/Symbol Switch',
     component: SymbolSwitch,
 };
 

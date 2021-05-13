@@ -2,7 +2,7 @@ import React from 'react';
 import { IconSwitch } from '.';
 
 export default {
-    title: 'Base/Form/Checkbox/Icon Switch',
+    title: 'Base/Form - Checkbox/Icon Switch',
     component: IconSwitch,
 };
 
