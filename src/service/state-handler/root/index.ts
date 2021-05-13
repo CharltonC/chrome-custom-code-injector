@@ -1,4 +1,4 @@
-import { StateHandle } from '../../store-handle';
+import { StoreHandle } from '../../store-handle';
 import { GeneralStateHandler } from './partial_common';
 import { ListViewStateHandler } from './partial_list-view';
 import { EditViewStateHandler } from './partial_edit-view';
@@ -7,7 +7,7 @@ import { ModalContentStateHandler } from './partial_common-modal-content';
 import { TbRowStateHandler } from './partial_list-view-row';
 import { IStateHandler } from './type';
 
-export const StateHandler = StateHandle.BaseStoreHandler.join<IStateHandler>([
+export const StateHandler = StoreHandle.BaseStoreHandler.join<IStateHandler>([
     GeneralStateHandler,
     ListViewStateHandler,
     EditViewStateHandler,

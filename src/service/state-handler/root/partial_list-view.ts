@@ -1,9 +1,9 @@
-import { StateHandle } from '../../store-handle';
+import { StoreHandle } from '../../store-handle';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
 import * as TPgn from '../../pagination-handle/type';
 
-export class ListViewStateHandler extends StateHandle.BaseStoreHandler {
+export class ListViewStateHandler extends StoreHandle.BaseStoreHandler {
     onSearchTextChange({ localState }: AppState, val: string): Partial<AppState> {
         const { searchedRules } = localState;
         return {

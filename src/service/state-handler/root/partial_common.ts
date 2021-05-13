@@ -1,12 +1,12 @@
 import { RowSelectHandle } from '../../row-select-handle';
-import { StateHandle } from '../../store-handle';
+import { StoreHandle } from '../../store-handle';
 import { AppState } from '../../../model/app-state';
 import * as TSort from '../../sort-handle/type';
 import { IStateHandler } from './type';
 
 const rowSelectHandle = new RowSelectHandle();
 
-export class GeneralStateHandler extends StateHandle.BaseStoreHandler {
+export class GeneralStateHandler extends StoreHandle.BaseStoreHandler {
     onSort({ localState }: AppState, { sortOption }: { sortOption: TSort.IOption, sortState: TSort.IState }) {
         return {
             localState: {

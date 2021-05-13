@@ -1,7 +1,7 @@
 import React from 'react';
 import { TestUtil } from '../../asset/ts/test-util';
 import { BaseStoreHandler } from './base-store-handler';
-import { StateHandle } from '.';
+import { StoreHandle } from '.';
 
 describe('State Handle', () => {
     let $elem: HTMLElement;
@@ -25,7 +25,7 @@ describe('State Handle', () => {
         let $h1: HTMLHeadingElement;
 
         beforeEach(() => {
-            const WrappedMockCmp = StateHandle.init(MockCmp, {
+            const WrappedMockCmp = StoreHandle.init(MockCmp, {
                 root: [ mockStore, new MockStoreHandler() ]
             });
             TestUtil.renderPlain($elem, WrappedMockCmp);
@@ -68,7 +68,7 @@ describe('State Handle', () => {
         let $h2: HTMLHeadingElement;
 
         beforeEach(() => {
-            const WrappedMockCmp = StateHandle.init(MockCmp, {
+            const WrappedMockCmp = StoreHandle.init(MockCmp, {
                 root: [ mockStore, new MockStoreHandler() ]
             });
             TestUtil.renderPlain($elem, WrappedMockCmp);
@@ -113,7 +113,7 @@ describe('State Handle', () => {
         let $h2: HTMLHeadingElement;
 
         beforeEach(() => {
-            const WrappedMockCmp = StateHandle.init(MockCmp, {
+            const WrappedMockCmp = StoreHandle.init(MockCmp, {
                 [MOCK_STORE_ONE]: [ mockStore1, new MockStoreHandler1() ],
                 [MOCK_STORE_TWO]: [ mockStore2, new MockStoreHandler2() ]
             });

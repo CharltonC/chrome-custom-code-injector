@@ -10,10 +10,10 @@ import { IStoreConfigs } from './type';
  * Adv:
  * - no more `handler.bind(this)`
  * - no more merging `...store` in every return state
- * - only 1 call needed: `StateHandle.init(..)`
+ * - only 1 call needed: `StoreHandle.init(..)`
  * - `.reflect` to consolidate multipe and/or dependent state changes
  */
-export const StateHandle = {
+export const StoreHandle = {
     BaseStoreHandler,
 
     init(Cmp: ACmp, storeConfigs: IStoreConfigs): ComponentClass {

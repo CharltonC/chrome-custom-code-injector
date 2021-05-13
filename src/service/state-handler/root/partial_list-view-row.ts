@@ -1,12 +1,12 @@
 import { RowSelectHandle } from '../../row-select-handle';
-import { StateHandle } from '../../store-handle';
+import { StoreHandle } from '../../store-handle';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
 import * as TPgn from '../../pagination-handle/type';
 
 const rowSelectHandle = new RowSelectHandle();
 
-export class TbRowStateHandler extends StateHandle.BaseStoreHandler {
+export class TbRowStateHandler extends StoreHandle.BaseStoreHandler {
     onRowExpand({ localState }: AppState, expdState: Record<string, number>) {
         const { expdRowId } = localState;
         const [ id ]: string[] = Object.getOwnPropertyNames(expdState);

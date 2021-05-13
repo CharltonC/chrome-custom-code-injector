@@ -1,4 +1,4 @@
-import { StateHandle } from '../../store-handle';
+import { StoreHandle } from '../../store-handle';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../../constant/modals';
@@ -11,7 +11,7 @@ import { IStateHandler } from './type';
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
 
-export class ModalToggleStateHandler extends StateHandle.BaseStoreHandler {
+export class ModalToggleStateHandler extends StoreHandle.BaseStoreHandler {
     onModalOpen({ localState }: AppState, currModalId: string): Partial<AppState> {
         return {
             localState: {

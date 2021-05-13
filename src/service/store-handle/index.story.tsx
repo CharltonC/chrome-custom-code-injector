@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { StateHandle } from '.';
+import { StoreHandle } from '.';
 
-const { BaseStoreHandler } = StateHandle;
+const { BaseStoreHandler } = StoreHandle;
 
 export default {
     title: 'Service/Store Handle',
@@ -84,7 +84,7 @@ export const SingleStore = () => {
     }, [sampleStoreHandler]);
 
     // 5. Return a Wrapper Root component with Initialised with Store and Store Handler
-    const WrappedSampleComponent = StateHandle.init(SampleComponent, {
+    const WrappedSampleComponent = StoreHandle.init(SampleComponent, {
         root: [ sampleStore, sampleStoreHandler ]
     });
     return <WrappedSampleComponent />;
@@ -145,7 +145,7 @@ export const MultipleStores = () => {
     }, [sampleStoreHandler1, sampleStoreHandler2]);
 
     // 5. Return a Wrapper Root component with Initialised with Stores and Stores Handlers
-    const WrappedSampleComponent = StateHandle.init(SampleComponent, {
+    const WrappedSampleComponent = StoreHandle.init(SampleComponent, {
         storeOne: [sampleStore1, sampleStoreHandler1],
         storeTwo: [sampleStore2, sampleStoreHandler2],
     });
@@ -188,7 +188,7 @@ export const SingleStoreWithPartialHandlers = () => {
     };
 
     // 4.Return a Wrapper Root component with Initialised with Stores and Stores Handlers
-    const WrappedSampleComponent = StateHandle.init(
+    const WrappedSampleComponent = StoreHandle.init(
         SampleComponent,
         { root: [ sampleStore, sampleStoreHandler ]
     });
