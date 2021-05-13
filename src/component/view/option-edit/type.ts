@@ -1,4 +1,4 @@
-import { IAppProps } from '../../../service/state-handle/type';
+import { IAppProps } from '../../../service/store-handle/type';
 import { AppState } from '../../../model/app-state';
 import { IStateHandler } from '../../../service/state-handler/root/type';
 

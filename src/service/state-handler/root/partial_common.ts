@@ -1,5 +1,5 @@
 import { RowSelectHandle } from '../../row-select-handle';
-import { StateHandle } from '../../state-handle';
+import { StateHandle } from '../../store-handle';
 import { AppState } from '../../../model/app-state';
 import * as TSort from '../../sort-handle/type';
 import { IStateHandler } from './type';

@@ -1,4 +1,4 @@
-import { StateHandle } from '../../state-handle';
+import { StateHandle } from '../../store-handle';
 import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
 

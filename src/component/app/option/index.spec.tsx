@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { StateHandler } from '../../../service/state-handler/root';
-import { StateHandle } from '../../../service/state-handle';
+import { StateHandle } from '../../../service/store-handle';
 import { AppState } from '../../../model/app-state';
 import { createMockAppState } from '../../../mock/app-state';
 import { OptionApp } from '.';
