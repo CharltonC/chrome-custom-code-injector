@@ -46,7 +46,7 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     };
 
     // TODO: Move to internal method + external handler pass through
-    const onClick = ({ evt, idx, isChild }) => {
+    const onClick = ({ idx, isChild }) => {
         if (isChild) return setActiveChildIdx(idx);
         setActiveIdx(idx);
         setActiveChildIdx(null);

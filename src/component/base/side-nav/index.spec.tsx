@@ -98,6 +98,26 @@ describe('Component - Side Nav', () => {
             });
         });
 
+        describe('render nested items if they are array of string', () => {
+            const MOCK_TITLE = 'TITLE';
+
+            beforeEach(() => {
+                TestUtil.renderPlain($elem, SideNav, {
+                    list: [
+                        {
+                            title: 'lorem',
+                            list: [ MOCK_TITLE, MOCK_TITLE ]
+                        }
+                    ]
+                });
+                assignChildElem();
+            });
+
+            it('should render', () => {
+                expect($nestListItems[0].textContent).toBe(MOCK_TITLE);
+            });
+        });
+
         describe('downward arrow for parent item ', () => {
             it('should appear when the itself is active', () => {
                 TestUtil.renderPlain($elem, SideNav, mockDefProps);
