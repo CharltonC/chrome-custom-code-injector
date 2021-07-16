@@ -10,7 +10,7 @@ export class MemoComponent<P = AObj, S = AObj> extends Component<P, S> {
     shouldComponentUpdate(modProps: AObj, modState: AObj) {
         // Check State 1st (since internal state changes should be prioritized)
         const modStateItems: AObjEntry[] = modState ? Object.entries(modState) : [];
-        const isDiffState: boolean = modStateItems.length &&
+        const isDiffState = modStateItems.length &&
             modStateItems.some(([key, val]: AObjEntry) => {
                 return val !== this.state[key];
             });

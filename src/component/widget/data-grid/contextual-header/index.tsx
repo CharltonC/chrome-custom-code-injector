@@ -3,18 +3,17 @@ import { MemoComponent } from '../../../extendable/memo-component';
 import { SortBtn } from '../../../base/btn-sort';
 import { IProps, TTbHeaderRows, TListHeaderRows } from './type';
 
-export class DataGridHeader extends MemoComponent<IProps> {
-    readonly BASE_CLS: string = 'datagrid__head';
+const BASE_CLS = 'datagrid__head';
 
+export class DataGridHeader extends MemoComponent<IProps> {
     render() {
-        const TB: string = 'table';
-        const isTb: boolean = (this.props.type ?? TB) === TB;
+        const TB = 'table';
+        const isTb = (this.props.type ?? TB) === TB;
         return isTb ? this.renderTbHeader() : this.renderListHeader();
     }
 
     renderTbHeader(): ReactElement {
-        const { BASE_CLS, props } = this;
-        const { headers } = props.rows as TTbHeaderRows;
+        const { headers } = this.props.rows as TTbHeaderRows;
 
         return (
             <thead className={BASE_CLS}>{ headers.map((thCtxs, trIdx: number) => (
@@ -32,8 +31,7 @@ export class DataGridHeader extends MemoComponent<IProps> {
     }
 
     renderListHeader(): ReactElement {
-        const { BASE_CLS, props } = this;
-        const { headers, rowTotal, colTotal, ...wrapperCssGrid } = props.rows as TListHeaderRows;
+        const { headers, rowTotal, colTotal, ...wrapperCssGrid } = this.props.rows as TListHeaderRows;
         const wrapperCssGridVar = this.getCssGridVar(wrapperCssGrid);
 
         return (

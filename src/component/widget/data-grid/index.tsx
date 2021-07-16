@@ -14,6 +14,8 @@ import {
     TRowTransformHandle, TRowExpdHandle, TPagination, TSortBtn, TDataGridHeader
 } from './type';
 
+export const BASE_CLS = 'datagrid';
+
 /**
  * Data Context:
  * - Rows: `data` in row props                  sorted data (from state if exists) or data source (from props)
@@ -23,12 +25,11 @@ import {
  */
 export class DataGrid extends MemoComponent<IProps, IState> {
     //// Dependency Injection
-    readonly headerGrpHandle: HeaderGrpHandle = new HeaderGrpHandle();
-    readonly pgnHandle: PgnHandle = new PgnHandle();
-    readonly sortHandle: SortHandle = new SortHandle();
-    readonly rowTransformHandle: RowTransformHandle = new RowTransformHandle();
-    readonly rowExpdHandle: RowExpdHandle = new RowExpdHandle();
-    readonly BASE_CLS: string = 'datagrid';
+    readonly headerGrpHandle = new HeaderGrpHandle();
+    readonly pgnHandle = new PgnHandle();
+    readonly sortHandle = new SortHandle();
+    readonly rowTransformHandle = new RowTransformHandle();
+    readonly rowExpdHandle = new RowExpdHandle();
 
     //// Builtin API
     static defaultProps = { type: 'table' };
@@ -45,24 +46,24 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     render(): ReactElement {
-        const { BASE_CLS, cssCls, props, state } = this;
+        const { cssCls, props, state } = this;
         const { isTb, headerCtx, pgnState } = state;
         const { type, component } = props;
         const { commonProps, rows, ...defCmp } = component;
 
-        const WRAPPER_CLS: string = cssCls(`${BASE_CLS}`, type);
+        const ROOT_CLS = cssCls(`${BASE_CLS}`, type);
         const sortedData: ADataOption = this.getSortedData();
         const headerProps = { commonProps, ...this.getHeaderProps(sortedData) };
         const paginationProps = { commonProps, ...this.getPgnCmpProps(sortedData) };
         const { Header, Pagination } = this.getPreferredCmp(defCmp);
-        const headElem: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
-        const rowElems: ReactElement[] = this.getRowElems(sortedData);
-        const bodyElem: ReactElement = this.getGridBodyElem(isTb, headElem, rowElems);
+        const $head: ReactElement = headerCtx ? <Header {...headerProps} /> : null;
+        const $rows: ReactElement[] = this.getRowElems(sortedData);
+        const $gridBody: ReactElement = this.getGridBodyElem(isTb, $head, $rows);
 
         return (
-            <div className={WRAPPER_CLS}>
+            <div className={ROOT_CLS}>
                 { pgnState && <Pagination {...paginationProps} />}
-                { isTb ? <table>{bodyElem}</table> : bodyElem }
+                { isTb ? <table>{$gridBody}</table> : $gridBody }
             </div>
         );
     }
@@ -74,7 +75,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { headerGrpHandle, rowExpdHandle, sortHandle, pgnHandle } = this;
         const sortOption = sort ? sortHandle.createOption(sort) : null;
         const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
-        const isTb: boolean = type !== 'list' ? true : false;
+        const isTb = type !== 'list' ? true : false;
         const headerCtx = header ?
             (isTb ?
                 headerGrpHandle.getCtxTbHeaders(header) :
@@ -132,13 +133,13 @@ export class DataGrid extends MemoComponent<IProps, IState> {
      */
     shallResetState(modProps: IProps, props: IProps): AShallResetState {
         const { data, type, header, component, sort, paginate, expand } = modProps;
-        const isDiffData: boolean = data !== props.data;
-        const isDiffGridType: boolean = type !== props.type;
-        const isDiffHeader: boolean = header !== props.header;
-        const isDiffRows: boolean = component.rows !== props.component.rows;
-        const isDiffSort: boolean = sort !== props.sort;
-        const isDiffPgn: boolean = paginate !== props.paginate;
-        const isDiffExpd: boolean = expand !== props.expand;
+        const isDiffData = data !== props.data;
+        const isDiffGridType = type !== props.type;
+        const isDiffHeader = header !== props.header;
+        const isDiffRows = component.rows !== props.component.rows;
+        const isDiffSort = sort !== props.sort;
+        const isDiffPgn = paginate !== props.paginate;
+        const isDiffExpd = expand !== props.expand;
 
         return {
             isTb: isDiffGridType,
@@ -157,7 +158,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     // - component state is not yet ready until `transformFn` is executed
     transformRowOption(rows: ARowsOption): TRowTransformHandle.IRawRowsOption[] {
         return rows.map((row: ARowOption, idx: number) => {
-            const isRootRowConfig: boolean = idx === 0;
+            const isRootRowConfig = idx === 0;
             const RowCmp: ACmp = isRootRowConfig ? (row as ARootRowOption)[0] : (row as ANestedRowOption)[1];
             const transformFn: AFn = this.getRowTransformFn(RowCmp);
             return (isRootRowConfig ? [transformFn] : [row[0], transformFn]) as TRowTransformHandle.IRawRowsOption;
@@ -169,7 +170,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
     }
 
     getRowCmpProps(itemCtx: ARowCtx): IRowComponentProps {
-        const { cssCls, BASE_CLS, props, state } = this;
+        const { cssCls, props, state } = this;
         const { commonProps } = props.component;
         const { isTb, headerCtx } = state;
         const { itemId, itemLvl, nestedItems, rowType } = itemCtx;
@@ -201,8 +202,8 @@ export class DataGrid extends MemoComponent<IProps, IState> {
 
     //// Get/Wrap Conditional Components
     getGridBodyElem(isTb: boolean, headElem: ReactElement, rowsElem: ReactElement[]): ReactElement {
-        const { BASE_CLS, cssCls } = this;
-        const ROOT_CLS: string = cssCls(`${BASE_CLS}__body`, 'root');
+        const { cssCls } = this;
+        const ROOT_CLS = cssCls(`${BASE_CLS}__body`, 'root');
         const Body = isTb ? 'tbody' : 'ul';
         return (<>
             {headElem}

@@ -9,7 +9,7 @@ import { PgnHandle } from '../../../service/pagination-handle';
 import { HeaderGrpHandle } from '../../../service/header-group-handle';
 import { DataGridPagination as Pagination } from './contextual-pagination';
 import { DataGridHeader } from './contextual-header';
-import { DataGrid } from '.';
+import { DataGrid, BASE_CLS } from '.';
 import { IProps, IState, AShallResetState } from './type';
 
 
@@ -135,7 +135,7 @@ describe('Component - Data Grid', () => {
                 mockStateProps(mockProps, mockState);
                 $elem = cmp.render();
 
-                expect(utilHandleSpy.cssCls).toHaveBeenCalledWith(cmp.BASE_CLS, mockProps.type);
+                expect(utilHandleSpy.cssCls).toHaveBeenCalledWith(BASE_CLS, mockProps.type);
                 expect(spy.getSortedData).toHaveBeenCalled();
                 expect(spy.getHeaderProps).toHaveBeenCalledWith(mockSortedData);
                 expect(spy.getPgnCmpProps).toHaveBeenCalledWith(mockSortedData);
@@ -485,24 +485,24 @@ describe('Component - Data Grid', () => {
     describe('Get Conditional Components', () => {
         describe('Method getGridBodyElem: Get the wrapped body element for grid', () => {
             const mockElem = null;
-            const MOCK_CLS: string = 'lorem';
+            const MOCK_CLS = 'lorem';
 
             beforeEach(() => {
                 utilHandleSpy.cssCls.mockReturnValue(MOCK_CLS)
             });
 
             it('should return wrapped element when it is table', () => {
-                const { props }: ReactElement = cmp.getGridBodyElem(true, mockElem, mockElem);
-                const bodyElem: ReactElement = props.children[1];
-                expect(bodyElem.type).toBe('tbody');
-                expect(bodyElem.props.className).toBe(MOCK_CLS);
+                const { props } = cmp.getGridBodyElem(true, mockElem, mockElem);
+                const $gridBody = props.children[1];
+                expect($gridBody.type).toBe('tbody');
+                expect($gridBody.props.className).toBe(MOCK_CLS);
             });
 
             it('should return wrapped element when its not table', () => {
                 const { props } = cmp.getGridBodyElem(false, mockElem, mockElem);
-                const bodyElem: ReactElement = props.children[1];
-                expect(bodyElem.type).toBe('ul');
-                expect(bodyElem.props.className).toBe(MOCK_CLS);
+                const $gridBody = props.children[1];
+                expect($gridBody.type).toBe('ul');
+                expect($gridBody.props.className).toBe(MOCK_CLS);
             });
         });
 

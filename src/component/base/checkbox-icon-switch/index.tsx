@@ -6,23 +6,23 @@ import { IProps } from './type';
 
 
 const { cssCls } = UtilHandle.prototype;
-const CSS_BASE_CLS: string = 'icon-switch';
+const BASE_CLS = 'icon-switch';
 
 export const IconSwitch: React.FC<IProps> = memo((props: IProps) => {
     const { id, icon, label, clsSuffix, ...inputProps } = props;
-    const CSS_CLS: string = cssCls(CSS_BASE_CLS, clsSuffix);
+    const ROOT_CLS = cssCls(BASE_CLS, clsSuffix);
 
     return (
-        <label className={CSS_CLS} htmlFor={id}>
+        <label className={ROOT_CLS} htmlFor={id}>
             <input
                 type="checkbox"
                 id={id}
                 name={id}
                 {...inputProps}
                 />
-            { icon ?
-                inclStaticIcon(label as TIcon.AIcon, 'gray') :
-                <span className="icon-switch__label">{label}</span> }
+            { icon
+                ? inclStaticIcon(label as TIcon.AIcon, 'gray')
+                : <span className="icon-switch__label">{label}</span> }
         </label>
     );
 });

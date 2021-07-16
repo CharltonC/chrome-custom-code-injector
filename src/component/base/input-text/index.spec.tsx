@@ -23,7 +23,7 @@ describe('Component - Text Input', () => {
         });
 
         describe('Method - Get Valid State', () => {
-            const mockTextVal: string = 'lorem';
+            const mockTextVal = 'lorem';
             let mockFnRule: jest.Mock;
             let mockRegexRule: RegExp;
             let spyStrSearch: jest.SpyInstance;
@@ -150,12 +150,12 @@ describe('Component - Text Input', () => {
     });
 
     describe('Render/DOM', () => {
-        let elem: HTMLElement;
-        let wrapperElem: HTMLElement;
-        let labelElem: HTMLElement;
-        let inputElem: HTMLInputElement;
-        let iconElem: HTMLElement;
-        let listElem: HTMLElement;
+        let $elem: HTMLElement;
+        let $root: HTMLElement;
+        let $label: HTMLElement;
+        let $input: HTMLInputElement;
+        let $icon: HTMLElement;
+        let $list: HTMLElement;
 
         const mockId: string = 'lorem';
         const mockTxtInput: string = 'some';
@@ -165,57 +165,57 @@ describe('Component - Text Input', () => {
         const mockProps: IProps = { id: mockId, label: 'mock-label' };
 
         function getChildElem() {
-            wrapperElem = elem.children[0] as HTMLElement;
-            labelElem = elem.querySelector('label');
-            inputElem = elem.querySelector('input');
-            iconElem = elem.querySelector('.icon');
-            listElem = elem.querySelector('ul');
+            $root = $elem.children[0] as HTMLElement;
+            $label = $elem.querySelector('label');
+            $input = $elem.querySelector('input');
+            $icon = $elem.querySelector('.icon');
+            $list = $elem.querySelector('ul');
         }
 
         beforeEach(() => {
-            elem = TestUtil.setupElem();
+            $elem = TestUtil.setupElem();
         });
 
         afterEach(() => {
-            TestUtil.teardown(elem);
-            elem = null;
+            TestUtil.teardown($elem);
+            $elem = null;
         });
 
         describe('general', () => {
             it('should render id, base class name when there is label', () => {
-                TestUtil.renderPlain(elem, TextInput, mockProps);
+                TestUtil.renderPlain($elem, TextInput, mockProps);
                 getChildElem();
 
-                expect(wrapperElem.className).toBe('text-ipt text-ipt--label');
-                expect(labelElem.getAttribute('for')).toBe(mockId);
-                expect(inputElem.id).toBe(mockId);
+                expect($root.className).toBe('text-ipt text-ipt--label');
+                expect($label.getAttribute('for')).toBe(mockId);
+                expect($input.id).toBe(mockId);
             });
 
             it('should render when there is no label', () => {
-                TestUtil.renderPlain(elem, TextInput, {...mockProps, label: null});
+                TestUtil.renderPlain($elem, TextInput, {...mockProps, label: null});
                 getChildElem();
 
-                expect(wrapperElem.className).toBe('text-ipt');
+                expect($root.className).toBe('text-ipt');
             });
 
             it('should render label with class suffix when input is required', () => {
-                TestUtil.renderPlain(elem, TextInput, {...mockProps, required: true});
+                TestUtil.renderPlain($elem, TextInput, {...mockProps, required: true});
                 getChildElem();
 
-                expect(labelElem.className).toContain('--req');
+                expect($label.className).toContain('--req');
             });
         });
 
         describe('props: validation', () => {
             describe('without validation config', () => {
                 it('should render class names, validated icon and error list correctly when validation config is not provided', () => {
-                    TestUtil.renderPlain(elem, TextInput, mockProps);
+                    TestUtil.renderPlain($elem, TextInput, mockProps);
                     getChildElem();
 
-                    expect(wrapperElem.className).not.toContain('text-ipt--valid');
-                    expect(wrapperElem.className).not.toContain('text-ipt--invalid');
-                    expect(iconElem).toBeFalsy();
-                    expect(listElem).toBeFalsy();
+                    expect($root.className).not.toContain('text-ipt--valid');
+                    expect($root.className).not.toContain('text-ipt--invalid');
+                    expect($icon).toBeFalsy();
+                    expect($list).toBeFalsy();
                 });
             });
 
@@ -228,7 +228,7 @@ describe('Component - Text Input', () => {
                 };
 
                 it('should render class names, validated icon and error list correctly for valid state', () => {
-                    TestUtil.renderPlain(elem, TextInput, {
+                    TestUtil.renderPlain($elem, TextInput, {
                         ...mockProps,
                         validation: {
                             ...mockValidationProps,
@@ -237,36 +237,36 @@ describe('Component - Text Input', () => {
                     });
                     getChildElem();
 
-                    expect(wrapperElem.className).toContain('text-ipt--valid');
-                    expect(iconElem).toBeTruthy();
-                    expect(listElem).toBeFalsy();
+                    expect($root.className).toContain('text-ipt--valid');
+                    expect($icon).toBeTruthy();
+                    expect($list).toBeFalsy();
                 });
 
                 it('should render class names, validated icon and error list correctly for invalid state', () => {
-                    TestUtil.renderPlain(elem, TextInput, {
+                    TestUtil.renderPlain($elem, TextInput, {
                         ...mockProps,
                         validation: mockValidationProps
                     });
                     getChildElem();
 
-                    expect(wrapperElem.className).toContain('text-ipt--invalid');
-                    expect(iconElem).toBeFalsy();
-                    expect(listElem.textContent).toContain(MOCK_ERR_MSG);
+                    expect($root.className).toContain('text-ipt--invalid');
+                    expect($icon).toBeFalsy();
+                    expect($list.textContent).toContain(MOCK_ERR_MSG);
                 });
 
                 it('should render error messages inside input container by default', () => {
-                    TestUtil.renderPlain(elem, TextInput, {
+                    TestUtil.renderPlain($elem, TextInput, {
                         ...mockProps,
                         validation: mockValidationProps
                     });
                     getChildElem();
 
-                    expect(wrapperElem.children.length).toBe(2);
-                    expect(wrapperElem.lastElementChild.tagName).toBe('DIV');
+                    expect($root.children.length).toBe(2);
+                    expect($root.lastElementChild.tagName).toBe('DIV');
                 });
 
                 it('should render error messages outside of input container', () => {
-                    TestUtil.renderPlain(elem, TextInput, {
+                    TestUtil.renderPlain($elem, TextInput, {
                         ...mockProps,
                         validation: {
                             ...mockValidationProps,
@@ -275,25 +275,25 @@ describe('Component - Text Input', () => {
                     });
                     getChildElem();
 
-                    expect(wrapperElem.children.length).toBe(3);
-                    expect(wrapperElem.lastElementChild.tagName).toBe('UL');
+                    expect($root.children.length).toBe(3);
+                    expect($root.lastElementChild.tagName).toBe('UL');
                 });
             });
         });
 
         describe('props: text', () => {
             it('should render empty input value', () => {
-                TestUtil.renderPlain(elem, TextInput, mockProps);
+                TestUtil.renderPlain($elem, TextInput, mockProps);
                 getChildElem();
 
-                expect(inputElem.value).toBe('');
+                expect($input.value).toBe('');
             });
 
             it('should render the passed text input', () => {
-                TestUtil.renderPlain(elem, TextInput, {...mockProps, defaultValue: mockTxtInput});
+                TestUtil.renderPlain($elem, TextInput, {...mockProps, defaultValue: mockTxtInput});
                 getChildElem();
 
-                expect(inputElem.value).toBe(mockTxtInput);
+                expect($input.value).toBe(mockTxtInput);
             });
         });
 
@@ -305,18 +305,18 @@ describe('Component - Text Input', () => {
                 spyOnChange = jest.spyOn(TextInput.prototype, 'onChange');
                 spyOnBlur = jest.spyOn(TextInput.prototype, 'onBlur');
 
-                TestUtil.renderPlain(elem, TextInput, mockProps);
+                TestUtil.renderPlain($elem, TextInput, mockProps);
                 getChildElem();
             });
 
             it('should trigger `onChange` on input `change` event', () => {
-                TestUtil.setInputVal(inputElem, 'dummy');
-                TestUtil.triggerEvt(inputElem, 'change');
+                TestUtil.setInputVal($input, 'dummy');
+                TestUtil.triggerEvt($input, 'change');
                 expect(spyOnChange).toHaveBeenCalled();
             });
 
             it('should trigger `onBlur` on input `blur` event', () => {
-                TestUtil.triggerEvt(inputElem, 'blur');
+                TestUtil.triggerEvt($input, 'blur');
                 expect(spyOnBlur).toHaveBeenCalled();
             });
         });

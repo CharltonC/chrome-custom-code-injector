@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { MemoComponent } from '../../../extendable/memo-component';
 import { Dropdown } from '../../../base/select-dropdown';
 import { inclStaticIcon } from '../../../static/icon';
@@ -8,9 +8,9 @@ import {
     TPgnHandle
  } from './type';
 
-const CLS_PREFIX: string = 'paginate';
-const ltArrowElem: ReactElement = inclStaticIcon('arrow-lt');
-const rtArrowElem: ReactElement = inclStaticIcon('arrow-rt');
+const CLS_PREFIX = 'paginate';
+const $ltArrow = inclStaticIcon('arrow-lt');
+const $rtArrow = inclStaticIcon('arrow-rt');
 
 export class DataGridPagination extends MemoComponent<IProps> {
     render() {
@@ -31,11 +31,11 @@ export class DataGridPagination extends MemoComponent<IProps> {
             <div className={CLS_PREFIX}>
                 <p className={`${CLS_PREFIX}__record`}>Showing {startRecord} - {endRecord} of {totalRecord}</p>
                 <Dropdown {...perPageSelectProps} />
-                <button {...firstBtnProps}>{ltArrowElem}{ltArrowElem}</button>
-                <button {...prevBtnProps}>{ltArrowElem}</button>
+                <button {...firstBtnProps}>{$ltArrow}{$ltArrow}</button>
+                <button {...prevBtnProps}>{$ltArrow}</button>
                 <Dropdown {...pageSelectProps} />
-                <button {...nextBtnProps}>{rtArrowElem}</button>
-                <button {...lastBtnProps}>{rtArrowElem}{rtArrowElem}</button>
+                <button {...nextBtnProps}>{$rtArrow}</button>
+                <button {...lastBtnProps}>{$rtArrow}{$rtArrow}</button>
             </div>
         );
     }

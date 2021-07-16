@@ -1,11 +1,12 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps } from './type';
 
+const $clearIcon = inclStaticIcon('close');
+const $searchIcon = inclStaticIcon('search');
+
 export class SearchInput extends MemoComponent<IProps> {
-    readonly $clearIcon: ReactElement = inclStaticIcon('close');
-    readonly $searchIcon: ReactElement = inclStaticIcon('search');
     $input: HTMLInputElement;
 
     constructor(props: IProps) {
@@ -16,7 +17,7 @@ export class SearchInput extends MemoComponent<IProps> {
 
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
         const text: string = evt.target.value;
-        const gte3Char: boolean = text.length >= 3;
+        const gte3Char = text.length >= 3;
         this.props.onInputChange?.(evt, text, gte3Char);
     }
 
@@ -27,12 +28,11 @@ export class SearchInput extends MemoComponent<IProps> {
     }
 
     render() {
-        const { $clearIcon, $searchIcon } = this;
         const { id, value, disabled, onInputChange, onInputClear, ...props } = this.props;
-        const labelCls: string = 'search' + (disabled ? ' search--disabled' : '');
+        const ROOT_CLS = 'search' + (disabled ? ' search--disabled' : '');
 
         return (
-            <label className={labelCls} htmlFor={id}>
+            <label className={ROOT_CLS} htmlFor={id}>
                 <input
                     id={id}
                     className="search__input"

@@ -4,12 +4,12 @@ import { inclStaticIcon } from '../../static/icon';
 import { IProps } from './type';
 
 const { cssCls } = UtilHandle.prototype;
-const CSS_BASE_CLS: string = 'icon-btn';
+const BASE_CLS = 'icon-btn';
 
 export const IconBtn = memo(({icon, theme, clsSuffix, ...props}: IProps) => {
-    const CSS_CLS: string = cssCls(CSS_BASE_CLS, clsSuffix);
+    const ROOT_CLS = cssCls(BASE_CLS, clsSuffix);
     return (
-        <button type="button" className={CSS_CLS} {...props}>
+        <button type="button" className={ROOT_CLS} {...props}>
             { inclStaticIcon(icon, theme) }
         </button>
     );

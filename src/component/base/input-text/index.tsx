@@ -1,11 +1,12 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IValidationRule, IValidationState } from './type';
 
+const BASE_CLS = 'text-ipt';
+const $validIcon = inclStaticIcon('valid');
+
 export class TextInput extends MemoComponent<IProps> {
-    readonly BASE_CLS: string = 'text-ipt';
-    readonly $validIcon: ReactElement = inclStaticIcon('valid');
     $input: HTMLInputElement;
 
     static defaultProps: Partial<IProps> = {
@@ -19,20 +20,20 @@ export class TextInput extends MemoComponent<IProps> {
     }
 
     render() {
-        const { BASE_CLS, cssCls, $validIcon } = this;
+        const { cssCls } = this;
         const { id, label, onInputChange, onInputBlur, validation, defaultValue,...inputProps } = this.props;
         const { rules, fixedPosErrMsg, isValid, errMsg, } = Object.assign(this.defValidationConfig, validation);
 
-        const showValidation: boolean = this.hsValidation(rules) && typeof isValid === 'boolean';
-        const showValidIcon: boolean = showValidation && isValid;
-        const showErrMsg: boolean = showValidation && !isValid;
+        const showValidation = this.hsValidation(rules) && typeof isValid === 'boolean';
+        const showValidIcon = showValidation && isValid;
+        const showErrMsg = showValidation && !isValid;
 
-        const validateCls: string = showValidation ? (isValid ? 'valid' : 'invalid') : '';
-        const wrapperCls: string = cssCls(BASE_CLS, (label ? 'label' : '') + ` ${validateCls}`);
-        const labelCls: string = cssCls(`${BASE_CLS}__label`, inputProps?.required ? 'req' : '');
-        const errMsgCls: string = cssCls(`${BASE_CLS}__err`, fixedPosErrMsg ? 'pos-fixed' : '');
+        const validateCls = showValidation ? (isValid ? 'valid' : 'invalid') : '';
+        const wrapperCls = cssCls(BASE_CLS, (label ? 'label' : '') + ` ${validateCls}`);
+        const labelCls = cssCls(`${BASE_CLS}__label`, inputProps?.required ? 'req' : '');
+        const errMsgCls = cssCls(`${BASE_CLS}__err`, fixedPosErrMsg ? 'pos-fixed' : '');
 
-        const $errMsgList: ReactElement = showErrMsg && errMsg ? (
+        const $errMsgList = showErrMsg && errMsg ? (
             <ul className={errMsgCls}>{ errMsg.map((msg, idx) =>
                 <li key={`text-ipt__err-msg-${idx}`}>{msg}</li>)}
             </ul>
@@ -91,7 +92,7 @@ export class TextInput extends MemoComponent<IProps> {
 
         const errMsg: string[] = [];
         rules.forEach(({rule, msg}: IValidationRule) => {
-            let isValid: boolean = true;
+            let isValid = true;
 
             if (typeof rule === 'function') {
                 isValid = rule(text);

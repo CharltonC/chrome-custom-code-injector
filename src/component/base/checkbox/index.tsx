@@ -6,10 +6,10 @@ const { cssCls } = UtilHandle.prototype;
 
 export const Checkbox: React.FC<IProps> = memo((props: IProps) => {
     const { id, label, ltLabel, clsSuffix, ...inputProps } = props;
-    const className: string = cssCls('checkbox', (clsSuffix ?? '') + `${ltLabel ? 'lt-label' : ''}`);
+    const ROOT_CLS = cssCls('checkbox', (clsSuffix ?? '') + `${ltLabel ? 'lt-label' : ''}`);
 
     return (
-        <div className={className}>
+        <div className={ROOT_CLS}>
             <input
                 type="checkbox"
                 id={id}

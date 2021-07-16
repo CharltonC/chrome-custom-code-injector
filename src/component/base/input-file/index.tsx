@@ -2,10 +2,10 @@ import React, { ChangeEvent } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { IProps, IState, IValidationConfig } from './type';
 
-export class FileInput extends MemoComponent<IProps, IState> {
-    readonly BASE_CLS: string = 'file-input';
-    readonly MSG_NO_FILE: string = 'no file was selected';
+const BASE_CLS = 'file-input';
+const MSG_NO_FILE = 'no file was selected';
 
+export class FileInput extends MemoComponent<IProps, IState> {
     state: IState = {
         isValid: null,
         errMsg: []
@@ -17,13 +17,13 @@ export class FileInput extends MemoComponent<IProps, IState> {
     }
 
     render() {
-        const { BASE_CLS, cssCls, props, state } = this;
+        const { cssCls, props, state } = this;
         const { id, clsSuffix, fileType, validate, onFileChange, ...inputProps } = props;
         const { isValid, errMsg } = state;
-        const className: string = cssCls(BASE_CLS, clsSuffix);
+        const ROOT_CLS = cssCls(BASE_CLS, clsSuffix);
 
         return (
-            <div className={className}>
+            <div className={ROOT_CLS}>
                 <input
                     type="file"
                     id={id}
@@ -47,7 +47,7 @@ export class FileInput extends MemoComponent<IProps, IState> {
         const errMsg: string[] = [];
 
         if (!file) {
-            errMsg.push(this.MSG_NO_FILE);
+            errMsg.push(MSG_NO_FILE);
 
         } else {
             validate.forEach(({ rule, msg }: IValidationConfig) => {

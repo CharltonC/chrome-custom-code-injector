@@ -1,15 +1,15 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState } from './type';
 
-export class TabSwitch extends MemoComponent<IProps, IState> {
-    readonly $switchIcon: ReactElement = inclStaticIcon('power');
-    readonly itemBaseCls: string = 'tab-switch__item';
-    readonly tabCls: string = 'tab-switch__rdo';
-    readonly tabSwitchCls: string = 'tab-switch__checkbox';
-    readonly propErrMsg: string = '`dataKeyMap` must be defined if `data` is an object';
+const $switchIcon = inclStaticIcon('power');
+const ITEM_BASE_CLS = 'tab-switch__item';
+const TAB_CLS = 'tab-switch__rdo';
+const TAB_SWITCH_CLS = 'tab-switch__checkbox';
+export const MSG_PROP_ERR = '`dataKeyMap` must be defined if `data` is an object';
 
+export class TabSwitch extends MemoComponent<IProps, IState> {
     static defaultProps: Partial<IProps> = {
         activeTabIdx: 0,
         tabKey: 'id',
@@ -17,37 +17,37 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
     };
 
     render() {
-        const { itemBaseCls, tabCls, tabSwitchCls, $switchIcon, cssCls, list, props } = this;
+        const { cssCls, list, props } = this;
         const { id, activeTabIdx, tabKey, tabEnableKey, onTabActive, onTabEnable } = props;
-        const itemActiveCls: string = cssCls(itemBaseCls, 'active');
+        const ITEM_ACTIVE_CLS = cssCls(ITEM_BASE_CLS, 'active');
 
         return list.length && (
             <ul className="tab-switch">{ list.map((tab: Record<string, any>, idx: number) => {
-                const isItemActive: boolean = activeTabIdx === idx;
-                const itemId: string = `${id}-${idx}`;
-                const itemCls: string = isItemActive ? itemActiveCls : itemBaseCls;
-                const tabId: string = `rdo-${itemId}`;
-                const tabSwitchId: string = `checkbox-${itemId}`;
-                const tabName: string = tab[tabKey];
-                const isTabSwitchOn: boolean = tab[tabEnableKey];
+                const isActive = activeTabIdx === idx;
+                const ITEM_ID = `${id}-${idx}`;
+                const ITEM_CLS = isActive ? ITEM_ACTIVE_CLS : ITEM_BASE_CLS;
+                const TAB_ID = `rdo-${ITEM_ID}`;
+                const TAB_SWITCH_ID = `checkbox-${ITEM_ID}`;
+                const TAB_TITLE = tab[tabKey];
+                const isTabSwitchOn = tab[tabEnableKey];
 
                 return (
-                    <li key={itemId} className={itemCls}>
+                    <li key={ITEM_ID} className={ITEM_CLS}>
                         <input
                             type="radio"
                             name={id}
-                            id={tabId}
-                            checked={isItemActive}
+                            id={TAB_ID}
+                            checked={isActive}
                             onChange={(e) => onTabActive?.(e, tab, idx)}
                             />
-                        <label htmlFor={tabId} className={tabCls}>{tabName}</label>
+                        <label htmlFor={TAB_ID} className={TAB_CLS}>{TAB_TITLE}</label>
                         <input
                             type="checkbox"
-                            id={tabSwitchId}
+                            id={TAB_SWITCH_ID}
                             checked={isTabSwitchOn}
                             onChange={(e) => onTabEnable?.(e, tab, idx)}
                             />
-                        <label htmlFor={tabSwitchId} className={tabSwitchCls}>{$switchIcon}</label>
+                        <label htmlFor={TAB_SWITCH_ID} className={TAB_SWITCH_CLS}>{$switchIcon}</label>
                     </li>);
                 })}
             </ul>
@@ -59,7 +59,7 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
 
         if (Array.isArray(data)) return data;
 
-        if (!dataKeyMap) throw new Error(this.propErrMsg);
+        if (!dataKeyMap) throw new Error(MSG_PROP_ERR);
 
         return dataKeyMap.map(([tabName, tabSwitchEnabledKey]) => {
             return {

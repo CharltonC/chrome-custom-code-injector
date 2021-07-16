@@ -30,8 +30,8 @@ describe('Component - DataGridPagination', () => {
         });
 
         describe('Method - getOptionTextPipe: Get Text Tranform Pipe Function for Select Option Content', () => {
-            const mockText: string = 'lorem';
-            const mockNum: number = 123;
+            const mockText = 'lorem';
+            const mockNum = 123;
 
             it('should return pipe function for per page select', () => {
                 expect(cmp.getOptionTextPipe(true)(mockText)).toBe(`${mockText} Per Page`);
@@ -44,7 +44,7 @@ describe('Component - DataGridPagination', () => {
         });
 
         describe('Method - getMappedBtnProps: Get Mapped Props for Button Element', () => {
-            const mockBtnName: string  = 'lorem';
+            const mockBtnName = 'lorem';
             const mockBtnAttr: TPgnHandle.ICmpBtnAttr = {
                 title: '',
                 disabled: true,

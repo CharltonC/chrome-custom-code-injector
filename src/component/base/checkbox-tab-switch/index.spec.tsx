@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps  } from './type';
-import { TabSwitch } from '.';
+import { TabSwitch, MSG_PROP_ERR } from '.';
 
 describe('Component - Tab Switch', () => {
     let mockProps: IProps;
@@ -47,7 +47,7 @@ describe('Component - Tab Switch', () => {
                 });
                 expect(() => {
                     console.log(cmp.list);
-                }).toThrowError(cmp.propErrMsg);
+                }).toThrowError(MSG_PROP_ERR);
             });
 
             it('should return a transformed list when data is an object `dataKeyMap` prop is provided', () => {

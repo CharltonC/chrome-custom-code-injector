@@ -1,8 +1,10 @@
-import React, { ReactElement, FormEvent } from 'react';
+import React, { FormEvent } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
 import { TextBtn } from '../../base/btn-text';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState } from './type';
+
+const $closeIcon = inclStaticIcon('close');
 
 /**
  * The reason this design approach is chosen is to mainly separate the concern of mixing global event inside the component
@@ -17,7 +19,6 @@ import { IProps, IState } from './type';
  */
 export class Modal extends MemoComponent<IProps, IState> {
     static defaultProps = { confirmType: 'submit' };
-    readonly closeIconElem: ReactElement = inclStaticIcon('close');
 
     componentWillUnmount() {
         this.props.onCancel();
@@ -37,7 +38,7 @@ export class Modal extends MemoComponent<IProps, IState> {
                     <div className="modal__header">
                         <h3>{header}</h3>{ subHeader &&
                         <h4>{subHeader}</h4>}
-                        <button type="button" onClick={onCancel}>{this.closeIconElem}</button>
+                        <button type="button" onClick={onCancel}>{$closeIcon}</button>
                     </div>
                     <div className="modal__body">{children}</div>{ (cancel || confirm) &&
                     <div className="modal__footer">{ cancel &&

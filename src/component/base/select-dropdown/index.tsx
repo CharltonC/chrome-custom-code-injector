@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IState} from './type';
 
-const dnArrowElem: ReactElement = inclStaticIcon('arrow-dn');
+const $dnArrow = inclStaticIcon('arrow-dn');
 
 export class Dropdown extends MemoComponent<IProps, IState> {
     constructor(props: IProps) {
@@ -26,11 +26,11 @@ export class Dropdown extends MemoComponent<IProps, IState> {
     render() {
         const { id, label, ltLabel, list, listTxtTransform, border, selectIdx, onSelect, clsSuffix, ...props } = this.props;
         const { hsList, hsSelectIdx } = this.state;
-        const className: string = this.getClsName(clsSuffix, border, ltLabel);
+        const ROOT_CLS = this.getClsName(clsSuffix, border, ltLabel);
         const selectProps = hsSelectIdx ? { ...props, value: selectIdx } : props;
 
         return hsList && (
-            <div className={className}>
+            <div className={ROOT_CLS}>
                 <select
                     {...selectProps}
                     id={id}
@@ -42,7 +42,7 @@ export class Dropdown extends MemoComponent<IProps, IState> {
                     </option>
                     )}
                 </select>
-                { dnArrowElem }
+                { $dnArrow }
                 { label && <label htmlFor={id}>{label}</label> }
             </div>
         );
@@ -57,12 +57,12 @@ export class Dropdown extends MemoComponent<IProps, IState> {
 
     onSelect(evt: React.ChangeEvent<HTMLSelectElement>): void {
         // this is the actual index of the list item or `<option>`
-        const selectValueAttrVal: number = Number(evt.target.value);
+        const selectValueAttrVal = Number(evt.target.value);
         this.props.onSelect?.(evt, selectValueAttrVal);
     }
 
     getClsName(clsSuffix: string = '', border: boolean, ltLabel: boolean = false): string {
-        const suffix: string = clsSuffix
+        const suffix = clsSuffix
             + ` ${border ? 'border' : 'plain'}`
             + ` ${ltLabel ? 'lt-label' : ''}`;
         return this.cssCls('dropdown', suffix);
