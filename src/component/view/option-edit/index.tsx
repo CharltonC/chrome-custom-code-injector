@@ -52,7 +52,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                 list={rules}
                 itemKeys={['id', 'id']}
                 childKey="paths"
-                activeItem={editViewTarget}
+                activeIdx={0}
                 /* TODO: input change causes active item changes causes list to collapse */
                 onItemClick={this.onListItemChange}
                 />

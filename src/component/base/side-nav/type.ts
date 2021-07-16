@@ -2,7 +2,8 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
     list: AObj[];
     childKey: string;
     itemKeys: [ string, string ];
-    activeItem: AObj;
+    activeIdx: number;
+    activeChildIdx?: number;
     onItemClick?: (...args: any[]) => void;
 }
 

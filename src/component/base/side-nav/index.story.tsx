@@ -18,7 +18,8 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     ];
 
     const [ list, setList ] = useState(sampleList);
-    const [ activeItem, setActiveItem ] = useState(list[1]);
+    const [ activeIdx, setActiveIdx ] = useState(0);
+    const [ activeChildIdx, setActiveChildIdx ] = useState(0);
 
     // e.g. we click 2nd item in `sampleList` (either itself or its child), then we change the list via `onClick` to change the list
     // - the active item will still persist
@@ -30,8 +31,16 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
         ]);
     };
 
-    const onItemClick = (e, { item }) => {
-        setActiveItem(item);
+    // TODO: Move to internal method + external handler pass through
+    const onItemClick = (e, { idx, parentCtxIdx }) => {
+        console.log(parentCtxIdx, idx);
+        const isParent = typeof parentCtxIdx === 'undefined';
+        if (isParent) {
+            setActiveIdx(idx);
+            setActiveChildIdx(null);
+        } else {
+            setActiveChildIdx(idx);
+        }
     }
 
     return (
@@ -41,7 +50,8 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
                 list={list}
                 itemKeys={[ 'id', 'id' ]}
                 childKey="nestList"
-                activeItem={activeItem}
+                activeIdx={activeIdx}
+                activeChildIdx={activeChildIdx}
                 onItemClick={onItemClick}
                 />
         </div>
