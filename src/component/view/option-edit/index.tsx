@@ -48,14 +48,14 @@ export class OptionEditView extends MemoComponent<IProps> {
         // TODO: Refactor fixed props, refactor method
 
         return (<>
-            <SideNav
+            {/* <SideNav
                 list={rules}
                 itemKeys={['id', 'id']}
                 childKey="paths"
                 activeIdx={0}
-                /* TODO: input change causes active item changes causes list to collapse */
+                // input change causes active item changes causes list to collapse
                 onItemClick={this.onListItemChange}
-                />
+                /> */}
             <div className="main--edit__form">
                 {/* TODO: placeholder text variation */}
                 <section className="fm-field">
