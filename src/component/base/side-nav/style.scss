@@ -1,4 +1,4 @@
-@mixin side-nav__tier($bgColor, $isHover: false) {
+@mixin side-nav__item-header($bgColor, $isHover: false) {
     @if $isHover == true {
         cursor: pointer;
     }
@@ -23,8 +23,9 @@
 
     &__item--parent {
         &.side-nav__item--atv {
-            .side-nav__tier {
-                @include side-nav__tier($dark-blue-300);
+            .side-nav__item-header {
+                @include side-nav__item-header($dark-blue-300);
+                // TODO: transparent bg?
 
                 .badge {
                     color: $white;
@@ -40,8 +41,8 @@
         }
 
         &:not(.side-nav__item--atv) {
-            .side-nav__tier:hover {
-                @include side-nav__tier($teal-200, true);
+            .side-nav__item-header:hover {
+                @include side-nav__item-header($teal-200, true);
                 transition: background-color .15s ease;
                 transform: translateZ(0);
                 will-change: background-color;
@@ -81,7 +82,7 @@
         }
 
         &.side-nav__item--atv {
-            @include side-nav__tier($dark-blue-300);
+            @include side-nav__item-header($dark-blue-300);
 
             &::before {
                 border: 2px solid $white;
@@ -89,7 +90,7 @@
         }
 
         &:not(.side-nav__item--atv):hover {
-            @include side-nav__tier($teal-200, true);
+            @include side-nav__item-header($teal-200, true);
             transition: background-color .15s ease;
             transform: translateZ(0);
             will-change: background-color;
@@ -105,7 +106,7 @@
         }
     }
 
-    &__tier {
+    &__item-header {
         display: flex;
         align-items: center;
         justify-content: space-between;

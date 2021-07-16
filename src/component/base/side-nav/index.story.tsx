@@ -11,10 +11,24 @@ const defStyle = {};
 
 export const ActiveListItemRemainsActiveWhenListChanges = () => {
     const sampleList = [
-        {id: 'Host Id 1', nestList: [{id: '1-1'}, {id: '1-2'}]},
-        {id: 'Host Id 2', nestList: [{id: '2-1'}, {id: '2-2'}]},
-        {id: 'Host Id 3', nestList: [{id: '3-1'}, {id: '3-2'}]},
-        {id: 'Host Id 4', nestList: [{id: '4-1'}, {id: '4-2'},{id: '4-1'}, {id: '4-2'},{id: '4-1'}, {id: '4-2'},{id: '4-1'}, {id: '4-2'},{id: '4-1'}, {id: '4-2'}]}
+      { title: "Host Id 1", list: [{ title: "1-1" }, { title: "1-2" }] },
+      { title: "Host Id 2", list: [{ title: "2-1" }, { title: "2-2" }] },
+      { title: "Host Id 3", list: [{ title: "3-1" }, { title: "3-2" }] },
+      {
+        title: "Host Id 4",
+        list: [
+          { title: "4-1" },
+          { title: "4-2" },
+          { title: "4-1" },
+          { title: "4-2" },
+          { title: "4-1" },
+          { title: "4-2" },
+          { title: "4-1" },
+          { title: "4-2" },
+          { title: "4-1" },
+          { title: "4-2" },
+        ],
+      },
     ];
 
     const [ list, setList ] = useState(sampleList);
@@ -24,7 +38,7 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     // e.g. we click 2nd item in `sampleList` (either itself or its child), then we change the list via `onClick` to change the list
     // - the active item will still persist
     const changeList = () => {
-        list[1].nestList.push({id: 'Path ID 3'});
+        list[1].list.push({title: 'Path ID 3'});
         setList([
             list[0],
             list[1]
@@ -32,15 +46,10 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     };
 
     // TODO: Move to internal method + external handler pass through
-    const onItemClick = (e, { idx, parentCtxIdx }) => {
-        console.log(parentCtxIdx, idx);
-        const isParent = typeof parentCtxIdx === 'undefined';
-        if (isParent) {
-            setActiveIdx(idx);
-            setActiveChildIdx(null);
-        } else {
-            setActiveChildIdx(idx);
-        }
+    const onClick = ({ evt, idx, isChild }) => {
+        if (isChild) return setActiveChildIdx(idx);
+        setActiveIdx(idx);
+        setActiveChildIdx(null);
     }
 
     return (
@@ -48,11 +57,9 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
             <button type="button" onClick={changeList}>change list</button>
             <SideNav
                 list={list}
-                itemKeys={[ 'id', 'id' ]}
-                childKey="nestList"
-                activeIdx={activeIdx}
-                activeChildIdx={activeChildIdx}
-                onItemClick={onItemClick}
+                activeItemIdx={activeIdx}
+                activeChildItemIdx={activeChildIdx}
+                onClick={onClick}
                 />
         </div>
     )

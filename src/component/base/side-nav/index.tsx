@@ -2,57 +2,61 @@ import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { NumBadge } from '../num-badge';
-import { IProps, IState } from './type';
+import { IProps, IState, IClickEvtArg, IItemAttrsQuery, IItemAttrs } from './type';
 
+const BASE_CLS = 'side-nav';
+const PARENT_CLS_SFX = 'parent';
+const CHILD_CLS_SFX = 'child';
+const CHILD_LIST_MAX_HEIGHT = '320px';
 const $rtArrowIcon: ReactElement = inclStaticIcon('arrow-rt');
 const $dnArrowIcon: ReactElement = inclStaticIcon('arrow-dn');
 
 export class SideNav extends MemoComponent<IProps, IState> {
-    readonly BASE_CLS: string = 'side-nav';
-    readonly PARENT_CLS_SUFFIX: string = 'parent';
-    readonly CHILD_CLS_SUFFIX: string = 'child';
+    static defaultProps: Partial<IProps> = {
+        listTitleKey: 'title',
+        childListKey: 'list',
+        childListTitleKey: 'title',
+        activeItemIdx: 0,
+    };
 
     render() {
-        const { BASE_CLS, PARENT_CLS_SUFFIX, cssCls, props } = this;
+        const { cssCls, props } = this;
         const { list } = props;
-        const LIST_CLS: string = cssCls(`${BASE_CLS}__list`, PARENT_CLS_SUFFIX);
+        const LIST_CLS = cssCls(`${BASE_CLS}__list`, PARENT_CLS_SFX);
 
         return (
             <aside className={BASE_CLS}>
                 <ul className={LIST_CLS}>
-                    {list.map((item: AObj, idx: number) => this.renderParentListItem(item, idx))}
+                    {list.map((item: AObj, idx: number) => this.renderListItem(item, idx))}
                 </ul>
             </aside>
         );
     }
 
-    // TODO:
-    // - Use Radio checkboxes with prefix, e.g. side-nav-list-<cmp-instance-idx>-<parentIdx>-<childIdx>
-    //
-    // - default to 0 index when parent is selected (incl. error handling)
-    //
-    // - active indexes [ parentIdx, childIdx ]
-    //   keys: [ parentKey, childKey ]
+    renderListItem(item: AObj, idx: number): ReactElement {
+        const { props, cssCls } = this;
+        const {
+            listTitleKey,
+            childListKey,
+            activeItemIdx,
+         } = props;
 
-    renderParentListItem(item: AObj, idx: number): ReactElement {
-        const { props, BASE_CLS, PARENT_CLS_SUFFIX, CHILD_CLS_SUFFIX, cssCls } = this;
-        const { activeIdx, activeChildIdx, itemKeys, childKey } = props;
-        const [ idKey ] = itemKeys;
-
-        const nestedItems = item[childKey];
+        const nestedItems = item[childListKey];
         const nestedItemsTotal = nestedItems?.length;
-        const isActive = idx === activeIdx;
-        const showNestedItems = isActive && typeof activeChildIdx !== 'undefined';
+        const isActive = idx === activeItemIdx;
+        const showNestedItems = isActive && nestedItemsTotal;
 
-        const ITEM_TITLE: string = item[idKey];
-        const ITEM_KEY = `${BASE_CLS}__item-${PARENT_CLS_SUFFIX}-${idx}`;
-        const ITEM_CLS = cssCls(`${BASE_CLS}__item`, PARENT_CLS_SUFFIX + (isActive ? ' atv' : ''));
-        const ITEM_TIER_CLS = `${BASE_CLS}__tier`;
-        const ITEM_TITLE_CLS = `${BASE_CLS}__title`;
-        const NESTED_LIST_CLS = cssCls(`${BASE_CLS}__list`, CHILD_CLS_SUFFIX);
+        const { ITEM_KEY, ITEM_CLS, ITEM_TITLE_CLS } = this.getItemAttrs({
+            idx,
+            suffix: PARENT_CLS_SFX,
+            isActive
+        });
+        const ITEM_TITLE: string = item[listTitleKey];
+        const ITEM_HEADER_CLS = `${BASE_CLS}__item-header`;
+        const NESTED_LIST_CLS = cssCls(`${BASE_CLS}__list`, CHILD_CLS_SFX);
 
         const $arrowIcon = (isActive || showNestedItems) ? $dnArrowIcon : $rtArrowIcon;
-        const childListStyle = { maxHeight: showNestedItems ? '320px' : '0' };
+        const childListStyle = { maxHeight: showNestedItems ? CHILD_LIST_MAX_HEIGHT : '0' };
 
         return (
             <li
@@ -60,46 +64,58 @@ export class SideNav extends MemoComponent<IProps, IState> {
                 key={ITEM_KEY}
                 onClick={(evt) => this.onClick({ evt, item, idx })}
                 >
-                    <p className={ITEM_TIER_CLS}>
+                    <p className={ITEM_HEADER_CLS}>
                         {$arrowIcon}
                         <span className={ITEM_TITLE_CLS}>{ITEM_TITLE}</span>
                         <NumBadge total={nestedItemsTotal} />
-                    </p>
-                    {/* TODO: render only if subList exists */}
+                    </p>{ showNestedItems &&
                     <ul
                         className={NESTED_LIST_CLS}
                         style={childListStyle}
-                        >{ showNestedItems &&
-                        nestedItems.map((childItem: AObj, childIdx: number) => this.renderChildListItem(childItem, childIdx)) }
-                    </ul>
+                        >{ nestedItems.map((childItem: AObj | string, childIdx: number) =>
+                            this.renderChildListItem({
+                                item: childItem,
+                                idx: childIdx,
+                                parentIdx: idx
+                            })
+                        )}
+                    </ul>}
             </li>
         );
     }
 
-    renderChildListItem(item: AObj, idx: number): ReactElement {
-        const { props, BASE_CLS, CHILD_CLS_SUFFIX, cssCls } = this;
-        const { activeChildIdx, itemKeys } = props;
-        const [ childIdKey ] = itemKeys;
+    renderChildListItem({ item, idx, parentIdx }): ReactElement {
+        const { childListTitleKey, activeChildItemIdx } = this.props;
 
-        const isActive = idx === activeChildIdx;
-        const ITEM_TITLE: string = item[childIdKey];
-        const ITEM_KEY = `${BASE_CLS}__item-${CHILD_CLS_SUFFIX}-${idx}`;
-        const ITEM_CLS = cssCls(`${BASE_CLS}__item`, CHILD_CLS_SUFFIX + (isActive ? ' atv' : ''));
-        const ITEM_TITLE_CLS = `${BASE_CLS}__title`;
-        const evtArg = { item, idx, isChild: true };
+        const isActive = idx === activeChildItemIdx;
+        const baseEvtArg = { item, idx, parentIdx, isChild: true };
+        const ITEM_TITLE: string = item?.[childListTitleKey] || item as string
+        const { ITEM_KEY, ITEM_CLS, ITEM_TITLE_CLS } = this.getItemAttrs({
+            idx,
+            suffix: CHILD_CLS_SFX,
+            isActive
+        });
 
         return (
             <li
                 className={ITEM_CLS}
                 key={ITEM_KEY}
-                onClick={(evt) => this.onClick({ ...evtArg, evt })}>
+                onClick={(evt) => this.onClick({ ...baseEvtArg, evt })}>
                 <span className={ITEM_TITLE_CLS}>{ITEM_TITLE}</span>
             </li>
         );
     }
 
-    onClick(arg) {
+    onClick(arg: IClickEvtArg): void {
         arg.evt.stopPropagation();
-        this.props.onItemClick?.(arg);
+        this.props.onClick?.(arg);
+    }
+
+    getItemAttrs({ idx, suffix, isActive }: IItemAttrsQuery): IItemAttrs {
+        return {
+            ITEM_KEY: `${BASE_CLS}__item-${suffix}-${idx}`,
+            ITEM_CLS: this.cssCls(`${BASE_CLS}__item`, suffix + (isActive ? ' atv' : '')),
+            ITEM_TITLE_CLS: `${BASE_CLS}__title`,
+        };
     }
 }
