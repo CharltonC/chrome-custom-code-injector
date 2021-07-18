@@ -1,7 +1,7 @@
 import React from 'react';
-import { AppStateHandler } from '../../../handle/app-state';
+import { AppStateHandler } from '../../../app-state/handler';
 import { StateHandle } from '../../../handle/state';
-import { createMockAppState } from '../../../mock/app-state';
+import { createMockAppState } from '../../../app-state/mock';
 import { OptionApp } from '.';
 
 const App = StateHandle.init(OptionApp, {

@@ -30,6 +30,7 @@ describe('Rule Config Model', () => {
         expect(new HostRuleConfig(mockTitle, mockValue)).toEqual({
             ...(new BaseRuleConfig()),
             ...(new PathRuleConfig(mockTitle, mockValue)),
+            isHost: true,
             isHttps: false,
             paths: []
         });

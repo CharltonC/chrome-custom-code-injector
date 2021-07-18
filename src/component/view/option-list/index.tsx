@@ -19,7 +19,7 @@ export class OptionListView extends MemoComponent<IProps> {
         // Constant props for DataGrid component
         this.dataGridBaseProps = {
             type: 'table',
-            rowKey: 'id',
+            rowKey: 'title',
             expand: {
                 onePerLevel: true
             },
@@ -102,7 +102,7 @@ export class OptionListView extends MemoComponent<IProps> {
         return [
             { title: $selectAllHeader as any },
             { title: 'HTTPS' },
-            { title: $id as any, sortKey: 'id' },
+            { title: $id as any, sortKey: 'title' },
             { title: $addr as any, sortKey: 'value' },
             { title: 'SCRIPT EXECUTION' },
             { title: 'JS' },

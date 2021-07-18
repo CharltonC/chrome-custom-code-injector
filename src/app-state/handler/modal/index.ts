@@ -1,12 +1,12 @@
-import { StateHandle } from '../../state';
-import { AppState } from '../../../model/app-state';
-import { Setting } from '../../../model/setting';
-import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
+import { StateHandle } from '../../../handle/state';
+import { AppState } from '../../model/app-state';
+import { Setting } from '../../model/setting';
+import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
 import { modals } from '../../../constant/modals';
-import { FileHandle } from '../../file';
-import { LocalState } from '../../../model/local-state';
-import { RuleValidState } from '../../../model/rule-valid-state';
-import { modalDelTarget } from '../../../model/del-target';
+import { FileHandle } from '../../../handle/file';
+import { LocalState } from '../../model/local-state';
+import { RuleValidState } from '../../model/rule-valid-state';
+import { modalDelTarget } from '../../model/del-target';
 import { IStateHandler } from '../type';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;

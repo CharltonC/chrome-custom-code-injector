@@ -33,8 +33,10 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { rules, localState } = appState;
         const { onActiveTabChange, onTabEnable, onEditorCodeChange } = appStateHandler;
 
-        const { editViewTarget } = localState;
-        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase, title, value } = editViewTarget;
+        const { itemIdx, childItemIdx } = localState.editViewTarget;
+        const item = rules[itemIdx];
+        const activeItem = item || item?.[childItemIdx];
+        const { isHost, activeTabIdx, libs, jsCode, cssCode, jsExecPhase, title, value } = activeItem;
 
         const isLibTab = !!libs.length && activeTabIdx === 2;
         const isJsCode = activeTabIdx === 0;
@@ -43,16 +45,15 @@ export class OptionEditView extends MemoComponent<IProps> {
         const codeMode = isJsCode ? 'js' : 'css'
         const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
 
-        const isHostRule = 'paths' in editViewTarget;
-
         // TODO: Refactor fixed props, refactor method
 
         return (<>
-            {/* <SideNav
+            <SideNav
                 list={rules}
-                activeIdx={0}
-                onItemClick={this.onListItemChange}
-                /> */}
+                childListKey="paths"
+                activeItemIdx={itemIdx}
+                activeChildItemIdx={childItemIdx}
+                />
             <div className="main--edit__form">
                 {/* TODO: placeholder text variation */}
                 <section className="fm-field">
@@ -97,7 +98,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                 {/* TOD: section-form field? */}
                 <TabSwitch
                     id="tab-switch"
-                    data={editViewTarget}
+                    data={activeItem}
                     dataKeyMap={[
                         ['js', 'isJsOn'],
                         ['css', 'isCssOn'],
@@ -123,7 +124,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         rows: [ [ TbRow ] ],
                         commonProps: { appState, appStateHandler }
                     }}
-                    rowKey="id"
+                    rowKey="title"
                     sort={{ reset: true }}
                     /* TODO: event binding */
                     header={headerProps}
@@ -141,8 +142,8 @@ export class OptionEditView extends MemoComponent<IProps> {
 
         const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
         const { areAllRowsSelected, selectedRowKeys } = selectState;
-        const totalSelected: number = Object.entries(selectedRowKeys).length;
-        const hsSelected: boolean = areAllRowsSelected || !!totalSelected;
+        const totalSelected = Object.entries(selectedRowKeys).length;
+        const hsSelected = areAllRowsSelected || !!totalSelected;
         const isPartialSelected = !areAllRowsSelected && !!totalSelected;
 
         // TODO: disable, event handler

@@ -1,10 +1,10 @@
-import { resultsPerPage } from '../../constant/result-per-page';
-import { HostRuleConfig, PathRuleConfig } from '../rule-config';
+import { resultsPerPage } from '../../../constant/result-per-page';
+import { HostRuleConfig } from '../rule-config';
 import { RuleValidState } from '../rule-valid-state';
 import { Setting } from '../setting';
-import * as TSort from '../../handle/sort/type';
-import * as TPgn from '../../handle/pagination/type';
-import * as TRowSelect from '../../handle/row-select/type';
+import * as TSort from '../../../handle/sort/type';
+import * as TPgn from '../../../handle/pagination/type';
+import * as TRowSelect from '../../../handle/row-select/type';
 import { modalDelTarget } from '../del-target';
 
 const { resultsPerPageIdx } = new Setting();
@@ -12,7 +12,7 @@ const { resultsPerPageIdx } = new Setting();
 export class LocalState {
     //// HEADER
     // * Search
-    searchedText: string = '';
+    searchedText = '';
     searchedRules: HostRuleConfig[] = null;
 
     // * Import/Export
@@ -20,7 +20,14 @@ export class LocalState {
     exportFileName: string = null;
 
     // * Views
-    editViewTarget: HostRuleConfig | PathRuleConfig = null;
+    // TODO: type
+    /**
+     * {
+        itemIdx: null,
+        childItemIdx: null,
+    };
+     */
+    editViewTarget = null;
 
     //// DATA GRID ROWS
     // * rows used by Modal Delete Confirm `onDelModalConfirm`
@@ -55,15 +62,15 @@ export class LocalState {
     //// MODAL
     // * ID & Confirm disabled
     currModalId: string = null;
-    allowModalConfirm: boolean = false;
+    allowModalConfirm = false;
 
     // * Validation for Add/Edit
-    modalEditTargetValidState: RuleValidState = new RuleValidState();
+    modalEditTargetValidState = new RuleValidState();
 
     // * Add New Row/Sub-row or Edit Row/Sub-row (w/ Validation)
     modalEditTarget: HostRuleConfig = null;
     modalAddSubTargetIdx: number = null;     // index of rule for adding Sub-row only
 
     // * Delete Row/Sub-row
-    modalDelTarget: modalDelTarget = new modalDelTarget();
+    modalDelTarget = new modalDelTarget();
 }

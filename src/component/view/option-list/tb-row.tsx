@@ -12,10 +12,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { appState, appStateHandler } = commonProps;
     const { localState } = appState;
 
-    const {
-        selectState,
-        expdRowId,
-    } = localState;
+    const { selectState, expdRowId } = localState;
 
     const {
         onDelModal, onAddPathModal,
@@ -24,11 +21,10 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     } = appStateHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
-    const { isHttps, id, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
+    const { isHost, isHttps, title, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
 
-    const ID_SUFFIX: string = `${itemLvl}-${idx}`;
-    const isParent = itemLvl === 0;
-    const isRowExp = isParent && id === expdRowId;
+    const ID_SUFFIX = `${itemLvl}-${idx}`;
+    const isRowExp = isHost && title === expdRowId;
     const parentCtxIdx: number = parentItemCtx?.ctxIdx;
 
     const { areAllRowsSelected, selectedRowKeys } = selectState;
@@ -38,14 +34,14 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     return <>
             <tr className={REG_ROW}>
                 <td>
-                    { isParent &&
+                    { isHost &&
                     <Checkbox
                         id={`check-${ID_SUFFIX}`}
                         clsSuffix=""
                         checked={isSelected}
                         onChange={() => onRowSelectToggle(ctxIdx, dataSrc.length)}
                         />}
-                </td><td>{ isParent &&
+                </td><td>{ isHost &&
                     <SliderSwitch
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
@@ -53,17 +49,17 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         onChange={() => onRowSwitchToggle({ item, key: 'isHttps'})}
                         />}
                 </td><td>
-                    <div>{ isParent &&
+                    <div>{ isHost &&
                         <>
                             <IconBtn
                                 icon="arrow-rt"
                                 clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
                                 disabled={!paths?.length}
-                                onClick={() => onRowExpand({[id]: itemLvl})}
+                                onClick={() => onRowExpand({[title]: itemLvl})}
                                 />
                             <NumBadge total={paths?.length} />
                         </>}
-                        <span className="datagrid__cell datagrid__cell--id">{id}</span>
+                        <span className="datagrid__cell datagrid__cell--id">{title}</span>
                     </div>
                 </td><td>
                     <span className="datagrid__cell datagrid__cell--addr">
@@ -99,7 +95,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         disabled={isDelDisabled}
                         onChange={() => onRowSwitchToggle({ item, key: 'isLibOn'})}
                         />
-                </td><td>{ isParent &&
+                </td><td>{ isHost &&
                     <IconBtn
                         icon="add"
                         theme="gray"
@@ -112,7 +108,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         icon="edit"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onRowEdit(item) }
+                        onClick={() => onRowEdit({ isHost, idx, parentCtxIdx }) }
                         />
                 </td><td>
                     <IconBtn

@@ -5,17 +5,17 @@
 import { AJsExecPhase } from './type';
 
 export class BaseRuleConfig {
-    isJsOn: boolean = false;
-    isCssOn: boolean = false;
-    isLibOn: boolean = false;
+    isJsOn = false;
+    isCssOn = false;
+    isLibOn = false;
     jsExecPhase: AJsExecPhase = 1;
 }
 
 export class PathRuleConfig extends BaseRuleConfig {
-    title: string  = '';
-    value: string = '';
-    jsCode: string = '';
-    cssCode: string = '';
+    title = '';
+    value = '';
+    jsCode = '';
+    cssCode = '';
     libs: LibRuleConfig[] = [];
     activeTabIdx: 0 | 1 | 2 = 0;
 
@@ -27,15 +27,16 @@ export class PathRuleConfig extends BaseRuleConfig {
 }
 
 export class HostRuleConfig extends PathRuleConfig {
-    isHttps: boolean = false;
+    isHost = true;
+    isHttps = false;
     paths: PathRuleConfig[] = [];
 }
 
 export class LibRuleConfig {
-    title: string  = '';
-    value: string = '';
-    isOn: boolean = false;
-    isAsync: boolean = true;
+    title = '';
+    value = '';
+    isOn = false;
+    isAsync = true;
 
     constructor(title: string, value: string) {
         this.title = title;

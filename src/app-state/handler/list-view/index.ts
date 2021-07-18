@@ -1,10 +1,10 @@
-import { RowSelectHandle } from '../../row-select';
-import { StateHandle } from '../../state';
-import { AppState } from '../../../model/app-state';
-import { HostRuleConfig } from '../../../model/rule-config';
+import { RowSelectHandle } from '../../../handle/row-select';
+import { StateHandle } from '../../../handle/state';
+import { AppState } from '../../model/app-state';
+import { HostRuleConfig } from '../../model/rule-config';
 import { IStateHandler } from '../type';
-import * as TPgn from '../../pagination/type';
-import * as TSort from '../../sort/type';
+import * as TPgn from '../../../handle/pagination/type';
+import * as TSort from '../../../handle/sort/type';
 
 const rowSelectHandle = new RowSelectHandle();
 
