@@ -9,7 +9,7 @@ import { IStateConfigs } from './type';
  *
  * Adv:
  * - no more `handler.bind(this)`
- * - no more merging `...store` in every return state
+ * - no more merging `...state` in every return state
  * - only 1 call needed: `StateHandle.init(..)`
  * - `.reflect` to consolidate multipe and/or dependent state changes
  */
@@ -18,17 +18,20 @@ export const StateHandle = {
 
     init(Cmp: ACmp, stateConfigs: IStateConfigs): ComponentClass {
         return class extends BaseStateComponent {
-            storeHandler: AObj;
+            appStateHandler: AObj;
 
             constructor(props: AObj) {
                 super(props);
-                const { store, storeHandler } = this.transformStateConfigs(stateConfigs);
-                this.state = store;
-                this.storeHandler = storeHandler;
+                const { appState, appStateHandler } = this.transformStateConfigs(stateConfigs);
+                this.state = appState;
+                this.appStateHandler = appStateHandler;
             }
 
             render() {
-                return <Cmp store={this.state} storeHandler={this.storeHandler} />;
+                return <Cmp
+                    appState={this.state}
+                    appStateHandler={this.appStateHandler}
+                    />;
             }
         }
     }

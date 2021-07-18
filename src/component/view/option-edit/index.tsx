@@ -29,9 +29,9 @@ export class OptionEditView extends MemoComponent<IProps> {
 
     render() {
         const { headerProps, props } = this;
-        const { store, storeHandler } = props;
-        const { rules, localState } = store;
-        const { onActiveTabChange, onTabEnable, onEditorCodeChange } = storeHandler;
+        const { appState, appStateHandler } = props;
+        const { rules, localState } = appState;
+        const { onActiveTabChange, onTabEnable, onEditorCodeChange } = appStateHandler;
 
         const { editViewTarget } = localState;
         const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase, id, value } = editViewTarget;
@@ -124,7 +124,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                     /* TODO: constant props */
                     component={{
                         rows: [ [ TbRow ] ],
-                        commonProps: { store, storeHandler }
+                        commonProps: { appState, appStateHandler }
                     }}
                     rowKey="id"
                     sort={{ reset: true }}
@@ -137,10 +137,10 @@ export class OptionEditView extends MemoComponent<IProps> {
 
     get headerProps() {
         const { props } = this;
-        const { store, storeHandler } = props;
-        const { rules, localState } = store;
+        const { appState, appStateHandler } = props;
+        const { rules, localState } = appState;
         const { searchedRules, selectState } = localState;
-        const { } = storeHandler;
+        const { } = appStateHandler;
 
         const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
         const { areAllRowsSelected, selectedRowKeys } = selectState;
@@ -198,7 +198,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         // this.$idInputRef.current.clearValidState();
         // this.$valueInputRef.current.clearValidState();
         setTimeout(() => {
-            this.props.storeHandler.onListItemChange(item);
+            this.props.appStateHandler.onListItemChange(item);
         }, 200);
     }
 }

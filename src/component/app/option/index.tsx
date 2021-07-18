@@ -24,12 +24,12 @@ export class OptionApp extends MemoComponent<IProps> {
 
     constructor(props: IProps) {
         super(props);
-        this.onSearchPerform = debounce(props.storeHandler.onSearchPerform, 250);
+        this.onSearchPerform = debounce(props.appStateHandler.onSearchPerform, 250);
         this.onSearch = this.onSearch.bind(this);
     }
 
     onSearch(e, val: string, gte3Char: boolean): void {
-        const { onSearchTextChange } = this.props.storeHandler;
+        const { onSearchTextChange } = this.props.appStateHandler;
         onSearchTextChange(val);
         if (!gte3Char) return;
         this.onSearchPerform(val);
@@ -40,7 +40,7 @@ export class OptionApp extends MemoComponent<IProps> {
             props, cssCls, onSearch,
             $docIcon, $ruleIdEdit, $libEdit,
             localState, setting, rules,
-            storeHandler
+            appStateHandler
         } = this;
 
         const {
@@ -66,7 +66,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
             onImportFileChange, onImportModalConfirm,
             onExportFileNameChange, onExportModalConfirm,
-        } = storeHandler;
+        } = appStateHandler;
 
         const isListView: boolean = !editViewTarget;
         const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
@@ -335,24 +335,24 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get localState() {
-        return this.props.store.localState;
+        return this.props.appState.localState;
     }
 
     get rules() {
-        return this.props.store.rules;
+        return this.props.appState.rules;
     }
 
     get setting() {
-        return this.props.store.setting;
+        return this.props.appState.setting;
     }
 
-    get storeHandler() {
-        return this.props.storeHandler;
+    get appStateHandler() {
+        return this.props.appStateHandler;
     }
 
     get $ruleIdEdit() {
         const { modalEditTarget } = this.localState;
-        const { onEditItemIdChange } = this.storeHandler;
+        const { onEditItemIdChange } = this.appStateHandler;
 
         return;
         // return (

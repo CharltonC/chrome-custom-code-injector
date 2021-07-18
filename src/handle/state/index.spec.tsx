@@ -14,19 +14,19 @@ describe('State Handle', () => {
         TestUtil.teardown($elem);
     });
 
-    describe('Single Store and Store Handler', () => {
-        const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
-        const mockStore = { name: 'john' };
-        class MockStoreHandler extends BaseStateHandler {
-            onClick(store) {
-                return { name: 'jane' }
+    describe('Single State and State Handler', () => {
+        const MockCmp = ({ appState, appStateHandler }) => <h1 onClick={appStateHandler.onClick}>{appState.name}</h1>;
+        const mockState = { name: 'john' };
+        class MockStateHandler extends BaseStateHandler {
+            onClick() {
+                return { name: 'jane' };
             }
         }
         let $h1: HTMLHeadingElement;
 
         beforeEach(() => {
             const WrappedMockCmp = StateHandle.init(MockCmp, {
-                root: [ mockStore, new MockStoreHandler() ]
+                root: [ mockState, new MockStateHandler() ]
             });
             TestUtil.renderPlain($elem, WrappedMockCmp);
             $h1 = $elem.querySelector('h1');
@@ -42,34 +42,34 @@ describe('State Handle', () => {
         });
     });
 
-    describe('Single Store and Store Handler with multiple partial handlers', () => {
-        const MockCmp = ({ store, storeHandler }) => (
+    describe('Single State and State Handler with multiple partial handlers', () => {
+        const MockCmp = ({ appState, appStateHandler }) => (
             <>
-                <h1 onClick={storeHandler.onH1Click}>{store.name}</h1>
-                <h2 onClick={storeHandler.onH2Click}>{store.name}</h2>
+                <h1 onClick={appStateHandler.onH1Click}>{appState.name}</h1>
+                <h2 onClick={appStateHandler.onH2Click}>{appState.name}</h2>
             </>
         );
 
-        const mockStore = { name: 'john' };
+        const mockState = { name: 'john' };
 
         class MockPartialeHandlerA extends BaseStateHandler {
-            onH1Click(store) {
-                return { name: 'jane' }
+            onH1Click() {
+                return { name: 'jane' };
             }
         }
         class MockPartialHandlerB extends BaseStateHandler {
-            onH2Click(store) {
-                return { name: 'amy' }
+            onH2Click() {
+                return { name: 'amy' };
             }
         }
-        const MockStoreHandler = BaseStateHandler.join([MockPartialeHandlerA, MockPartialHandlerB]);
+        const MockStateHandler = BaseStateHandler.join([MockPartialeHandlerA, MockPartialHandlerB]);
 
         let $h1: HTMLHeadingElement;
         let $h2: HTMLHeadingElement;
 
         beforeEach(() => {
             const WrappedMockCmp = StateHandle.init(MockCmp, {
-                root: [ mockStore, new MockStoreHandler() ]
+                root: [ mockState, new MockStateHandler() ]
             });
             TestUtil.renderPlain($elem, WrappedMockCmp);
             $h1 = $elem.querySelector('h1');
@@ -83,30 +83,31 @@ describe('State Handle', () => {
         it('should update state', () => {
             TestUtil.triggerEvt($h1, 'click');
             expect($h1.textContent).toBe('jane');
+
             TestUtil.triggerEvt($h2, 'click');
             expect($h2.textContent).toBe('amy');
         });
     });
 
-    describe('Multiple Stores and Store Handlers', () => {
-        const MOCK_STORE_ONE = 'store1';
-        const MOCK_STORE_TWO = 'store2';
-        const MockCmp = ({ store, storeHandler }) => (
+    describe('Multiple States and State Handlers', () => {
+        const MOCK_STATE_ONE = 'STATE1';
+        const MOCK_STATE_TWO = 'STATE2';
+        const MockCmp = ({ appState, appStateHandler }) => (
             <>
-                <h1 onClick={storeHandler[MOCK_STORE_ONE].onClick}>{store[MOCK_STORE_ONE].name}</h1>
-                <h2 onClick={storeHandler[MOCK_STORE_TWO].onClick}>{store[MOCK_STORE_TWO].name}</h2>
+                <h1 onClick={appStateHandler[MOCK_STATE_ONE].onClick}>{appState[MOCK_STATE_ONE].name}</h1>
+                <h2 onClick={appStateHandler[MOCK_STATE_TWO].onClick}>{appState[MOCK_STATE_TWO].name}</h2>
             </>
         );
-        const mockStore1 = { name: 'john1' };
-        const mockStore2 = { name: 'john2' };
-        class MockStoreHandler1 extends BaseStateHandler {
-            onClick(store) {
-                return { name: 'jane1' }
+        const mockState1 = { name: 'john1' };
+        const mockState2 = { name: 'john2' };
+        class MockStateHandler1 extends BaseStateHandler {
+            onClick() {
+                return { name: 'jane1' };
             }
         }
-        class MockStoreHandler2 extends BaseStateHandler {
-            onClick(store) {
-                return { name: 'jane2' }
+        class MockStateHandler2 extends BaseStateHandler {
+            onClick() {
+                return { name: 'jane2' };
             }
         }
         let $h1: HTMLHeadingElement;
@@ -114,8 +115,8 @@ describe('State Handle', () => {
 
         beforeEach(() => {
             const WrappedMockCmp = StateHandle.init(MockCmp, {
-                [MOCK_STORE_ONE]: [ mockStore1, new MockStoreHandler1() ],
-                [MOCK_STORE_TWO]: [ mockStore2, new MockStoreHandler2() ]
+                [MOCK_STATE_ONE]: [ mockState1, new MockStateHandler1() ],
+                [MOCK_STATE_TWO]: [ mockState2, new MockStateHandler2() ]
             });
             TestUtil.renderPlain($elem, WrappedMockCmp);
             $h1 = $elem.querySelector('h1');

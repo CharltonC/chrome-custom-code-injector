@@ -14,7 +14,7 @@ export class OptionListView extends MemoComponent<IProps> {
 
     constructor(props: IProps) {
         super(props);
-        const { onPaginate, onSort } = props.storeHandler;
+        const { onPaginate, onSort } = props.appStateHandler;
 
         // Constant props for DataGrid component
         this.dataGridBaseProps = {
@@ -32,7 +32,7 @@ export class OptionListView extends MemoComponent<IProps> {
 
     render() {
         const { props, dataGridBaseProps, headerProps } = this;
-        const { rules, localState } = props.store;
+        const { rules, localState } = props.appState;
         const { searchedRules, pgnOption, pgnState, sortOption, } = localState;
         const { curr: page, increment, incrementIdx } = { ...pgnOption, ...pgnState };
 
@@ -56,10 +56,10 @@ export class OptionListView extends MemoComponent<IProps> {
 
     get headerProps() {
         const { props } = this;
-        const { store, storeHandler } = props;
-        const { rules, localState } = store;
+        const { appState, appStateHandler } = props;
+        const { rules, localState } = appState;
         const { searchedRules, selectState } = localState;
-        const { onRowsSelectToggle, onAddHostModal, onDelModal } = storeHandler;
+        const { onRowsSelectToggle, onAddHostModal, onDelModal } = appStateHandler;
 
         const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
         const { areAllRowsSelected, selectedRowKeys } = selectState;

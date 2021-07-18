@@ -1,7 +1,7 @@
 import PubSub from 'pubsub-js';
 import { BaseStateHandler } from '.';
 
-describe('Base Store Handler', () => {
+describe('Base State Handler', () => {
     const MOCK_TOPIC = 'lorem';
     let mockPubSub: Partial<PubSub>;
     let handle: BaseStateHandler;
@@ -24,7 +24,7 @@ describe('Base Store Handler', () => {
         jest.restoreAllMocks();
     });
 
-    it('static - `join`: should join the prototypal methods of multiple partial store handlers into the prototypal methods of 1 main store handler', () => {
+    it('static - `join`: should join the prototypal methods of multiple partial state handlers into the prototypal methods of 1 main state handler', () => {
         class MockHandlerA extends BaseStateHandler { logA() {} }
         class MockHandlerB extends BaseStateHandler { logB() {} }
         const { logA, logB } = BaseStateHandler.join([MockHandlerA, MockHandlerB]).prototype;

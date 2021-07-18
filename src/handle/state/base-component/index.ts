@@ -3,46 +3,46 @@ import { BaseStateHandler } from '../base-handler';
 import { IStateConfigs, ITransfmStateConfigs } from '../type';
 
 export class BaseStateComponent extends Component<any, AObj> {
-    readonly STORE_NAME_ERR: string = 'already exists in store or store handler';
+    readonly STATE_NAME_ERR: string = 'already exists in app state or app state handler';
 
     transformStateConfigs(stateConfigs: IStateConfigs): ITransfmStateConfigs {
-        // For single store and store handler
+        // For single state and state handler
         const { root } = stateConfigs;
         if (root) {
-            const [ store, storeHandler ] = root;
+            const [ appState, appStateHandler ] = root;
             return {
-                store,
-                storeHandler: this.getProxyStateHandler(storeHandler)
+                appState,
+                appStateHandler: this.getProxyStateHandler(appStateHandler)
             };
         }
 
-        // For more than one stores and store handlers
+        // For more than one states and state handlers
         return Object
             .entries(stateConfigs)
-            .reduce((container, [ storeName, subStoreConfig ]) => {
-                const { store, storeHandler } = container;
-                this.checkStoreName(storeName, store, storeHandler);
+            .reduce((container, [ name, subStateConfig ]) => {
+                const { appState, appStateHandler } = container;
+                this.checkStateName(name, appState, appStateHandler);
 
-                const [ subStore, subStoreHandler ] = subStoreConfig;
-                store[storeName] = subStore;
-                storeHandler[storeName] = this.getProxyStateHandler(subStoreHandler, storeName);
+                const [ subState, subStateHandler ] = subStateConfig;
+                appState[name] = subState;
+                appStateHandler[name] = this.getProxyStateHandler(subStateHandler, name);
                 return container;
             }, {
-                store: {},
-                storeHandler: {}
+                appState: {},
+                appStateHandler: {}
             });
     }
 
-    getProxyStateHandler(storeHandler: BaseStateHandler, storeName?: string): BaseStateHandler {
-        const allowedMethodNames: string[] = this.getAllowedMethodNames(storeHandler);
+    getProxyStateHandler(appStateHandler: BaseStateHandler, name?: string): BaseStateHandler {
+        const allowedMethodNames: string[] = this.getAllowedMethodNames(appStateHandler);
         const getModPartialState = this.getModPartialState.bind(this);
         const updateState = this.updateState.bind(this);
 
-        return new Proxy(storeHandler, {
+        return new Proxy(appStateHandler, {
             get: (target: BaseStateHandler, key: string, proxy: BaseStateHandler) => {
                 const method: any = target[key];
 
-                // TODO - if User requests the root store handler, `rootHandler`, return the rootHandler object
+                // TODO - if User requests the root appState handler, `rootHandler`, return the rootHandler object
                 // e.g. if (key === 'rootHandler')
 
                 // Filter out non-own prototype methods
@@ -57,11 +57,11 @@ export class BaseStateComponent extends Component<any, AObj> {
                     // If contains promise or async/await logic
                     if (modPartialState instanceof Promise) {
                         const partialState = await modPartialState;
-                        updateState(partialState, storeHandler, storeName);
+                        updateState(partialState, appStateHandler, name);
 
                     } else {
                         // TODO - Check type if its not object, throw error
-                        updateState(modPartialState, storeHandler, storeName);
+                        updateState(modPartialState, appStateHandler, name);
                     }
 
                 };
@@ -83,18 +83,18 @@ export class BaseStateComponent extends Component<any, AObj> {
         return fn.apply(proxy, [this.state, ...args]);
     }
 
-    updateState(modPartialState: AObj, storeHandler: BaseStateHandler, storeName?: string): void {
+    updateState(modPartialState: AObj, appStateHandler: BaseStateHandler, name?: string): void {
         const { state } = this;
-        const modState = storeName ?
-            { ...state, [storeName]: { ...state[storeName] , ...modPartialState } } :
+        const modState = name ?
+            { ...state, [name]: { ...state[name] , ...modPartialState } } :
             { ...state, ...modPartialState };
         const diffState = { prev: state, curr: modState };
-        this.setState(modState, () => storeHandler.pub(diffState, storeName));
+        this.setState(modState, () => appStateHandler.pub(diffState, name));
     }
 
-    checkStoreName(storeName: string, store: AObj, storeHandler: AObj): void {
-        const isInStore: boolean = storeName in store;
-        const isInHandler: boolean = storeName in storeHandler;
-        if (isInStore || isInHandler) throw new Error(`${storeName} ${this.STORE_NAME_ERR}`);
+    checkStateName(name: string, appState: AObj, appStateHandler: AObj): void {
+        const isInState: boolean = name in appState;
+        const isInHandler: boolean = name in appStateHandler;
+        if (isInState || isInHandler) throw new Error(`${name} ${this.STATE_NAME_ERR}`);
     }
 }

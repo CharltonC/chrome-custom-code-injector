@@ -7,37 +7,37 @@ export default {
     title: 'State Handle',
 };
 
-export const SingleStore = () => {
-    // 1. Store
-    const sampleStore = {
+export const SingleState = () => {
+    // 1. State
+    const sampleState = {
         name: 'joe',
         age: 20,
         gender: 'male',
         address: '100 Railway Street',
     }
 
-    // 2. Store Handler
-    class SampleStoreHandler extends BaseStateHandler {
-        onNameChange(store, evt?) {
+    // 2. State Handler
+    class SampleStateHandler extends BaseStateHandler {
+        onNameChange(appState, evt?) {
             // Setting state Directly
             return {
                 name: 'jane'
             };
         }
 
-        onAgeChange(store, evt?) {
+        onAgeChange(appState, evt?) {
             // Consolidate Partial State (single level) prior to Setting state
-            const { name } = this.reflect.onNameChange(store);
+            const { name } = this.reflect.onNameChange(appState);
             return {
                 name,
                 age: 21
             };
         }
 
-        onGenderChange(store, evt?) {
+        onGenderChange(appState, evt?) {
             // Dependent State and/or Consolidate Partial State (Recursive) prior to Setting state
-            const { address } = this.reflect.onAddressChange(store);
-            const { name, age } = this.reflect.onAgeChange(store);
+            const { address } = this.reflect.onAddressChange(appState);
+            const { name, age } = this.reflect.onAgeChange(appState);
             return {
                 name,
                 age,
@@ -46,19 +46,19 @@ export const SingleStore = () => {
             };
         }
 
-        onAddressChange(store, evt?) {
+        onAddressChange(appState, evt?) {
             // Setting state Directly
             return {
                 address: '20 Joseph Street'
             };
         }
     }
-    const sampleStoreHandler = new SampleStoreHandler();
+    const sampleStateHandler = new SampleStateHandler();
 
     // 3. Root Component which reference state and state hanlder
-    const SampleComponent = ({ store, storeHandler }) => {
-        const { name, age, gender, address } = store;
-        const { onNameChange, onAgeChange, onAllChange, onAddressChange } = storeHandler;
+    const SampleComponent = ({ appState, appStateHandler }) => {
+        const { name, age, gender, address } = appState;
+        const { onNameChange, onAgeChange, onAllChange, onAddressChange } = appStateHandler;
         return (
             <div>
                 <p>name: {name}</p>
@@ -74,110 +74,110 @@ export const SingleStore = () => {
         );
     };
 
-    // 4. Optionally subscribe to store changes
+    // 4. Optionally subscribe to appState changes
     useEffect(() => {
-        const token = sampleStoreHandler.sub((msg, data) => {
+        const token = sampleStateHandler.sub((msg, data) => {
             console.log(msg);
             console.log(data);
         });
-        return () => sampleStoreHandler.unsub(token);
-    }, [sampleStoreHandler]);
+        return () => sampleStateHandler.unsub(token);
+    }, [sampleStateHandler]);
 
-    // 5. Return a Wrapper Root component with Initialised with Store and Store Handler
+    // 5. Return a Wrapper Root component with Initialised with State and State Handler
     const WrappedSampleComponent = StateHandle.init(SampleComponent, {
-        root: [ sampleStore, sampleStoreHandler ]
+        root: [ sampleState, sampleStateHandler ]
     });
     return <WrappedSampleComponent />;
 };
 
-export const MultipleStores = () => {
-    // 1. Store and Store Handler 1
-    const sampleStore1 = {
+export const MultipleStates = () => {
+    // 1. State and State Handler 1
+    const sampleState1 = {
         name: 'joe',
     };
-    class SampleStoreHandler1 extends BaseStateHandler {
-        onNameChange(store, evt?) {
+    class SampleStateHandler1 extends BaseStateHandler {
+        onNameChange(appState, evt?) {
             return { name: 'jane' };
         }
     }
-    const sampleStoreHandler1 = new SampleStoreHandler1();
+    const sampleStateHandler1 = new SampleStateHandler1();
 
-    // 2. Store and Store Handler 2
-    const sampleStore2 = {
+    // 2. State and State Handler 2
+    const sampleState2 = {
         project: 'VsCode',
         license: 'MIT'
     };
-    class SampleStoreHandler2 extends BaseStateHandler {
-        onProjectChange(store, evt?) {
+    class SampleStateHandler2 extends BaseStateHandler {
+        onProjectChange(appState, evt?) {
             return { project: 'Apache' };
         }
     }
-    const sampleStoreHandler2 = new SampleStoreHandler2();
+    const sampleStateHandler2 = new SampleStateHandler2();
 
     // 3. Root Component which references state and state hanlder
-    const SampleComponent = ({ store, storeHandler }) => {
-        const { name } = store.storeOne;
-        const { project } = store.storeTwo;
-        const { onNameChange } = storeHandler.storeOne;
-        const { onProjectChange } = storeHandler.storeTwo;
+    const SampleComponent = ({ appState, appStateHandler }) => {
+        const { name } = appState.stateOne;
+        const { project } = appState.stateTwo;
+        const { onNameChange } = appStateHandler.stateOne;
+        const { onProjectChange } = appStateHandler.stateTwo;
 
         return (
             <div>
                 <p>Name: {name}</p>
-                <p><button type="button" onClick={onNameChange}>change name from store 1</button></p>
+                <p><button type="button" onClick={onNameChange}>change name from appState 1</button></p>
                 <br/>
                 <p>Project: {project}</p>
-                <p><button type="button" onClick={onProjectChange}>change project from store 2</button></p>
+                <p><button type="button" onClick={onProjectChange}>change project from appState 2</button></p>
             </div>
         );
     };
 
 
-    // 4. Optionally subscribe to store changes
+    // 4. Optionally subscribe to appState changes
     const log = (msg, data) => console.log(msg, data);
     useEffect(() => {
-        const token1 = sampleStoreHandler1.sub(log, 'storeOne');
-        const token2 = sampleStoreHandler2.sub(log, 'storeTwo');
+        const token1 = sampleStateHandler1.sub(log, 'stateOne');
+        const token2 = sampleStateHandler2.sub(log, 'stateTwo');
         return () => {
-            sampleStoreHandler1.unsub(token1);
-            sampleStoreHandler2.unsub(token2);
+            sampleStateHandler1.unsub(token1);
+            sampleStateHandler2.unsub(token2);
         };
-    }, [sampleStoreHandler1, sampleStoreHandler2]);
+    }, [sampleStateHandler1, sampleStateHandler2]);
 
-    // 5. Return a Wrapper Root component with Initialised with Stores and Stores Handlers
+    // 5. Return a Wrapper Root component with Initialised with States and States Handlers
     const WrappedSampleComponent = StateHandle.init(SampleComponent, {
-        storeOne: [sampleStore1, sampleStoreHandler1],
-        storeTwo: [sampleStore2, sampleStoreHandler2],
+        stateOne: [sampleState1, sampleStateHandler1],
+        stateTwo: [sampleState2, sampleStateHandler2],
     });
     return <WrappedSampleComponent />;
 };
 
 
-export const SingleStoreWithPartialHandlers = () => {
-    // 1. Store
-    const sampleStore = {
+export const SingleStateeWithPartialHandlers = () => {
+    // 1. State
+    const sampleState = {
         name: 'john' ,
         age: 6
     };
 
-    // 2. Partial Store Handlers
+    // 2. Partial State Handlers
     class PartialHandlerA extends BaseStateHandler {
-        onH1Click(store) {
+        onH1Click(appState) {
             return { name: 'jane' }
         }
     }
     class PartialHandlerB extends BaseStateHandler {
-        onH2Click(store) {
+        onH2Click(appState) {
             return { age: 20 }
         }
     }
-    const SampleStoreHandler = BaseStateHandler.join([PartialHandlerA, PartialHandlerB]);
-    const sampleStoreHandler = new SampleStoreHandler()
+    const SampleStateHandler = BaseStateHandler.join([PartialHandlerA, PartialHandlerB]);
+    const sampleStateHandler = new SampleStateHandler()
 
     // 3. Root componennt
-    const SampleComponent = ({ store, storeHandler }) => {
-        const { name, age } = store;
-        const { onH1Click, onH2Click } = storeHandler;
+    const SampleComponent = ({ appState, appStateHandler }) => {
+        const { name, age } = appState;
+        const { onH1Click, onH2Click } = appStateHandler;
         return (
             <div>
                 <h1 onClick={onH1Click}>{name}</h1>
@@ -187,10 +187,10 @@ export const SingleStoreWithPartialHandlers = () => {
         );
     };
 
-    // 4.Return a Wrapper Root component with Initialised with Stores and Stores Handlers
+    // 4.Return a Wrapper Root component with Initialised with States and States Handlers
     const WrappedSampleComponent = StateHandle.init(
         SampleComponent,
-        { root: [ sampleStore, sampleStoreHandler ]
+        { root: [ sampleState, sampleStateHandler ]
     });
     return <WrappedSampleComponent />;
 };

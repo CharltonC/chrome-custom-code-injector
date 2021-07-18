@@ -6,8 +6,8 @@ export interface IStateConfigs {
 }
 
 export interface ITransfmStateConfigs {
-    store: AObj;
-    storeHandler: BaseStateHandler | Record<string, BaseStateHandler>;
+    appState: AObj;
+    appStateHandler: BaseStateHandler | Record<string, BaseStateHandler>;
 }
 
 export interface IStateHandlerClass<T = BaseStateHandler> {
@@ -15,6 +15,6 @@ export interface IStateHandlerClass<T = BaseStateHandler> {
 }
 
 export interface IAppProps<T, U> {
-    store: T;
-    storeHandler: Record<keyof U, (...args: any[]) => any>;
+    appState: T;
+    appStateHandler: Record<keyof U, (...args: any[]) => any>;
 }

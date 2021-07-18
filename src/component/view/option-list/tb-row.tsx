@@ -9,8 +9,8 @@ import { ITbRowProps } from './type';
 
 export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { dataSrc, ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
-    const { store, storeHandler } = commonProps;
-    const { localState } = store;
+    const { appState, appStateHandler } = commonProps;
+    const { localState } = appState;
 
     const {
         selectState,
@@ -21,7 +21,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
         onDelModal, onAddPathModal,
         onRowSwitchToggle, onRowJsStageChange,
         onRowEdit, onRowExpand, onRowSelectToggle,
-    } = storeHandler;
+    } = appStateHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
     const { isHttps, id, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;

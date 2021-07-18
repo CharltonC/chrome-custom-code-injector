@@ -3,7 +3,7 @@ import { BaseStateComponent } from '.';
 import { BaseStateHandler } from '../base-handler';
 import { AMethodSpy } from '../../../asset/ts/test-util/type';
 
-describe('Base Store Component', () => {
+describe('Base State Component', () => {
     let cmp: BaseStateComponent;
     let spy: AMethodSpy<BaseStateComponent>;
 
@@ -17,51 +17,51 @@ describe('Base Store Component', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Method - transformStateConfigs: Transform Stores and Store Handlers with Proxy', () => {
+    describe('Method - transformStateConfigs: Transform state and state Handlers with Proxy', () => {
         const getProxyStateHandler = {};
 
         beforeEach(() => {
             spy.getProxyStateHandler.mockReturnValue(getProxyStateHandler);
         });
 
-        it('should return transformed config if root store and store handler are provided', () => {
-            const mockStore = { name: 'john' };
-            class MockStoreHandler extends BaseStateHandler {
+        it('should return transformed config if root state and state handler are provided', () => {
+            const mockState = { name: 'john' };
+            class MockStateHandler extends BaseStateHandler {
                 sayHello() { return 'hello'; }
             }
-            const { store, storeHandler } = cmp.transformStateConfigs({
-                root: [ mockStore, new MockStoreHandler() ]
+            const { appState, appStateHandler } = cmp.transformStateConfigs({
+                root: [ mockState, new MockStateHandler() ]
             });
 
-            expect(store).toBe(mockStore);
-            expect(storeHandler).toBe(getProxyStateHandler);
+            expect(appState).toBe(mockState);
+            expect(appStateHandler).toBe(getProxyStateHandler);
         });
 
-        it('should return transformed config if multiple non-root stores and store handlers are provied', () => {
-            const mockStore1 = { name: 'john' };
-            const mockStore2 = { name: 'jane' };
-            class MockStoreHandler1 extends BaseStateHandler {
+        it('should return transformed config if multiple non-root state and state handlers are provied', () => {
+            const mockState1 = { name: 'john' };
+            const mockState2 = { name: 'jane' };
+            class MockStateHandler1 extends BaseStateHandler {
                 sayHello1() { return 'hello1'; }
             }
-            class MockStoreHandler2 extends BaseStateHandler {
+            class MockStateHandler2 extends BaseStateHandler {
                 sayHello2() { return 'hello2'; }
             }
-            const { store, storeHandler } = cmp.transformStateConfigs({
-                store1: [ mockStore1, new MockStoreHandler1() ],
-                store2: [ mockStore2, new MockStoreHandler2() ]
+            const { appState, appStateHandler } = cmp.transformStateConfigs({
+                one: [ mockState1, new MockStateHandler1() ],
+                two: [ mockState2, new MockStateHandler2() ]
             });
 
-            expect(store.store1).toBe(mockStore1);
-            expect(store.store2).toBe(mockStore2);
-            expect(storeHandler['store1']).toBe(getProxyStateHandler);
-            expect(storeHandler['store2']).toBe(getProxyStateHandler);
+            expect(appState.one).toBe(mockState1);
+            expect(appState.two).toBe(mockState2);
+            expect(appStateHandler['one']).toBe(getProxyStateHandler);
+            expect(appStateHandler['two']).toBe(getProxyStateHandler);
         });
     });
 
-    describe('Method - getProxyStateHandler: Get proxy `get` handler function for a store handler', () => {
+    describe('Method - getProxyStateHandler: Get proxy `get` handler function for a appState handler', () => {
         const MOCK_METHOD_NAME = 'sayHello';
         const mockAllowedMethodNames = [ MOCK_METHOD_NAME ];
-        const MOCK_STORE_NAME = 'store_name';
+        const MOCK_STATE_NAME = 'state_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
         class MockHandler extends BaseStateHandler {
@@ -80,7 +80,7 @@ describe('Base Store Component', () => {
             getModPartialStateSpy.mockReturnValue(mockModPartialState);
 
             cmp.state = mockState;
-            proxyHandler = cmp.getProxyStateHandler(mockHandler, MOCK_STORE_NAME);
+            proxyHandler = cmp.getProxyStateHandler(mockHandler, MOCK_STATE_NAME);
         });
 
         describe('return value', () => {
@@ -103,7 +103,7 @@ describe('Base Store Component', () => {
 
                 expect(typeof method).toBe('function');
                 expect(getModPartialStateSpy).toHaveBeenCalledWith(mockHandler[MOCK_METHOD_NAME], proxyHandler, mockArgs);
-                expect(spy.updateState).toHaveBeenCalledWith(mockModPartialState, mockHandler, MOCK_STORE_NAME);
+                expect(spy.updateState).toHaveBeenCalledWith(mockModPartialState, mockHandler, MOCK_STATE_NAME);
             });
 
             it('should return a wrapped function where state is not updated when returned state is falsy', () => {
@@ -155,7 +155,7 @@ describe('Base Store Component', () => {
     });
 
     describe('Method - updateState', () => {
-        const MOCK_STORE_NAME = 'store_name';
+        const MOCK_STATE_NAME = 'state_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
         const mockHandler: any = { pub: null };
@@ -168,12 +168,12 @@ describe('Base Store Component', () => {
             setStateSpy.mockImplementation(() => {});
         });
 
-        it('should update state when given a store name', () => {
+        it('should update state when given a appState name', () => {
             const expectedCurrState = {
                 'age': 11,
-                [MOCK_STORE_NAME]: { 'age': 99 }
+                [MOCK_STATE_NAME]: { 'age': 99 }
             };
-            cmp.updateState(mockModPartialState, mockHandler, MOCK_STORE_NAME);
+            cmp.updateState(mockModPartialState, mockHandler, MOCK_STATE_NAME);
             const [ modState, callback ] = setStateSpy.mock.calls[0];
             callback();
 
@@ -181,10 +181,10 @@ describe('Base Store Component', () => {
             expect(mockHandler.pub).toHaveBeenCalledWith({
                 prev: mockState,
                 curr: expectedCurrState
-            }, MOCK_STORE_NAME);
+            }, MOCK_STATE_NAME);
         });
 
-        it('should update state when not given a store name', () => {
+        it('should update state when not given a appState name', () => {
             const expectedCurrState = { 'age': 99 };
             cmp.updateState(mockModPartialState, mockHandler);
             const [ modState, callback ] = setStateSpy.mock.calls[0];
@@ -198,26 +198,26 @@ describe('Base Store Component', () => {
         });
     });
 
-    describe('Method - checkStoreName: Check if store name already exists for duplication', () => {
-        const mockStore = { prop: 123 };
-        const mockStoreHandler = { onClick(){} };
+    describe('Method - checkStateName: Check if appState name already exists for duplication', () => {
+        const mockState = { prop: 123 };
+        const mockStateHandler = { onClick(){} };
 
-        it('should throw an error if store name already exists in either store or store handler', () => {
-            const mockStoreProp = 'prop';
-            const mockStoreHandlerProp = 'onClick';
-
-            expect(() => {
-                cmp.checkStoreName(mockStoreProp, mockStore, mockStoreHandler);
-            }).toThrowError(`${mockStoreProp} ${cmp.STORE_NAME_ERR}`);
+        it('should throw an error if appState name already exists in either appState or appState handler', () => {
+            const mockStateProp = 'prop';
+            const mockStateHandlerProp = 'onClick';
 
             expect(() => {
-                cmp.checkStoreName(mockStoreHandlerProp, mockStore, mockStoreHandler);
-            }).toThrowError(`${mockStoreHandlerProp} ${cmp.STORE_NAME_ERR}`);
+                cmp.checkStateName(mockStateProp, mockState, mockStateHandler);
+            }).toThrowError(`${mockStateProp} ${cmp.STATE_NAME_ERR}`);
+
+            expect(() => {
+                cmp.checkStateName(mockStateHandlerProp, mockState, mockStateHandler);
+            }).toThrowError(`${mockStateHandlerProp} ${cmp.STATE_NAME_ERR}`);
         });
 
-        it('should not throw an error if store name doesnt yet exist in either store or store handler ', () => {
+        it('should not throw an error if appState name doesnt yet exist in either appState or appState handler ', () => {
             expect(() => {
-                cmp.checkStoreName('lorem', mockStore, mockStoreHandler);
+                cmp.checkStateName('lorem', mockState, mockStateHandler);
             }).not.toThrowError();
         });
     });
