@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { StateHandler } from '../../../handle/state/root';
+import { AppStateHandler } from '../../../handle/app-state';
 import { StoreHandle } from '../../../handle/store';
 import { AppState } from '../../../model/app-state';
 import { createMockAppState } from '../../../mock/app-state';
@@ -69,7 +69,7 @@ describe('Component - Option App (UI/E2E)', () => {
             describe('Non-searched + Non-paginated', () => {
                 beforeEach(() => {
                     TestUtil.renderPlain($elem, StoreHandle.init(OptionApp, {
-                        root: [ mockAppState, new StateHandler() ],
+                        root: [ mockAppState, new AppStateHandler() ],
                     }));
                 });
 
@@ -135,7 +135,7 @@ describe('Component - Option App (UI/E2E)', () => {
                 beforeEach(() => {
                     mockAppState.localState.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StoreHandle.init(OptionApp, {
-                        root: [ mockAppState, new StateHandler() ],
+                        root: [ mockAppState, new AppStateHandler() ],
                     }));
                 });
 
@@ -209,7 +209,7 @@ describe('Component - Option App (UI/E2E)', () => {
                 beforeEach(() => {
                     mockAppState.localState.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StoreHandle.init(OptionApp, {
-                        root: [ mockAppState, new StateHandler() ],
+                        root: [ mockAppState, new AppStateHandler() ],
                     }));
 
                     mockSearch('ebay');
