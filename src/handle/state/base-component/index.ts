@@ -1,31 +1,31 @@
 import { Component } from 'react';
-import { BaseStoreHandler } from './base-store-handler';
-import { IStoreConfigs, ITransfmStoreConfigs } from './type';
+import { BaseStateHandler } from '../base-handler';
+import { IStateConfigs, ITransfmStateConfigs } from '../type';
 
-export class BaseStoreComponent extends Component<any, AObj> {
+export class BaseStateComponent extends Component<any, AObj> {
     readonly STORE_NAME_ERR: string = 'already exists in store or store handler';
 
-    transformStoreConfigs(storeConfigs: IStoreConfigs): ITransfmStoreConfigs {
+    transformStateConfigs(stateConfigs: IStateConfigs): ITransfmStateConfigs {
         // For single store and store handler
-        const { root } = storeConfigs;
+        const { root } = stateConfigs;
         if (root) {
             const [ store, storeHandler ] = root;
             return {
                 store,
-                storeHandler: this.getProxyStoreHandler(storeHandler)
+                storeHandler: this.getProxyStateHandler(storeHandler)
             };
         }
 
         // For more than one stores and store handlers
         return Object
-            .entries(storeConfigs)
+            .entries(stateConfigs)
             .reduce((container, [ storeName, subStoreConfig ]) => {
                 const { store, storeHandler } = container;
                 this.checkStoreName(storeName, store, storeHandler);
 
                 const [ subStore, subStoreHandler ] = subStoreConfig;
                 store[storeName] = subStore;
-                storeHandler[storeName] = this.getProxyStoreHandler(subStoreHandler, storeName);
+                storeHandler[storeName] = this.getProxyStateHandler(subStoreHandler, storeName);
                 return container;
             }, {
                 store: {},
@@ -33,13 +33,13 @@ export class BaseStoreComponent extends Component<any, AObj> {
             });
     }
 
-    getProxyStoreHandler(storeHandler: BaseStoreHandler, storeName?: string): BaseStoreHandler {
+    getProxyStateHandler(storeHandler: BaseStateHandler, storeName?: string): BaseStateHandler {
         const allowedMethodNames: string[] = this.getAllowedMethodNames(storeHandler);
         const getModPartialState = this.getModPartialState.bind(this);
         const updateState = this.updateState.bind(this);
 
         return new Proxy(storeHandler, {
-            get: (target: BaseStoreHandler, key: string, proxy: BaseStoreHandler) => {
+            get: (target: BaseStateHandler, key: string, proxy: BaseStateHandler) => {
                 const method: any = target[key];
 
                 // TODO - if User requests the root store handler, `rootHandler`, return the rootHandler object
@@ -79,11 +79,11 @@ export class BaseStoreComponent extends Component<any, AObj> {
             });
     }
 
-    getModPartialState(fn: AFn, proxy: BaseStoreHandler, args: any[]): AObj {
+    getModPartialState(fn: AFn, proxy: BaseStateHandler, args: any[]): AObj {
         return fn.apply(proxy, [this.state, ...args]);
     }
 
-    updateState(modPartialState: AObj, storeHandler: BaseStoreHandler, storeName?: string): void {
+    updateState(modPartialState: AObj, storeHandler: BaseStateHandler, storeName?: string): void {
         const { state } = this;
         const modState = storeName ?
             { ...state, [storeName]: { ...state[storeName] , ...modPartialState } } :

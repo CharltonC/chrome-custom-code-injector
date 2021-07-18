@@ -1,14 +1,14 @@
-import { TestUtil } from '../../asset/ts/test-util';
-import { BaseStoreComponent } from './base-store-component';
-import { BaseStoreHandler } from './base-store-handler';
-import { AMethodSpy } from '../../asset/ts/test-util/type';
+import { TestUtil } from '../../../asset/ts/test-util';
+import { BaseStateComponent } from '.';
+import { BaseStateHandler } from '../base-handler';
+import { AMethodSpy } from '../../../asset/ts/test-util/type';
 
 describe('Base Store Component', () => {
-    let cmp: BaseStoreComponent;
-    let spy: AMethodSpy<BaseStoreComponent>;
+    let cmp: BaseStateComponent;
+    let spy: AMethodSpy<BaseStateComponent>;
 
     beforeEach(() => {
-        cmp = new BaseStoreComponent({});
+        cmp = new BaseStateComponent({});
         spy = TestUtil.spyMethods(cmp);
     });
 
@@ -17,54 +17,54 @@ describe('Base Store Component', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Method - transformStoreConfigs: Transform Stores and Store Handlers with Proxy', () => {
-        const getProxyStoreHandler = {};
+    describe('Method - transformStateConfigs: Transform Stores and Store Handlers with Proxy', () => {
+        const getProxyStateHandler = {};
 
         beforeEach(() => {
-            spy.getProxyStoreHandler.mockReturnValue(getProxyStoreHandler);
+            spy.getProxyStateHandler.mockReturnValue(getProxyStateHandler);
         });
 
         it('should return transformed config if root store and store handler are provided', () => {
             const mockStore = { name: 'john' };
-            class MockStoreHandler extends BaseStoreHandler {
+            class MockStoreHandler extends BaseStateHandler {
                 sayHello() { return 'hello'; }
             }
-            const { store, storeHandler } = cmp.transformStoreConfigs({
+            const { store, storeHandler } = cmp.transformStateConfigs({
                 root: [ mockStore, new MockStoreHandler() ]
             });
 
             expect(store).toBe(mockStore);
-            expect(storeHandler).toBe(getProxyStoreHandler);
+            expect(storeHandler).toBe(getProxyStateHandler);
         });
 
         it('should return transformed config if multiple non-root stores and store handlers are provied', () => {
             const mockStore1 = { name: 'john' };
             const mockStore2 = { name: 'jane' };
-            class MockStoreHandler1 extends BaseStoreHandler {
+            class MockStoreHandler1 extends BaseStateHandler {
                 sayHello1() { return 'hello1'; }
             }
-            class MockStoreHandler2 extends BaseStoreHandler {
+            class MockStoreHandler2 extends BaseStateHandler {
                 sayHello2() { return 'hello2'; }
             }
-            const { store, storeHandler } = cmp.transformStoreConfigs({
+            const { store, storeHandler } = cmp.transformStateConfigs({
                 store1: [ mockStore1, new MockStoreHandler1() ],
                 store2: [ mockStore2, new MockStoreHandler2() ]
             });
 
             expect(store.store1).toBe(mockStore1);
             expect(store.store2).toBe(mockStore2);
-            expect(storeHandler['store1']).toBe(getProxyStoreHandler);
-            expect(storeHandler['store2']).toBe(getProxyStoreHandler);
+            expect(storeHandler['store1']).toBe(getProxyStateHandler);
+            expect(storeHandler['store2']).toBe(getProxyStateHandler);
         });
     });
 
-    describe('Method - getProxyStoreHandler: Get proxy `get` handler function for a store handler', () => {
+    describe('Method - getProxyStateHandler: Get proxy `get` handler function for a store handler', () => {
         const MOCK_METHOD_NAME = 'sayHello';
         const mockAllowedMethodNames = [ MOCK_METHOD_NAME ];
         const MOCK_STORE_NAME = 'store_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
-        class MockHandler extends BaseStoreHandler {
+        class MockHandler extends BaseStateHandler {
             age = 10;
             [MOCK_METHOD_NAME]() {}
         }
@@ -80,7 +80,7 @@ describe('Base Store Component', () => {
             getModPartialStateSpy.mockReturnValue(mockModPartialState);
 
             cmp.state = mockState;
-            proxyHandler = cmp.getProxyStoreHandler(mockHandler, MOCK_STORE_NAME);
+            proxyHandler = cmp.getProxyStateHandler(mockHandler, MOCK_STORE_NAME);
         });
 
         describe('return value', () => {

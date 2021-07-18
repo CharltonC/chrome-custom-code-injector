@@ -1,7 +1,7 @@
 import React from 'react';
 import { TestUtil } from '../../asset/ts/test-util';
-import { BaseStoreHandler } from './base-store-handler';
-import { StoreHandle } from '.';
+import { BaseStateHandler } from './base-handler';
+import { StateHandle } from '.';
 
 describe('State Handle', () => {
     let $elem: HTMLElement;
@@ -17,7 +17,7 @@ describe('State Handle', () => {
     describe('Single Store and Store Handler', () => {
         const MockCmp = ({ store, storeHandler }) => <h1 onClick={storeHandler.onClick}>{store.name}</h1>;
         const mockStore = { name: 'john' };
-        class MockStoreHandler extends BaseStoreHandler {
+        class MockStoreHandler extends BaseStateHandler {
             onClick(store) {
                 return { name: 'jane' }
             }
@@ -25,7 +25,7 @@ describe('State Handle', () => {
         let $h1: HTMLHeadingElement;
 
         beforeEach(() => {
-            const WrappedMockCmp = StoreHandle.init(MockCmp, {
+            const WrappedMockCmp = StateHandle.init(MockCmp, {
                 root: [ mockStore, new MockStoreHandler() ]
             });
             TestUtil.renderPlain($elem, WrappedMockCmp);
@@ -52,23 +52,23 @@ describe('State Handle', () => {
 
         const mockStore = { name: 'john' };
 
-        class MockPartialeHandlerA extends BaseStoreHandler {
+        class MockPartialeHandlerA extends BaseStateHandler {
             onH1Click(store) {
                 return { name: 'jane' }
             }
         }
-        class MockPartialHandlerB extends BaseStoreHandler {
+        class MockPartialHandlerB extends BaseStateHandler {
             onH2Click(store) {
                 return { name: 'amy' }
             }
         }
-        const MockStoreHandler = BaseStoreHandler.join([MockPartialeHandlerA, MockPartialHandlerB]);
+        const MockStoreHandler = BaseStateHandler.join([MockPartialeHandlerA, MockPartialHandlerB]);
 
         let $h1: HTMLHeadingElement;
         let $h2: HTMLHeadingElement;
 
         beforeEach(() => {
-            const WrappedMockCmp = StoreHandle.init(MockCmp, {
+            const WrappedMockCmp = StateHandle.init(MockCmp, {
                 root: [ mockStore, new MockStoreHandler() ]
             });
             TestUtil.renderPlain($elem, WrappedMockCmp);
@@ -99,12 +99,12 @@ describe('State Handle', () => {
         );
         const mockStore1 = { name: 'john1' };
         const mockStore2 = { name: 'john2' };
-        class MockStoreHandler1 extends BaseStoreHandler {
+        class MockStoreHandler1 extends BaseStateHandler {
             onClick(store) {
                 return { name: 'jane1' }
             }
         }
-        class MockStoreHandler2 extends BaseStoreHandler {
+        class MockStoreHandler2 extends BaseStateHandler {
             onClick(store) {
                 return { name: 'jane2' }
             }
@@ -113,7 +113,7 @@ describe('State Handle', () => {
         let $h2: HTMLHeadingElement;
 
         beforeEach(() => {
-            const WrappedMockCmp = StoreHandle.init(MockCmp, {
+            const WrappedMockCmp = StateHandle.init(MockCmp, {
                 [MOCK_STORE_ONE]: [ mockStore1, new MockStoreHandler1() ],
                 [MOCK_STORE_TWO]: [ mockStore2, new MockStoreHandler2() ]
             });

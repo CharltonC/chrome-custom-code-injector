@@ -1,8 +1,8 @@
-import { StoreHandle } from '../../store';
+import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { Setting } from '../../../model/setting';
 
-export class ModalContentStateHandler extends StoreHandle.BaseStoreHandler {
+export class ModalContentStateHandler extends StateHandle.BaseStateHandler {
     //// Settings
     onResultsPerPageChange({ setting }: AppState, resultsPerPageIdx: number) {
         return {

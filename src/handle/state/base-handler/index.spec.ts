@@ -1,10 +1,10 @@
 import PubSub from 'pubsub-js';
-import { BaseStoreHandler } from './base-store-handler';
+import { BaseStateHandler } from '.';
 
 describe('Base Store Handler', () => {
     const MOCK_TOPIC = 'lorem';
     let mockPubSub: Partial<PubSub>;
-    let handle: BaseStoreHandler;
+    let handle: BaseStateHandler;
     let getTopicSpy: jest.SpyInstance;
 
     beforeEach(() => {
@@ -13,7 +13,7 @@ describe('Base Store Handler', () => {
             unsubscribe: jest.fn(),
             publish: jest.fn(),
         };
-        handle = new BaseStoreHandler();
+        handle = new BaseStateHandler();
 
         (handle as any).PubSub = mockPubSub;
         getTopicSpy = jest.spyOn(handle, 'getTopic');
@@ -25,9 +25,9 @@ describe('Base Store Handler', () => {
     });
 
     it('static - `join`: should join the prototypal methods of multiple partial store handlers into the prototypal methods of 1 main store handler', () => {
-        class MockHandlerA extends BaseStoreHandler { logA() {} }
-        class MockHandlerB extends BaseStoreHandler { logB() {} }
-        const { logA, logB } = BaseStoreHandler.join([MockHandlerA, MockHandlerB]).prototype;
+        class MockHandlerA extends BaseStateHandler { logA() {} }
+        class MockHandlerB extends BaseStateHandler { logB() {} }
+        const { logA, logB } = BaseStateHandler.join([MockHandlerA, MockHandlerB]).prototype;
         expect(logA).toBeTruthy();
         expect(logB).toBeTruthy();
     });

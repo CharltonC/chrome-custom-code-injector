@@ -1,13 +1,13 @@
 import PubSub from 'pubsub-js';
-import { IStoreHandlerClass } from './type';
+import { IStateHandlerClass } from '../type';
 
-export class BaseStoreHandler {
+export class BaseStateHandler {
     readonly CHANGE_EVT: string = 'CHANGE';
     readonly PubSub: PubSub = PubSub;
 
-    static join<T extends BaseStoreHandler>(Handlers: IStoreHandlerClass[]): IStoreHandlerClass<T> {
-        class BaseClass extends BaseStoreHandler {}
-        Handlers.forEach((Handler: IStoreHandlerClass) => {
+    static join<T extends BaseStateHandler>(Handlers: IStateHandlerClass[]): IStateHandlerClass<T> {
+        class BaseClass extends BaseStateHandler {}
+        Handlers.forEach((Handler: IStateHandlerClass) => {
             const { prototype: baseProto } = BaseClass;
             const { prototype } = Handler;
 
@@ -19,7 +19,7 @@ export class BaseStoreHandler {
                 baseProto[key] = prototype[key];
             });
         });
-        return BaseClass as unknown as IStoreHandlerClass<T>;
+        return BaseClass as unknown as IStateHandlerClass<T>;
     }
 
     get reflect() {

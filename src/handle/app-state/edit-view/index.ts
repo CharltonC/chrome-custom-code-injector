@@ -1,8 +1,8 @@
-import { StoreHandle } from '../../store';
+import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
 
-export class EditViewStateHandler extends StoreHandle.BaseStoreHandler {
+export class EditViewStateHandler extends StateHandle.BaseStateHandler {
     onListView({localState}: AppState): Partial<AppState> {
         const { pgnOption } = localState;   // maintain the only pagination setting
         const resetLocalState = new LocalState();

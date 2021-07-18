@@ -141,12 +141,11 @@ gulp build-ts:test [--watch]?
                 index.pug?      // index page (if the pages doesn't just run a script)
                 style.scss?     // styel for index page
 
-        service/                // services
-            handle/             // ui related handles             
-                <name>/ 
-                    index.ts
-                    index.spec.ts
-                    type.ts
+        handle/                 // generic class/modular services/handle
+            <name>/ 
+                index.ts
+                index.spec.ts
+                type.ts
         
         manifest.json           // manifest ("config") for the chrome extension 
 

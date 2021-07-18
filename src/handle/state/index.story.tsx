@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { StoreHandle } from '.';
+import { StateHandle } from '.';
 
-const { BaseStoreHandler } = StoreHandle;
+const { BaseStateHandler } = StateHandle;
 
 export default {
-    title: 'Service/Store Handle',
+    title: 'State Handle',
 };
 
 export const SingleStore = () => {
@@ -17,7 +17,7 @@ export const SingleStore = () => {
     }
 
     // 2. Store Handler
-    class SampleStoreHandler extends BaseStoreHandler {
+    class SampleStoreHandler extends BaseStateHandler {
         onNameChange(store, evt?) {
             // Setting state Directly
             return {
@@ -84,7 +84,7 @@ export const SingleStore = () => {
     }, [sampleStoreHandler]);
 
     // 5. Return a Wrapper Root component with Initialised with Store and Store Handler
-    const WrappedSampleComponent = StoreHandle.init(SampleComponent, {
+    const WrappedSampleComponent = StateHandle.init(SampleComponent, {
         root: [ sampleStore, sampleStoreHandler ]
     });
     return <WrappedSampleComponent />;
@@ -95,7 +95,7 @@ export const MultipleStores = () => {
     const sampleStore1 = {
         name: 'joe',
     };
-    class SampleStoreHandler1 extends BaseStoreHandler {
+    class SampleStoreHandler1 extends BaseStateHandler {
         onNameChange(store, evt?) {
             return { name: 'jane' };
         }
@@ -107,7 +107,7 @@ export const MultipleStores = () => {
         project: 'VsCode',
         license: 'MIT'
     };
-    class SampleStoreHandler2 extends BaseStoreHandler {
+    class SampleStoreHandler2 extends BaseStateHandler {
         onProjectChange(store, evt?) {
             return { project: 'Apache' };
         }
@@ -145,7 +145,7 @@ export const MultipleStores = () => {
     }, [sampleStoreHandler1, sampleStoreHandler2]);
 
     // 5. Return a Wrapper Root component with Initialised with Stores and Stores Handlers
-    const WrappedSampleComponent = StoreHandle.init(SampleComponent, {
+    const WrappedSampleComponent = StateHandle.init(SampleComponent, {
         storeOne: [sampleStore1, sampleStoreHandler1],
         storeTwo: [sampleStore2, sampleStoreHandler2],
     });
@@ -161,17 +161,17 @@ export const SingleStoreWithPartialHandlers = () => {
     };
 
     // 2. Partial Store Handlers
-    class PartialHandlerA extends BaseStoreHandler {
+    class PartialHandlerA extends BaseStateHandler {
         onH1Click(store) {
             return { name: 'jane' }
         }
     }
-    class PartialHandlerB extends BaseStoreHandler {
+    class PartialHandlerB extends BaseStateHandler {
         onH2Click(store) {
             return { age: 20 }
         }
     }
-    const SampleStoreHandler = BaseStoreHandler.join([PartialHandlerA, PartialHandlerB]);
+    const SampleStoreHandler = BaseStateHandler.join([PartialHandlerA, PartialHandlerB]);
     const sampleStoreHandler = new SampleStoreHandler()
 
     // 3. Root componennt
@@ -188,7 +188,7 @@ export const SingleStoreWithPartialHandlers = () => {
     };
 
     // 4.Return a Wrapper Root component with Initialised with Stores and Stores Handlers
-    const WrappedSampleComponent = StoreHandle.init(
+    const WrappedSampleComponent = StateHandle.init(
         SampleComponent,
         { root: [ sampleStore, sampleStoreHandler ]
     });

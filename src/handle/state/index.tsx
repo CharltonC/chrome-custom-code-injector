@@ -1,7 +1,7 @@
 import React, { ComponentClass } from 'react';
-import { BaseStoreHandler } from './base-store-handler';
-import { BaseStoreComponent } from './base-store-component';
-import { IStoreConfigs } from './type';
+import { BaseStateHandler } from './base-handler';
+import { BaseStateComponent } from './base-component';
+import { IStateConfigs } from './type';
 
 /**
  * Usage:
@@ -10,19 +10,19 @@ import { IStoreConfigs } from './type';
  * Adv:
  * - no more `handler.bind(this)`
  * - no more merging `...store` in every return state
- * - only 1 call needed: `StoreHandle.init(..)`
+ * - only 1 call needed: `StateHandle.init(..)`
  * - `.reflect` to consolidate multipe and/or dependent state changes
  */
-export const StoreHandle = {
-    BaseStoreHandler,
+export const StateHandle = {
+    BaseStateHandler,
 
-    init(Cmp: ACmp, storeConfigs: IStoreConfigs): ComponentClass {
-        return class extends BaseStoreComponent {
+    init(Cmp: ACmp, stateConfigs: IStateConfigs): ComponentClass {
+        return class extends BaseStateComponent {
             storeHandler: AObj;
 
             constructor(props: AObj) {
                 super(props);
-                const { store, storeHandler } = this.transformStoreConfigs(storeConfigs);
+                const { store, storeHandler } = this.transformStateConfigs(stateConfigs);
                 this.state = store;
                 this.storeHandler = storeHandler;
             }

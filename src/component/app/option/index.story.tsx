@@ -1,10 +1,10 @@
 import React from 'react';
 import { AppStateHandler } from '../../../handle/app-state';
-import { StoreHandle } from '../../../handle/store';
+import { StateHandle } from '../../../handle/state';
 import { createMockAppState } from '../../../mock/app-state';
 import { OptionApp } from '.';
 
-const App = StoreHandle.init(OptionApp, {
+const App = StateHandle.init(OptionApp, {
     root: [ createMockAppState(), new AppStateHandler() ],
 });
 
