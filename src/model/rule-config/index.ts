@@ -12,16 +12,16 @@ export class BaseRuleConfig {
 }
 
 export class PathRuleConfig extends BaseRuleConfig {
-    id: string  = '';
+    title: string  = '';
     value: string = '';
     jsCode: string = '';
     cssCode: string = '';
     libs: LibRuleConfig[] = [];
     activeTabIdx: 0 | 1 | 2 = 0;
 
-    constructor(id: string, value: string) {
+    constructor(title: string, value: string) {
         super();
-        this.id = id;
+        this.title = title;
         this.value = value;
     }
 }
@@ -32,13 +32,13 @@ export class HostRuleConfig extends PathRuleConfig {
 }
 
 export class LibRuleConfig {
-    id: string  = '';
+    title: string  = '';
     value: string = '';
     isOn: boolean = false;
     isAsync: boolean = true;
 
-    constructor(id: string, value: string) {
-        this.id = id;
+    constructor(title: string, value: string) {
+        this.title = title;
         this.value = value;
     }
 }

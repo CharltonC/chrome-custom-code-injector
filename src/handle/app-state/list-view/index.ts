@@ -32,12 +32,12 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
             .reduce((filteredRules: HostRuleConfig[], text: string) => {
                 text = text.toLowerCase();
 
-                return filteredRules.filter(({ id, value, paths }: HostRuleConfig) => {
+                return filteredRules.filter(({ title, value, paths }: HostRuleConfig) => {
                     // Check Row Id, Value
-                    if (hsText([id, value], text)) return true;
+                    if (hsText([title, value], text)) return true;
 
                     // Check Sub Row Id, Value
-                    return paths.some(({ id: subId, value: subValue }) => hsText([subId, subValue], text));
+                    return paths.some(({ title: subTitle, value: subValue }) => hsText([subTitle, subValue], text));
                 });
             }, rules);
 

@@ -34,7 +34,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { onActiveTabChange, onTabEnable, onEditorCodeChange } = appStateHandler;
 
         const { editViewTarget } = localState;
-        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase, id, value } = editViewTarget;
+        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase, title, value } = editViewTarget;
 
         const isLibTab = !!libs.length && activeTabIdx === 2;
         const isJsCode = activeTabIdx === 0;
@@ -50,10 +50,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         return (<>
             {/* <SideNav
                 list={rules}
-                itemKeys={['id', 'id']}
-                childKey="paths"
                 activeIdx={0}
-                // input change causes active item changes causes list to collapse
                 onItemClick={this.onListItemChange}
                 /> */}
             <div className="main--edit__form">

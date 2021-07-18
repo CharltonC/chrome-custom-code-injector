@@ -1,7 +1,7 @@
 import { BaseRuleConfig, PathRuleConfig, HostRuleConfig, LibRuleConfig } from '.';
 
 describe('Rule Config Model', () => {
-    const mockId = 'id';
+    const mockTitle = 'title';
     const mockValue = 'value';
 
     it('should return default values for `BaseRuleCofig`', () => {
@@ -14,9 +14,9 @@ describe('Rule Config Model', () => {
     });
 
     it('should return default values for `PathRuleConfig`', () => {
-        expect(new PathRuleConfig(mockId, mockValue)).toEqual({
+        expect(new PathRuleConfig(mockTitle, mockValue)).toEqual({
             ...(new BaseRuleConfig()),
-            id: mockId,
+            title: mockTitle,
             value: mockValue,
             jsCode: '',
             cssCode: '',
@@ -27,17 +27,17 @@ describe('Rule Config Model', () => {
     });
 
     it('should return default values for `HostRuleConfig`', () => {
-        expect(new HostRuleConfig(mockId, mockValue)).toEqual({
+        expect(new HostRuleConfig(mockTitle, mockValue)).toEqual({
             ...(new BaseRuleConfig()),
-            ...(new PathRuleConfig(mockId, mockValue)),
+            ...(new PathRuleConfig(mockTitle, mockValue)),
             isHttps: false,
             paths: []
         });
     });
 
     it('should return default values for `LibRuleConfig`', () => {
-        expect(new LibRuleConfig(mockId, mockValue)).toEqual({
-            id: mockId,
+        expect(new LibRuleConfig(mockTitle, mockValue)).toEqual({
+            title: mockTitle,
             value: mockValue,
             isOn: false,
             isAsync: true,

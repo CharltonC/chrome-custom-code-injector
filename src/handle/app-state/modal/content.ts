@@ -63,7 +63,7 @@ export class ModalContentStateHandler extends StateHandle.BaseStateHandler {
         const { modalEditTarget, modalEditTargetValidState } = localState;
         const { isValueValid } = modalEditTargetValidState;
         const { isValid } = validState;
-        const { id } = modalEditTarget;
+        const { title } = modalEditTarget;
 
         return {
             localState: {
@@ -75,7 +75,7 @@ export class ModalContentStateHandler extends StateHandle.BaseStateHandler {
                 allowModalConfirm: isValueValid && isValid,
                 modalEditTarget: {
                     ...modalEditTarget,
-                    id: isValid ? val : id
+                    title: isValid ? val : title
                 },
             }
         };
