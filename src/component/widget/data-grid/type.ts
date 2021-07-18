@@ -1,8 +1,8 @@
-import * as TSortHandle from '../../../service/sort-handle/type';
-import * as TRowTransformHandle from '../../../service/row-transform-handle/type';
-import * as TRowExpdHandle from '../../../service/row-expand-handle/type';
-import * as TPgnHandle from '../../../service/pagination-handle/type';
-import * as THeaderGrpHandle from '../../../service/header-group-handle/type';
+import * as TSortHandle from '../../../handle/sort/type';
+import * as TRowTransformHandle from '../../../handle/row-transform/type';
+import * as TRowExpdHandle from '../../../handle/row-expand/type';
+import * as TPgnHandle from '../../../handle/pagination/type';
+import * as THeaderGrpHandle from '../../../handle/header-group/type';
 import * as TDataGridHeader from './contextual-header/type';
 import { ReactElement } from 'react';
 

@@ -1,4 +1,4 @@
-import * as THeaderGrpHandle from '../../../../service/header-group-handle/type';
+import * as THeaderGrpHandle from '../../../../handle/header-group/type';
 import * as TSortBtn from '../../../base/btn-sort/type';
 import { ReactElement } from 'react';
 

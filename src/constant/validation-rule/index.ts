@@ -1,4 +1,4 @@
-import { ValidationHandle } from '../../service/validation-handle';
+import { ValidationHandle } from '../../handle/validation';
 
 const { gteChar, nonEmptyFile, maxFileSize, fileName, urlHost, urlPath, url } = new ValidationHandle();
 

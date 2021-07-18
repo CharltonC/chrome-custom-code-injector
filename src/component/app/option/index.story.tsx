@@ -1,6 +1,6 @@
 import React from 'react';
-import { StateHandler } from '../../../service/state-handler/root';
-import { StoreHandle } from '../../../service/store-handle';
+import { StateHandler } from '../../../handle/state/root';
+import { StoreHandle } from '../../../handle/store';
 import { createMockAppState } from '../../../mock/app-state';
 import { OptionApp } from '.';
 

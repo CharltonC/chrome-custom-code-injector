@@ -2,9 +2,9 @@ import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig, PathRuleConfig } from '../rule-config';
 import { RuleValidState } from '../rule-valid-state';
 import { Setting } from '../setting';
-import * as TSort from '../../service/sort-handle/type';
-import * as TPgn from '../../service/pagination-handle/type';
-import * as TRowSelect from '../../service/row-select-handle/type';
+import * as TSort from '../../handle/sort/type';
+import * as TPgn from '../../handle/pagination/type';
+import * as TRowSelect from '../../handle/row-select/type';
 import { modalDelTarget } from '../del-target';
 
 const { resultsPerPageIdx } = new Setting();

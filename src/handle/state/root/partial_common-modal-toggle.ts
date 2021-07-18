@@ -1,8 +1,8 @@
-import { StoreHandle } from '../../store-handle';
+import { StoreHandle } from '../../store';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../../constant/modals';
-import { FileHandle } from '../../file-handle';
+import { FileHandle } from '../../file';
 import { LocalState } from '../../../model/local-state';
 import { RuleValidState } from '../../../model/rule-valid-state';
 import { modalDelTarget } from '../../../model/del-target';

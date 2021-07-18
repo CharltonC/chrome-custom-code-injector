@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react';
 import { AMethodSpy } from '../../../asset/ts/test-util/type';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { UtilHandle } from '../../../service/util-handle/index';
-import { RowExpdHandle } from '../../../service/row-expand-handle';
-import { RowTransformHandle } from '../../../service/row-transform-handle';
-import { SortHandle } from '../../../service/sort-handle';
-import { PgnHandle } from '../../../service/pagination-handle';
-import { HeaderGrpHandle } from '../../../service/header-group-handle';
+import { UtilHandle } from '../../../handle/util/index';
+import { RowExpdHandle } from '../../../handle/row-expand';
+import { RowTransformHandle } from '../../../handle/row-transform';
+import { SortHandle } from '../../../handle/sort';
+import { PgnHandle } from '../../../handle/pagination';
+import { HeaderGrpHandle } from '../../../handle/header-group';
 import { DataGridPagination as Pagination } from './contextual-pagination';
 import { DataGridHeader } from './contextual-header';
 import { DataGrid, BASE_CLS } from '.';

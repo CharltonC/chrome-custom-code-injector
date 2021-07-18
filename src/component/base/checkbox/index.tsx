@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { IProps } from './type';
-import { UtilHandle } from '../../../service/util-handle';
+import { UtilHandle } from '../../../handle/util';
 
 const { cssCls } = UtilHandle.prototype;
 

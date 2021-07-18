@@ -6,7 +6,7 @@ import { Checkbox } from '../../base/checkbox';
 import { SortBtn } from '../../base/btn-sort';
 import { TbRow } from './tb-row';
 import * as TDataGrid from '../../widget/data-grid/type';
-import * as TSortHandle from '../../../service/sort-handle/type';
+import * as TSortHandle from '../../../handle/sort/type';
 import { IProps } from './type';
 
 export class OptionListView extends MemoComponent<IProps> {

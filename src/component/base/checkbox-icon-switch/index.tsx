@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { UtilHandle } from '../../../service/util-handle';
+import { UtilHandle } from '../../../handle/util';
 import { inclStaticIcon } from '../../static/icon';
 import * as TIcon from '../../static/icon/type';
 import { IProps } from './type';

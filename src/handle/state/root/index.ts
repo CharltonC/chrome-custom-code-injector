@@ -1,4 +1,4 @@
-import { StoreHandle } from '../../store-handle';
+import { StoreHandle } from '../../store';
 import { GeneralStateHandler } from './partial_common';
 import { ListViewStateHandler } from './partial_list-view';
 import { EditViewStateHandler } from './partial_edit-view';

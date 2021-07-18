@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { UtilHandle } from '../../../service/util-handle';
+import { UtilHandle } from '../../../handle/util';
 
 /**
  * Used for Component Class Inheritance only for React Component

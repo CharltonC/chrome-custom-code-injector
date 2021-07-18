@@ -1,7 +1,7 @@
-import { RowSelectHandle } from '../../row-select-handle';
-import { StoreHandle } from '../../store-handle';
+import { RowSelectHandle } from '../../row-select';
+import { StoreHandle } from '../../store';
 import { AppState } from '../../../model/app-state';
-import * as TSort from '../../sort-handle/type';
+import * as TSort from '../../sort/type';
 import { IStateHandler } from './type';
 
 const rowSelectHandle = new RowSelectHandle();

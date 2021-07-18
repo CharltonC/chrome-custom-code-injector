@@ -1,10 +1,10 @@
 import React, { ReactElement } from "react";
 import { MemoComponent } from '../../extendable/memo-component';
-import { HeaderGrpHandle } from '../../../service/header-group-handle';
-import { RowTransformHandle } from '../../../service/row-transform-handle'
-import { RowExpdHandle } from '../../../service/row-expand-handle'
-import { SortHandle } from '../../../service/sort-handle';
-import { PgnHandle } from '../../../service/pagination-handle';
+import { HeaderGrpHandle } from '../../../handle/header-group';
+import { RowTransformHandle } from '../../../handle/row-transform'
+import { RowExpdHandle } from '../../../handle/row-expand'
+import { SortHandle } from '../../../handle/sort';
+import { PgnHandle } from '../../../handle/pagination';
 import { DataGridPagination as DefPagination } from './contextual-pagination';
 import { DataGridHeader } from './contextual-header';
 import {

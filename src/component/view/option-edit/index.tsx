@@ -13,7 +13,7 @@ import { Checkbox } from '../../base/checkbox';
 import { DataGrid } from '../../widget/data-grid';
 import { jsExecStage } from '../../../constant/js-exec-stage';
 import { TbRow } from './tb-row';
-import * as TSortHandle from '../../../service/sort-handle/type';
+import * as TSortHandle from '../../../handle/sort/type';
 import { IProps } from './type';
 
 export class OptionEditView extends MemoComponent<IProps> {

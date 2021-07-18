@@ -1,7 +1,7 @@
-import { StoreHandle } from '../../store-handle';
+import { StoreHandle } from '../../store';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
-import * as TPgn from '../../pagination-handle/type';
+import * as TPgn from '../../pagination/type';
 
 export class ListViewStateHandler extends StoreHandle.BaseStoreHandler {
     onSearchTextChange({ localState }: AppState, val: string): Partial<AppState> {
