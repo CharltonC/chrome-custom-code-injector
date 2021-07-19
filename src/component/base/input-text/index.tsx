@@ -44,12 +44,9 @@ export class TextInput extends MemoComponent<IProps> {
                 <label className={labelCls} htmlFor={id}>{label}</label>}
                 <div className="text-ipt__input">
                     <input
-                        /* `key` is used to trigger re-render when `defaultValue` value changes */
-                        key={defaultValue as string}
                         id={id}
                         type="text"
                         ref={e => this.$input = e}
-                        defaultValue={defaultValue}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
                         {...inputProps}

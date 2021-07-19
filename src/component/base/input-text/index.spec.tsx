@@ -290,7 +290,7 @@ describe('Component - Text Input', () => {
             });
 
             it('should render the passed text input', () => {
-                TestUtil.renderPlain($elem, TextInput, {...mockProps, defaultValue: mockTxtInput});
+                TestUtil.renderPlain($elem, TextInput, {...mockProps, value: mockTxtInput});
                 getChildElem();
 
                 expect($input.value).toBe(mockTxtInput);
