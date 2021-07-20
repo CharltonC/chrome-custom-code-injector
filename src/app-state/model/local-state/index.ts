@@ -11,10 +11,19 @@ import { TextInputState } from '../text-input';
 const { resultsPerPageIdx } = new Setting();
 
 export class LocalState {
-    //// HEADER
-    // * Search
+    //// SEARCH
     searchedText = '';
     searchedRules: HostRuleConfig[] = null;
+
+    //// MODAL
+    activeModalId: string = null;
+    isModalConfirmBtnEnabled = false;
+    exportFilenameInput = new TextInputState();
+    importFilePath: File = null;
+    modalDelTarget = new modalDelTarget();
+    titleInput = new TextInputState();
+    hostOrPathInput = new TextInputState();
+    hostIdxForNewPath: number = null; // for targeting the host where new path will be added to
 
     // * Views
     // TODO: type
@@ -27,36 +36,27 @@ export class LocalState {
      */
     editViewTarget = null;
 
-    // for targeting the host where new path will be added to (Modal)
-    hostIdxForNewPath: number = null;
-
-    //// Edit Item (Modal)
-    titleInput = new TextInputState();
-    hostOrPathInput = new TextInputState();
-    exportFilenameInput = new TextInputState();
-    importFilePath: File = null;
-
     //// DATA GRID ROWS
     // * rows used by Modal Delete Confirm `onDelModalConfirm`
     // - temp storage which points to the current full set of sorted data if exist or plain data (either searched or non-search)
     // - unpaginated
     dataSrc: HostRuleConfig[] = null;
 
-    // * sort
+    // Sort
     sortOption: Partial<TSort.IOption> = {
         reset: true }
     ;
 
-    // * select
+    // Select
     selectState: TRowSelect.IState = {
         areAllRowsSelected: false,
         selectedRowKeys: {}
     };
 
-    // * expand (only for allow 1 row to be expanded at the same time)
+    // Expand (only for allow 1 row to be expanded at the same time)
     expdRowId: string = null;
 
-    // * pagination
+    // Pagination
     pgnOption = {
         increment: resultsPerPage,
         incrementIdx: resultsPerPageIdx
@@ -67,9 +67,4 @@ export class LocalState {
         startIdx: 0,
         endIdx: null
     } as TPgn.IState;
-
-    //// MODAL
-    activeModalId: string = null;
-    isModalConfirmBtnEnabled = false;
-    modalDelTarget = new modalDelTarget();
 }
