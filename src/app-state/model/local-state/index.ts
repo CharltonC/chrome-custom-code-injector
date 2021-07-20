@@ -6,6 +6,7 @@ import * as TSort from '../../../handle/sort/type';
 import * as TPgn from '../../../handle/pagination/type';
 import * as TRowSelect from '../../../handle/row-select/type';
 import { modalDelTarget } from '../del-target';
+import { TextInputState } from '../text-input';
 
 const { resultsPerPageIdx } = new Setting();
 
@@ -15,19 +16,25 @@ export class LocalState {
     searchedText = '';
     searchedRules: HostRuleConfig[] = null;
 
-    // * Import/Export
-    importFile: File = null;
-    exportFileName: string = null;
-
     // * Views
     // TODO: type
     /**
      * {
-        itemIdx: null,
-        childItemIdx: null,
+        isHost: null,
+        idx: null,
+        childIdx: null,
     };
      */
     editViewTarget = null;
+
+    // for targeting the host where new path will be added to (Modal)
+    hostIdxForNewPath: number = null;
+
+    //// Edit Item (Modal)
+    titleInput = new TextInputState();
+    hostOrPathInput = new TextInputState();
+    exportFilenameInput = new TextInputState();
+    importFilePath: File = null;
 
     //// DATA GRID ROWS
     // * rows used by Modal Delete Confirm `onDelModalConfirm`
@@ -36,7 +43,9 @@ export class LocalState {
     dataSrc: HostRuleConfig[] = null;
 
     // * sort
-    sortOption: Partial<TSort.IOption> = { reset: true };
+    sortOption: Partial<TSort.IOption> = {
+        reset: true }
+    ;
 
     // * select
     selectState: TRowSelect.IState = {
@@ -60,17 +69,7 @@ export class LocalState {
     } as TPgn.IState;
 
     //// MODAL
-    // * ID & Confirm disabled
-    currModalId: string = null;
-    allowModalConfirm = false;
-
-    // * Validation for Add/Edit
-    modalEditTargetValidState = new RuleValidState();
-
-    // * Add New Row/Sub-row or Edit Row/Sub-row (w/ Validation)
-    modalEditTarget: HostRuleConfig = null;
-    modalAddSubTargetIdx: number = null;     // index of rule for adding Sub-row only
-
-    // * Delete Row/Sub-row
+    activeModalId: string = null;
+    isModalConfirmBtnEnabled = false;
     modalDelTarget = new modalDelTarget();
 }

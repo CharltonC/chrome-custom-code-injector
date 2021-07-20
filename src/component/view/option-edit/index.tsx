@@ -25,18 +25,26 @@ export class OptionEditView extends MemoComponent<IProps> {
         this.$idInputRef = createRef();
         this.$valueInputRef = createRef();
         this.onListItemChange = this.onListItemChange.bind(this);
+
+        // TODO: constant component props
     }
 
     render() {
         const { headerProps, props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { onActiveTabChange, onTabEnable, onEditorCodeChange } = appStateHandler;
+        const { titleInput, hostOrPathInput, editViewTarget } = localState;
+        const {
+            onItemTitleChange, onItemHostOrPathChange,
+            onItemJsExecStageChange,
+            onItemActiveTabChange, onItemTabEnable, onItemEditorCodeChange
+        } = appStateHandler;
 
-        const { itemIdx, childItemIdx } = localState.editViewTarget;
-        const item = rules[itemIdx];
-        const activeItem = item || item?.[childItemIdx];
-        const { isHost, activeTabIdx, libs, jsCode, cssCode, jsExecPhase, title, value } = activeItem;
+        const { itemIdx, childItemIdx } = editViewTarget;
+        const isHost = !Number.isInteger(childItemIdx);
+        const host = rules[itemIdx];
+        const item = host?.paths[childItemIdx] || host;
+        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase} = item;
 
         const isLibTab = !!libs.length && activeTabIdx === 2;
         const isJsCode = activeTabIdx === 0;
@@ -45,7 +53,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const codeMode = isJsCode ? 'js' : 'css'
         const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
 
-        // TODO: Refactor fixed props, refactor method
+        const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
 
         return (<>
             <SideNav
@@ -53,37 +61,51 @@ export class OptionEditView extends MemoComponent<IProps> {
                 childListKey="paths"
                 activeItemIdx={itemIdx}
                 activeChildItemIdx={childItemIdx}
+                onClick={this.onListItemChange}
                 />
             <div className="main--edit__form">
                 {/* TODO: placeholder text variation */}
                 <section className="fm-field">
-                    {/* <TextInput
+                    {/* TODO: State for error msg, valid */}
+                    <TextInput
                         ref={this.$idInputRef}
                         id="edit-target-id"
                         label="ID"
                         required
-                        autoFocus
-                        defaultValue={id}
-                        validate={validationRule.ruleId}
-                        fixedPosErrMsg
-                        /> */}
+                        value={titleInput.value}
+                        validation={{
+                            rules: ruleId,
+                            isValid: titleInput.isValid,
+                            errMsg: titleInput.errMsg
+                        }}
+                        onInputChange={onItemTitleChange}
+                        />
                 </section>
                 <section className="fm-field">
-                    {/* <TextInput
+                    <TextInput
                         ref={this.$valueInputRef}
                         id="edit-target-value"
-                        label={isHostRule ? 'Host' : 'Path'}
+                        label={isHost ? 'Host' : 'Path'}
                         required
-                        defaultValue={value}
-                        validate={isHostRule ? validationRule.ruleUrlHost : validationRule.ruleUrlPath}
-                        fixedPosErrMsg
-                        /> */}
-                    {/*
-                        <div className="fm-field__ctrl">{ isHostRule &&
-                            <IconSwitch id="https-switch" label="lock-close" icon /> }
-                            <IconSwitch id="regex-switch" label="(.*)" />
-                        </div>
-                    */}
+                        value={hostOrPathInput.value}
+                        validation={{
+                            rules: isHost ? ruleUrlHost : ruleUrlPath,
+                            isValid: hostOrPathInput.isValid,
+                            errMsg: hostOrPathInput.errMsg
+                        }}
+                        onInputChange={onItemHostOrPathChange}
+                        />
+                    <div className="fm-field__ctrl">{ isHost &&
+                        <IconSwitch
+                            id="https-switch"
+                            label="lock-close"
+                            checked={item["isHttps"]}
+                            /* TODO: onChange */
+                            icon /> }
+                        <IconSwitch
+                            id="regex-switch"
+                            label="(.*)" />
+                    </div>
                 </section>
                 <section className="fm-field">
                     <p className="fm-field__label">Script Execution</p>
@@ -92,21 +114,20 @@ export class OptionEditView extends MemoComponent<IProps> {
                         border={true}
                         list={jsExecStage}
                         selectIdx={jsExecPhase}
-                        /* TODO: selectIdx */
-                        onSelect={() => {}} />
+                        onSelect={onItemJsExecStageChange} />
                 </section>
                 {/* TOD: section-form field? */}
                 <TabSwitch
                     id="tab-switch"
-                    data={activeItem}
+                    data={item}
                     dataKeyMap={[
                         ['js', 'isJsOn'],
                         ['css', 'isCssOn'],
                         ['lib', 'isLibOn'],
                     ]}
                     activeTabIdx={activeTabIdx}
-                    onTabActive={onActiveTabChange}
-                    onTabEnable={onTabEnable}
+                    onTabActive={onItemActiveTabChange}
+                    onTabEnable={onItemTabEnable}
                     />{ isCode &&
                 <CodeMirror
                     value={codeContent}
@@ -115,7 +136,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         theme: 'darcula',
                         lineNumbers: true
                     }}
-                    onChange={(editor, data, val) => onEditorCodeChange({ value: val, codeMode }) }
+                    onChange={(editor, data, val) => onItemEditorCodeChange({ value: val, codeMode }) }
                     />}{ isLibTab &&
                 <DataGrid
                     data={libs}
@@ -192,11 +213,12 @@ export class OptionEditView extends MemoComponent<IProps> {
         </>;
     }
 
-    onListItemChange(...[, { item }]): void {
+    onListItemChange(args): void {
+        // TODO: clear input state & validation state?
         // this.$idInputRef.current.clearValidState();
         // this.$valueInputRef.current.clearValidState();
         setTimeout(() => {
-            this.props.appStateHandler.onListItemChange(item);
+            this.props.appStateHandler.onListItemChange(args);
         }, 200);
     }
 }

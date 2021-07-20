@@ -7,7 +7,7 @@ describe('Component - Modal', () => {
     const mockBaseProps: IProps = {
         header: 'main',
         subHeader: 'sub',
-        currModalId: 'lorem',
+        activeModalId: 'lorem',
         id: 'sum',
         onCancel: null
     };

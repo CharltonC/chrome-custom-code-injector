@@ -15,9 +15,9 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { selectState, expdRowId } = localState;
 
     const {
-        onDelModal, onAddPathModal,
-        onRowSwitchToggle, onRowJsStageChange,
-        onRowEdit, onRowExpand, onRowSelectToggle,
+        onDelModal, onAddPathRuleModal,
+        onItemSwitchToggle, onItemJsStageChange,
+        onItemEdit, onRowExpand, onRowSelectToggle,
     } = appStateHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
@@ -46,7 +46,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle({ item, key: 'isHttps'})}
+                        onChange={() => onItemSwitchToggle({ ctxIdx, parentCtxIdx, key: 'isHttps'})}
                         />}
                 </td><td>
                     <div>{ isHost &&
@@ -72,28 +72,28 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
                         disabled={isDelDisabled}
-                        onSelect={(evt, selectIdx) => onRowJsStageChange(ctxIdx, selectIdx)}
+                        onSelect={(evt, selectIdx) => onItemJsStageChange({ctxIdx, parentCtxIdx, selectIdx})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle({ item, key: 'isJsOn'})}
+                        onChange={() => onItemSwitchToggle({ ctxIdx, parentCtxIdx, key: 'isJsOn'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle({ item, key: 'isCssOn'})}
+                        onChange={() => onItemSwitchToggle({ ctxIdx, parentCtxIdx, key: 'isCssOn'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
-                        onChange={() => onRowSwitchToggle({ item, key: 'isLibOn'})}
+                        onChange={() => onItemSwitchToggle({ ctxIdx, parentCtxIdx, key: 'isLibOn'})}
                         />
                 </td><td>{ isHost &&
                     <IconBtn
@@ -101,14 +101,14 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         theme="gray"
                         title="add path rule"
                         disabled={isDelDisabled}
-                        onClick={() => onAddPathModal(ctxIdx)}
+                        onClick={() => onAddPathRuleModal({ idx: ctxIdx })}
                         />}
                 </td><td>
                     <IconBtn
                         icon="edit"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onRowEdit({ isHost, idx, parentCtxIdx }) }
+                        onClick={() => onItemEdit({ isHost, idx, parentCtxIdx }) }
                         />
                 </td><td>
                     <IconBtn

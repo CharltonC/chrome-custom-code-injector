@@ -59,7 +59,7 @@ export class OptionListView extends MemoComponent<IProps> {
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
         const { searchedRules, selectState } = localState;
-        const { onRowsSelectToggle, onAddHostModal, onDelModal } = appStateHandler;
+        const { onRowsSelectToggle, onAddHostRuleModal, onDelModal } = appStateHandler;
 
         const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
         const { areAllRowsSelected, selectedRowKeys } = selectState;
@@ -86,7 +86,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 theme="gray"
                 title="add host rule"
                 disabled={hsSelected}
-                onClick={onAddHostModal}
+                onClick={onAddHostRuleModal}
                 />
         );
 

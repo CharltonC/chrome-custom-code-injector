@@ -8,17 +8,19 @@ import { LocalState } from '../../model/local-state';
 import { RuleValidState } from '../../model/rule-valid-state';
 import { modalDelTarget } from '../../model/del-target';
 import { IStateHandler } from '../type';
+import { TextInputState } from '../../model/text-input';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
 
 export class ModalStateHandler extends StateHandle.BaseStateHandler {
     //// Content: Settings
-    onResultsPerPageChange({ setting }: AppState, resultsPerPageIdx: number) {
+    onResultsPerPageChange({ setting }: AppState, payload) {
+        const { idx } = payload;
         return {
             setting: {
                 ...setting,
-                resultsPerPageIdx
+                resultsPerPageIdx: idx
             }
         };
     }
@@ -29,24 +31,25 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefHostRuleToggle({ setting }: AppState, key: string) {
+    onDefHostRuleToggle({ setting }: AppState, payload) {
+        const { key } = payload;
         const { defRuleConfig } = setting;
-        const isValid: boolean = key in defRuleConfig && typeof defRuleConfig[key] === 'boolean';
+        const isValid = key in defRuleConfig && typeof defRuleConfig[key] === 'boolean';
         if (!isValid) throw new Error('key is not valid');
-        const val: boolean = defRuleConfig[key];
 
         return {
             setting: {
                 ...setting,
                 defRuleConfig: {
                     ...defRuleConfig,
-                    [key]: !val
+                    [key]: !defRuleConfig[key]
                 }
             }
         };
     }
 
-    onDefJsExecStageChange({ setting }: AppState, evt, idx: number) {
+    onDefJsExecStageChange({ setting }: AppState, payload) {
+        const { idx } = payload;
         const { defRuleConfig } = setting;
         return {
             setting: {
@@ -59,7 +62,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDelConfirmToggle({ setting }: AppState) {
+    onDelConfirmDialogToggle({ setting }: AppState) {
         return {
             setting: {
                 ...setting,
@@ -68,80 +71,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    //// Content: Add/Edit Rule
-    onEditItemIdChange({ localState }: AppState, { val, validState }) {
-        const { modalEditTarget, modalEditTargetValidState } = localState;
-        const { isValueValid } = modalEditTargetValidState;
-        const { isValid } = validState;
-        const { title } = modalEditTarget;
-
-        return {
-            localState: {
-                ...localState,
-                modalEditTargetValidState: {
-                    ...modalEditTargetValidState,
-                    isIdValid: isValid
-                },
-                allowModalConfirm: isValueValid && isValid,
-                modalEditTarget: {
-                    ...modalEditTarget,
-                    title: isValid ? val : title
-                },
-            }
-        };
-    }
-
-    onEditItemValChange({ localState }: AppState, { val, validState }) {
-        const { modalEditTarget, modalEditTargetValidState } = localState;
-        const { isIdValid } = modalEditTargetValidState;
-        const { isValid } = validState;
-        const { value } = modalEditTarget;
-
-        return {
-            localState: {
-                ...localState,
-                modalEditTargetValidState: {
-                    ...modalEditTargetValidState,
-                    isValueValid: isValid
-                },
-                allowModalConfirm: isIdValid && isValid,
-                modalEditTarget: {
-                    ...modalEditTarget,
-                    value: isValid ? val : value
-                },
-            }
-        };
-    }
-
-    //// Content: Import/Export Rules
-    onImportFileChange({ localState }, { target }, { isValid }) {
-        return {
-            localState: {
-                ...localState,
-                importFile: target.files.item(0),
-                allowModalConfirm: isValid
-            }
-        };
-    }
-
-    onExportFileNameChange({ localState }: AppState, { validState, val }) {
-        const isValid = validState?.isValid ?? true;
-
-        return {
-            localState: {
-                ...localState,
-                allowModalConfirm: isValid,
-                exportFileName: isValid ? val : null
-            }
-        };
-    }
-
     //// Toggle
-    onModalOpen({ localState }: AppState, currModalId: string): Partial<AppState> {
+    onModalOpen({ localState }: AppState, activeModalId: string): Partial<AppState> {
         return {
             localState: {
                 ...localState,
-                currModalId
+                activeModalId
             }
         };
     }
@@ -150,25 +85,24 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         return {
             localState: {
                 ...localState,
-                currModalId: null,
-                allowModalConfirm: false,
-                modalEditTarget: null,
+                activeModalId: null,
+                isModalConfirmBtnEnabled: false,
+
+                // TODO: remove?
                 modalDelTarget: new modalDelTarget(),
-                modalEditTargetValidState: new RuleValidState()
+
+                // Reset any text input states including text, validation
+                titleInput: new TextInputState(),
+                hostOrPathInput: new TextInputState(),
+                exportFilenameInput: new TextInputState(),
+                hostIdxForNewPath: null,
+                importFilePath: null,
             }
         };
     }
 
     onSettingModal(state: AppState) {
         return this.reflect.onModalOpen(state, defSetting.id);
-    }
-
-    onImportConfigModal(state: AppState) {
-        return this.reflect.onModalOpen(state, importConfig.id);
-    }
-
-    onExportConfigModal(state: AppState) {
-        return this.reflect.onModalOpen(state, exportConfig.id);
     }
 
     onDelModal(state: AppState, { dataSrc, ctxIdx, parentCtxIdx }) {
@@ -180,7 +114,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const baseModState = {
             ...localState,
             dataSrc: dataSrc.concat(),
-            currModalId: removeConfirm.id,
+            activeModalId: removeConfirm.id,
         };
 
         const partialModState: Partial<AppState> = {
@@ -209,7 +143,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                 endIdx: null
             },
             dataSrc: null,
-            currModalId: null,
+            activeModalId: null,
             selectState: {              // in case of side-effect on `selectedRowKeys` state
                 areAllRowsSelected: false,
                 selectedRowKeys: {},
@@ -233,86 +167,156 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onAddHostModal({ localState }: AppState) {
+    //// Add Host/Path
+    onAddRuleModalInputChange({ localState }: AppState, payload): Partial<AppState> {
+        const { val, validState, isGte3, inputKey } = payload;
+        const inputState = localState[inputKey];
+
+        const isValid = isGte3 && validState?.isValid;
+        // TODO: err msg constant
+        const errMsg = !isGte3
+            ? [ 'value must be 3 characters or more' ]
+            : validState?.errMsg
+                ? validState?.errMsg
+                : inputState.errMsg;
+
+        // Check valid state of other text inputs in the same Modal
+        // TODO: constant
+        const inputKeys = ['titleInput', 'hostOrPathInput'];
+        const isModalConfirmBtnEnabled = isValid && inputKeys
+            .filter(key => key !== inputKey)
+            .every(key => localState[key].isValid);
+
         return {
             localState: {
                 ...localState,
-                currModalId: editHost.id,
-                modalEditTarget: new HostRuleConfig('', '')
+                isModalConfirmBtnEnabled,
+                [inputKey]: {
+                    isValid,
+                    errMsg,
+                    value: val
+                }
+            }
+        };
+    }
+    onAddHostRuleModal({ localState }: AppState) {
+        return {
+            localState: {
+                ...localState,
+                activeModalId: editHost.id
             }
         };
     }
 
-    onAddHostConfirm(state: AppState) {
+    onAddHostModalRuleConfirm(state: AppState) {
         const { localState, rules, setting } = state;
-        const cloneRules = rules.concat();
-        const { modalEditTarget } = localState;
+
+        const { titleInput, hostOrPathInput } = localState;
+        const title: string = titleInput.value;
+        const host: string = hostOrPathInput.value;
+        const hostRule = new HostRuleConfig(title, host);
+        Object.assign(hostRule, setting.defRuleConfig);
+        rules.push(hostRule);
+
+        const modalResetState = this.reflect.onModalCancel(state);
+        return {
+            ...modalResetState,
+            rules: rules.concat([])
+        };
+    }
+
+    onAddPathRuleModal({ localState }: AppState, payload) {
+        const { idx } = payload;
+        return {
+            localState: {
+                ...localState,
+                activeModalId: editPath.id,
+                hostIdxForNewPath: idx,
+            }
+        };
+    }
+
+    onAddPathRuleModalConfirm(state: AppState) {
+        const { localState, rules, setting } = state;
+
+        const { titleInput, hostOrPathInput, hostIdxForNewPath } = localState;
+        const title: string = titleInput.value;
+        const host: string = hostOrPathInput.value;
+        const pathRule = new PathRuleConfig(title, host);
+        Object.assign(pathRule, setting.defRuleConfig);
+        rules[hostIdxForNewPath].paths.push(pathRule);
+
         const resetState = this.reflect.onModalCancel(state);
-
-        // merge with user config before added
-        Object.assign(modalEditTarget, setting.defRuleConfig);
-        cloneRules.push(localState.modalEditTarget);
-
         return {
             ...resetState,
-            rules: cloneRules
+            rules: rules.concat([])
         };
     }
 
-    onAddPathModal({ localState }: AppState, idx: number) {
+    //// Import/Export Json Config
+    onImportConfigFileModal(state: AppState) {
+        return this.reflect.onModalOpen(state, importConfig.id);
+    }
+
+    // TODO: payload object
+    onImportConfigFileModalInputChange({ localState }, ...payload) {
+        const [ { target }, { isValid } ] = payload;
         return {
             localState: {
                 ...localState,
-                currModalId: editPath.id,
-                modalAddSubTargetIdx: idx,
-                modalEditTarget: new PathRuleConfig('', '')
+                importFilePath: target.files.item(0),
+                isModalConfirmBtnEnabled: isValid
             }
         };
     }
 
-    onAddPathConfirm({ localState, rules, setting }: AppState) {
-        const cloneRules = rules.concat();
-        const { modalEditTarget, modalAddSubTargetIdx } = localState;
-        const { isHttps, ...defConfig } = setting.defRuleConfig
 
-        // merge with user config before added
-        Object.assign(modalEditTarget, defConfig);
-        cloneRules[modalAddSubTargetIdx].paths.push(modalEditTarget);
-
+    async onImportConfigFileModalConfirm({ localState }: AppState) {
+        // TODO: try/catch for read
         return {
-            rules: cloneRules,
+            rules: await fileHandle.readJson(localState.importFilePath),
             localState: {
                 ...localState,
-                currModalId: null,
-                modalAddSubTargetIdx: null,
-                allowModalConfirm: false,
-                modalEditTargetValidState: new RuleValidState()
+                isModalConfirmBtnEnabled: false,
+                importFilePath: null,
+                activeModalId: null
             }
         };
     }
 
-    async onImportModalConfirm({ localState }: AppState) {
+    onExportConfigFileModal(state: AppState) {
+        return this.reflect.onModalOpen(state, exportConfig.id);
+    }
+
+    onExportConfigFileModalInputChange({ localState }: AppState, payload) {
+        const { isGte3, validState, val } = payload;
+        const isValid = isGte3 && validState?.isValid;
+
         return {
-            rules: await fileHandle.readJson(localState.importFile),
             localState: {
                 ...localState,
-                allowModalConfirm: false,
-                importFile: null,
-                currModalId: null
+                exportFilenameInput: {
+                    value: val,
+                    isValid,
+                    errMsg: validState?.errMsg,
+                },
+                isModalConfirmBtnEnabled: isValid,
             }
         };
     }
 
-    onExportModalConfirm({ rules, localState }: AppState) {
-        const { exportFileName } = localState;
-        fileHandle.saveJson(rules, exportFileName, true);
+    onExportConfigFileModalConfirm(state: AppState) {
+        const { rules, localState } = state;
+        const { value } = localState.exportFilenameInput;
+        fileHandle.saveJson(rules, value, true);
 
+        const resetState = this.reflect.onModalCancel(state);
         return {
+            ...resetState,
             localState: {
                 ...localState,
-                currModalId: null,
-                allowModalConfirm: false,
-                exportFileName: null
+                activeModalId: null,
+                isModalConfirmBtnEnabled: false,
             }
         };
     }

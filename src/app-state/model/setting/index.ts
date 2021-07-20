@@ -1,5 +1,5 @@
 export class Setting {
-    showDeleteModal: boolean = true;
+    showDeleteModal = true;
     resultsPerPageIdx: number = 0;
     defRuleConfig = {
         isHttps: false,

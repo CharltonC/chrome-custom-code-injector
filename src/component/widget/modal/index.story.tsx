@@ -45,7 +45,7 @@ export const ForClassComponent = () => {
                 <div style={defStyle}>
                     <button type="button" onClick={this.onShow}>Open modal</button>
                     <Modal
-                        currModalId={this.state.currId}
+                        activeModalId={this.state.currId}
                         id="demo"
                         header="title"
                         subHeader="subheader"
@@ -65,7 +65,7 @@ export const ForClassComponent = () => {
 };
 
 export const ForFunctionalComponent = () => {
-    const [ currModalId, setCurrModalId ] = useState(null);
+    const [ activeModalId, setCurrModalId ] = useState(null);
 
     const onCancel = (evt: Event) => {
         const { type } = evt || {};
@@ -85,7 +85,7 @@ export const ForFunctionalComponent = () => {
         <div style={defStyle}>
             <button type="button" onClick={onShow}>Open modal</button>
             <Modal
-                currModalId={currModalId}
+                activeModalId={activeModalId}
                 id="demo"
                 header="header"
                 subHeader="subheader"
@@ -101,7 +101,7 @@ export const ForFunctionalComponent = () => {
 };
 
 export const WithoutEscKeyBinding = () => {
-    const [ currModalId, setCurrModalId ] = useState(null);
+    const [ activeModalId, setCurrModalId ] = useState(null);
     const onCancel = () => setCurrModalId(null);
     const onShow = () => setCurrModalId('demo');
 
@@ -109,7 +109,7 @@ export const WithoutEscKeyBinding = () => {
         <div style={defStyle}>
             <button type="button" onClick={onShow}>Open modal</button>
             <Modal
-                currModalId={currModalId}
+                activeModalId={activeModalId}
                 id="demo"
                 header="header"
                 subHeader="subheader"

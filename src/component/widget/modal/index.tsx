@@ -28,11 +28,11 @@ export class Modal extends MemoComponent<IProps, IState> {
         const {
             header, subHeader,
             children,
-            id, currModalId, clsSuffix,
+            id, activeModalId, clsSuffix,
             cancel, onCancel, confirm, confirmDisabled, confirmType
         } = this.props;
 
-        return this.isVisible(id, currModalId) && (
+        return this.isVisible(id, activeModalId) && (
             <div className={this.cssCls('modal', clsSuffix)}>
                 <div className="modal__content">
                     <div className="modal__header">
@@ -60,8 +60,8 @@ export class Modal extends MemoComponent<IProps, IState> {
         );
     }
 
-    isVisible(id: string, currModalId: string): boolean {
-        return currModalId && id && currModalId === id;
+    isVisible(id: string, activeModalId: string): boolean {
+        return activeModalId && id && activeModalId === id;
     }
 
     onSubmit(e: FormEvent) {

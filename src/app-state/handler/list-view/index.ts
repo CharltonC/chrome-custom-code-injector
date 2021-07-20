@@ -1,7 +1,7 @@
 import { RowSelectHandle } from '../../../handle/row-select';
 import { StateHandle } from '../../../handle/state';
 import { AppState } from '../../model/app-state';
-import { HostRuleConfig } from '../../model/rule-config';
+import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
 import { IStateHandler } from '../type';
 import * as TPgn from '../../../handle/pagination/type';
 import * as TSort from '../../../handle/sort/type';
@@ -122,27 +122,55 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onRowJsStageChange({ rules }: AppState, idx: number, modIdx): Partial<AppState> {
-        const clone = rules.slice();
-        clone[idx].jsExecPhase = modIdx;
-        return { rules: clone };
+    onItemJsStageChange({ rules }: AppState, payload): Partial<AppState> {
+        // TODO: Common
+        const { parentCtxIdx, ctxIdx, selectIdx } = payload;
+        const item = Number.isInteger(parentCtxIdx)
+          ? rules[parentCtxIdx].paths[ctxIdx]
+          : rules[ctxIdx];
+        item.jsExecPhase = selectIdx;
+        return { rules };
     }
 
-    onRowSwitchToggle(state: AppState, { item, key }): Partial<AppState> {
-        item[key] = !item[key];
-        return {};
+    onItemSwitchToggle({ rules }: AppState, payload): Partial<AppState> {
+        const { parentCtxIdx, ctxIdx, key } = payload;
+        const item = Number.isInteger(parentCtxIdx)
+          ? rules[parentCtxIdx].paths[ctxIdx]
+          : rules[ctxIdx];
+          item[key] = !item[key];
+        return { rules };
     }
 
-    onRowEdit(state: AppState, { isHost, idx, parentCtxIdx }): Partial<AppState> {
-        const { localState } = state;
+    onItemEdit({ rules, localState }: AppState, { isHost, idx, parentCtxIdx }): Partial<AppState> {
+        const itemIdx = isHost ? idx : parentCtxIdx;
+        const childItemIdx = isHost ? null : idx;
+        const { title, value } = this.reflect.getActiveItem({
+            rules,
+            itemIdx,
+            childItemIdx
+        });
         return {
             localState: {
                 ...localState,
                 editViewTarget: {
-                    itemIdx: isHost ? idx : parentCtxIdx,
-                    childItemIdx: isHost ? null : idx,
+                    itemIdx,
+                    childItemIdx,
                 },
-                selectState: rowSelectHandle.defState,      // clear the row select state ready for use for DataGrid component in Edit View
+
+                // clear the row select state ready for use for DataGrid component in Edit View
+                selectState: rowSelectHandle.defState,
+
+                // Input value, validation state
+                titleInput: {
+                    isValid: null,
+                    errMsg: [],
+                    value: title,
+                },
+                hostOrPathInput: {
+                    isValid: null,
+                    errMsg: [],
+                    value
+                }
             }
         };
     }
@@ -292,5 +320,12 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
             totalVisibleRows: endRowIdx - startIdx,
             totalVisibleRowsAllowed
         };
+    }
+
+    // TODO: Common
+    getActiveItem({ rules, itemIdx, childItemIdx }): HostRuleConfig | PathRuleConfig {
+        const isChild = Number.isInteger(childItemIdx);
+        const host: HostRuleConfig = rules[itemIdx];
+        return isChild ? host.paths[childItemIdx] : host;
     }
 }

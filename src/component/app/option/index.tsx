@@ -38,16 +38,18 @@ export class OptionApp extends MemoComponent<IProps> {
     render() {
         const {
             props, cssCls, onSearch,
-            $docIcon, $ruleIdEdit, $libEdit,
+            $docIcon,
             localState, setting, rules,
             appStateHandler
         } = this;
 
         const {
-            currModalId, allowModalConfirm,
+            activeModalId, isModalConfirmBtnEnabled,
             searchedText,
-            modalEditTarget, editViewTarget,
-            pgnOption
+            editViewTarget,
+            pgnOption,
+            exportFilenameInput,
+            titleInput, hostOrPathInput,
         } = localState;
 
         const {
@@ -59,33 +61,32 @@ export class OptionApp extends MemoComponent<IProps> {
         const {
             onListView,
             onSearchTextClear,
-            onModalCancel, onSettingModal, onImportConfigModal, onExportConfigModal,
-            onAddHostConfirm, onDelModalConfirm,
-            onAddPathConfirm,
-            onEditItemValChange,
-            onResetAll, onDelConfirmToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
-            onImportFileChange, onImportModalConfirm,
-            onExportFileNameChange, onExportModalConfirm,
+            onModalCancel, onSettingModal, onImportConfigFileModal, onExportConfigFileModal,
+            onAddRuleModalInputChange,
+            onAddHostModalRuleConfirm, onAddPathRuleModalConfirm,
+            onDelModalConfirm,
+            onResetAll, onDelConfirmDialogToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
+            onImportConfigFileModalInputChange, onImportConfigFileModalConfirm,
+            onExportConfigFileModalInputChange, onExportConfigFileModalConfirm,
         } = appStateHandler;
 
-        const isListView: boolean = !editViewTarget;
+        const isListView = !editViewTarget;
+        const isHost = editViewTarget && !Number.isInteger(editViewTarget?.childItemIdx);
         const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
         const MAIN_CLS = cssCls('main', isListView ? 'list' : 'edit');
+        const $view = isListView
+            ? <OptionListView {...props} />
+            : <OptionEditView {...props} />;
 
         return (
             <div className="app app--option">
-                <header className="header">{ editViewTarget &&
+                <header className="header">{!isListView && (
                     <div className={EDIT_CTRL_CLS}>
-                        <IconBtn
-                            icon="arrow-lt"
-                            theme="white"
-                            onClick={onListView}
-                            />
-                        <IconBtn icon="save" theme="white" />
-                        <IconBtn icon="delete" theme="white" />{ ('paths' in editViewTarget) &&
+                        <IconBtn icon="arrow-lt" theme="white" onClick={onListView} />
+                        <IconBtn icon="delete" theme="white" />{isHost &&
                         <IconBtn icon="add" theme="white" />}
-                    </div>}
-                    <div className="header__ctrl">{ isListView &&
+                    </div>)}
+                    <div className="header__ctrl">{isListView &&
                         <SearchInput
                             id="search"
                             value={searchedText}
@@ -109,23 +110,23 @@ export class OptionApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="download"
                             theme="white"
-                            onClick={onImportConfigModal}
+                            onClick={onImportConfigFileModal}
                             />
                         <IconBtn
                             icon="download"
                             theme="white"
                             clsSuffix="upload"
                             disabled={!rules.length}
-                            onClick={onExportConfigModal}
+                            onClick={onExportConfigFileModal}
                             />
                     </div>
                 </header>
                 <main className={MAIN_CLS}>
-                    { isListView ? <OptionListView {...props} /> : <OptionEditView {...props} />  }
-                </main>
-                { currModalId && <form className="modals">
+                    {$view}
+                </main>{activeModalId && (
+                <form className="modals">
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.defSetting.id}
                         header={modals.defSetting.txt}
                         clsSuffix="setting"
@@ -138,18 +139,23 @@ export class OptionApp extends MemoComponent<IProps> {
                                     type="button"
                                     className="btn btn--reset"
                                     onClick={onResetAll}
-                                    >RESET ALL</button>
-                            </li><li>
+                                    >
+                                    RESET ALL
+                                </button>
+                            </li>
+                            <li>
                                 <h4>Read/Search</h4>
-                            </li><li>
+                            </li>
+                            <li>
                                 <SliderSwitch
                                     id="show-dialog"
                                     label="Show delete confirmation dialog"
                                     checked={showDeleteModal}
                                     ltLabel
-                                    onChange={onDelConfirmToggle}
+                                    onChange={onDelConfirmDialogToggle}
                                     />
-                            </li><li>
+                            </li>
+                            <li>
                                 <Dropdown
                                     id="result-per-page"
                                     label="Results per page"
@@ -157,95 +163,106 @@ export class OptionApp extends MemoComponent<IProps> {
                                     list={pgnOption.increment}
                                     selectIdx={resultsPerPageIdx}
                                     border
-                                    onSelect={(evt, idx) => onResultsPerPageChange(idx) }
+                                    onSelect={(evt, idx) => onResultsPerPageChange({ idx })}
                                     />
-                            </li><li>
+                            </li>
+                            <li>
                                 <h4>New Item</h4>
-                            </li><li>
+                            </li>
+                            <li>
                                 <SliderSwitch
                                     id="match-https"
                                     label="HTTPS"
                                     ltLabel
                                     checked={defRuleConfig.isHttps}
-                                    onChange={() => onDefHostRuleToggle('isHttps')}
+                                    onChange={() => onDefHostRuleToggle({ key: "isHttps" })}
                                     />
-                            </li><li>
+                            </li>
+                            <li>
                                 <SliderSwitch
                                     id="run-js"
                                     label="Run Custom Js"
                                     ltLabel
                                     checked={defRuleConfig.isJsOn}
-                                    onChange={() => onDefHostRuleToggle('isJsOn')}
+                                    onChange={() => onDefHostRuleToggle({ key: "isJsOn" })}
                                     />
-                            </li><li>
+                            </li>
+                            <li>
                                 <SliderSwitch
                                     id="run-css"
                                     label="Run Custom CSS"
                                     ltLabel
                                     checked={defRuleConfig.isCssOn}
-                                    onChange={() => onDefHostRuleToggle('isCssOn')}
+                                    onChange={() => onDefHostRuleToggle({ key: "isCssOn" })}
                                     />
-                            </li><li>
+                            </li>
+                            <li>
                                 <SliderSwitch
                                     id="run-library"
                                     label="Run Libraries"
                                     ltLabel
                                     checked={defRuleConfig.isLibOn}
-                                    onChange={() => onDefHostRuleToggle('isLibOn')}
+                                    onChange={() => onDefHostRuleToggle({ key: "isLibOn" })}
                                     />
-                            </li><li>
+                            </li>
+                            <li>
                                 <p>Javascript Execution</p>
                                 <Dropdown
                                     id="js-exec-order"
                                     list={jsExecStage}
                                     border
                                     selectIdx={defRuleConfig.jsExecPhase}
-                                    onSelect={onDefJsExecStageChange}
+                                    onSelect={(evt, idx) => onDefJsExecStageChange({ idx })}
                                     />
                             </li>
                         </ul>
                     </Modal>
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.importConfig.id}
                         header={modals.importConfig.txt}
                         clsSuffix="setting-import"
                         cancel="CANCEL"
                         confirm="IMPORT"
-                        confirmDisabled={!allowModalConfirm}
+                        confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onImportModalConfirm}
+                        onConfirm={onImportConfigFileModalConfirm}
                         >
                         <FileInput
                             id="json-import-input"
                             fileType="application/json"
                             required
                             validate={validationRule.importConfig}
-                            onFileChange={onImportFileChange}
+                            onFileChange={onImportConfigFileModalInputChange}
                             />
                     </Modal>
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.exportConfig.id}
                         header={modals.exportConfig.txt}
                         clsSuffix="setting-export"
                         cancel="CANCEL"
                         confirm="EXPORT"
-                        confirmDisabled={!allowModalConfirm}
+                        confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onExportModalConfirm}
+                        onConfirm={onExportConfigFileModalConfirm}
                         >
-                        {/* <TextInput
+                        <TextInput
                             id=""
                             label="Filename"
                             required
                             autoFocus
-                            validate={validationRule.exportConfig}
-                            onInputChange={onExportFileNameChange}
-                            /> */}
+                            value={exportFilenameInput.value}
+                            validation={{
+                                rules: validationRule.exportConfig,
+                                isValid: exportFilenameInput.isValid,
+                                errMsg: exportFilenameInput.errMsg
+                            }}
+                            onInputChange={onExportConfigFileModalInputChange}
+                            />
                     </Modal>
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.removeConfirm.id}
                         header={modals.removeConfirm.txt}
                         clsSuffix="delete-confirm"
@@ -258,78 +275,120 @@ export class OptionApp extends MemoComponent<IProps> {
                         <Checkbox
                             id="setting-delete-confirm"
                             label="Don’t show this confirmation again"
-                            onChange={onDelConfirmToggle}
+                            onChange={onDelConfirmDialogToggle}
                             />
                     </Modal>
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.editHost.id}
                         header={modals.editHost.txt}
                         clsSuffix="host-add"
                         cancel="CANCEL"
                         confirm="SAVE"
-                        confirmDisabled={!allowModalConfirm}
+                        confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onAddHostConfirm}
+                        onConfirm={onAddHostModalRuleConfirm}
                         >
-                        { $ruleIdEdit }
-                        {/* <TextInput
-                            id="host-value"
-                            label="Host Value"
+                        <TextInput
+                            id="host-title"
+                            label="Title"
                             required
-                            defaultValue={modalEditTarget?.value}
-                            validate={validationRule.ruleUrlHost}
-                            onInputChange={onEditItemValChange}
-                            /> */}
+                            value={titleInput?.value}
+                            validation={{
+                                rules: validationRule.ruleId,
+                                isValid: titleInput.isValid,
+                                errMsg: titleInput.errMsg
+                            }}
+                            onInputChange={args => onAddRuleModalInputChange({
+                                ...args,
+                                inputKey: 'titleInput'
+                            })}
+                            />
+                        <TextInput
+                            id="host-value"
+                            label="Url"
+                            required
+                            value={hostOrPathInput?.value}
+                            validation={{
+                                rules: validationRule.ruleUrlHost,
+                                isValid: hostOrPathInput.isValid,
+                                errMsg: hostOrPathInput.errMsg
+                            }}
+                            onInputChange={args => onAddRuleModalInputChange({
+                                ...args,
+                                inputKey: 'hostOrPathInput'
+                            })}
+                            />
                     </Modal>
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.editPath.id}
                         header={modals.editPath.txt}
                         clsSuffix="path-add"
                         cancel="CANCEL"
                         confirm="SAVE"
-                        confirmDisabled={!allowModalConfirm}
+                        confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onAddPathConfirm}
+                        onConfirm={onAddPathRuleModalConfirm}
                         >
-                        { $ruleIdEdit }
-                        {/* <TextInput
-                            id="path-url"
-                            label="Path Value"
+                        <TextInput
+                            id="path-title"
+                            label="Title"
                             required
-                            defaultValue={modalEditTarget?.value}
-                            validate={validationRule.ruleUrlPath}
-                            onInputChange={onEditItemValChange}
-                            /> */}
+                            value={titleInput?.value}
+                            validation={{
+                                rules: validationRule.ruleId,
+                                isValid: titleInput.isValid,
+                                errMsg: titleInput.errMsg
+                            }}
+                            onInputChange={(args) => onAddRuleModalInputChange({
+                                ...args,
+                                inputKey: 'titleInput'
+                            })}
+                            />
+                        <TextInput
+                            id="path-url"
+                            label="Url Path"
+                            required
+                            value={hostOrPathInput?.value}
+                            validation={{
+                                rules: validationRule.ruleUrlPath,
+                                isValid: hostOrPathInput.isValid,
+                                errMsg: hostOrPathInput.errMsg
+                            }}
+                            onInputChange={(args) => onAddRuleModalInputChange({
+                                ...args,
+                                inputKey: 'hostOrPathInput'
+                            })}
+                            />
                     </Modal>
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.addLib.id}
                         header={modals.addLib.txt}
                         clsSuffix="lib-add"
                         cancel="CANCEL"
                         confirm="SAVE"
-                        confirmDisabled={!allowModalConfirm}
+                        confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
                         onConfirm={onModalCancel}
                         >
-                        { $libEdit }
+                        {/* TODO */}
                     </Modal>
                     <Modal
-                        currModalId={currModalId}
+                        activeModalId={activeModalId}
                         id={modals.editLib.id}
                         header={modals.editLib.txt}
                         clsSuffix="lib-edit"
                         cancel="CANCEL"
                         confirm="SAVE"
-                        confirmDisabled={!allowModalConfirm}
+                        confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
                         onConfirm={onModalCancel}
                         >
-                        { $libEdit }
+                        {/* TODO */}
                     </Modal>
-                </form> }
+                </form>)}
             </div>
         );
     }
@@ -348,50 +407,5 @@ export class OptionApp extends MemoComponent<IProps> {
 
     get appStateHandler() {
         return this.props.appStateHandler;
-    }
-
-    get $ruleIdEdit() {
-        const { modalEditTarget } = this.localState;
-        const { onEditItemIdChange } = this.appStateHandler;
-
-        return;
-        // return (
-            // <TextInput
-            //     id="rule-id"
-            //     label="ID"
-            //     required
-            //     autoFocus
-            //     defaultValue={modalEditTarget?.id}
-            //     validate={validationRule.ruleId}
-            //     onInputChange={onEditItemIdChange}
-            //     />
-        // );
-    }
-
-    get $libEdit() {
-        return (
-            <>
-                {/* TODO: value binding */}
-                {/* <TextInput
-                    id="path-id"
-                    label="ID"
-                    required
-                    autoFocus
-                    validate={validationRule.ruleId}
-                    onInputChange={({ validState }) => {
-                        // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                    }}
-                    />
-                <TextInput
-                    id="path-url"
-                    label="Url"
-                    required
-                    validate={validationRule.libUrl}
-                    onInputChange={({ validState }) => {
-                        // TODO: based on the `validState`, set the Modal Confirm Btn `confirmDisabled` prop, e.g. if it needs to disabled
-                    }}
-                    /> */}
-            </>
-        );
     }
 }
