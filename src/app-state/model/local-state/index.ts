@@ -1,43 +1,36 @@
 import { resultsPerPage } from '../../../constant/result-per-page';
 import { HostRuleConfig } from '../rule-config';
-import { RuleValidState } from '../rule-valid-state';
 import { Setting } from '../setting';
+import { TextInputState } from '../text-input';
+import { ActiveRuleState } from '../active-rule';
 import * as TSort from '../../../handle/sort/type';
 import * as TPgn from '../../../handle/pagination/type';
 import * as TRowSelect from '../../../handle/row-select/type';
-import { modalDelTarget } from '../del-target';
-import { TextInputState } from '../text-input';
 
 const { resultsPerPageIdx } = new Setting();
 
 export class LocalState {
+    //// VIEW
+    isListView = true;
+
     //// SEARCH
     searchedText = '';
     searchedRules: HostRuleConfig[] = null;
+
+    //// CURRENT RULE
+    activeRule = new ActiveRuleState();
 
     //// MODAL
     activeModalId: string = null;
     isModalConfirmBtnEnabled = false;
     exportFilenameInput = new TextInputState();
     importFilePath: File = null;
-    modalDelTarget = new modalDelTarget();
     titleInput = new TextInputState();
     hostOrPathInput = new TextInputState();
     hostIdxForNewPath: number = null; // for targeting the host where new path will be added to
 
-    // * Views
-    // TODO: type
-    /**
-     * {
-        isHost: null,
-        idx: null,
-        childIdx: null,
-    };
-     */
-    editViewTarget = null;
-
     //// DATA GRID ROWS
-    // * rows used by Modal Delete Confirm `onDelModalConfirm`
+    // Rows used by Modal Delete Confirm `onDelModalConfirm`
     // - temp storage which points to the current full set of sorted data if exist or plain data (either searched or non-search)
     // - unpaginated
     dataSrc: HostRuleConfig[] = null;

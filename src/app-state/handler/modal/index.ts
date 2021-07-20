@@ -5,16 +5,48 @@ import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
 import { modals } from '../../../constant/modals';
 import { FileHandle } from '../../../handle/file';
 import { LocalState } from '../../model/local-state';
-import { RuleValidState } from '../../model/rule-valid-state';
-import { modalDelTarget } from '../../model/del-target';
 import { IStateHandler } from '../type';
 import { TextInputState } from '../../model/text-input';
+import { ActiveRuleState } from '../../model/active-rule';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
 
 export class ModalStateHandler extends StateHandle.BaseStateHandler {
-    //// Content: Settings
+    //// Base/Generic
+    onModalOpen({ localState }: AppState, activeModalId: string): Partial<AppState> {
+        return {
+            localState: {
+                ...localState,
+                activeModalId
+            }
+        };
+    }
+
+    onModalCancel({ localState }: AppState): Partial<AppState> {
+        return {
+            localState: {
+                ...localState,
+
+                // Modal - Base State
+                activeModalId: null,
+                isModalConfirmBtnEnabled: false,
+
+                // Reset any text input states including text, validation
+                titleInput: new TextInputState(),
+                hostOrPathInput: new TextInputState(),
+                exportFilenameInput: new TextInputState(),
+                hostIdxForNewPath: null,
+                importFilePath: null,
+            }
+        };
+    }
+
+    //// Settings
+    onSettingModal(state: AppState) {
+        return this.reflect.onModalOpen(state, defSetting.id);
+    }
+
     onResultsPerPageChange({ setting }: AppState, payload) {
         const { idx } = payload;
         return {
@@ -71,45 +103,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    //// Toggle
-    onModalOpen({ localState }: AppState, activeModalId: string): Partial<AppState> {
-        return {
-            localState: {
-                ...localState,
-                activeModalId
-            }
-        };
-    }
-
-    onModalCancel({ localState }: AppState): Partial<AppState> {
-        return {
-            localState: {
-                ...localState,
-                activeModalId: null,
-                isModalConfirmBtnEnabled: false,
-
-                // TODO: remove?
-                modalDelTarget: new modalDelTarget(),
-
-                // Reset any text input states including text, validation
-                titleInput: new TextInputState(),
-                hostOrPathInput: new TextInputState(),
-                exportFilenameInput: new TextInputState(),
-                hostIdxForNewPath: null,
-                importFilePath: null,
-            }
-        };
-    }
-
-    onSettingModal(state: AppState) {
-        return this.reflect.onModalOpen(state, defSetting.id);
-    }
-
-    onDelModal(state: AppState, { dataSrc, ctxIdx, parentCtxIdx }) {
+    //// Delete Rule
+    onDelModal(state: AppState, payload) {
+        const { dataSrc, isMultiple, ctxIdx, parentCtxIdx } = payload;
         const { reflect } = this;
         const { localState, setting } = state;
         const { showDeleteModal } = setting;
-        const isDelSingleItem = Number.isInteger(ctxIdx);
 
         const baseModState = {
             ...localState,
@@ -117,21 +116,30 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             activeModalId: removeConfirm.id,
         };
 
+        const isHost = !Number.isInteger(parentCtxIdx);
         const partialModState: Partial<AppState> = {
-            localState: isDelSingleItem ? {
+            localState: isMultiple
+                ? baseModState
+                : {
                     ...baseModState,
-                    modalDelTarget: new modalDelTarget(ctxIdx, parentCtxIdx),
-                } : baseModState
+                    activeRule: new ActiveRuleState({
+                        isHost,
+                        idx: isHost ? ctxIdx : parentCtxIdx,
+                        pathIdx: isHost ? null : ctxIdx,
+                    }),
+                }
         };
 
-        return showDeleteModal ? partialModState : reflect.onDelModalConfirm({...state, ...partialModState});
+        return showDeleteModal
+            ? partialModState
+            : reflect.onDelModalConfirm({...state, ...partialModState});
     }
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { searchedRules, modalDelTarget, pgnState } = state.localState;
-        const { ctxIdx, parentCtxIdx } = modalDelTarget;
-        const isDelSingleItem = Number.isInteger(ctxIdx);
+        const { searchedRules, activeRule, pgnState } = state.localState;
+        const { pathIdx, idx } = activeRule;
+        const isDelSingleItem = Number.isInteger(pathIdx);
         const isSearch = searchedRules?.length;
 
         const resetLocalState: LocalState = {
@@ -152,8 +160,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
         const { rules, localState } = isDelSingleItem ?
             ( isSearch ?
-                reflect.rmvSearchedRow(state, ctxIdx, parentCtxIdx) :
-                reflect.rmvRow(state, ctxIdx, parentCtxIdx) ) :
+                reflect.rmvSearchedRow(state, pathIdx, idx) :
+                reflect.rmvRow(state, pathIdx, idx) ) :
             ( isSearch ?
                 reflect.rmvSearchedRows(state) :
                 reflect.rmvRows(state)) ;
@@ -167,7 +175,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    //// Add Host/Path
+    //// Add Rule
     onAddRuleModalInputChange({ localState }: AppState, payload): Partial<AppState> {
         const { val, validState, isGte3, inputKey } = payload;
         const inputState = localState[inputKey];
@@ -199,6 +207,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
         };
     }
+
     onAddHostRuleModal({ localState }: AppState) {
         return {
             localState: {
@@ -253,7 +262,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    //// Import/Export Json Config
+    //// Import/Export Json Config File
     onImportConfigFileModal(state: AppState) {
         return this.reflect.onModalOpen(state, importConfig.id);
     }
@@ -269,7 +278,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
         };
     }
-
 
     async onImportConfigFileModalConfirm({ localState }: AppState) {
         // TODO: try/catch for read

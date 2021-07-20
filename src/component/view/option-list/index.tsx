@@ -95,7 +95,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 icon="delete"
                 theme="gray"
                 disabled={!hsSelected}
-                onClick={() => onDelModal({ dataSrc })}
+                onClick={() => onDelModal({ dataSrc, isMultiple: true })}
                 />
         );
 

@@ -33,18 +33,17 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { headerProps, props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { titleInput, hostOrPathInput, editViewTarget } = localState;
+        const { titleInput, hostOrPathInput, activeRule } = localState;
         const {
             onItemTitleChange, onItemHostOrPathChange,
             onItemJsExecStageChange,
             onItemActiveTabChange, onItemTabEnable, onItemEditorCodeChange
         } = appStateHandler;
 
-        const { itemIdx, childItemIdx } = editViewTarget;
-        const isHost = !Number.isInteger(childItemIdx);
-        const host = rules[itemIdx];
-        const item = host?.paths[childItemIdx] || host;
-        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase} = item;
+        const { isHost, idx, pathIdx } = activeRule;
+        const hostRule = rules[idx];
+        const rule = hostRule.paths[pathIdx] || hostRule;
+        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase} = rule;
 
         const isLibTab = !!libs.length && activeTabIdx === 2;
         const isJsCode = activeTabIdx === 0;
@@ -59,8 +58,8 @@ export class OptionEditView extends MemoComponent<IProps> {
             <SideNav
                 list={rules}
                 childListKey="paths"
-                activeItemIdx={itemIdx}
-                activeChildItemIdx={childItemIdx}
+                activeItemIdx={idx}
+                activeChildItemIdx={pathIdx}
                 onClick={this.onListItemChange}
                 />
             <div className="main--edit__form">
@@ -99,7 +98,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         <IconSwitch
                             id="https-switch"
                             label="lock-close"
-                            checked={item["isHttps"]}
+                            checked={rule["isHttps"]}
                             /* TODO: onChange */
                             icon /> }
                         <IconSwitch
@@ -119,7 +118,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                 {/* TOD: section-form field? */}
                 <TabSwitch
                     id="tab-switch"
-                    data={item}
+                    data={rule}
                     dataKeyMap={[
                         ['js', 'isJsOn'],
                         ['css', 'isCssOn'],

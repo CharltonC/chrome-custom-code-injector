@@ -3,6 +3,7 @@ import { AppState } from '../../model/app-state';
 import { LocalState } from '../../model/local-state';
 import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
 import { TextInputState } from '../../model/text-input';
+import { ActiveRuleState } from '../../model/active-rule';
 
 export class EditViewStateHandler extends StateHandle.BaseStateHandler {
     onListView({localState}: AppState): Partial<AppState> {
@@ -13,7 +14,8 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
             localState: {
                 ...resetLocalState,
                 pgnOption,
-                editViewTarget: null
+                isListView: true,
+                activeRule: new ActiveRuleState(),
             }
         };
     }
@@ -22,20 +24,21 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
         const { isChild, idx, parentIdx } = payload;
         const itemIdx = isChild ? parentIdx : idx;
         const childItemIdx = isChild ? idx : null
-        const { title, value } = this.reflect.getActiveItem({
+        const activeRule = {
+            isHost: !isChild,
+            idx: itemIdx,
+            pathIdx: childItemIdx
+        };
+        const { title, value } = this.reflect.getEditViewActiveItem({
             rules,
-            itemIdx,
-            childItemIdx
+            ...activeRule,
         });
         const resetState = new TextInputState();
 
         return {
             localState: {
                 ...localState,
-                editViewTarget: {
-                    itemIdx,
-                    childItemIdx
-                },
+                activeRule,
                 titleInput: {
                     ...resetState,
                     value: title,
@@ -69,9 +72,9 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
 
     // TODO: Payload as object in component
     onItemJsExecStageChange({ rules, localState }: AppState, ...payload: any[]) {
-        const item = this.reflect.getActiveItem({
+        const item = this.reflect.getEditViewActiveItem({
             rules,
-            ...localState.editViewTarget
+            ...localState.activeRule
         });
         const [, idx ] = payload;
         item.jsExecPhase = idx;
@@ -81,9 +84,9 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
 
     // TODO: Payload as object in component
     onItemActiveTabChange({ rules, localState }: AppState, ...payload: any[]) {
-        const item = this.reflect.getActiveItem({
+        const item = this.reflect.getEditViewActiveItem({
             rules,
-            ...localState.editViewTarget
+            ...localState.activeRule
         });
 
         const [, , idx] = payload;
@@ -94,9 +97,9 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
 
     // TODO: Payload as object in component
     onItemTabEnable({ rules, localState }: AppState, ...payload: any[]) {
-        const item = this.reflect.getActiveItem({
+        const item = this.reflect.getEditViewActiveItem({
             rules,
-            ...localState.editViewTarget
+            ...localState.activeRule
         });
 
         const [ , { id, isOn } ] = payload;
@@ -120,9 +123,9 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onItemEditorCodeChange({ rules, localState }: AppState, payload) {
-        const item = this.reflect.getActiveItem({
+        const item = this.reflect.getEditViewActiveItem({
             rules,
-            ...localState.editViewTarget
+            ...localState.activeRule
         });
         const { codeMode, value } = payload;
         const key = `${codeMode}Code`;
@@ -135,15 +138,14 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
 
     //// Helper
     // TODO: Common
-    getActiveItem({ rules, itemIdx, childItemIdx }): HostRuleConfig | PathRuleConfig {
-        const isChild = Number.isInteger(childItemIdx);
-        const host: HostRuleConfig = rules[itemIdx];
-        return isChild ? host.paths[childItemIdx] : host;
+    getEditViewActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
+        const host: HostRuleConfig = rules[idx];
+        return isHost ? host : host.paths[pathIdx];
     }
 
     onTextInputChange({ rules, localState, payload, inputKey }): Partial<AppState> {
         const { val, validState, isGte3 } = payload;
-        const { editViewTarget } = localState;
+        const { activeRule } = localState;
         const inputState = localState[inputKey];
 
         if (!isGte3) return {
@@ -168,7 +170,7 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
         };
 
         // If valid value, set the item title or value
-        const item = this.reflect.getActiveItem({ rules, ...editViewTarget });
+        const item = this.reflect.getEditViewActiveItem({ rules, ...activeRule });
         const { title, value } = item;
         const isTitle = inputKey === 'titleInput';
         item.title = isTitle ? val : title;

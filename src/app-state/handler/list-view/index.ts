@@ -142,20 +142,21 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onItemEdit({ rules, localState }: AppState, { isHost, idx, parentCtxIdx }): Partial<AppState> {
-        const itemIdx = isHost ? idx : parentCtxIdx;
-        const childItemIdx = isHost ? null : idx;
-        const { title, value } = this.reflect.getActiveItem({
+        const activeRule = {
+            isHost,
+            idx:  isHost ? idx : parentCtxIdx,
+            pathIdx: isHost ? null : idx,
+        };
+        const { title, value } = this.reflect.getListViewActiveItem({
             rules,
-            itemIdx,
-            childItemIdx
+            ...activeRule,
         });
+
         return {
             localState: {
                 ...localState,
-                editViewTarget: {
-                    itemIdx,
-                    childItemIdx,
-                },
+                isListView: false,
+                activeRule,
 
                 // clear the row select state ready for use for DataGrid component in Edit View
                 selectState: rowSelectHandle.defState,
@@ -323,9 +324,8 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
     }
 
     // TODO: Common
-    getActiveItem({ rules, itemIdx, childItemIdx }): HostRuleConfig | PathRuleConfig {
-        const isChild = Number.isInteger(childItemIdx);
-        const host: HostRuleConfig = rules[itemIdx];
-        return isChild ? host.paths[childItemIdx] : host;
+    getListViewActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
+        const host: HostRuleConfig = rules[idx];
+        return isHost ? host : host.paths[pathIdx];
     }
 }

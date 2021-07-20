@@ -44,9 +44,10 @@ export class OptionApp extends MemoComponent<IProps> {
         } = this;
 
         const {
+            isListView,
             activeModalId, isModalConfirmBtnEnabled,
             searchedText,
-            editViewTarget,
+            activeRule,
             pgnOption,
             exportFilenameInput,
             titleInput, hostOrPathInput,
@@ -70,8 +71,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onExportConfigFileModalInputChange, onExportConfigFileModalConfirm,
         } = appStateHandler;
 
-        const isListView = !editViewTarget;
-        const isHost = editViewTarget && !Number.isInteger(editViewTarget?.childItemIdx);
+        const { isHost } = activeRule;
         const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
         const MAIN_CLS = cssCls('main', isListView ? 'list' : 'edit');
         const $view = isListView
