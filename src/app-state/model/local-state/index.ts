@@ -6,6 +6,7 @@ import { ActiveRuleState } from '../active-rule';
 import * as TSort from '../../../handle/sort/type';
 import * as TPgn from '../../../handle/pagination/type';
 import * as TRowSelect from '../../../handle/row-select/type';
+import { DelRuleState } from '../del-target';
 
 const { resultsPerPageIdx } = new Setting();
 
@@ -19,6 +20,9 @@ export class LocalState {
 
     //// CURRENT RULE
     activeRule = new ActiveRuleState();
+
+    //// RULE TO DELETE
+    delRule = new DelRuleState();
 
     //// MODAL
     activeModalId: string = null;

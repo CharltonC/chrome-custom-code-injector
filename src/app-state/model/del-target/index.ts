@@ -1,8 +1,10 @@
-export class modalDelTarget {
+export class DelRuleState {
     ctxIdx: number;
     parentCtxIdx: number;
 
-    constructor(ctxIdx: number = null, parentCtxIdx: number = null) {
+    constructor(arg?: DelRuleState) {
+        if (!arg) return;
+        const { ctxIdx, parentCtxIdx } = arg;
         this.ctxIdx = ctxIdx;
         this.parentCtxIdx = parentCtxIdx;
     }

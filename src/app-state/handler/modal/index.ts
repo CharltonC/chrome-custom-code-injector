@@ -8,6 +8,7 @@ import { LocalState } from '../../model/local-state';
 import { IStateHandler } from '../type';
 import { TextInputState } from '../../model/text-input';
 import { ActiveRuleState } from '../../model/active-rule';
+import { DelRuleState } from '../../model/del-target';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
@@ -27,6 +28,9 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         return {
             localState: {
                 ...localState,
+
+                // For delete
+                delRule: new DelRuleState(),
 
                 // Modal - Base State
                 activeModalId: null,
@@ -104,11 +108,11 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// Delete Rule
-    onDelModal(state: AppState, payload) {
-        const { dataSrc, isMultiple, ctxIdx, parentCtxIdx } = payload;
+    onDelModal(state: AppState, { dataSrc, ctxIdx, parentCtxIdx }) {
         const { reflect } = this;
         const { localState, setting } = state;
         const { showDeleteModal } = setting;
+        const isDelSingleItem = Number.isInteger(ctxIdx);
 
         const baseModState = {
             ...localState,
@@ -116,30 +120,21 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             activeModalId: removeConfirm.id,
         };
 
-        const isHost = !Number.isInteger(parentCtxIdx);
         const partialModState: Partial<AppState> = {
-            localState: isMultiple
-                ? baseModState
-                : {
+            localState: isDelSingleItem ? {
                     ...baseModState,
-                    activeRule: new ActiveRuleState({
-                        isHost,
-                        idx: isHost ? ctxIdx : parentCtxIdx,
-                        pathIdx: isHost ? null : ctxIdx,
-                    }),
-                }
+                    delRule: new DelRuleState({ ctxIdx, parentCtxIdx }),
+                } : baseModState
         };
 
-        return showDeleteModal
-            ? partialModState
-            : reflect.onDelModalConfirm({...state, ...partialModState});
+        return showDeleteModal ? partialModState : reflect.onDelModalConfirm({...state, ...partialModState});
     }
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { searchedRules, activeRule, pgnState } = state.localState;
-        const { pathIdx, idx } = activeRule;
-        const isDelSingleItem = Number.isInteger(pathIdx);
+        const { searchedRules, delRule, pgnState } = state.localState;
+        const { ctxIdx, parentCtxIdx } = delRule;
+        const isDelSingleItem = Number.isInteger(ctxIdx);
         const isSearch = searchedRules?.length;
 
         const resetLocalState: LocalState = {
@@ -160,8 +155,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
         const { rules, localState } = isDelSingleItem ?
             ( isSearch ?
-                reflect.rmvSearchedRow(state, pathIdx, idx) :
-                reflect.rmvRow(state, pathIdx, idx) ) :
+                reflect.rmvSearchedRow(state, ctxIdx, parentCtxIdx) :
+                reflect.rmvRow(state, ctxIdx, parentCtxIdx) ) :
             ( isSearch ?
                 reflect.rmvSearchedRows(state) :
                 reflect.rmvRows(state)) ;
