@@ -85,8 +85,7 @@ describe('Component - Text Input', () => {
 
         describe('Method - Common Event Handler', () => {
             const mockEvt: any = { target: { value: 'lorem' } };
-            const mockValidState: any = {};
-            const mockCharLimit = 5;
+            const mockValidState: any = { lorem: 'sum' };
             let mockCbFn: jest.Mock;
 
             beforeEach(() => {
@@ -95,27 +94,26 @@ describe('Component - Text Input', () => {
             });
 
             it('should skip when callback is not provided', () => {
-                cmpInst.onCallback(mockEvt, null, mockCharLimit);
+                cmpInst.onCallback(mockEvt, null);
                 expect(mockCbFn).not.toHaveBeenCalled();
             });
 
             it('should trigger passed callback with valid state if it is greater than character limit', () => {
-                cmpInst.onCallback(mockEvt, mockCbFn, mockCharLimit);
+                cmpInst.onCallback(mockEvt, mockCbFn);
                 expect(mockCbFn).toHaveBeenCalledWith({
                     evt: mockEvt,
                     val: mockEvt.target.value,
-                    validState: mockValidState,
+                    ...mockValidState,
                     isGte3: true
                 });
             });
 
             it('should trigger passed callback without valid state if it is less than character limit', () => {
-                const mockOverrideCharLimit = 10;
-                cmpInst.onCallback(mockEvt, mockCbFn, mockOverrideCharLimit);
+                cmpInst.onCallback(mockEvt, mockCbFn);
                 expect(mockCbFn).toHaveBeenCalledWith({
                     evt: mockEvt,
                     val: mockEvt.target.value,
-                    validState: null,
+                    ...mockValidState,
                     isGte3: true
                 });
             });
@@ -139,12 +137,12 @@ describe('Component - Text Input', () => {
 
             it('should call set valid state for `onChange`', () => {
                 cmpInst.onChange(mockEvt);
-                expect(spyOnCallback).toHaveBeenCalledWith(mockEvt, mockProps.onInputChange, 3);
+                expect(spyOnCallback).toHaveBeenCalledWith(mockEvt, mockProps.onInputChange);
             });
 
             it('should call set valid state for `onBlur`', () => {
                 cmpInst.onBlur(mockEvt);
-                expect(spyOnCallback).toHaveBeenCalledWith(mockEvt, mockProps.onInputBlur, 0);
+                expect(spyOnCallback).toHaveBeenCalledWith(mockEvt, mockProps.onInputBlur);
             });
         });
     });

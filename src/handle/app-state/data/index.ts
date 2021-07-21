@@ -6,16 +6,7 @@ import { IStateHandler } from '../type';
 export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// ADD RULE (Host/Path)
     onAddRuleModalInputChange({ localState }: AppState, payload): Partial<AppState> {
-        const { val, validState, isGte3, inputKey } = payload;
-        const inputState = localState[inputKey];
-
-        const isValid = isGte3 && validState?.isValid;
-        // TODO: err msg constant
-        const errMsg = !isGte3
-            ? [ 'value must be 3 characters or more' ]
-            : validState?.errMsg
-                ? validState?.errMsg
-                : inputState.errMsg;
+        const { val, isValid, errMsg, inputKey } = payload;
 
         // Check valid state of other text inputs in the same Modal
         // TODO: constant

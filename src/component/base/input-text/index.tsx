@@ -61,25 +61,25 @@ export class TextInput extends MemoComponent<IProps> {
 
     // - only when its 1st time focus & there r more than or eq. to 3 characters
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
-        this.onCallback(evt, this.props.onInputChange, 3);
+        this.onCallback(evt, this.props.onInputChange);
     }
 
     // - only when its blurred (regardless of character limit)
     onBlur(evt: React.ChangeEvent<HTMLInputElement>): void {
-        this.onCallback(evt, this.props.onInputBlur, 0);
+        this.onCallback(evt, this.props.onInputBlur);
     }
 
-    onCallback(evt: React.ChangeEvent<HTMLInputElement>, cbFn: AFn<void>, charLimit: number): void {
+    onCallback(evt: React.ChangeEvent<HTMLInputElement>, cbFn: AFn<void>): void {
         if (!cbFn) return;
 
         const { rules } = this.props.validation;
         const val = evt.target.value;
         const isGte3 = val.length >= 3;
-        const validState = val.length >= charLimit ? this.getValidState(val, rules) : null;
+        const validState = this.getValidState(val, rules);
         cbFn({
+            ...validState,
             evt: { ...evt },
             val,
-            validState,
             isGte3
         });
     }

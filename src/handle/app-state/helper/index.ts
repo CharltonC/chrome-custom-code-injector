@@ -49,48 +49,31 @@ export class HelperHandler extends StateHandle.BaseStateHandler {
     }
 
     onTextInputChange({ rules, localState, payload, inputKey }): Partial<AppState> {
-        const { val, validState, isGte3 } = payload;
+        const { val, isValid, errMsg } = payload;
         const { activeRule } = localState;
-        const inputState = localState[inputKey];
-
-        if (!isGte3) return {
+        const baseState = {
             localState: {
                 ...localState,
                 [inputKey]: {
-                    isValid: false,
-                    errMsg: [ 'value must be 3 characters or more' ],
-                    value: val
-                }
-            }
-        };;
-
-        if (!validState.isValid) return {
-            localState: {
-                ...localState,
-                [inputKey]: {
-                    ...validState,
+                    isValid,
+                    errMsg,
                     value: val
                 }
             }
         };
 
-        // If valid value, set the item title or value
+        // If not vaild, we only update the temporary value of the input
+        if (!isValid) return baseState;
+
+        // If valid value, set/sync the item title or value
         const item = this.reflect.getEditViewActiveItem({ rules, ...activeRule });
         const { title, value } = item;
         const isTitle = inputKey === 'titleInput';
         item.title = isTitle ? val : title;
         item.value = isTitle ? value : val;
-
         return {
-            rules: [...rules], // force rerender
-            localState: {
-                ...localState,
-                [inputKey]: {
-                    ...inputState,
-                    isValid: true,
-                    value: val
-                }
-            }
+            ...baseState,
+            rules: [...rules], // force rerender for Side Nav
         };
     }
 
