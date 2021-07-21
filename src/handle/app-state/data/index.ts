@@ -136,23 +136,21 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// EDIT RULE
     // TODO: see if we need its because we already have `onAddRuleModalInputChange`
     onItemTitleChange({ rules, localState }: AppState, payload) {
-        return (this as unknown as IStateHandler).reflect
-            .onTextInputChange({
-                inputKey: 'titleInput',
-                payload,
-                rules,
-                localState,
-            });
+        return this._onTextInputChange({
+            inputKey: 'titleInput',
+            payload,
+            rules,
+            localState,
+        });
     }
 
     onItemHostOrPathChange({ rules, localState }: AppState, payload) {
-        return (this as unknown as IStateHandler).reflect
-            .onTextInputChange({
-                inputKey: 'hostOrPathInput',
-                payload,
-                rules,
-                localState,
-            });
+        return this._onTextInputChange({
+            inputKey: 'hostOrPathInput',
+            payload,
+            rules,
+            localState,
+        });
     }
 
     //// SCRIPT EXEC STAGE & SWITCH
@@ -179,39 +177,23 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     // TODO: this is for edit view
     // TODO: Payload as object in component
     onItemJsExecStageChange({ rules, localState }: AppState, ...payload: any[]) {
-        const item = (this as unknown as IStateHandler).reflect
-            .getEditViewActiveItem({
-                rules,
-                ...localState.activeRule
-            });
+        const item = this._getActiveItem({ rules, ...localState.activeRule });
         const [, idx ] = payload;
         item.jsExecPhase = idx;
-
         return { rules };
     }
 
     // TODO: Payload as object in component
     onItemActiveTabChange({ rules, localState }: AppState, ...payload: any[]) {
-        const item = (this as unknown as IStateHandler).reflect
-            .getEditViewActiveItem({
-                rules,
-                ...localState.activeRule
-            });
-
+        const item = this._getActiveItem({ rules, ...localState.activeRule });
         const [, , idx] = payload;
         item.activeTabIdx = idx;
-
         return { rules };
     }
 
     // TODO: Payload as object in component
     onItemTabEnable({ rules, localState }: AppState, ...payload: any[]) {
-        const item = (this as unknown as IStateHandler).reflect
-            .getEditViewActiveItem({
-                rules,
-                ...localState.activeRule
-            });
-
+        const item = this._getActiveItem({ rules, ...localState.activeRule });
         const [ , { id, isOn } ] = payload;
         let key: string;
         switch(id) {
@@ -228,16 +210,11 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
                 throw new Error('key does not match');
         }
         item[key] = !isOn;
-
         return { rules };
     }
 
     onItemEditorCodeChange({ rules, localState }: AppState, payload) {
-        const item = (this as unknown as IStateHandler).reflect
-            .getEditViewActiveItem({
-                rules,
-                ...localState.activeRule
-            });
+        const item = this._getActiveItem({ rules, ...localState.activeRule });
         const { codeMode, value } = payload;
         const key = `${codeMode}Code`;
         const hsKey = key in item;
@@ -245,5 +222,15 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
 
         item[key] = value;
         return { rules };
+    }
+
+    //// HELPER
+    // Shortcuts
+    get _getActiveItem() {
+        return (this as unknown as IStateHandler).reflect.getActiveItem;
+    }
+
+    get _onTextInputChange() {
+        return ((this as unknown) as IStateHandler).reflect.onTextInputChange;
     }
 }

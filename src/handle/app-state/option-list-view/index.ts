@@ -128,7 +128,7 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
             idx:  isHost ? idx : parentCtxIdx,
             pathIdx: isHost ? null : idx,
         };
-        const { title, value } = (this as unknown as IStateHandler).reflect.getListViewActiveItem({
+        const { title, value } = (this as unknown as IStateHandler).reflect.getActiveItem({
             rules,
             ...activeRule,
         });

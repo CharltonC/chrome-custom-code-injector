@@ -37,13 +37,7 @@ export class HelperHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    // TODO: Common
-    getEditViewActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
-        const host: HostRuleConfig = rules[idx];
-        return isHost ? host : host.paths[pathIdx];
-    }
-
-    getListViewActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
+    getActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
         const host: HostRuleConfig = rules[idx];
         return isHost ? host : host.paths[pathIdx];
     }
@@ -65,8 +59,9 @@ export class HelperHandler extends StateHandle.BaseStateHandler {
         // If not vaild, we only update the temporary value of the input
         if (!isValid) return baseState;
 
+        // TODO: Possible abstract this to separate method?
         // If valid value, set/sync the item title or value
-        const item = this.reflect.getEditViewActiveItem({ rules, ...activeRule });
+        const item = this.reflect.getActiveItem({ rules, ...activeRule });
         const { title, value } = item;
         const isTitle = inputKey === 'titleInput';
         item.title = isTitle ? val : title;

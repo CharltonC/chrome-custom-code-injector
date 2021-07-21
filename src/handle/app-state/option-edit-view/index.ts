@@ -30,7 +30,7 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
             pathIdx: childItemIdx
         };
         const { title, value } = (this.reflect as unknown as IStateHandler)
-            .getEditViewActiveItem({
+            .getActiveItem({
                 rules,
                 ...activeRule,
             });
