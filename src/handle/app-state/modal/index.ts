@@ -114,38 +114,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// Add Rule
-    onAddRuleModalInputChange({ localState }: AppState, payload): Partial<AppState> {
-        const { val, validState, isGte3, inputKey } = payload;
-        const inputState = localState[inputKey];
-
-        const isValid = isGte3 && validState?.isValid;
-        // TODO: err msg constant
-        const errMsg = !isGte3
-            ? [ 'value must be 3 characters or more' ]
-            : validState?.errMsg
-                ? validState?.errMsg
-                : inputState.errMsg;
-
-        // Check valid state of other text inputs in the same Modal
-        // TODO: constant
-        const inputKeys = ['titleInput', 'hostOrPathInput'];
-        const isModalConfirmBtnEnabled = isValid && inputKeys
-            .filter(key => key !== inputKey)
-            .every(key => localState[key].isValid);
-
-        return {
-            localState: {
-                ...localState,
-                isModalConfirmBtnEnabled,
-                [inputKey]: {
-                    isValid,
-                    errMsg,
-                    value: val
-                }
-            }
-        };
-    }
-
     onAddHostRuleModal({ localState }: AppState) {
         return {
             localState: {
