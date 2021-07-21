@@ -1,6 +1,5 @@
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
-import { Setting } from '../../../model/setting';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../../constant/modals';
 import { FileHandle } from '../../file';

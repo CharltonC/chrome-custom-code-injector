@@ -1,9 +1,9 @@
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
-import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { TextInputState } from '../../../model/text-input';
 import { ActiveRuleState } from '../../../model/active-rule';
+import { IStateHandler } from '../type';
 
 export class EditViewStateHandler extends StateHandle.BaseStateHandler {
     onListView({localState}: AppState): Partial<AppState> {
@@ -29,10 +29,11 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
             idx: itemIdx,
             pathIdx: childItemIdx
         };
-        const { title, value } = this.reflect.getEditViewActiveItem({
-            rules,
-            ...activeRule,
-        });
+        const { title, value } = (this.reflect as unknown as IStateHandler)
+            .getEditViewActiveItem({
+                rules,
+                ...activeRule,
+            });
         const resetState = new TextInputState();
 
         return {
@@ -49,12 +50,5 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
                 }
             }
         };
-    }
-
-    //// Helper
-    // TODO: Common
-    getEditViewActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
-        const host: HostRuleConfig = rules[idx];
-        return isHost ? host : host.paths[pathIdx];
     }
 }
