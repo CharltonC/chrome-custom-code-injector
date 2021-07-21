@@ -1,5 +1,6 @@
-import { EditViewStateHandler } from './option-edit-view';
 import { ModalStateHandler } from './modal';
+import { SettingStateHandler } from './setting';
 import { ListViewStateHandler } from './option-list-view';
+import { EditViewStateHandler } from './option-edit-view';
 
-export interface IStateHandler extends ListViewStateHandler, EditViewStateHandler, ModalStateHandler {}
+export interface IStateHandler extends ListViewStateHandler, EditViewStateHandler, ModalStateHandler, SettingStateHandler {}

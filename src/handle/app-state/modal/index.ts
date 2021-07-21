@@ -7,7 +7,6 @@ import { FileHandle } from '../../file';
 import { LocalState } from '../../../model/local-state';
 import { IStateHandler } from '../type';
 import { TextInputState } from '../../../model/text-input';
-import { ActiveRuleState } from '../../../model/active-rule';
 import { DelRuleState } from '../../../model/del-target';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
@@ -49,62 +48,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     //// Settings
     onSettingModal(state: AppState) {
         return this.reflect.onModalOpen(state, defSetting.id);
-    }
-
-    onResultsPerPageChange({ setting }: AppState, payload) {
-        const { idx } = payload;
-        return {
-            setting: {
-                ...setting,
-                resultsPerPageIdx: idx
-            }
-        };
-    }
-
-    onResetAll() {
-        return {
-            setting: new Setting()
-        };
-    }
-
-    onDefHostRuleToggle({ setting }: AppState, payload) {
-        const { key } = payload;
-        const { defRuleConfig } = setting;
-        const isValid = key in defRuleConfig && typeof defRuleConfig[key] === 'boolean';
-        if (!isValid) throw new Error('key is not valid');
-
-        return {
-            setting: {
-                ...setting,
-                defRuleConfig: {
-                    ...defRuleConfig,
-                    [key]: !defRuleConfig[key]
-                }
-            }
-        };
-    }
-
-    onDefJsExecStageChange({ setting }: AppState, payload) {
-        const { idx } = payload;
-        const { defRuleConfig } = setting;
-        return {
-            setting: {
-                ...setting,
-                defRuleConfig: {
-                    ...defRuleConfig,
-                    jsExecPhase: idx
-                }
-            }
-        };
-    }
-
-    onDelConfirmDialogToggle({ setting }: AppState) {
-        return {
-            setting: {
-                ...setting,
-                showDeleteModal: !setting.showDeleteModal
-            }
-        };
     }
 
     //// Delete Rule
@@ -262,18 +205,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         return this.reflect.onModalOpen(state, importConfig.id);
     }
 
-    // TODO: payload object
-    onImportConfigFileModalInputChange({ localState }, ...payload) {
-        const [ { target }, { isValid } ] = payload;
-        return {
-            localState: {
-                ...localState,
-                importFilePath: target.files.item(0),
-                isModalConfirmBtnEnabled: isValid
-            }
-        };
-    }
-
     async onImportConfigFileModalConfirm({ localState }: AppState) {
         // TODO: try/catch for read
         return {
@@ -289,23 +220,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     onExportConfigFileModal(state: AppState) {
         return this.reflect.onModalOpen(state, exportConfig.id);
-    }
-
-    onExportConfigFileModalInputChange({ localState }: AppState, payload) {
-        const { isGte3, validState, val } = payload;
-        const isValid = isGte3 && validState?.isValid;
-
-        return {
-            localState: {
-                ...localState,
-                exportFilenameInput: {
-                    value: val,
-                    isValid,
-                    errMsg: validState?.errMsg,
-                },
-                isModalConfirmBtnEnabled: isValid,
-            }
-        };
     }
 
     onExportConfigFileModalConfirm(state: AppState) {
