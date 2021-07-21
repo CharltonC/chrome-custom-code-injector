@@ -1,14 +1,14 @@
-import { StateHandle } from '../../../handle/state';
-import { AppState } from '../../model/app-state';
-import { Setting } from '../../model/setting';
-import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
+import { StateHandle } from '../../state';
+import { AppState } from '../../../model/app-state';
+import { Setting } from '../../../model/setting';
+import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { modals } from '../../../constant/modals';
-import { FileHandle } from '../../../handle/file';
-import { LocalState } from '../../model/local-state';
+import { FileHandle } from '../../file';
+import { LocalState } from '../../../model/local-state';
 import { IStateHandler } from '../type';
-import { TextInputState } from '../../model/text-input';
-import { ActiveRuleState } from '../../model/active-rule';
-import { DelRuleState } from '../../model/del-target';
+import { TextInputState } from '../../../model/text-input';
+import { ActiveRuleState } from '../../../model/active-rule';
+import { DelRuleState } from '../../../model/del-target';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();

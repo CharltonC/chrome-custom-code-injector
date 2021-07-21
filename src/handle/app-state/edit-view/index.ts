@@ -1,9 +1,9 @@
-import { StateHandle } from '../../../handle/state';
-import { AppState } from '../../model/app-state';
-import { LocalState } from '../../model/local-state';
-import { HostRuleConfig, PathRuleConfig } from '../../model/rule-config';
-import { TextInputState } from '../../model/text-input';
-import { ActiveRuleState } from '../../model/active-rule';
+import { StateHandle } from '../../state';
+import { AppState } from '../../../model/app-state';
+import { LocalState } from '../../../model/local-state';
+import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
+import { TextInputState } from '../../../model/text-input';
+import { ActiveRuleState } from '../../../model/active-rule';
 
 export class EditViewStateHandler extends StateHandle.BaseStateHandler {
     onListView({localState}: AppState): Partial<AppState> {

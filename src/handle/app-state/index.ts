@@ -1,4 +1,4 @@
-import { StateHandle } from '../../handle/state';
+import { StateHandle } from '../state';
 import { EditViewStateHandler } from './edit-view';
 import { ModalStateHandler } from './modal';
 import { ListViewStateHandler } from './list-view';
