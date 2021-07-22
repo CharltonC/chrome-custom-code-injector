@@ -1,6 +1,6 @@
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
-import { HostRuleConfig } from '../../../model/rule-config';
+import { HostRuleConfig, AActiveTabIdx } from '../../../model/rule-config';
 import { IStateHandler } from '../type';
 import { AJsExecPhase } from '../../../model/rule-config/type';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
@@ -194,7 +194,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
             ...localState.activeRule
         });
         const { idx } = payload;
-        item.activeTabIdx = idx as any;
+        item.activeTabIdx = idx as AActiveTabIdx;
         return { rules };
     }
 

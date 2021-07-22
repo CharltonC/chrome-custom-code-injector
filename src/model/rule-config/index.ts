@@ -17,7 +17,7 @@ export class PathRuleConfig extends BaseRuleConfig {
     jsCode = '';
     cssCode = '';
     libs: LibRuleConfig[] = [];
-    activeTabIdx: 0 | 1 | 2 = 0;
+    activeTabIdx: AActiveTabIdx = 0;
 
     constructor(title: string, value: string) {
         super();
@@ -43,3 +43,5 @@ export class LibRuleConfig {
         this.value = value;
     }
 }
+
+export type AActiveTabIdx = 0 | 1 | 2;
