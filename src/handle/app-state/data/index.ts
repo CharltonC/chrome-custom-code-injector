@@ -2,6 +2,8 @@ import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
 import { IStateHandler } from '../type';
+import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
+import { AJsExecPhase } from '../../../model/rule-config/type';
 
 export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// ADD RULE (Host/Path)
@@ -175,11 +177,10 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     // TODO: this is for edit view
-    // TODO: Payload as object in component
-    onItemJsExecStageChange({ rules, localState }: AppState, ...payload: any[]) {
+    onItemJsExecStageChange({ rules, localState }: AppState, payload: TSelectDropdown.IOnSelectArg) {
         const item = this._getActiveItem({ rules, ...localState.activeRule });
-        const [, idx ] = payload;
-        item.jsExecPhase = idx;
+        const { selectValueAttrVal } = payload;
+        item.jsExecPhase = selectValueAttrVal as AJsExecPhase;
         return { rules };
     }
 
@@ -224,8 +225,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
-    //// HELPER
-    // Shortcuts
+    //// SHORTCUTS
     get _getActiveItem() {
         return (this as unknown as IStateHandler).reflect.getActiveItem;
     }

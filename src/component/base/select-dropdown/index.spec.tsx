@@ -128,7 +128,10 @@ describe('Component - Dropdown', () => {
                 cmp = new Dropdown({...mockBareProps, onSelect: mockOnSelect});
                 cmp.onSelect(mockEvt);
 
-                expect(mockOnSelect).toHaveBeenCalledWith(mockEvt, mockOptionIdx);
+                expect(mockOnSelect).toHaveBeenCalledWith({
+                    evt: mockEvt,
+                    selectValueAttrVal: mockOptionIdx
+                });
             });
         });
 

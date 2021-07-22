@@ -13,3 +13,8 @@ export interface IState {
     hsList: boolean;
     hsSelectIdx: boolean;
 }
+
+export interface IOnSelectArg {
+    evt: React.ChangeEvent<HTMLSelectElement>;
+    selectValueAttrVal: number;
+}
