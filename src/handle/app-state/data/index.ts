@@ -2,7 +2,6 @@ import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, AActiveTabIdx } from '../../../model/rule-config';
 import { HandlerHelper } from '../helper';
-import { IStateHandler } from '../type';
 import { AJsExecPhase } from '../../../model/rule-config/type';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
@@ -142,6 +141,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     onItemTitleChange({ rules, localState }: AppState, payload) {
         return HandlerHelper.onTextInputChange({
             inputKey: 'titleInput',
+            key: 'title',
             payload,
             rules,
             localState,
@@ -151,6 +151,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     onItemHostOrPathChange({ rules, localState }: AppState, payload) {
         return HandlerHelper.onTextInputChange({
             inputKey: 'hostOrPathInput',
+            key: 'value',
             payload,
             rules,
             localState,

@@ -41,9 +41,8 @@ export const HandlerHelper = {
         return isHost ? host : host.paths[pathIdx];
     },
 
-    onTextInputChange({ rules, localState, payload, inputKey }): Partial<AppState> {
+    onTextInputChange({ rules, localState, payload, inputKey, key }): Partial<AppState> {
         const { val, isValid, errMsg } = payload;
-        const { activeRule } = localState;
         const baseState = {
             localState: {
                 ...localState,
@@ -58,13 +57,10 @@ export const HandlerHelper = {
         // If not vaild, we only update the temporary value of the input
         if (!isValid) return baseState;
 
-        // TODO: Possible abstract this to separate method?
         // If valid value, set/sync the item title or value
+        const { activeRule } = localState;
         const item = this.getActiveItem({ rules, ...activeRule });
-        const { title, value } = item;
-        const isTitle = inputKey === 'titleInput';
-        item.title = isTitle ? val : title;
-        item.value = isTitle ? value : val;
+        item[key] = val;
         return {
             ...baseState,
             rules: [...rules], // force rerender for Side Nav
