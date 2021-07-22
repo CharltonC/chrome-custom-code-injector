@@ -72,7 +72,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
                         disabled={isDelDisabled}
-                        onSelect={(evt, selectIdx) => onItemJsStageChange({ctxIdx, parentCtxIdx, selectIdx})}
+                        onSelect={arg => onItemJsStageChange({ctxIdx, parentCtxIdx, ...arg})}
                         />
                 </td><td>
                     <SliderSwitch

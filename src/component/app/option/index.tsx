@@ -163,7 +163,7 @@ export class OptionApp extends MemoComponent<IProps> {
                                     list={pgnOption.increment}
                                     selectIdx={resultsPerPageIdx}
                                     border
-                                    onSelect={(evt, idx) => onResultsPerPageChange({ idx })}
+                                    onSelect={onResultsPerPageChange}
                                     />
                             </li>
                             <li>
@@ -212,7 +212,7 @@ export class OptionApp extends MemoComponent<IProps> {
                                     list={jsExecStage}
                                     border
                                     selectIdx={defRuleConfig.jsExecPhase}
-                                    onSelect={(evt, idx) => onDefJsExecStageChange({ idx })}
+                                    onSelect={onDefJsExecStageChange}
                                     />
                             </li>
                         </ul>

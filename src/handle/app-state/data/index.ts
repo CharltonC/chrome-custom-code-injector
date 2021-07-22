@@ -160,11 +160,11 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     // TODO: this is used in list view, remove duplicate ones for edit view
     onItemJsStageChange({ rules }: AppState, payload): Partial<AppState> {
         // TODO: Common
-        const { parentCtxIdx, ctxIdx, selectIdx } = payload;
+        const { parentCtxIdx, ctxIdx, selectValueAttrVal } = payload;
         const item = Number.isInteger(parentCtxIdx)
           ? rules[parentCtxIdx].paths[ctxIdx]
           : rules[ctxIdx];
-        item.jsExecPhase = selectIdx;
+        item.jsExecPhase = selectValueAttrVal;
         return { rules };
     }
 

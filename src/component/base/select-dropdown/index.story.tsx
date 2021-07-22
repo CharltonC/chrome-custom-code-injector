@@ -39,8 +39,8 @@ export const WithBorder = () => {
 
 export const WithSelectedIndexAndCallback = () => {
     const [ optionIdx, setOptionIdx ] = useState(2);
-    const onSelect = (evt, idx) => {
-        setOptionIdx(idx);
+    const onSelect = ({ evt, selectValueAttrVal }) => {
+        setOptionIdx(selectValueAttrVal);
     };
 
     return (

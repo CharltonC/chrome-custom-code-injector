@@ -5,11 +5,11 @@ import { Setting } from '../../../model/setting';
 export class SettingStateHandler extends StateHandle.BaseStateHandler {
     //// Setting Modal Content
     onResultsPerPageChange({ setting }: AppState, payload) {
-        const { idx } = payload;
+        const { selectValueAttrVal } = payload;
         return {
             setting: {
                 ...setting,
-                resultsPerPageIdx: idx
+                resultsPerPageIdx: selectValueAttrVal
             }
         };
     }
@@ -38,14 +38,14 @@ export class SettingStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onDefJsExecStageChange({ setting }: AppState, payload) {
-        const { idx } = payload;
+        const { selectValueAttrVal } = payload;
         const { defRuleConfig } = setting;
         return {
             setting: {
                 ...setting,
                 defRuleConfig: {
                     ...defRuleConfig,
-                    jsExecPhase: idx
+                    jsExecPhase: selectValueAttrVal
                 }
             }
         };
