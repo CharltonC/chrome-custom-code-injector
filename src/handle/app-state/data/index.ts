@@ -5,6 +5,7 @@ import { HandlerHelper } from '../helper';
 import { AJsExecPhase } from '../../../model/rule-config/type';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
+import * as TTextInput from '../../../component/base/input-text/type';
 
 export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
@@ -113,7 +114,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// EDIT RULE
-    onItemTitleChange({ rules, localState }: AppState, payload) {
+    onItemTitleChange({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
         return HandlerHelper.onTextInputChange({
             ...payload,
             inputKey: 'titleInput',
@@ -123,7 +124,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         });
     }
 
-    onItemHostOrPathChange({ rules, localState }: AppState, payload) {
+    onItemHostOrPathChange({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
         return HandlerHelper.onTextInputChange({
             ...payload,
             inputKey: 'hostOrPathInput',

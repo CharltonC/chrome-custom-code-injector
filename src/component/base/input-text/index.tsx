@@ -78,7 +78,7 @@ export class TextInput extends MemoComponent<IProps> {
         const validState = this.getValidState(val, rules);
         cbFn({
             ...validState,
-            evt: { ...evt },
+            evt,
             val,
             isGte3
         });

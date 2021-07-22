@@ -16,7 +16,13 @@ export interface IValidationRule {
     msg: string;
 }
 
-export type IValidationState = {
+export interface IValidationState {
     isValid: boolean;
     errMsg: string[];
 };
+
+export interface IOnInputChangeArg extends IValidationState {
+    evt: React.ChangeEvent<HTMLInputElement>;
+    val: string,
+    isGte3: boolean;
+}
