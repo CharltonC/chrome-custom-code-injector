@@ -1,10 +1,11 @@
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { Setting } from '../../../model/setting';
+import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 
 export class SettingStateHandler extends StateHandle.BaseStateHandler {
     //// Setting Modal Content
-    onResultsPerPageChange({ setting }: AppState, payload) {
+    onResultsPerPageChange({ setting }: AppState, payload: TSelectDropdown.IonSelectArg) {
         const { selectValueAttrVal } = payload;
         return {
             setting: {
@@ -37,7 +38,7 @@ export class SettingStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefJsExecStageChange({ setting }: AppState, payload) {
+    onDefJsExecStageChange({ setting }: AppState, payload: TSelectDropdown.IonSelectArg) {
         const { selectValueAttrVal } = payload;
         const { defRuleConfig } = setting;
         return {
