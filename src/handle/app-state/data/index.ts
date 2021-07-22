@@ -2,8 +2,9 @@ import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
 import { IStateHandler } from '../type';
-import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import { AJsExecPhase } from '../../../model/rule-config/type';
+import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
+import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 
 export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// ADD RULE (Host/Path)
@@ -177,7 +178,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     // TODO: this is for edit view
-    onItemJsExecStageChange({ rules, localState }: AppState, payload: TSelectDropdown.IOnSelectArg) {
+    onItemJsExecStageChange({ rules, localState }: AppState, payload: TSelectDropdown.IonSelectArg) {
         const item = (this as unknown as IStateHandler).reflect.getActiveItem({
             rules,
             ...localState.activeRule
@@ -187,24 +188,22 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
-    // TODO: Payload as object in component
-    onItemActiveTabChange({ rules, localState }: AppState, ...payload: any[]) {
+    onItemActiveTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IonTabChange) {
         const item = (this as unknown as IStateHandler).reflect.getActiveItem({
             rules,
             ...localState.activeRule
         });
-        const [, , idx] = payload;
-        item.activeTabIdx = idx;
+        const { idx } = payload;
+        item.activeTabIdx = idx as any;
         return { rules };
     }
 
-    // TODO: Payload as object in component
-    onItemTabEnable({ rules, localState }: AppState, ...payload: any[]) {
+    onItemTabEnable({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IonTabChange) {
         const item = (this as unknown as IStateHandler).reflect.getActiveItem({
             rules,
             ...localState.activeRule
         });
-        const [ , { id, isOn } ] = payload;
+        const { id, isOn } = payload.tab;
         let key: string;
         switch(id) {
             case 'css':

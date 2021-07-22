@@ -142,7 +142,7 @@ describe('Component - Tab Switch', () => {
             getChildElem();
             TestUtil.triggerEvt($2ndRdoLabel, 'click', MouseEvent);
 
-            const [, tab, idx ] = mockOnTabActive.mock.calls[0];
+            const { tab, idx } = mockOnTabActive.mock.calls[0][0];
             expect(mockOnTabActive).toHaveBeenCalled();
             expect(tab).toBe(mockList[1]);
             expect(idx).toBe(1);
@@ -153,7 +153,7 @@ describe('Component - Tab Switch', () => {
             getChildElem();
             TestUtil.triggerEvt($2ndCbLabel, 'click', MouseEvent);
 
-            const [, tab, idx ] = mockOnTabEnable.mock.calls[0];
+            const { tab, idx } = mockOnTabEnable.mock.calls[0][0];
             expect(mockOnTabEnable).toHaveBeenCalled();
             expect(tab).toBe(mockList[1]);
             expect(idx).toBe(1);

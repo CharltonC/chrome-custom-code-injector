@@ -1,6 +1,6 @@
 export interface IProps extends React.HTMLAttributes<HTMLElement> {
     id: string;
-    data: Record<string, any> | Record<string, any>[];
+    data: ATab | ATab[];
     dataKeyMap?: [string, string][];
     activeTabIdx?: number;
     tabKey?: string;
@@ -10,3 +10,11 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export interface IState {}
+
+export interface IonTabChange {
+    evt: React.ChangeEvent<HTMLInputElement>;
+    tab: ATab;
+    idx: number;
+}
+
+type ATab = Record<string, any>;

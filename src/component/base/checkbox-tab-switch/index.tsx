@@ -30,6 +30,7 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
                 const TAB_SWITCH_ID = `checkbox-${ITEM_ID}`;
                 const TAB_TITLE = tab[tabKey];
                 const isTabSwitchOn = tab[tabEnableKey];
+                const baseEvtArg = { tab, idx };
 
                 return (
                     <li key={ITEM_ID} className={ITEM_CLS}>
@@ -38,16 +39,26 @@ export class TabSwitch extends MemoComponent<IProps, IState> {
                             name={id}
                             id={TAB_ID}
                             checked={isActive}
-                            onChange={(e) => onTabActive?.(e, tab, idx)}
+                            onChange={evt => onTabActive?.({ evt, ...baseEvtArg })}
                             />
-                        <label htmlFor={TAB_ID} className={TAB_CLS}>{TAB_TITLE}</label>
+                        <label
+                            htmlFor={TAB_ID}
+                            className={TAB_CLS}
+                            >
+                            {TAB_TITLE}
+                        </label>
                         <input
                             type="checkbox"
                             id={TAB_SWITCH_ID}
                             checked={isTabSwitchOn}
-                            onChange={(e) => onTabEnable?.(e, tab, idx)}
+                            onChange={evt => onTabEnable?.({ evt, ...baseEvtArg })}
                             />
-                        <label htmlFor={TAB_SWITCH_ID} className={TAB_SWITCH_CLS}>{$switchIcon}</label>
+                        <label
+                            htmlFor={TAB_SWITCH_ID}
+                            className={TAB_SWITCH_CLS}
+                            >
+                            {$switchIcon}
+                        </label>
                     </li>);
                 })}
             </ul>
