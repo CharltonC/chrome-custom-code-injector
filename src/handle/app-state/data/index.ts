@@ -178,7 +178,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     // TODO: this is for edit view
-    onItemJsExecStageChange({ rules, localState }: AppState, payload: TSelectDropdown.IonSelectArg) {
+    onItemJsExecStageChange({ rules, localState }: AppState, payload: TSelectDropdown.IOnSelectArg) {
         const item = (this as unknown as IStateHandler).reflect.getActiveItem({
             rules,
             ...localState.activeRule
@@ -188,7 +188,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
-    onItemActiveTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IonTabChange) {
+    onItemActiveTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
         const item = (this as unknown as IStateHandler).reflect.getActiveItem({
             rules,
             ...localState.activeRule
@@ -198,7 +198,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
-    onItemTabEnable({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IonTabChange) {
+    onItemTabEnable({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
         const item = (this as unknown as IStateHandler).reflect.getActiveItem({
             rules,
             ...localState.activeRule

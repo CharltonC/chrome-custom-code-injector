@@ -11,7 +11,7 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
 
 export interface IState {}
 
-export interface IonTabChange {
+export interface IOnTabChange {
     evt: React.ChangeEvent<HTMLInputElement>;
     tab: ATab;
     idx: number;

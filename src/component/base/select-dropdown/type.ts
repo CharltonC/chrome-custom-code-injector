@@ -14,7 +14,7 @@ export interface IState {
     hsSelectIdx: boolean;
 }
 
-export interface IonSelectArg {
+export interface IOnSelectArg {
     evt: React.ChangeEvent<HTMLSelectElement>;
     selectValueAttrVal: number;
 }

@@ -6,7 +6,7 @@ import * as TFileInput from  '../../../component/base/input-file/type';
 
 export class SettingStateHandler extends StateHandle.BaseStateHandler {
     //// Setting Modal Content
-    onResultsPerPageChange({ setting }: AppState, payload: TSelectDropdown.IonSelectArg) {
+    onResultsPerPageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg) {
         const { selectValueAttrVal } = payload;
         return {
             setting: {
@@ -39,7 +39,7 @@ export class SettingStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefJsExecStageChange({ setting }: AppState, payload: TSelectDropdown.IonSelectArg) {
+    onDefJsExecStageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg) {
         const { selectValueAttrVal } = payload;
         const { defRuleConfig } = setting;
         return {
