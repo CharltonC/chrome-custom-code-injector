@@ -135,13 +135,19 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// SCRIPT EXEC STAGE & SWITCH
-    // TODO: this is used in list view, remove duplicate ones for edit view
-    onItemJsStageChange({ rules }: AppState, payload): Partial<AppState> {
-        // TODO: Common
-        const { parentCtxIdx, ctxIdx, selectValueAttrVal } = payload;
-        const item = Number.isInteger(parentCtxIdx)
-          ? rules[parentCtxIdx].paths[ctxIdx]
-          : rules[ctxIdx];
+    onItemJsStageChange({ rules, localState }: AppState, payload): Partial<AppState> {
+        const { isActiveItem, parentCtxIdx, ctxIdx, selectValueAttrVal } = payload;
+
+        // If this is the current edit item (Edit View), we get the item based on indexes provided from  `activeRule`. Else we get the item using `parentCtxIdx, ctxIdx` (List View)
+        const item = isActiveItem
+            ? HandlerHelper.getActiveItem({
+                rules,
+                ...localState.activeRule
+            })
+            : Number.isInteger(parentCtxIdx)
+                ? rules[parentCtxIdx].paths[ctxIdx]
+                : rules[ctxIdx];
+
         item.jsExecPhase = selectValueAttrVal;
         return { rules };
     }
@@ -152,17 +158,6 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
           ? rules[parentCtxIdx].paths[ctxIdx]
           : rules[ctxIdx];
           item[key] = !item[key];
-        return { rules };
-    }
-
-    // TODO: this is for edit view
-    onItemJsExecStageChange({ rules, localState }: AppState, payload: TSelectDropdown.IOnSelectArg) {
-        const item = HandlerHelper.getActiveItem({
-            rules,
-            ...localState.activeRule
-        });
-        const { selectValueAttrVal } = payload;
-        item.jsExecPhase = selectValueAttrVal as AJsExecPhase;
         return { rules };
     }
 

@@ -36,7 +36,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { titleInput, hostOrPathInput, activeRule } = localState;
         const {
             onItemTitleChange, onItemHostOrPathChange,
-            onItemJsExecStageChange,
+            onItemJsStageChange,
             onItemActiveTabChange, onItemTabEnable, onItemEditorCodeChange,
             onItemSwitchToggle,
         } = appStateHandler;
@@ -122,7 +122,10 @@ export class OptionEditView extends MemoComponent<IProps> {
                         border={true}
                         list={jsExecStage}
                         selectIdx={jsExecPhase}
-                        onSelect={onItemJsExecStageChange} />
+                        onSelect={arg => onItemJsStageChange({
+                            ...arg,
+                            isActiveItem: true,
+                        })} />
                 </section>
                 {/* TOD: section-form field? */}
                 <TabSwitch
