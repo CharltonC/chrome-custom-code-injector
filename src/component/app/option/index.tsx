@@ -303,6 +303,10 @@ export class OptionApp extends MemoComponent<IProps> {
                                 ...arg,
                                 isInModal: true
                             })}
+                            onInputBlur={arg => onItemTitleChange({
+                                ...arg,
+                                isInModal: true
+                            })}
                             />
                         <TextInput
                             id="host-value"
@@ -315,6 +319,10 @@ export class OptionApp extends MemoComponent<IProps> {
                                 errMsg: hostOrPathInput.errMsg
                             }}
                             onInputChange={arg => onItemHostOrPathChange({
+                                ...arg,
+                                isInModal: true
+                            })}
+                            onInputBlur={arg => onItemHostOrPathChange({
                                 ...arg,
                                 isInModal: true
                             })}
