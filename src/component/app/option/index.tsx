@@ -63,12 +63,12 @@ export class OptionApp extends MemoComponent<IProps> {
             onListView,
             onSearchTextClear,
             onModalCancel, onSettingModal, onImportConfigFileModal, onExportConfigFileModal,
-            onAddRuleModalInputChange,
             onAddHostModalRuleConfirm, onAddPathRuleModalConfirm,
             onDelModalConfirm,
             onResetAll, onDelConfirmDialogToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
             onImportConfigFileModalInputChange, onImportConfigFileModalConfirm,
             onExportConfigFileModalInputChange, onExportConfigFileModalConfirm,
+            onItemTitleChange, onItemHostOrPathChange,
         } = appStateHandler;
 
         const { isHost } = activeRule;
@@ -299,9 +299,9 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: titleInput.isValid,
                                 errMsg: titleInput.errMsg
                             }}
-                            onInputChange={args => onAddRuleModalInputChange({
-                                ...args,
-                                inputKey: 'titleInput'
+                            onInputChange={arg => onItemTitleChange({
+                                ...arg,
+                                isInModal: true
                             })}
                             />
                         <TextInput
@@ -314,9 +314,9 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: hostOrPathInput.isValid,
                                 errMsg: hostOrPathInput.errMsg
                             }}
-                            onInputChange={args => onAddRuleModalInputChange({
-                                ...args,
-                                inputKey: 'hostOrPathInput'
+                            onInputChange={arg => onItemHostOrPathChange({
+                                ...arg,
+                                isInModal: true
                             })}
                             />
                     </Modal>
@@ -341,9 +341,9 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: titleInput.isValid,
                                 errMsg: titleInput.errMsg
                             }}
-                            onInputChange={(args) => onAddRuleModalInputChange({
-                                ...args,
-                                inputKey: 'titleInput'
+                            onInputChange={arg => onItemTitleChange({
+                                ...arg,
+                                isInModal: true
                             })}
                             />
                         <TextInput
@@ -356,9 +356,9 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: hostOrPathInput.isValid,
                                 errMsg: hostOrPathInput.errMsg
                             }}
-                            onInputChange={(args) => onAddRuleModalInputChange({
-                                ...args,
-                                inputKey: 'hostOrPathInput'
+                            onInputChange={arg => onItemHostOrPathChange({
+                                ...arg,
+                                isInModal: true
                             })}
                             />
                     </Modal>

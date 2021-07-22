@@ -42,10 +42,27 @@ export const HandlerHelper = {
     },
 
     onTextInputChange(arg): Partial<AppState> {
-        const { rules, localState, inputKey, key, val, isValid, errMsg } = arg;
+        const {
+            rules, localState,
+            isInModal, inputKey, key,
+            val, isValid, errMsg
+        } = arg;
+
+        // If Text input is inside Modal, Check valid state of other text inputs within the same Modal
+        let modalConfirmState = {};
+        if (isInModal) {
+            const inputKeys = ['titleInput', 'hostOrPathInput'];
+            modalConfirmState = {
+                isModalConfirmBtnEnabled: isValid && inputKeys
+                    .filter(key => key !== inputKey)
+                    .every(key => localState[key].isValid)
+            };
+        }
+
         const baseState = {
             localState: {
                 ...localState,
+                ...modalConfirmState,
                 [inputKey]: {
                     isValid,
                     errMsg,
@@ -55,7 +72,7 @@ export const HandlerHelper = {
         };
 
         // If not vaild, we only update the temporary value of the input
-        if (!isValid) return baseState;
+        if (!isValid || isInModal) return baseState;
 
         // If valid value, set/sync the item title or value
         const { activeRule } = localState;

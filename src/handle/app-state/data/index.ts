@@ -7,30 +7,6 @@ import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 
 export class DataStateHandler extends StateHandle.BaseStateHandler {
-    //// ADD RULE (Host/Path)
-    onAddRuleModalInputChange({ localState }: AppState, payload): Partial<AppState> {
-        const { val, isValid, errMsg, inputKey } = payload;
-
-        // Check valid state of other text inputs in the same Modal
-        // TODO: constant
-        const inputKeys = ['titleInput', 'hostOrPathInput'];
-        const isModalConfirmBtnEnabled = isValid && inputKeys
-            .filter(key => key !== inputKey)
-            .every(key => localState[key].isValid);
-
-        return {
-            localState: {
-                ...localState,
-                isModalConfirmBtnEnabled,
-                [inputKey]: {
-                    isValid,
-                    errMsg,
-                    value: val
-                }
-            }
-        };
-    }
-
     //// REMOVE RULE (Host/Path; used only in `reflect`)
     rmvRow({ localState }: AppState, idx: number, parentIdx?: number) {
         const { dataSrc } = localState;      // set by `onDelModal`
