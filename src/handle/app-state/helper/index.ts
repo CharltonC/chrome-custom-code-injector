@@ -41,8 +41,8 @@ export const HandlerHelper = {
         return isHost ? host : host.paths[pathIdx];
     },
 
-    onTextInputChange({ rules, localState, payload, inputKey, key }): Partial<AppState> {
-        const { val, isValid, errMsg } = payload;
+    onTextInputChange(arg): Partial<AppState> {
+        const { rules, localState, inputKey, key, val, isValid, errMsg } = arg;
         const baseState = {
             localState: {
                 ...localState,

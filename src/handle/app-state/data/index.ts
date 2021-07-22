@@ -137,12 +137,11 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// EDIT RULE
-    // TODO: see if we need its because we already have `onAddRuleModalInputChange`
     onItemTitleChange({ rules, localState }: AppState, payload) {
         return HandlerHelper.onTextInputChange({
+            ...payload,
             inputKey: 'titleInput',
             key: 'title',
-            payload,
             rules,
             localState,
         });
@@ -150,9 +149,9 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
 
     onItemHostOrPathChange({ rules, localState }: AppState, payload) {
         return HandlerHelper.onTextInputChange({
+            ...payload,
             inputKey: 'hostOrPathInput',
             key: 'value',
-            payload,
             rules,
             localState,
         });
