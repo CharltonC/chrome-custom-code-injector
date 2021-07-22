@@ -2,7 +2,7 @@ import { RowSelectHandle } from '../../row-select';
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig } from '../../../model/rule-config';
-import { IStateHandler } from '../type';
+import { HandlerHelper } from '../helper';
 import * as TPgn from '../../pagination/type';
 import * as TSort from '../../sort/type';
 
@@ -32,7 +32,7 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onSearchPerform({ localState, rules }: AppState, val: string) {
-        const { hsText } = (this as unknown as IStateHandler).reflect;
+        const { hsText } = HandlerHelper;
         const searchedRules: HostRuleConfig[] = val
             .split(/\s+/)
             .reduce((filteredRules: HostRuleConfig[], text: string) => {
@@ -85,8 +85,7 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
 
     onRowSelectToggle({ localState }: AppState, rowIdx: number, totalRules: number) {
         const { pgnOption, pgnState } = localState;
-        const { getRowIndexCtx } = (this as unknown as IStateHandler).reflect;
-        const { startRowIdx, endRowIdx } = getRowIndexCtx(totalRules, pgnOption, pgnState);
+        const { startRowIdx, endRowIdx } = HandlerHelper.getRowIndexCtx(totalRules, pgnOption, pgnState);
 
         const rowSelectState = rowSelectHandle.getState({
             isAll: false,
@@ -128,7 +127,7 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
             idx:  isHost ? idx : parentCtxIdx,
             pathIdx: isHost ? null : idx,
         };
-        const { title, value } = (this as unknown as IStateHandler).reflect.getActiveItem({
+        const { title, value } = HandlerHelper.getActiveItem({
             rules,
             ...activeRule,
         });

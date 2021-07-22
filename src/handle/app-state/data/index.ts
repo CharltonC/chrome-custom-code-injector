@@ -1,6 +1,7 @@
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, AActiveTabIdx } from '../../../model/rule-config';
+import { HandlerHelper } from '../helper';
 import { IStateHandler } from '../type';
 import { AJsExecPhase } from '../../../model/rule-config/type';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
@@ -80,7 +81,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     rmvAllRows({ localState }: AppState) {
         const { dataSrc, pgnOption, pgnState } = localState;
         const totalRules = dataSrc.length;
-        const { startRowIdx, totalVisibleRows } = (this as unknown as IStateHandler).reflect.getRowIndexCtx(totalRules, pgnOption, pgnState);
+        const { startRowIdx, totalVisibleRows } = HandlerHelper.getRowIndexCtx(totalRules, pgnOption, pgnState);
         let modRules: HostRuleConfig[] = dataSrc.concat();
 
         // - if only 1 page regardless of pagination or not, remove all items
@@ -139,7 +140,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// EDIT RULE
     // TODO: see if we need its because we already have `onAddRuleModalInputChange`
     onItemTitleChange({ rules, localState }: AppState, payload) {
-        return (this as unknown as IStateHandler).reflect.onTextInputChange({
+        return HandlerHelper.onTextInputChange({
             inputKey: 'titleInput',
             payload,
             rules,
@@ -148,7 +149,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onItemHostOrPathChange({ rules, localState }: AppState, payload) {
-        return (this as unknown as IStateHandler).reflect.onTextInputChange({
+        return HandlerHelper.onTextInputChange({
             inputKey: 'hostOrPathInput',
             payload,
             rules,
@@ -179,7 +180,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
 
     // TODO: this is for edit view
     onItemJsExecStageChange({ rules, localState }: AppState, payload: TSelectDropdown.IOnSelectArg) {
-        const item = (this as unknown as IStateHandler).reflect.getActiveItem({
+        const item = HandlerHelper.getActiveItem({
             rules,
             ...localState.activeRule
         });
@@ -189,7 +190,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onItemActiveTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
-        const item = (this as unknown as IStateHandler).reflect.getActiveItem({
+        const item = HandlerHelper.getActiveItem({
             rules,
             ...localState.activeRule
         });
@@ -199,7 +200,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onItemTabEnable({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
-        const item = (this as unknown as IStateHandler).reflect.getActiveItem({
+        const item = HandlerHelper.getActiveItem({
             rules,
             ...localState.activeRule
         });
@@ -223,7 +224,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onItemEditorCodeChange({ rules, localState }: AppState, payload) {
-        const item = (this as unknown as IStateHandler).reflect.getActiveItem({
+        const item = HandlerHelper.getActiveItem({
             rules,
             ...localState.activeRule
         });

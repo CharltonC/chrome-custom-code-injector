@@ -1,9 +1,8 @@
-import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import * as TPgn from '../../pagination/type';
 
-export class HelperHandler extends StateHandle.BaseStateHandler {
+export const HandlerHelper = {
     /**
      *
      * Formula for calculating a row's end index used for rows removal at a specific page when all rows are selected
@@ -35,12 +34,12 @@ export class HelperHandler extends StateHandle.BaseStateHandler {
             totalVisibleRows: endRowIdx - startIdx,
             totalVisibleRowsAllowed
         };
-    }
+    },
 
     getActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
         const host: HostRuleConfig = rules[idx];
         return isHost ? host : host.paths[pathIdx];
-    }
+    },
 
     onTextInputChange({ rules, localState, payload, inputKey }): Partial<AppState> {
         const { val, isValid, errMsg } = payload;
@@ -61,7 +60,7 @@ export class HelperHandler extends StateHandle.BaseStateHandler {
 
         // TODO: Possible abstract this to separate method?
         // If valid value, set/sync the item title or value
-        const item = this.reflect.getActiveItem({ rules, ...activeRule });
+        const item = this.getActiveItem({ rules, ...activeRule });
         const { title, value } = item;
         const isTitle = inputKey === 'titleInput';
         item.title = isTitle ? val : title;
@@ -70,10 +69,10 @@ export class HelperHandler extends StateHandle.BaseStateHandler {
             ...baseState,
             rules: [...rules], // force rerender for Side Nav
         };
-    }
+    },
 
     // Search Helper
     hsText(vals: string[], text: string): boolean {
         return vals.some((val: string) => (val.toLowerCase().indexOf(text) !== -1));
-    }
+    },
 }
