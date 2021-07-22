@@ -57,6 +57,6 @@ export class FileInput extends MemoComponent<IProps, IState> {
 
         const validState: IState = { errMsg, isValid: !errMsg.length };
         this.setState(validState);
-        onFileChange?.(evt, validState);
+        onFileChange?.({ ...validState, evt });
     }
 }

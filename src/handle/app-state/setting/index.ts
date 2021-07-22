@@ -2,6 +2,7 @@ import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { Setting } from '../../../model/setting';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
+import * as TFileInput from  '../../../component/base/input-file/type';
 
 export class SettingStateHandler extends StateHandle.BaseStateHandler {
     //// Setting Modal Content
@@ -62,13 +63,12 @@ export class SettingStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// Json Import/Export Modal Content
-    // TODO: payload object
-    onImportConfigFileModalInputChange({ localState }, ...payload) {
-        const [ { target }, { isValid } ] = payload;
+    onImportConfigFileModalInputChange({ localState }, payload: TFileInput.IOnFileChange) {
+        const { evt, isValid } = payload;
         return {
             localState: {
                 ...localState,
-                importFilePath: target.files.item(0),
+                importFilePath: evt.target.files.item(0),
                 isModalConfirmBtnEnabled: isValid
             }
         };

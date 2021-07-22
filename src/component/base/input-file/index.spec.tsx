@@ -75,7 +75,10 @@ describe('Component - File Input', () => {
                 cmp.onChange(mockEvt);
 
                 expect(setStateSpy.mock.calls[0][0]).toEqual(validState);
-                expect(mockOnFileChange).toHaveBeenCalledWith(mockEvt, validState);
+                expect(mockOnFileChange).toHaveBeenCalledWith({
+                    evt: mockEvt,
+                    ...validState
+                });
             });
 
             it('should set state and trigger callback if validation rules are provided & no file is selected', () => {

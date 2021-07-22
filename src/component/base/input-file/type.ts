@@ -15,3 +15,7 @@ export interface IValidationConfig {
     rule: ((val: File) => boolean);
     msg: string;
 }
+
+export interface IOnFileChange extends IState {
+    evt: React.ChangeEvent<HTMLInputElement>;
+}
