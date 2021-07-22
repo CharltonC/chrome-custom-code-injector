@@ -9,7 +9,7 @@ import * as TTextInput from '../../../component/base/input-text/type';
 
 export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
-    rmvRow({ localState }: AppState, idx: number, parentIdx?: number) {
+    rmvItem({ localState }: AppState, idx: number, parentIdx?: number) {
         const { dataSrc } = localState;      // set by `onDelModal`
         const isSubRow = Number.isInteger(parentIdx);
         const modItems = isSubRow ? dataSrc[parentIdx].paths : dataSrc;
@@ -21,18 +21,18 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvSearchedRow(state: AppState, idx: number, parentIdx?: number) {
+    rmvSearchItem(state: AppState, idx: number, parentIdx?: number) {
         const { reflect } = this;
         const { rules: currRules, localState } = state;
         const { searchedRules: currSearchedRules } = localState;
         const isSubRow = Number.isInteger(parentIdx);
 
         // Remove either row or sub row for searched rules
-        const { rules: searchedRules } = reflect.rmvRow(state, idx, parentIdx);
+        const { rules: searchedRules } = reflect.rmvItem(state, idx, parentIdx);
 
         // If Not sub row, Remove corresponding row in global rules as well
         const ruleIdx = isSubRow ? null : currRules.indexOf(currSearchedRules[idx]);
-        const modRules = isSubRow ? currRules : reflect.rmvRow({
+        const modRules = isSubRow ? currRules : reflect.rmvItem({
             ...state,
             localState: {
                 ...localState,
@@ -48,13 +48,13 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvRows(state: AppState) {
+    rmvItems(state: AppState) {
         const { areAllRowsSelected } = state.localState.selectState;
         const { reflect } = this;
-        return areAllRowsSelected ? reflect.rmvAllRows(state) : reflect.rmvPartialRows(state);
+        return areAllRowsSelected ? reflect.rmvAllItems(state) : reflect.rmvPartialItems(state);
     }
 
-    rmvAllRows({ localState }: AppState) {
+    rmvAllItems({ localState }: AppState) {
         const { dataSrc, pgnOption, pgnState } = localState;
         const totalRules = dataSrc.length;
         const { startRowIdx, totalVisibleRows } = HandlerHelper.getRowIndexCtx(totalRules, pgnOption, pgnState);
@@ -75,7 +75,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvPartialRows({ localState }: AppState ) {
+    rmvPartialItems({ localState }: AppState ) {
         const { selectState, dataSrc } = localState;
         const rowIndexes: [string, boolean][] = Object.entries(selectState.selectedRowKeys);
         const selectedRowsTotal: number = rowIndexes.length - 1;
@@ -93,13 +93,13 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvSearchedRows(state: AppState) {
+    rmvSearchItems(state: AppState) {
         const { reflect } = this;
         const { localState, rules } = state;
         const { searchedRules } = localState;
 
         // Update the searched rules
-        const { rules: modSearchedRules } = reflect.rmvRows(state);
+        const { rules: modSearchedRules } = reflect.rmvItems(state);
 
         // Update corresponding global rules by Excluding all removed searched rows
         const removedSearchedRules = searchedRules.filter(rule => !modSearchedRules.includes(rule));
