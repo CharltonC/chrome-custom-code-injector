@@ -37,7 +37,8 @@ export class OptionEditView extends MemoComponent<IProps> {
         const {
             onItemTitleChange, onItemHostOrPathChange,
             onItemJsExecStageChange,
-            onItemActiveTabChange, onItemTabEnable, onItemEditorCodeChange
+            onItemActiveTabChange, onItemTabEnable, onItemEditorCodeChange,
+            onItemSwitchToggle,
         } = appStateHandler;
 
         const { isHost, idx, pathIdx } = activeRule;
@@ -53,6 +54,10 @@ export class OptionEditView extends MemoComponent<IProps> {
         const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
 
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
+        const itemIdxCtx = {
+            ctxIdx: isHost ? idx : pathIdx,
+            parentCtxIdx: isHost ? null : idx,
+        };
 
         return (<>
             <SideNav
@@ -96,11 +101,15 @@ export class OptionEditView extends MemoComponent<IProps> {
                         />
                     <div className="fm-field__ctrl">{ isHost &&
                         <IconSwitch
+                            icon
                             id="https-switch"
                             label="lock-close"
                             checked={rule["isHttps"]}
-                            /* TODO: onChange */
-                            icon /> }
+                            onChange={() => onItemSwitchToggle({
+                                ...itemIdxCtx,
+                                key: 'isHttps',
+                            })}
+                            /> }
                         <IconSwitch
                             id="regex-switch"
                             label="(.*)" />
