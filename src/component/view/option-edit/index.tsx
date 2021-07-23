@@ -37,7 +37,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const {
             onItemTitleChange, onItemHostOrPathChange,
             onItemJsStageChange,
-            onItemActiveTabChange, onItemTabEnable, onItemEditorCodeChange,
+            onItemActiveTabChange, onItemEditorCodeChange,
             onItemSwitchToggle,
         } = appStateHandler;
 
@@ -53,6 +53,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const codeMode = isJsCode ? 'js' : 'css'
         const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
 
+        const isActiveItem = true
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
         const itemIdxCtx = {
             ctxIdx: isHost ? idx : pathIdx,
@@ -124,7 +125,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         selectIdx={jsExecPhase}
                         onSelect={arg => onItemJsStageChange({
                             ...arg,
-                            isActiveItem: true,
+                            isActiveItem,
                         })} />
                 </section>
                 {/* TOD: section-form field? */}
@@ -138,7 +139,10 @@ export class OptionEditView extends MemoComponent<IProps> {
                     ]}
                     activeTabIdx={activeTabIdx}
                     onTabActive={onItemActiveTabChange}
-                    onTabEnable={onItemTabEnable}
+                    onTabEnable={arg => onItemSwitchToggle({
+                        ...arg,
+                        isActiveItem
+                    })}
                     />{ isCode &&
                 <CodeMirror
                     value={codeContent}

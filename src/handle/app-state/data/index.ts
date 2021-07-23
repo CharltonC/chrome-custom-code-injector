@@ -152,14 +152,21 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     // TODO: similar to `onItemTabEnable`
-    onItemSwitchToggle({ rules }: AppState, payload): Partial<AppState> {
-        const { parentCtxIdx, ctxIdx, key } = payload;
+    onItemSwitchToggle({ rules, localState }: AppState, payload): Partial<AppState> {
+        const {
+            isActiveItem,
+            parentCtxIdx, ctxIdx, key,
+            tab,
+        } = payload;
+
+        const itemKey: string = isActiveItem ? `is${tab.id}On` : key;
         const item = HandlerHelper.getActiveItem({
+            ...localState.activeRule,
+            parentCtxIdx, ctxIdx,
+            isActiveItem,
             rules,
-            ctxIdx,
-            parentCtxIdx,
         });
-        item[key] = !item[key];
+        item[itemKey] = !item[itemKey];
         return { rules };
     }
 
@@ -171,31 +178,6 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         });
         const { idx } = payload;
         item.activeTabIdx = idx as AActiveTabIdx;
-        return { rules };
-    }
-
-    onItemTabEnable({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
-        const item = HandlerHelper.getActiveItem({
-            rules,
-            ...localState.activeRule,
-            isActiveItem: true,
-        });
-        const { id, isOn } = payload.tab;
-        let key: string;
-        switch(id) {
-            case 'Css':
-                key = 'isCssOn';
-                break;
-            case 'Js':
-                key = 'isJsOn';
-                break;
-            case 'Lib':
-                key = 'isLibOn';
-                break;
-            default:
-                throw new Error('key does not match');
-        }
-        item[key] = !isOn;
         return { rules };
     }
 
