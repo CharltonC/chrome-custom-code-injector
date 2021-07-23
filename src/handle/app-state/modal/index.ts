@@ -35,11 +35,11 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                 isModalConfirmBtnEnabled: false,
 
                 // Reset any text input states including text, validation
-                titleInput: new TextInputState(),
-                hostOrPathInput: new TextInputState(),
-                exportFilenameInput: new TextInputState(),
-                hostIdxForNewPath: null,
-                importFilePath: null,
+                modalTitleInput: new TextInputState(),
+                modalValueInput: new TextInputState(),
+                modalExportFileInput: new TextInputState(),
+                modalRuleIdx: null,
+                modalImportFileInput: null,
             }
         };
     }
@@ -125,9 +125,9 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     onAddHostModalRuleConfirm(state: AppState) {
         const { localState, rules, setting } = state;
 
-        const { titleInput, hostOrPathInput } = localState;
-        const title: string = titleInput.value;
-        const host: string = hostOrPathInput.value;
+        const { modalTitleInput, modalValueInput } = localState;
+        const title: string = modalTitleInput.value;
+        const host: string = modalValueInput.value;
         const hostRule = new HostRuleConfig(title, host);
         Object.assign(hostRule, setting.defRuleConfig);
         rules.push(hostRule);
@@ -145,7 +145,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             localState: {
                 ...localState,
                 activeModalId: editPath.id,
-                hostIdxForNewPath: idx,
+                modalRuleIdx: idx,
             }
         };
     }
@@ -153,12 +153,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     onAddPathRuleModalConfirm(state: AppState) {
         const { localState, rules, setting } = state;
 
-        const { titleInput, hostOrPathInput, hostIdxForNewPath } = localState;
-        const title: string = titleInput.value;
-        const host: string = hostOrPathInput.value;
+        const { modalTitleInput, modalValueInput, modalRuleIdx } = localState;
+        const title: string = modalTitleInput.value;
+        const host: string = modalValueInput.value;
         const pathRule = new PathRuleConfig(title, host);
         Object.assign(pathRule, setting.defRuleConfig);
-        rules[hostIdxForNewPath].paths.push(pathRule);
+        rules[modalRuleIdx].paths.push(pathRule);
 
         const resetState = this.reflect.onModalCancel(state);
         return {
@@ -175,11 +175,11 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     async onImportConfigFileModalConfirm({ localState }: AppState) {
         // TODO: try/catch for read
         return {
-            rules: await fileHandle.readJson(localState.importFilePath),
+            rules: await fileHandle.readJson(localState.modalImportFileInput),
             localState: {
                 ...localState,
                 isModalConfirmBtnEnabled: false,
-                importFilePath: null,
+                modalImportFileInput: null,
                 activeModalId: null
             }
         };
@@ -191,7 +191,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     onExportConfigFileModalConfirm(state: AppState) {
         const { rules, localState } = state;
-        const { value } = localState.exportFilenameInput;
+        const { value } = localState.modalExportFileInput;
         fileHandle.saveJson(rules, value, true);
 
         const resetState = this.reflect.onModalCancel(state);

@@ -68,7 +68,7 @@ export class SettingStateHandler extends StateHandle.BaseStateHandler {
         return {
             localState: {
                 ...localState,
-                importFilePath: evt.target.files.item(0),
+                modalImportFileInput: evt.target.files.item(0),
                 isModalConfirmBtnEnabled: isValid
             }
         };
@@ -81,7 +81,7 @@ export class SettingStateHandler extends StateHandle.BaseStateHandler {
         return {
             localState: {
                 ...localState,
-                exportFilenameInput: {
+                modalExportFileInput: {
                     value: val,
                     isValid,
                     errMsg: validState?.errMsg,

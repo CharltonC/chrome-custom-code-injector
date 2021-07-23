@@ -115,7 +115,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     onItemTitleChange({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
         return HandlerHelper.onTextInputChange({
             ...payload,
-            inputKey: 'titleInput',
+            inputKey: 'modalTitleInput',
             key: 'title',
             rules,
             localState,
@@ -125,7 +125,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     onItemHostOrPathChange({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
         return HandlerHelper.onTextInputChange({
             ...payload,
-            inputKey: 'hostOrPathInput',
+            inputKey: 'modalValueInput',
             key: 'value',
             rules,
             localState,

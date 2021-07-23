@@ -33,7 +33,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { headerProps, props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { titleInput, hostOrPathInput, activeRule } = localState;
+        const { modalTitleInput, modalValueInput, activeRule } = localState;
         const {
             onItemTitleChange, onItemHostOrPathChange,
             onItemJsExecStepChange,
@@ -77,11 +77,11 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-id"
                         label="ID"
                         required
-                        value={titleInput.value}
+                        value={modalTitleInput.value}
                         validation={{
                             rules: ruleId,
-                            isValid: titleInput.isValid,
-                            errMsg: titleInput.errMsg
+                            isValid: modalTitleInput.isValid,
+                            errMsg: modalTitleInput.errMsg
                         }}
                         onInputChange={onItemTitleChange}
                         />
@@ -92,11 +92,11 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-value"
                         label={isHost ? 'Host' : 'Path'}
                         required
-                        value={hostOrPathInput.value}
+                        value={modalValueInput.value}
                         validation={{
                             rules: isHost ? ruleUrlHost : ruleUrlPath,
-                            isValid: hostOrPathInput.isValid,
-                            errMsg: hostOrPathInput.errMsg
+                            isValid: modalValueInput.isValid,
+                            errMsg: modalValueInput.errMsg
                         }}
                         onInputChange={onItemHostOrPathChange}
                         />

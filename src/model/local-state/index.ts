@@ -27,11 +27,11 @@ export class LocalState {
     //// MODAL
     activeModalId: string = null;
     isModalConfirmBtnEnabled = false;
-    exportFilenameInput = new TextInputState();
-    importFilePath: File = null;
-    titleInput = new TextInputState();
-    hostOrPathInput = new TextInputState();
-    hostIdxForNewPath: number = null; // for targeting the host where new path will be added to
+    modalExportFileInput = new TextInputState();
+    modalImportFileInput: File = null;
+    modalTitleInput = new TextInputState();
+    modalValueInput = new TextInputState();
+    modalRuleIdx: number = null; // for targeting the host where new path will be added to
 
     //// DATA GRID ROWS
     // Rows used by Modal Delete Confirm `onDelModalConfirm`

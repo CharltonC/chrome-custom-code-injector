@@ -24,11 +24,11 @@ export class SidebarStateHandler extends StateHandle.BaseStateHandler {
             localState: {
                 ...localState,
                 activeRule,
-                titleInput: {
+                modalTitleInput: {
                     ...resetState,
                     value: title,
                 },
-                hostOrPathInput: {
+                modalValueInput: {
                     ...resetState,
                     value
                 }

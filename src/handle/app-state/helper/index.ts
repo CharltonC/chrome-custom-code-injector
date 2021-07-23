@@ -69,7 +69,7 @@ export const HandlerHelper = {
         // If Text input is inside Modal, Check valid state of other text inputs within the same Modal
         let modalConfirmState = {};
         if (isInModal) {
-            const inputKeys = ['titleInput', 'hostOrPathInput'];
+            const inputKeys = ['modalTitleInput', 'modalValueInput'];
             modalConfirmState = {
                 isModalConfirmBtnEnabled: isValid && inputKeys
                     .filter(key => key !== inputKey)

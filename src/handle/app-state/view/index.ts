@@ -21,12 +21,12 @@ export class ViewStateHandler extends StateHandle.BaseStateHandler {
             ...activeRule,
             isActiveItem: true,
         });
-        const titleInput = {
+        const modalTitleInput = {
             isValid: null,
             errMsg: [],
             value: title,
         };
-        const hostOrPathInput = {
+        const modalValueInput = {
             isValid: null,
             errMsg: [],
             value
@@ -44,8 +44,8 @@ export class ViewStateHandler extends StateHandle.BaseStateHandler {
                 selectState: rowSelectHandle.defState,
 
                 // Input value, validation state
-                titleInput,
-                hostOrPathInput,
+                modalTitleInput,
+                modalValueInput,
             }
         };
     }

@@ -49,8 +49,8 @@ export class OptionApp extends MemoComponent<IProps> {
             searchedText,
             activeRule,
             pgnOption,
-            exportFilenameInput,
-            titleInput, hostOrPathInput,
+            modalExportFileInput,
+            modalTitleInput, modalValueInput,
         } = localState;
 
         const {
@@ -252,11 +252,11 @@ export class OptionApp extends MemoComponent<IProps> {
                             label="Filename"
                             required
                             autoFocus
-                            value={exportFilenameInput.value}
+                            value={modalExportFileInput.value}
                             validation={{
                                 rules: validationRule.exportConfig,
-                                isValid: exportFilenameInput.isValid,
-                                errMsg: exportFilenameInput.errMsg
+                                isValid: modalExportFileInput.isValid,
+                                errMsg: modalExportFileInput.errMsg
                             }}
                             onInputChange={onExportConfigFileModalInputChange}
                             />
@@ -293,11 +293,11 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="host-title"
                             label="Title"
                             required
-                            value={titleInput?.value}
+                            value={modalTitleInput?.value}
                             validation={{
                                 rules: validationRule.ruleId,
-                                isValid: titleInput.isValid,
-                                errMsg: titleInput.errMsg
+                                isValid: modalTitleInput.isValid,
+                                errMsg: modalTitleInput.errMsg
                             }}
                             onInputChange={arg => onItemTitleChange({
                                 ...arg,
@@ -312,11 +312,11 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="host-value"
                             label="Url"
                             required
-                            value={hostOrPathInput?.value}
+                            value={modalValueInput?.value}
                             validation={{
                                 rules: validationRule.ruleUrlHost,
-                                isValid: hostOrPathInput.isValid,
-                                errMsg: hostOrPathInput.errMsg
+                                isValid: modalValueInput.isValid,
+                                errMsg: modalValueInput.errMsg
                             }}
                             onInputChange={arg => onItemHostOrPathChange({
                                 ...arg,
@@ -343,11 +343,11 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="path-title"
                             label="Title"
                             required
-                            value={titleInput?.value}
+                            value={modalTitleInput?.value}
                             validation={{
                                 rules: validationRule.ruleId,
-                                isValid: titleInput.isValid,
-                                errMsg: titleInput.errMsg
+                                isValid: modalTitleInput.isValid,
+                                errMsg: modalTitleInput.errMsg
                             }}
                             onInputChange={arg => onItemTitleChange({
                                 ...arg,
@@ -358,11 +358,11 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="path-url"
                             label="Url Path"
                             required
-                            value={hostOrPathInput?.value}
+                            value={modalValueInput?.value}
                             validation={{
                                 rules: validationRule.ruleUrlPath,
-                                isValid: hostOrPathInput.isValid,
-                                errMsg: hostOrPathInput.errMsg
+                                isValid: modalValueInput.isValid,
+                                errMsg: modalValueInput.errMsg
                             }}
                             onInputChange={arg => onItemHostOrPathChange({
                                 ...arg,
