@@ -2,14 +2,12 @@ import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, AActiveTabIdx } from '../../../model/rule-config';
 import { HandlerHelper } from '../helper';
-import { AJsExecPhase } from '../../../model/rule-config/type';
-import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 import * as TTextInput from '../../../component/base/input-text/type';
 
 export class DataStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
-    rmvItem({ localState }: AppState, idx: number, parentIdx?: number) {
+    onRmvItem({ localState }: AppState, idx: number, parentIdx?: number) {
         const { dataSrc } = localState;      // set by `onDelModal`
         const isSubRow = Number.isInteger(parentIdx);
         const modItems = isSubRow ? dataSrc[parentIdx].paths : dataSrc;
@@ -21,18 +19,18 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvSearchItem(state: AppState, idx: number, parentIdx?: number) {
+    onRmvSearchItem(state: AppState, idx: number, parentIdx?: number) {
         const { reflect } = this;
         const { rules: currRules, localState } = state;
         const { searchedRules: currSearchedRules } = localState;
         const isSubRow = Number.isInteger(parentIdx);
 
         // Remove either row or sub row for searched rules
-        const { rules: searchedRules } = reflect.rmvItem(state, idx, parentIdx);
+        const { rules: searchedRules } = reflect.onRmvItem(state, idx, parentIdx);
 
         // If Not sub row, Remove corresponding row in global rules as well
         const ruleIdx = isSubRow ? null : currRules.indexOf(currSearchedRules[idx]);
-        const modRules = isSubRow ? currRules : reflect.rmvItem({
+        const modRules = isSubRow ? currRules : reflect.onRmvItem({
             ...state,
             localState: {
                 ...localState,
@@ -48,13 +46,13 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvItems(state: AppState) {
+    onRmvItems(state: AppState) {
         const { areAllRowsSelected } = state.localState.selectState;
         const { reflect } = this;
-        return areAllRowsSelected ? reflect.rmvAllItems(state) : reflect.rmvPartialItems(state);
+        return areAllRowsSelected ? reflect.onRmvAllItems(state) : reflect.onRmvPartialItems(state);
     }
 
-    rmvAllItems({ localState }: AppState) {
+    onRmvAllItems({ localState }: AppState) {
         const { dataSrc, pgnOption, pgnState } = localState;
         const totalRules = dataSrc.length;
         const { startRowIdx, totalVisibleRows } = HandlerHelper.getRowIndexCtx(totalRules, pgnOption, pgnState);
@@ -75,7 +73,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvPartialItems({ localState }: AppState ) {
+    onRmvPartialItems({ localState }: AppState ) {
         const { selectState, dataSrc } = localState;
         const rowIndexes: [string, boolean][] = Object.entries(selectState.selectedRowKeys);
         const selectedRowsTotal: number = rowIndexes.length - 1;
@@ -93,13 +91,13 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    rmvSearchItems(state: AppState) {
+    onRmvSearchItems(state: AppState) {
         const { reflect } = this;
         const { localState, rules } = state;
         const { searchedRules } = localState;
 
         // Update the searched rules
-        const { rules: modSearchedRules } = reflect.rmvItems(state);
+        const { rules: modSearchedRules } = reflect.onRmvItems(state);
 
         // Update corresponding global rules by Excluding all removed searched rows
         const removedSearchedRules = searchedRules.filter(rule => !modSearchedRules.includes(rule));
@@ -113,7 +111,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    //// EDIT RULE
+    //// ADD/EDIT RULE
     onItemTitleChange({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
         return HandlerHelper.onTextInputChange({
             ...payload,
@@ -152,6 +150,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
+    // TODO: similar to `onItemTabEnable`
     onItemSwitchToggle({ rules }: AppState, payload): Partial<AppState> {
         const { parentCtxIdx, ctxIdx, key } = payload;
         const item = Number.isInteger(parentCtxIdx)

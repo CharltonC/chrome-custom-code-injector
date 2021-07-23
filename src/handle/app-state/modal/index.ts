@@ -97,11 +97,11 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
         const { rules, localState } = isDelSingleItem ?
             ( isSearch ?
-                reflect.rmvSearchItem(state, ctxIdx, parentCtxIdx) :
-                reflect.rmvItem(state, ctxIdx, parentCtxIdx) ) :
+                reflect.onRmvSearchItem(state, ctxIdx, parentCtxIdx) :
+                reflect.onRmvItem(state, ctxIdx, parentCtxIdx) ) :
             ( isSearch ?
-                reflect.rmvSearchItems(state) :
-                reflect.rmvItems(state)) ;
+                reflect.onRmvSearchItems(state) :
+                reflect.onRmvItems(state)) ;
 
         return {
             localState: {
