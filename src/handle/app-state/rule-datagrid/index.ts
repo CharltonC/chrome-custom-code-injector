@@ -8,7 +8,7 @@ import * as TSort from '../../sort/type';
 
 const rowSelectHandle = new RowSelectHandle();
 
-export class ListViewStateHandler extends StateHandle.BaseStateHandler {
+export class RuleDatagridStateHandler extends StateHandle.BaseStateHandler {
     //// Search
     onSearchTextChange({ localState }: AppState, val: string): Partial<AppState> {
         const { searchedRules } = localState;

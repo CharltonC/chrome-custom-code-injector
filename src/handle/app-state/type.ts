@@ -1,8 +1,8 @@
 import { ModalStateHandler } from './modal';
 import { SettingStateHandler } from './setting';
 import { DataSrcStateHandler } from './data-src';
-import { ListViewStateHandler } from './option-list-view';
+import { RuleDatagridStateHandler } from './rule-datagrid';
 import { EditViewStateHandler } from './option-edit-view';
 import { ViewStateHandler } from './view';
 
-export interface IStateHandler extends ListViewStateHandler, EditViewStateHandler, ModalStateHandler, SettingStateHandler, DataSrcStateHandler, ViewStateHandler {}
+export interface IStateHandler extends RuleDatagridStateHandler, EditViewStateHandler, ModalStateHandler, SettingStateHandler, DataSrcStateHandler, ViewStateHandler {}
