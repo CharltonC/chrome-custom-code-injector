@@ -133,20 +133,15 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// SCRIPT EXEC STAGE & SWITCH
-    onItemJsStageChange({ rules, localState }: AppState, payload): Partial<AppState> {
+    onItemJsExecStepChange({ rules, localState }: AppState, payload): Partial<AppState> {
         const { isActiveItem, parentCtxIdx, ctxIdx, selectValueAttrVal } = payload;
-
-        // If this is the current edit item (Edit View), we get the item based on indexes provided from  `activeRule`. Else we get the item using `parentCtxIdx, ctxIdx` (List View)
-        const item = isActiveItem
-            ? HandlerHelper.getActiveItem({
-                rules,
-                ...localState.activeRule,
-                isActiveItem: true,
-            })
-            : Number.isInteger(parentCtxIdx)
-                ? rules[parentCtxIdx].paths[ctxIdx]
-                : rules[ctxIdx];
-
+        const item = HandlerHelper.getActiveItem({
+            rules,
+            isActiveItem,
+            ...localState.activeRule,
+            parentCtxIdx,
+            ctxIdx,
+        })
         item.jsExecPhase = selectValueAttrVal;
         return { rules };
     }

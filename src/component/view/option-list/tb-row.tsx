@@ -16,7 +16,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
 
     const {
         onDelModal, onAddPathRuleModal,
-        onItemExecSwitchToggle, onItemJsStageChange,
+        onItemExecSwitchToggle, onItemJsExecStepChange,
         onItemEdit, onRowExpand, onRowSelectToggle,
     } = appStateHandler;
 
@@ -73,7 +73,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
                         disabled={isDelDisabled}
-                        onSelect={arg => onItemJsStageChange({...itemIdxCtx, ...arg})}
+                        onSelect={arg => onItemJsExecStepChange({...itemIdxCtx, ...arg})}
                         />
                 </td><td>
                     <SliderSwitch
