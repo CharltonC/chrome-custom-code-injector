@@ -3,8 +3,8 @@ import { HandlerHelper } from '../helper';
 import { AppState } from '../../../model/app-state';
 import { TextInputState } from '../../../model/text-input';
 
-export class EditViewStateHandler extends StateHandle.BaseStateHandler {
-    onListItemChange({ rules, localState }: AppState, payload) {
+export class SidebarStateHandler extends StateHandle.BaseStateHandler {
+    onActiveItemChange({ rules, localState }: AppState, payload) {
         const { isChild, idx, parentIdx } = payload;
         const itemIdx = isChild ? parentIdx : idx;
         const childItemIdx = isChild ? idx : null

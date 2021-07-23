@@ -24,7 +24,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         super(props);
         this.$idInputRef = createRef();
         this.$valueInputRef = createRef();
-        this.onListItemChange = this.onListItemChange.bind(this);
+        this.onActiveItemChange = this.onActiveItemChange.bind(this);
 
         // TODO: constant component props
     }
@@ -66,7 +66,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                 childListKey="paths"
                 activeItemIdx={idx}
                 activeChildItemIdx={pathIdx}
-                onClick={this.onListItemChange}
+                onClick={this.onActiveItemChange}
                 />
             <div className="main--edit__form">
                 {/* TODO: placeholder text variation */}
@@ -228,12 +228,12 @@ export class OptionEditView extends MemoComponent<IProps> {
         </>;
     }
 
-    onListItemChange(args): void {
+    onActiveItemChange(args): void {
         // TODO: clear input state & validation state?
         // this.$idInputRef.current.clearValidState();
         // this.$valueInputRef.current.clearValidState();
         setTimeout(() => {
-            this.props.appStateHandler.onListItemChange(args);
+            this.props.appStateHandler.onActiveItemChange(args);
         }, 200);
     }
 }
