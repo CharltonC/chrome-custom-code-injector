@@ -37,7 +37,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const {
             onItemTitleChange, onItemHostOrPathChange,
             onItemJsExecStepChange,
-            onItemActiveTabChange, onItemEditorCodeChange,
+            onItemActiveExecTabChange, onItemExecCodeChange,
             onItemExecSwitchToggle,
         } = appStateHandler;
 
@@ -138,7 +138,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         ['Lib', 'isLibOn'],
                     ]}
                     activeTabIdx={activeTabIdx}
-                    onTabActive={onItemActiveTabChange}
+                    onTabActive={onItemActiveExecTabChange}
                     onTabEnable={arg => onItemExecSwitchToggle({
                         ...arg,
                         isActiveItem
@@ -151,7 +151,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         theme: 'darcula',
                         lineNumbers: true
                     }}
-                    onChange={(editor, data, val) => onItemEditorCodeChange({ value: val, codeMode }) }
+                    onChange={(editor, data, val) => onItemExecCodeChange({ value: val, codeMode }) }
                     />}{ isLibTab &&
                 <DataGrid
                     data={libs}

@@ -163,7 +163,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
-    onItemActiveTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
+    onItemActiveExecTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
         const item = HandlerHelper.getActiveItem({
             rules,
             ...localState.activeRule,
@@ -174,7 +174,7 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
-    onItemEditorCodeChange({ rules, localState }: AppState, payload) {
+    onItemExecCodeChange({ rules, localState }: AppState, payload) {
         const item = HandlerHelper.getActiveItem({
             rules,
             ...localState.activeRule,
