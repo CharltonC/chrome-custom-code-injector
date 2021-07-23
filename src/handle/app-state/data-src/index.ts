@@ -3,7 +3,6 @@ import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, AActiveTabIdx } from '../../../model/rule-config';
 import { HandlerHelper } from '../helper';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
-import * as TTextInput from '../../../component/base/input-text/type';
 
 export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
@@ -109,27 +108,6 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
                 searchedRules: modSearchedRules
             }
         };
-    }
-
-    //// ADD/EDIT RULE
-    onItemTitleChange({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
-        return HandlerHelper.onTextInputChange({
-            ...payload,
-            inputKey: 'modalTitleInput',
-            key: 'title',
-            rules,
-            localState,
-        });
-    }
-
-    onItemHostOrPathChange({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
-        return HandlerHelper.onTextInputChange({
-            ...payload,
-            inputKey: 'modalValueInput',
-            key: 'value',
-            rules,
-            localState,
-        });
     }
 
     //// SCRIPT EXEC STAGE & SWITCH
