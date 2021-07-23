@@ -1,7 +1,7 @@
 import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig } from '../rule-config';
 import { SettingState } from '../setting-state';
-import { TextInputState } from '../text-input';
+import { TextInputState } from '../text-input-state';
 import { ActiveRuleState } from '../active-rule-state';
 import * as TSort from '../../handle/sort/type';
 import * as TPgn from '../../handle/pagination/type';
@@ -40,9 +40,7 @@ export class LocalState {
     dataSrc: HostRuleConfig[] = null;
 
     // Sort
-    sortOption: Partial<TSort.IOption> = {
-        reset: true }
-    ;
+    sortOption: Partial<TSort.IOption> = { reset: true };
 
     // Select
     selectState: TRowSelect.IState = {

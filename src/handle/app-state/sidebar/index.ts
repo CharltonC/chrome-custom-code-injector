@@ -1,7 +1,7 @@
 import { StateHandle } from '../../state';
 import { HandlerHelper } from '../helper';
 import { AppState } from '../../../model/app-state';
-import { TextInputState } from '../../../model/text-input';
+import { TextInputState } from '../../../model/text-input-state';
 
 export class SidebarStateHandler extends StateHandle.BaseStateHandler {
     onActiveItemChange({ rules, localState }: AppState, payload) {

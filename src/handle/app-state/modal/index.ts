@@ -5,7 +5,7 @@ import { modals } from '../../../constant/modals';
 import { FileHandle } from '../../file';
 import { LocalState } from '../../../model/local-state';
 import { IStateHandler } from '../type';
-import { TextInputState } from '../../../model/text-input';
+import { TextInputState } from '../../../model/text-input-state';
 import { DelRuleState } from '../../../model/del-rule-state';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
