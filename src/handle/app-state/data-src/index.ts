@@ -5,7 +5,7 @@ import { HandlerHelper } from '../helper';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 import * as TTextInput from '../../../component/base/input-text/type';
 
-export class DataStateHandler extends StateHandle.BaseStateHandler {
+export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
     onRmvItem({ localState }: AppState, idx: number, parentIdx?: number) {
         const { dataSrc } = localState;      // set by `onDelModal`
