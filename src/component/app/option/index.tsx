@@ -68,7 +68,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onResetAll, onDelConfirmDialogToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
             onImportConfigFileModalInputChange, onImportConfigFileModalConfirm,
             onExportConfigFileModalInputChange, onExportConfigFileModalConfirm,
-            onModalTitleInputChange, onModalValueInputChange,
+            onAddRuleModalTitleInput, onAddRuleModalValueInput,
         } = appStateHandler;
 
         const { isHost } = activeRule;
@@ -299,11 +299,11 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: modalTitleInput.isValid,
                                 errMsg: modalTitleInput.errMsg
                             }}
-                            onInputChange={arg => onModalTitleInputChange({
+                            onInputChange={arg => onAddRuleModalTitleInput({
                                 ...arg,
                                 isInModal: true
                             })}
-                            onInputBlur={arg => onModalTitleInputChange({
+                            onInputBlur={arg => onAddRuleModalTitleInput({
                                 ...arg,
                                 isInModal: true
                             })}
@@ -318,11 +318,11 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: modalValueInput.isValid,
                                 errMsg: modalValueInput.errMsg
                             }}
-                            onInputChange={arg => onModalValueInputChange({
+                            onInputChange={arg => onAddRuleModalValueInput({
                                 ...arg,
                                 isInModal: true
                             })}
-                            onInputBlur={arg => onModalValueInputChange({
+                            onInputBlur={arg => onAddRuleModalValueInput({
                                 ...arg,
                                 isInModal: true
                             })}
@@ -349,7 +349,7 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: modalTitleInput.isValid,
                                 errMsg: modalTitleInput.errMsg
                             }}
-                            onInputChange={arg => onModalTitleInputChange({
+                            onInputChange={arg => onAddRuleModalTitleInput({
                                 ...arg,
                                 isInModal: true
                             })}
@@ -364,7 +364,7 @@ export class OptionApp extends MemoComponent<IProps> {
                                 isValid: modalValueInput.isValid,
                                 errMsg: modalValueInput.errMsg
                             }}
-                            onInputChange={arg => onModalValueInputChange({
+                            onInputChange={arg => onAddRuleModalValueInput({
                                 ...arg,
                                 isInModal: true
                             })}
