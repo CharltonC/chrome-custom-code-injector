@@ -4,8 +4,6 @@ export class DelRuleState {
 
     constructor(arg?: DelRuleState) {
         if (!arg) return;
-        const { ctxIdx, parentCtxIdx } = arg;
-        this.ctxIdx = ctxIdx;
-        this.parentCtxIdx = parentCtxIdx;
+        Object.assign(this, arg);
     }
 }

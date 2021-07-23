@@ -5,10 +5,6 @@ export class ActiveRuleState {
 
     constructor(arg?: ActiveRuleState) {
         if (!arg) return;
-
-        const { isHost, idx, pathIdx } = arg;
-        this.isHost = !!isHost;
-        this.idx = idx;
-        this.pathIdx = pathIdx;
+        Object.assign(this, arg);
     }
 }
