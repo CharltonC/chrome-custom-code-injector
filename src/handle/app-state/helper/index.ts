@@ -1,6 +1,7 @@
 import { AppState } from '../../../model/app-state';
 import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import * as TPgn from '../../pagination/type';
+import { IGetActiveItemArg } from './type';
 
 export const HandlerHelper = {
     /**
@@ -36,9 +37,26 @@ export const HandlerHelper = {
         };
     },
 
-    getActiveItem({ rules, isHost, idx, pathIdx }): HostRuleConfig | PathRuleConfig {
-        const host: HostRuleConfig = rules[idx];
-        return isHost ? host : host.paths[pathIdx];
+    getActiveItem(arg: IGetActiveItemArg): HostRuleConfig | PathRuleConfig {
+        const {
+            isActiveItem,
+            isHost, idx, pathIdx,
+            parentCtxIdx, ctxIdx,
+            rules,
+        } = arg;
+
+        // If this is the current edit item (Edit View), we get the item based on indexes provided from  `activeRule`.
+        if (isActiveItem) {
+            const host: HostRuleConfig = rules[idx];
+            return isHost ? host : host.paths[pathIdx];
+
+        // Else we get the item using `parentCtxIdx, ctxIdx` (List View)
+        } else {
+            const isChildItem = Number.isInteger(parentCtxIdx);
+            return isChildItem
+                ? rules[parentCtxIdx].paths[ctxIdx]
+                : rules[ctxIdx];
+        }
     },
 
     onTextInputChange(arg): Partial<AppState> {
@@ -76,7 +94,11 @@ export const HandlerHelper = {
 
         // If valid value, set/sync the item title or value
         const { activeRule } = localState;
-        const item = this.getActiveItem({ rules, ...activeRule });
+        const item = this.getActiveItem({
+            rules,
+            ...activeRule,
+            isActiveItem: true,
+        });
         item[key] = val;
         return {
             ...baseState,

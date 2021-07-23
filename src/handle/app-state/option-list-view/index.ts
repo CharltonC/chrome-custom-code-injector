@@ -130,6 +130,7 @@ export class ListViewStateHandler extends StateHandle.BaseStateHandler {
         const { title, value } = HandlerHelper.getActiveItem({
             rules,
             ...activeRule,
+            isActiveItem: true,
         });
 
         return {

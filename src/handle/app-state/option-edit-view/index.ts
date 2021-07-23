@@ -32,6 +32,7 @@ export class EditViewStateHandler extends StateHandle.BaseStateHandler {
         const { title, value } = HandlerHelper.getActiveItem({
                 rules,
                 ...activeRule,
+                isActiveItem: true,
             });
         const resetState = new TextInputState();
 

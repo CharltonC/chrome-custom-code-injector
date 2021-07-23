@@ -140,7 +140,8 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         const item = isActiveItem
             ? HandlerHelper.getActiveItem({
                 rules,
-                ...localState.activeRule
+                ...localState.activeRule,
+                isActiveItem: true,
             })
             : Number.isInteger(parentCtxIdx)
                 ? rules[parentCtxIdx].paths[ctxIdx]
@@ -153,17 +154,20 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     // TODO: similar to `onItemTabEnable`
     onItemSwitchToggle({ rules }: AppState, payload): Partial<AppState> {
         const { parentCtxIdx, ctxIdx, key } = payload;
-        const item = Number.isInteger(parentCtxIdx)
-          ? rules[parentCtxIdx].paths[ctxIdx]
-          : rules[ctxIdx];
-          item[key] = !item[key];
+        const item = HandlerHelper.getActiveItem({
+            rules,
+            ctxIdx,
+            parentCtxIdx,
+        });
+        item[key] = !item[key];
         return { rules };
     }
 
     onItemActiveTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
         const item = HandlerHelper.getActiveItem({
             rules,
-            ...localState.activeRule
+            ...localState.activeRule,
+            isActiveItem: true,
         });
         const { idx } = payload;
         item.activeTabIdx = idx as AActiveTabIdx;
@@ -173,7 +177,8 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     onItemTabEnable({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
         const item = HandlerHelper.getActiveItem({
             rules,
-            ...localState.activeRule
+            ...localState.activeRule,
+            isActiveItem: true,
         });
         const { id, isOn } = payload.tab;
         let key: string;
@@ -197,7 +202,8 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
     onItemEditorCodeChange({ rules, localState }: AppState, payload) {
         const item = HandlerHelper.getActiveItem({
             rules,
-            ...localState.activeRule
+            ...localState.activeRule,
+            isActiveItem: true,
         });
         const { codeMode, value } = payload;
         const key = `${codeMode}Code`;
