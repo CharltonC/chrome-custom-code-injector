@@ -3,6 +3,7 @@ import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
 import { HandlerHelper } from '../helper';
+import { TextInputState } from '../../../model/text-input-state';
 
 const rowSelectHandle = new RowSelectHandle();
 
@@ -21,31 +22,21 @@ export class ViewStateHandler extends StateHandle.BaseStateHandler {
             ...activeRule,
             isActiveItem: true,
         });
-        const modalTitleInput = {
-            isValid: null,
-            errMsg: [],
-            value: title,
-        };
-        const modalValueInput = {
-            isValid: null,
-            errMsg: [],
-            value
-        };
+        const activeTitleInput = new TextInputState({ value: title });
+        const activeValueInput = new TextInputState({ value });
 
         return {
             localState: {
                 ...localState,
 
-                // Edit Mode & active item
+                // Edit Mode & active item, item states
                 isListView: false,
                 activeRule,
+                activeTitleInput,
+                activeValueInput,
 
                 // clear the row select state ready for use for DataGrid component in Edit View
                 selectState: rowSelectHandle.defState,
-
-                // Input value, validation state
-                modalTitleInput,
-                modalValueInput,
             }
         };
     }

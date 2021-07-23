@@ -14,21 +14,21 @@ export class SidebarStateHandler extends StateHandle.BaseStateHandler {
             pathIdx: childItemIdx
         };
         const { title, value } = HandlerHelper.getActiveItem({
-                rules,
-                ...activeRule,
-                isActiveItem: true,
-            });
+            rules,
+            ...activeRule,
+            isActiveItem: true,
+        });
         const resetState = new TextInputState();
 
         return {
             localState: {
                 ...localState,
                 activeRule,
-                modalTitleInput: {
+                activeTitleInput: {
                     ...resetState,
                     value: title,
                 },
-                modalValueInput: {
+                activeValueInput: {
                     ...resetState,
                     value
                 }
