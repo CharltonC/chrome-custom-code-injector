@@ -19,7 +19,9 @@ export class LocalState {
     searchedRules: HostRuleConfig[] = null;
 
     //// CURRENT RULE
-    activeRule = new ActiveRuleState();
+    activeRule = new ActiveRuleState();         // stores indexes of where to find item
+    activeTitleInput = new TextInputState();    // text input for title in edit mode
+    activeValueInput = new TextInputState();    // text input for host/path in edit mode
 
     //// RULE TO DELETE
     delRule = new DelRuleState();
