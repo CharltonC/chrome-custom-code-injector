@@ -1,7 +1,7 @@
 export class TextInputState {
-    value = '';
-    errMsg: string[] = [];
-    isValid: boolean = null;
+    value? = '';
+    errMsg?: string[] = [];
+    isValid?: boolean = null;
 
     constructor(arg?: TextInputState) {
         if (!arg) return;
