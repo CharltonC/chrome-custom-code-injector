@@ -1,6 +1,6 @@
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
-import { Setting } from '../../../model/setting';
+import { SettingState } from '../../../model/setting-state';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
 
@@ -18,7 +18,7 @@ export class SettingStateHandler extends StateHandle.BaseStateHandler {
 
     onResetAll() {
         return {
-            setting: new Setting()
+            setting: new SettingState()
         };
     }
 

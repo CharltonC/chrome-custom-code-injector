@@ -1,6 +1,6 @@
 import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig } from '../rule-config';
-import { Setting } from '../setting';
+import { SettingState } from '../setting-state';
 import { TextInputState } from '../text-input';
 import { ActiveRuleState } from '../active-rule';
 import * as TSort from '../../handle/sort/type';
@@ -8,7 +8,7 @@ import * as TPgn from '../../handle/pagination/type';
 import * as TRowSelect from '../../handle/row-select/type';
 import { DelRuleState } from '../del-rule-state';
 
-const { resultsPerPageIdx } = new Setting();
+const { resultsPerPageIdx } = new SettingState();
 
 export class LocalState {
     //// VIEW

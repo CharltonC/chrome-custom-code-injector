@@ -1,4 +1,4 @@
-export class Setting {
+export class SettingState {
     showDeleteModal = true;
     resultsPerPageIdx: number = 0;
     defRuleConfig = {
@@ -8,5 +8,4 @@ export class Setting {
         isLibOn: false,
         jsExecPhase: 1
     };
-
 }
