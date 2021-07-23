@@ -8,20 +8,35 @@ const rowSelectHandle = new RowSelectHandle();
 
 export class ViewStateHandler extends StateHandle.BaseStateHandler {
     onEditView({ rules, localState }: AppState, { isHost, idx, parentCtxIdx }): Partial<AppState> {
+        // Set the current active item
         const activeRule = {
             isHost,
             idx:  isHost ? idx : parentCtxIdx,
             pathIdx: isHost ? null : idx,
         };
+
+        // Get the title and value of the item to be used in input placeholders
         const { title, value } = HandlerHelper.getActiveItem({
             rules,
             ...activeRule,
             isActiveItem: true,
         });
+        const titleInput = {
+            isValid: null,
+            errMsg: [],
+            value: title,
+        };
+        const hostOrPathInput = {
+            isValid: null,
+            errMsg: [],
+            value
+        };
 
         return {
             localState: {
                 ...localState,
+
+                // Edit Mode & active item
                 isListView: false,
                 activeRule,
 
@@ -29,22 +44,15 @@ export class ViewStateHandler extends StateHandle.BaseStateHandler {
                 selectState: rowSelectHandle.defState,
 
                 // Input value, validation state
-                titleInput: {
-                    isValid: null,
-                    errMsg: [],
-                    value: title,
-                },
-                hostOrPathInput: {
-                    isValid: null,
-                    errMsg: [],
-                    value
-                }
+                titleInput,
+                hostOrPathInput,
             }
         };
     }
 
     onListView({localState}: AppState): Partial<AppState> {
-        const { pgnOption } = localState;   // maintain the only pagination setting
+        // For maintain the only pagination setting
+        const { pgnOption } = localState;
         const resetLocalState = new LocalState();
 
         return {
