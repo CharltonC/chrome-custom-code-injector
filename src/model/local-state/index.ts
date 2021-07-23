@@ -2,7 +2,7 @@ import { resultsPerPage } from '../../constant/result-per-page';
 import { HostRuleConfig } from '../rule-config';
 import { SettingState } from '../setting-state';
 import { TextInputState } from '../text-input';
-import { ActiveRuleState } from '../active-rule';
+import { ActiveRuleState } from '../active-rule-state';
 import * as TSort from '../../handle/sort/type';
 import * as TPgn from '../../handle/pagination/type';
 import * as TRowSelect from '../../handle/row-select/type';
