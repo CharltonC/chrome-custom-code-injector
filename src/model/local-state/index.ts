@@ -6,7 +6,7 @@ import { ActiveRuleState } from '../active-rule';
 import * as TSort from '../../handle/sort/type';
 import * as TPgn from '../../handle/pagination/type';
 import * as TRowSelect from '../../handle/row-select/type';
-import { DelRuleState } from '../del-target';
+import { DelRuleState } from '../del-rule-state';
 
 const { resultsPerPageIdx } = new Setting();
 

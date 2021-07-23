@@ -6,7 +6,7 @@ import { FileHandle } from '../../file';
 import { LocalState } from '../../../model/local-state';
 import { IStateHandler } from '../type';
 import { TextInputState } from '../../../model/text-input';
-import { DelRuleState } from '../../../model/del-target';
+import { DelRuleState } from '../../../model/del-rule-state';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
