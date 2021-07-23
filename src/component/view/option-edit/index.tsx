@@ -35,7 +35,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { rules, localState } = appState;
         const { activeTitleInput, activeValueInput, activeRule } = localState;
         const {
-            onItemTitleChange, onItemHostOrPathChange,
+            onModalTitleInputChange, onModalValueInputChange,
             onItemJsExecStepChange,
             onItemActiveExecTabChange, onItemExecCodeChange,
             onItemExecSwitchToggle,
@@ -83,7 +83,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                             isValid: activeTitleInput.isValid,
                             errMsg: activeTitleInput.errMsg
                         }}
-                        onInputChange={onItemTitleChange}
+                        onInputChange={onModalTitleInputChange}
                         />
                 </section>
                 <section className="fm-field">
@@ -98,7 +98,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                             isValid: activeValueInput.isValid,
                             errMsg: activeValueInput.errMsg
                         }}
-                        onInputChange={onItemHostOrPathChange}
+                        onInputChange={onModalValueInputChange}
                         />
                     <div className="fm-field__ctrl">{ isHost &&
                         <IconSwitch
