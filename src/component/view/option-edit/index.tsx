@@ -33,7 +33,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { headerProps, props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { modalTitleInput, modalValueInput, activeRule } = localState;
+        const { activeTitleInput, activeValueInput, activeRule } = localState;
         const {
             onItemTitleChange, onItemHostOrPathChange,
             onItemJsExecStepChange,
@@ -77,11 +77,11 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-id"
                         label="ID"
                         required
-                        value={modalTitleInput.value}
+                        value={activeTitleInput.value}
                         validation={{
                             rules: ruleId,
-                            isValid: modalTitleInput.isValid,
-                            errMsg: modalTitleInput.errMsg
+                            isValid: activeTitleInput.isValid,
+                            errMsg: activeTitleInput.errMsg
                         }}
                         onInputChange={onItemTitleChange}
                         />
@@ -92,11 +92,11 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-value"
                         label={isHost ? 'Host' : 'Path'}
                         required
-                        value={modalValueInput.value}
+                        value={activeValueInput.value}
                         validation={{
                             rules: isHost ? ruleUrlHost : ruleUrlPath,
-                            isValid: modalValueInput.isValid,
-                            errMsg: modalValueInput.errMsg
+                            isValid: activeValueInput.isValid,
+                            errMsg: activeValueInput.errMsg
                         }}
                         onInputChange={onItemHostOrPathChange}
                         />
