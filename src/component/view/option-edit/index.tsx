@@ -132,9 +132,9 @@ export class OptionEditView extends MemoComponent<IProps> {
                     id="tab-switch"
                     data={rule}
                     dataKeyMap={[
-                        ['js', 'isJsOn'],
-                        ['css', 'isCssOn'],
-                        ['lib', 'isLibOn'],
+                        ['Js', 'isJsOn'],
+                        ['Css', 'isCssOn'],
+                        ['Lib', 'isLibOn'],
                     ]}
                     activeTabIdx={activeTabIdx}
                     onTabActive={onItemActiveTabChange}

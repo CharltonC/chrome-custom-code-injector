@@ -178,13 +178,13 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         const { id, isOn } = payload.tab;
         let key: string;
         switch(id) {
-            case 'css':
+            case 'Css':
                 key = 'isCssOn';
                 break;
-            case 'js':
+            case 'Js':
                 key = 'isJsOn';
                 break;
-            case 'lib':
+            case 'Lib':
                 key = 'isLibOn';
                 break;
             default:
