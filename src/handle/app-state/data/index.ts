@@ -151,12 +151,10 @@ export class DataStateHandler extends StateHandle.BaseStateHandler {
         return { rules };
     }
 
-    // TODO: similar to `onItemTabEnable`
-    onItemSwitchToggle({ rules, localState }: AppState, payload): Partial<AppState> {
+    onItemExecSwitchToggle({ rules, localState }: AppState, payload): Partial<AppState> {
         const {
-            isActiveItem,
-            parentCtxIdx, ctxIdx, key,
-            tab,
+            isActiveItem, tab,         // For Active Edit, Item
+            parentCtxIdx, ctxIdx, key, // For Non-Active Item
         } = payload;
 
         const itemKey: string = isActiveItem ? `is${tab.id}On` : key;

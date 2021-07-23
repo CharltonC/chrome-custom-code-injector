@@ -38,7 +38,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             onItemTitleChange, onItemHostOrPathChange,
             onItemJsStageChange,
             onItemActiveTabChange, onItemEditorCodeChange,
-            onItemSwitchToggle,
+            onItemExecSwitchToggle,
         } = appStateHandler;
 
         const { isHost, idx, pathIdx } = activeRule;
@@ -106,7 +106,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                             id="https-switch"
                             label="lock-close"
                             checked={rule["isHttps"]}
-                            onChange={() => onItemSwitchToggle({
+                            onChange={() => onItemExecSwitchToggle({
                                 ...itemIdxCtx,
                                 key: 'isHttps',
                             })}
@@ -139,7 +139,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                     ]}
                     activeTabIdx={activeTabIdx}
                     onTabActive={onItemActiveTabChange}
-                    onTabEnable={arg => onItemSwitchToggle({
+                    onTabEnable={arg => onItemExecSwitchToggle({
                         ...arg,
                         isActiveItem
                     })}

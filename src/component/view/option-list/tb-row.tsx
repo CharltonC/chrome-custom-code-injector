@@ -16,7 +16,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
 
     const {
         onDelModal, onAddPathRuleModal,
-        onItemSwitchToggle, onItemJsStageChange,
+        onItemExecSwitchToggle, onItemJsStageChange,
         onItemEdit, onRowExpand, onRowSelectToggle,
     } = appStateHandler;
 
@@ -47,7 +47,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
                         disabled={isDelDisabled}
-                        onChange={() => onItemSwitchToggle({ ...itemIdxCtx, key: 'isHttps'})}
+                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isHttps'})}
                         />}
                 </td><td>
                     <div>{ isHost &&
@@ -80,21 +80,21 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemSwitchToggle({ ...itemIdxCtx, key: 'isJsOn'})}
+                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isJsOn'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemSwitchToggle({ ...itemIdxCtx, key: 'isCssOn'})}
+                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isCssOn'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemSwitchToggle({ ...itemIdxCtx, key: 'isLibOn'})}
+                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isLibOn'})}
                         />
                 </td><td>{ isHost &&
                     <IconBtn
