@@ -17,7 +17,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const {
         onDelModal, onAddPathRuleModal,
         onItemExecSwitchToggle, onItemJsExecStepChange,
-        onItemEdit, onRowExpand, onRowSelectToggle,
+        onEditView, onRowExpand, onRowSelectToggle,
     } = appStateHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
@@ -109,7 +109,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         icon="edit"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onItemEdit({ isHost, idx, parentCtxIdx }) }
+                        onClick={() => onEditView({ isHost, idx, parentCtxIdx }) }
                         />
                 </td><td>
                     <IconBtn
