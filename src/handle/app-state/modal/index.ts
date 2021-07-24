@@ -9,6 +9,7 @@ import { LocalState } from '../../../model/local-state';
 import { TextInputState } from '../../../model/text-input-state';
 import { DelRuleState } from '../../../model/del-rule-state';
 import { IStateHandler } from '../type';
+import { ActiveRuleState } from '../../../model/active-rule-state';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
@@ -154,18 +155,38 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     onAddPathRuleModalConfirm(state: AppState) {
         const { localState, rules, setting } = state;
+        const {
+            modalTitleInput, modalValueInput, modalRuleIdx,
+            isListView, activeRule,
+        } = localState;
 
-        const { modalTitleInput, modalValueInput, modalRuleIdx } = localState;
+        // Add new path to the target rule
         const title: string = modalTitleInput.value;
-        const host: string = modalValueInput.value;
-        const pathRule = new PathRuleConfig(title, host);
+        const path: string = modalValueInput.value;
+        const pathRule = new PathRuleConfig(title, path);
         Object.assign(pathRule, setting.defRuleConfig);
-        rules[modalRuleIdx].paths.push(pathRule);
+        const { paths } = rules[modalRuleIdx];
+        const lastPathIdx = paths.length;   // get last index the prior to new path is added
+        paths.push(pathRule);
+
+        // If it is Edit View, Make the added path as current active item
+        const activeItemState = isListView ? {} : {
+            activeRule: new ActiveRuleState({
+                ...activeRule,
+                isHost: false,
+                pathIdx: lastPathIdx
+            }),
+            activeTitleInput: new TextInputState({ value: title }),
+            activeValueInput: new TextInputState({ value: path }),
+        };
 
         const resetState = this.reflect.onModalCancel(state);
         return {
-            ...resetState,
-            rules: rules.concat([])
+            localState: {
+                ...resetState.localState,
+                ...activeItemState
+            },
+            rules: [...rules]
         };
     }
 
