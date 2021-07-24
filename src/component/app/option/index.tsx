@@ -71,7 +71,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onAddRuleModalTitleInput, onAddRuleModalValueInput,
         } = appStateHandler;
 
-        const { isHost } = activeRule;
+        const { isHost, idx: ruleIdx } = activeRule;
         const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
         const MAIN_CLS = cssCls('main', isListView ? 'list' : 'edit');
         const $view = isListView
@@ -82,9 +82,21 @@ export class OptionApp extends MemoComponent<IProps> {
             <div className="app app--option">
                 <header className="header">{!isListView && (
                     <div className={EDIT_CTRL_CLS}>
-                        <IconBtn icon="arrow-lt" theme="white" onClick={onListView} />
-                        <IconBtn icon="delete" theme="white" />{isHost &&
-                        <IconBtn icon="add" theme="white" />}
+                        <IconBtn
+                            icon="arrow-lt"
+                            theme="white"
+                            onClick={onListView} />
+                        <IconBtn
+                            icon="delete"
+                            theme="white"
+                            />{isHost &&
+                        <IconBtn
+                            icon="add"
+                            theme="white"
+                            onClick={() => onAddPathRuleModal({
+                                idx: ruleIdx
+                            })}
+                        />}
                     </div>)}
                     <div className="header__ctrl">{isListView &&
                         <SearchInput
