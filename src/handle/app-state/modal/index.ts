@@ -1,5 +1,4 @@
 import { StateHandle } from '../../state';
-import * as TTextInput from '../../../component/base/input-text/type';
 import { FileHandle } from '../../file';
 import { HandlerHelper } from '../helper';
 import { modals } from '../../../constant/modals';
@@ -8,8 +7,9 @@ import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
 import { LocalState } from '../../../model/local-state';
 import { TextInputState } from '../../../model/text-input-state';
 import { DelRuleState } from '../../../model/del-rule-state';
-import { IStateHandler } from '../type';
 import { ActiveRuleState } from '../../../model/active-rule-state';
+import * as TTextInput from '../../../component/base/input-text/type';
+import { IStateHandler } from '../type';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
 const fileHandle = new FileHandle();
