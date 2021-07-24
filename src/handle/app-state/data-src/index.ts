@@ -32,10 +32,14 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
             })
         };
 
+        // If it is Host and there are no more rules, go back to List View
+        const viewState = isHost && hasItems ? {} : { isListView: true };
+
         return {
             rules: [...rules],
             localState: {
                 ...localState,
+                ...viewState,
                 ...activeRuleState,
             }
         };
