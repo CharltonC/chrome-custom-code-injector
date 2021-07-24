@@ -166,7 +166,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const pathRule = new PathRuleConfig(title, path);
         Object.assign(pathRule, setting.defRuleConfig);
         const { paths } = rules[modalRuleIdx];
-        const lastPathIdx = paths.length;   // get last index the prior to new path is added
+        const lastPathIdx = paths.length;   // get last index where the new path will be located/added
         paths.push(pathRule);
 
         // If it is Edit View, Make the added path as current active item
