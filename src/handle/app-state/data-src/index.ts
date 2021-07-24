@@ -1,10 +1,11 @@
 import { StateHandle } from '../../state';
-import { AppState } from '../../../model/app-state';
-import { HostRuleConfig, AActiveTabIdx } from '../../../model/rule-config';
 import { HandlerHelper } from '../helper';
+import { HostRuleConfig, AActiveTabIdx, PathRuleConfig } from '../../../model/rule-config';
+import { AppState } from '../../../model/app-state';
+import { ActiveRuleState } from '../../../model/active-rule-state';
+import { TextInputState } from '../../../model/text-input-state';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 import * as TTextInput from '../../../component/base/input-text/type';
-import { ActiveRuleState } from '../../../model/active-rule-state';
 
 export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
@@ -13,34 +14,53 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
         const { isHost, idx, pathIdx } = activeRule;
 
         // Remove either Host or Path Rule
-        if (isHost) {
-            rules.splice(idx, 1);
+        isHost
+            ? rules.splice(idx, 1)
+            : rules[idx].paths.splice(pathIdx, 1);
 
-        } else {
-            rules[idx].paths.splice(pathIdx, 1);
-        }
-
-        // Move the current index to previous if possible
-        const hasItems = !!rules.length;
-        const modIdx = isHost ? (hasItems ? 0 : null ): idx;
-        const modPathIdx = isHost ? pathIdx : (rules[0]?.paths.length ? 0 : null);
-        const activeRuleState = {
-            activeRule: new ActiveRuleState({
-                isHost: hasItems ? isHost : null,
-                idx: modIdx,
-                pathIdx: modPathIdx
+        // Move the current index & value of input placeholder to previous item (if exist)
+        const hasRules = !!rules.length;
+        const nextIdx = isHost ? (hasRules ? 0 : null ): idx;
+        const nextPathIdx = isHost ? pathIdx : (rules[0]?.paths.length ? 0 : null);
+        const isNextHost = Number.isInteger(nextIdx) && !Number.isInteger(nextPathIdx);
+        const nextItem = hasRules
+            ? HandlerHelper.getActiveItem({
+                rules,
+                isActiveItem: true,
+                isHost: isNextHost,
+                idx: nextIdx,
+                pathIdx: nextPathIdx,
             })
+            : {} as (HostRuleConfig | PathRuleConfig);
+        const activeItemState = {
+            activeRule: new ActiveRuleState({
+                isHost: isNextHost,
+                idx: nextIdx,
+                pathIdx: nextPathIdx
+            }),
+            activeTitleInput: new TextInputState(
+                nextItem
+                ? { value: nextItem.title }
+                : {}
+            ),
+            activeValueInput: new TextInputState(
+                nextItem
+                ? { value: nextItem.value }
+                : {}
+            ),
         };
 
-        // If it is Host and there are no more rules, go back to List View
-        const viewState = (isHost && hasItems) || !isHost ? {} : { isListView: true };
+        // If it is path rule OR If it is Host and there are no more rules, go back to List View
+        const viewState = (isHost && hasRules) || !isHost
+            ? {}
+            : { isListView: true };
 
         return {
             rules: [...rules],
             localState: {
                 ...localState,
+                ...activeItemState,
                 ...viewState,
-                ...activeRuleState,
             }
         };
     }
