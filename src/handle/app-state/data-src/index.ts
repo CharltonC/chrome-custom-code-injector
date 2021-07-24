@@ -113,7 +113,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
 
     //// TEXT INPUT FOR TITLE & URL/PATH
     onActiveRuleTitleInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
-        return HandlerHelper.onAddRuleModalInputChange({
+        return HandlerHelper.onTextlInputChange({
             ...payload,
             inputKey: 'activeTitleInput',
             key: 'title',
@@ -123,7 +123,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onActiveRuleValueInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
-        return HandlerHelper.onAddRuleModalInputChange({
+        return HandlerHelper.onTextlInputChange({
             ...payload,
             inputKey: 'activeValueInput',
             key: 'value',

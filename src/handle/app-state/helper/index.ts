@@ -59,7 +59,7 @@ export const HandlerHelper = {
         }
     },
 
-    onAddRuleModalInputChange(arg): Partial<AppState> {
+    onTextlInputChange(arg): Partial<AppState> {
         const {
             rules, localState,
             isInModal, inputKey, key,
