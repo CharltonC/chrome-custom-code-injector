@@ -44,7 +44,7 @@ export class SideNav extends MemoComponent<IProps, IState> {
         const nestedItems = item[childListKey];
         const nestedItemsTotal = nestedItems?.length;
         const isActive = idx === activeItemIdx;
-        const showNestedItems = isActive && nestedItemsTotal;
+        const showNestedItems = isActive && !!nestedItemsTotal;
 
         const { ITEM_KEY, ITEM_CLS, ITEM_TITLE_CLS } = this.getItemAttrs({
             idx,
@@ -64,22 +64,22 @@ export class SideNav extends MemoComponent<IProps, IState> {
                 key={ITEM_KEY}
                 onClick={(evt) => this.onClick({ evt, item, idx })}
                 >
-                    <p className={ITEM_HEADER_CLS}>
-                        {$arrowIcon}
-                        <span className={ITEM_TITLE_CLS}>{ITEM_TITLE}</span>
-                        <NumBadge total={nestedItemsTotal} />
-                    </p>{ showNestedItems &&
-                    <ul
-                        className={NESTED_LIST_CLS}
-                        style={childListStyle}
-                        >{ nestedItems.map((childItem: AObj | string, childIdx: number) =>
-                            this.renderChildListItem({
-                                item: childItem,
-                                idx: childIdx,
-                                parentIdx: idx
-                            })
-                        )}
-                    </ul>}
+                <p className={ITEM_HEADER_CLS}>
+                    {$arrowIcon}
+                    <span className={ITEM_TITLE_CLS}>{ITEM_TITLE}</span>
+                    <NumBadge total={nestedItemsTotal} />
+                </p>{ showNestedItems &&
+                <ul
+                    className={NESTED_LIST_CLS}
+                    style={childListStyle}
+                    >{ nestedItems.map((childItem: AObj | string, childIdx: number) =>
+                        this.renderChildListItem({
+                            item: childItem,
+                            idx: childIdx,
+                            parentIdx: idx
+                        })
+                    )}
+                </ul>}
             </li>
         );
     }
