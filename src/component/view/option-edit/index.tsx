@@ -46,7 +46,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const rule = hostRule.paths[pathIdx] || hostRule;
         const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase} = rule;
 
-        const isLibTab = !!libs.length && activeTabIdx === 2;
+        const isLibTab = activeTabIdx === 2;
         const isJsCode = activeTabIdx === 0;
         const isCssCode = activeTabIdx === 1;
         const isCode = isJsCode || isCssCode;
