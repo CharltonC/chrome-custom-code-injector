@@ -4,9 +4,43 @@ import { HostRuleConfig, AActiveTabIdx } from '../../../model/rule-config';
 import { HandlerHelper } from '../helper';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 import * as TTextInput from '../../../component/base/input-text/type';
+import { ActiveRuleState } from '../../../model/active-rule-state';
 
 export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
+    onRmvActiveItem({ rules, localState }: AppState) {
+        const { activeRule } = localState;
+        const { isHost, idx, pathIdx } = activeRule;
+
+        // Remove either Host or Path Rule
+        if (isHost) {
+            rules.splice(idx, 1);
+
+        } else {
+            rules[idx].paths.splice(pathIdx, 1);
+        }
+
+        // Move the current index to previous if possible
+        const hasItems = !!rules.length;
+        const modIdx = isHost ? (hasItems ? 0 : null ): idx;
+        const modPathIdx = isHost ? pathIdx : (rules[0]?.paths.length ? 0 : null);
+        const activeRuleState = {
+            activeRule: new ActiveRuleState({
+                isHost: hasItems ? isHost : null,
+                idx: modIdx,
+                pathIdx: modPathIdx
+            })
+        };
+
+        return {
+            rules: [...rules],
+            localState: {
+                ...localState,
+                ...activeRuleState,
+            }
+        };
+    }
+
     onRmvItem({ localState }: AppState, idx: number, parentIdx?: number) {
         const { dataSrc } = localState;      // set by `onDelModal`
         const isSubRow = Number.isInteger(parentIdx);
