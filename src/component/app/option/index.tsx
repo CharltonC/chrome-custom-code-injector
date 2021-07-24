@@ -62,7 +62,7 @@ export class OptionApp extends MemoComponent<IProps> {
         const {
             onListView,
             onSearchTextClear,
-            onModalCancel, onSettingModal, onImportConfigFileModal, onExportConfigFileModal, onAddPathRuleModal,
+            onModalCancel, onSettingModal, onImportConfigFileModal, onExportConfigFileModal, onAddPathRuleModal, onRmvActiveItem,
             onAddHostModalRuleConfirm, onAddPathRuleModalConfirm,
             onDelModalConfirm,
             onResetAll, onDelConfirmDialogToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
@@ -89,6 +89,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="delete"
                             theme="white"
+                            onClick={onRmvActiveItem}
                             />{isHost &&
                         <IconBtn
                             icon="add"
