@@ -89,10 +89,12 @@ export const HandlerHelper = {
             }
         };
 
-        // If not vaild, we only update the temporary value of the input
+        // For both Modal and Non-Modal
+        // - If not vaild, we only update the temporary value of the input
         if (!isValid || isInModal) return baseState;
 
-        // If valid value, set/sync the item title or value
+        // For Non-Modal only
+        // - If valid value, set/sync the item title or value
         const { activeRule } = localState;
         const item = this.getActiveItem({
             rules,
