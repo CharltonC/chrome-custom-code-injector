@@ -6,13 +6,12 @@ import { SliderSwitch } from '../../base/checkbox-slider-switch';
 // TODO: Type for props
 export const TbRow: React.FC<any> = memo((props) => {
     const { dataSrc, idx, itemLvl, item, classNames, commonProps } = props;
+    const { appState, appStateHandler } = commonProps;
     const { REG_ROW } = classNames;
 
-    // TODO: Renamed the state prop
-    const { https, title, value, script_exec, script_js, script_css, script_lib } = item;
-    const ID_SUFFIX: string = `${itemLvl}-${idx}`;
-
-    const { appState, appStateHandler } = commonProps;
+    //// ITEM
+    const { title, value, isOn, isAsync } = item;
+    const ID_SUFFIX = `${itemLvl}-${idx}`;
 
     //// STATE
     const { localState } = appState;
@@ -21,10 +20,12 @@ export const TbRow: React.FC<any> = memo((props) => {
     const { selectState } = localState.libDataGrid;
     const { areAllRowsSelected, selectedRowKeys } = selectState;
     const isSelected = areAllRowsSelected || idx in selectedRowKeys;
+    const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeys).length;
 
     //// STATE HANDLER
     const {
         onLibRowSelectToggle,
+        onItemLibSwitchToggle,
     } = appStateHandler;
 
     return <>
@@ -32,7 +33,7 @@ export const TbRow: React.FC<any> = memo((props) => {
             <tr className={REG_ROW}>
                 <td>
                     <Checkbox
-                        id={`check-${ID_SUFFIX}`}
+                        id={`lib-check-${ID_SUFFIX}`}
                         clsSuffix=""
                         checked={isSelected}
                         onChange={() => onLibRowSelectToggle(idx, dataSrc.length)}
@@ -41,9 +42,28 @@ export const TbRow: React.FC<any> = memo((props) => {
                 {/* TODO: Trim id if too long */}
                 <td>{title}</td>
                 <td>{value}</td>
-                <td><SliderSwitch id={`js-${ID_SUFFIX}`} defaultChecked={script_js} /></td>
-                <td><SliderSwitch id={`css-${ID_SUFFIX}`} defaultChecked={script_css} /></td>
-                <td><SliderSwitch id={`lib-${ID_SUFFIX}`} defaultChecked={script_lib} /></td>
+                <td>
+                    <SliderSwitch
+                        id={`lib-async-${ID_SUFFIX}`}
+                        checked={isAsync}
+                        disabled={isDelDisabled}
+                        onChange={() => onItemLibSwitchToggle({
+                            libIdx: idx,
+                            key: 'isAsync'
+                        })}
+                        />
+                </td>
+                <td>
+                    <SliderSwitch
+                        id={`lib-active-${ID_SUFFIX}`}
+                        checked={isOn}
+                        disabled={isDelDisabled}
+                        onChange={() => onItemLibSwitchToggle({
+                            libIdx: idx,
+                            key: 'isOn'
+                        })}
+                        />
+                </td>
                 <td><IconBtn icon="edit" theme="gray" /></td>
                 <td><IconBtn icon="delete" theme="gray" /></td>
             </tr>

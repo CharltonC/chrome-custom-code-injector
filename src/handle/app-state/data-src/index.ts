@@ -252,4 +252,19 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
         item[key] = value;
         return { rules };
     }
+
+    //// 3RD PARTY LIBRARY SWITCH (async, active)
+    onItemLibSwitchToggle({ rules, localState }: AppState, payload): Partial<AppState> {
+        const { activeRule } = localState;
+        const { libs } = HandlerHelper.getActiveItem({
+            rules,
+            isActiveItem: true,
+            ...activeRule
+        });
+
+        const { libIdx, key } = payload;
+        const lib = libs[libIdx];
+        lib[key] = !lib[key];
+        return {};
+    }
 }
