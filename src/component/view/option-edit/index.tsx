@@ -14,31 +14,32 @@ import { DataGrid } from '../../widget/data-grid';
 import { jsExecStage } from '../../../constant/js-exec-stage';
 import { TbRow } from './tb-row';
 import * as TSortHandle from '../../../handle/sort/type';
+import * as TDataGrid from '../../widget/data-grid/type';
 import { IProps } from './type';
 
 export class OptionEditView extends MemoComponent<IProps> {
-    $idInputRef: RefObject<TextInput>;
+    dataGridBaseProps: Partial<TDataGrid.IProps>;
+    $titleInputRef: RefObject<TextInput>;
     $valueInputRef: RefObject<TextInput>;
 
     constructor(props: IProps) {
         super(props);
-        this.$idInputRef = createRef();
+        this.$titleInputRef = createRef();
         this.$valueInputRef = createRef();
         this.onActiveItemChange = this.onActiveItemChange.bind(this);
-
-        // TODO: constant component props
     }
 
     render() {
         const { headerProps, props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { activeTitleInput, activeValueInput, activeRule } = localState;
+        const { activeTitleInput, activeValueInput, activeRule, libDataGrid } = localState;
         const {
             onActiveRuleTitleInput, onActiveRuleValueInput,
             onItemJsExecStepChange,
             onItemActiveExecTabChange, onItemExecCodeChange,
             onItemExecSwitchToggle,
+            onLibSort,
         } = appStateHandler;
 
         const { isHost, idx, pathIdx } = activeRule;
@@ -60,6 +61,9 @@ export class OptionEditView extends MemoComponent<IProps> {
             parentCtxIdx: isHost ? null : idx,
         };
 
+        const { sortOption } = libDataGrid;
+        const commonProps = { appState, appStateHandler };
+
         return (<>
             <SideNav
                 list={rules}
@@ -72,7 +76,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                 {/* TODO: placeholder text variation */}
                 <section className="fm-field">
                     <TextInput
-                        ref={this.$idInputRef}
+                        ref={this.$titleInputRef}
                         id="edit-target-id"
                         label="ID"
                         required
@@ -155,16 +159,20 @@ export class OptionEditView extends MemoComponent<IProps> {
                     onChange={(editor, data, val) => onItemExecCodeChange({ value: val, codeMode }) }
                     />}{ isLibTab &&
                 <DataGrid
-                    data={libs}
-                    /* TODO: constant props */
-                    component={{
-                        rows: [ [ TbRow ] ],
-                        commonProps: { appState, appStateHandler }
-                    }}
+                    type="table"
                     rowKey="title"
-                    sort={{ reset: true }}
-                    /* TODO: event binding */
+                    data={libs}
+                    component={{
+                        rows: [
+                            [TbRow]
+                        ],
+                        commonProps
+                    }}
                     header={headerProps}
+                    sort={sortOption}
+                    callback={{
+                        onSortChange: onLibSort
+                    }}
                     />}
             </div>
         </>);
@@ -174,27 +182,33 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { searchedRules, ruleDataGrid } = localState;
-        const { } = appStateHandler;
+        const { activeRule, libDataGrid } = localState;
 
-        const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
-        const { areAllRowsSelected, selectedRowKeys } = ruleDataGrid.selectState;
+        const {
+            onLibRowsSelectToggle
+        } = appStateHandler;
+
+        const { isHost, idx, pathIdx } = activeRule;
+        const host = rules[idx];
+        const { libs } = isHost ? host : host.paths[pathIdx];
+        const hsDataSrc = !!libs.length;
+
+        const { areAllRowsSelected, selectedRowKeys } = libDataGrid.selectState;
         const totalSelected = Object.entries(selectedRowKeys).length;
         const hsSelected = areAllRowsSelected || !!totalSelected;
         const isPartialSelected = !areAllRowsSelected && !!totalSelected;
 
-        // TODO: disable, event handler
         const $selectAllHeader = (
             <Checkbox
                 id="check-all"
                 clsSuffix={isPartialSelected ? 'partial' : ''}
                 disabled={!hsDataSrc}
                 checked={hsSelected}
-                onChange={() => {}}
+                onChange={onLibRowsSelectToggle}
                 />
         );
 
-        const $id = this.getHeaderColRenderFn('ID', hsSelected);
+        const $title = this.getHeaderColRenderFn('ID', hsSelected);
         const $addr = this.getHeaderColRenderFn('URL', hsSelected);
 
         const $delAll = (
@@ -212,7 +226,7 @@ export class OptionEditView extends MemoComponent<IProps> {
 
         return [
             { title: $selectAllHeader },
-            { title: $id as any, sortKey: 'id' },
+            { title: $title as any, sortKey: 'title' },
             { title: $addr as any, sortKey: 'value' },
             { title: 'SUBFRAME' },
             { title: 'ASYNC' },
@@ -223,15 +237,17 @@ export class OptionEditView extends MemoComponent<IProps> {
     }
 
     getHeaderColRenderFn(title: string, disabled: boolean) {
-        return (data, sortBtnProps: TSortHandle.ICmpSortBtnAttr) => <>
-            <span>{title}</span>
-            <SortBtn {...sortBtnProps} disabled={disabled} />
-        </>;
+        return (data, sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+            <>
+                <span>{title}</span>
+                <SortBtn {...sortBtnProps} disabled={disabled} />
+            </>
+        );
     }
 
     onActiveItemChange(args): void {
         // TODO: clear input state & validation state?
-        // this.$idInputRef.current.clearValidState();
+        // this.$titleInputRef.current.clearValidState();
         // this.$valueInputRef.current.clearValidState();
         setTimeout(() => {
             this.props.appStateHandler.onActiveItemChange(args);

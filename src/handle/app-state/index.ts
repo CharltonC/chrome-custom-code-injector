@@ -4,8 +4,9 @@ import { SettingStateHandler } from './setting';
 import { DataSrcStateHandler } from './data-src';
 import { SidebarStateHandler } from './sidebar';
 import { RuleDatagridStateHandler } from './rule-datagrid';
-import { IStateHandler } from './type';
+import { LibDatagridStateHandler } from './lib-datagrid';
 import { ViewStateHandler } from './view';
+import { IStateHandler } from './type';
 
 export const AppStateHandler = StateHandle.BaseStateHandler.join<IStateHandler>([
     RuleDatagridStateHandler,
@@ -13,5 +14,6 @@ export const AppStateHandler = StateHandle.BaseStateHandler.join<IStateHandler>(
     ModalStateHandler,
     SettingStateHandler,
     DataSrcStateHandler,
+    LibDatagridStateHandler,
     ViewStateHandler,
 ]);
