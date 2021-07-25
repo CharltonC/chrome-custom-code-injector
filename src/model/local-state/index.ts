@@ -29,7 +29,7 @@ export class LocalState {
     modalValueInput = new TextInputState();
     modalRuleIdx: number = null; // for targeting the host where new path will be added to
 
-    //// DATA GRID ROWS
+    //// DATA GRID TABLES
     ruleDataGrid = new DataGridState();
     libDataGrid = new DataGridState();
 }
