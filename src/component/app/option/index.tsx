@@ -48,7 +48,7 @@ export class OptionApp extends MemoComponent<IProps> {
             activeModalId, isModalConfirmBtnEnabled,
             searchedText,
             activeRule,
-            pgnOption,
+            ruleDataGrid,
             modalExportFileInput,
             modalTitleInput, modalValueInput,
         } = localState;
@@ -173,7 +173,7 @@ export class OptionApp extends MemoComponent<IProps> {
                                     id="result-per-page"
                                     label="Results per page"
                                     ltLabel
-                                    list={pgnOption.increment}
+                                    list={ruleDataGrid.pgnOption.increment}
                                     selectIdx={resultsPerPageIdx}
                                     border
                                     onSelect={onResultsPerPageChange}

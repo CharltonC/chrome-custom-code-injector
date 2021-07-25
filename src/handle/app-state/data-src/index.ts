@@ -6,6 +6,7 @@ import { ActiveRuleState } from '../../../model/active-rule-state';
 import { TextInputState } from '../../../model/text-input-state';
 import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 import * as TTextInput from '../../../component/base/input-text/type';
+import { DataGridState } from '../../../model/data-grid-state';
 
 export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
@@ -65,8 +66,9 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    // TODO: Helper function not have to return full state
     onRmvItem({ localState }: AppState, idx: number, parentIdx?: number) {
-        const { dataSrc } = localState;      // set by `onDelModal`
+        const { dataSrc } = localState.ruleDataGrid;      // set by `onDelModal`
         const isSubRow = Number.isInteger(parentIdx);
         const modItems = isSubRow ? dataSrc[parentIdx].paths : dataSrc;
         modItems.splice(idx, 1);
@@ -92,7 +94,10 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
             ...state,
             localState: {
                 ...localState,
-                dataSrc: currRules       // replace the ref & point to global rules
+                ruleDataGrid: {
+                    ...new DataGridState(),
+                    dataSrc: currRules       // replace the ref & point to global rules
+                }
             }
         }, ruleIdx, null).rules;
 
@@ -105,13 +110,13 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onRmvItems(state: AppState) {
-        const { areAllRowsSelected } = state.localState.selectState;
+        const { areAllRowsSelected } = state.localState.ruleDataGrid.selectState;
         const { reflect } = this;
         return areAllRowsSelected ? reflect.onRmvAllItems(state) : reflect.onRmvPartialItems(state);
     }
 
     onRmvAllItems({ localState }: AppState) {
-        const { dataSrc, pgnOption, pgnState } = localState;
+        const { dataSrc, pgnOption, pgnState } = localState.ruleDataGrid;
         const totalRules = dataSrc.length;
         const { startRowIdx, totalVisibleRows } = HandlerHelper.getRowIndexCtx(totalRules, pgnOption, pgnState);
         let modRules: HostRuleConfig[] = dataSrc.concat();
@@ -132,7 +137,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onRmvPartialItems({ localState }: AppState ) {
-        const { selectState, dataSrc } = localState;
+        const { dataSrc, selectState } = localState.ruleDataGrid;
         const rowIndexes: [string, boolean][] = Object.entries(selectState.selectedRowKeys);
         const selectedRowsTotal: number = rowIndexes.length - 1;
         let modRules: HostRuleConfig[] = dataSrc.concat();

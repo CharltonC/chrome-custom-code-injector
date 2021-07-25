@@ -61,14 +61,18 @@ export class RuleDatagridStateHandler extends StateHandle.BaseStateHandler {
             localState: {
                 ...localState,
 
-                // clear all selections
-                selectState: {
-                    areAllRowsSelected: false,
-                    selectedRowKeys: {},
-                },
+                ruleDataGrid: {
+                    ...localState.ruleDataGrid,
 
-                // Update pagination
-                ...payload
+                    // clear all selections
+                    selectState: {
+                        areAllRowsSelected: false,
+                        selectedRowKeys: {},
+                    },
+
+                    // Update pagination
+                    ...payload
+                }
             }
         };
     }
@@ -78,45 +82,66 @@ export class RuleDatagridStateHandler extends StateHandle.BaseStateHandler {
         return {
             localState: {
                 ...localState,
-                sortOption
+                ruleDataGrid: {
+                    ...localState.ruleDataGrid,
+                    sortOption
+                }
             }
         };
     }
 
     onRowSelectToggle({ localState }: AppState, rowIdx: number, totalRules: number) {
-        const { pgnOption, pgnState } = localState;
+        const { ruleDataGrid } = localState;
+        const { pgnOption, pgnState, selectState } = ruleDataGrid;
         const { startRowIdx, endRowIdx } = HandlerHelper.getRowIndexCtx(totalRules, pgnOption, pgnState);
 
         const rowSelectState = rowSelectHandle.getState({
             isAll: false,
-            currState: localState.selectState,
+            currState: selectState,
             rowsCtx: { startRowIdx, endRowIdx, rowIdx }
         });
 
         return {
-            localState: { ...localState, selectState: rowSelectState }
+            localState: {
+                ...localState,
+                ruleDataGrid: {
+                    ...ruleDataGrid,
+                    selectState: rowSelectState
+                }
+            }
         };
     }
 
     onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
+        const { ruleDataGrid } = localState;
         const rowSelectState = rowSelectHandle.getState({
             isAll: true,
-            currState: localState.selectState
+            currState: ruleDataGrid.selectState
         });
 
         return {
-            localState: { ...localState, selectState: rowSelectState }
+            localState: {
+                ...localState,
+                ruleDataGrid: {
+                    ...ruleDataGrid,
+                    selectState: rowSelectState
+                }
+            }
         };
     }
 
     onRowExpand({ localState }: AppState, expdState: Record<string, number>) {
-        const { expdRowId } = localState;
+        const { ruleDataGrid } = localState;
+        const { expdRowId } = ruleDataGrid;
         const [ id ]: string[] = Object.getOwnPropertyNames(expdState);
 
         return {
             localState: {
                 ...localState,
-                expdRowId: id === expdRowId ? null : id
+                ruleDataGrid: {
+                    ...ruleDataGrid,
+                    expdRowId: id === expdRowId ? null : id
+                }
             }
         };
     }

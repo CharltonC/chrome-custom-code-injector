@@ -174,11 +174,11 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { searchedRules, selectState } = localState;
+        const { searchedRules, ruleDataGrid } = localState;
         const { } = appStateHandler;
 
         const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
-        const { areAllRowsSelected, selectedRowKeys } = selectState;
+        const { areAllRowsSelected, selectedRowKeys } = ruleDataGrid.selectState;
         const totalSelected = Object.entries(selectedRowKeys).length;
         const hsSelected = areAllRowsSelected || !!totalSelected;
         const isPartialSelected = !areAllRowsSelected && !!totalSelected;

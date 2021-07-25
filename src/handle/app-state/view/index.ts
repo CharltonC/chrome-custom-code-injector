@@ -4,8 +4,9 @@ import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
 import { HandlerHelper } from '../helper';
 import { TextInputState } from '../../../model/text-input-state';
+import { DataGridState } from '../../../model/data-grid-state';
 
-const rowSelectHandle = new RowSelectHandle();
+const { defState: rowSelectDefState } = new RowSelectHandle();
 
 export class ViewStateHandler extends StateHandle.BaseStateHandler {
     onEditView({ rules, localState }: AppState, { isHost, idx, parentCtxIdx }): Partial<AppState> {
@@ -35,21 +36,28 @@ export class ViewStateHandler extends StateHandle.BaseStateHandler {
                 activeTitleInput,
                 activeValueInput,
 
-                // clear the row select state ready for use for DataGrid component in Edit View
-                selectState: rowSelectHandle.defState,
+                // clear the row select state ready for use for DataGrid component in Edit View]
+                ruleDataGrid: {
+                    ...localState.ruleDataGrid,
+                    selectState: rowSelectDefState,
+                }
             }
         };
     }
 
     onListView({localState}: AppState): Partial<AppState> {
         // For maintain the only pagination setting
-        const { pgnOption } = localState;
+        const { ruleDataGrid } = localState;
         const resetLocalState = new LocalState();
+        const resetDataGridState = new DataGridState();
 
         return {
             localState: {
                 ...resetLocalState,
-                pgnOption,
+                ruleDataGrid: {
+                    ...resetDataGridState,
+                    pgnOption: ruleDataGrid.pgnOption,
+                }
             }
         };
     }

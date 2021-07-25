@@ -133,7 +133,7 @@ describe('Component - Option App (UI/E2E)', () => {
 
             describe('Non-searched + Paginated', () => {
                 beforeEach(() => {
-                    mockAppState.localState.pgnOption.increment = [ 2 ];    // 2 per page,
+                    mockAppState.localState.ruleDataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new AppStateHandler() ],
                     }));
@@ -207,7 +207,7 @@ describe('Component - Option App (UI/E2E)', () => {
                 }
 
                 beforeEach(() => {
-                    mockAppState.localState.pgnOption.increment = [ 2 ];    // 2 per page,
+                    mockAppState.localState.ruleDataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new AppStateHandler() ],
                     }));

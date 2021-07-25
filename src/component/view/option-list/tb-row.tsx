@@ -12,7 +12,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { appState, appStateHandler } = commonProps;
     const { localState } = appState;
 
-    const { selectState, expdRowId } = localState;
+    const { selectState, expdRowId } = localState.ruleDataGrid;
 
     const {
         onDelModal, onAddPathRuleModal,

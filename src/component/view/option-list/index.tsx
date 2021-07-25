@@ -33,7 +33,8 @@ export class OptionListView extends MemoComponent<IProps> {
     render() {
         const { props, dataGridBaseProps, headerProps } = this;
         const { rules, localState } = props.appState;
-        const { searchedRules, pgnOption, pgnState, sortOption, } = localState;
+        const { searchedRules, ruleDataGrid } = localState;
+        const { pgnOption, pgnState, sortOption } = ruleDataGrid;
         const { curr: page, increment, incrementIdx } = { ...pgnOption, ...pgnState };
 
         return (<>
@@ -58,11 +59,11 @@ export class OptionListView extends MemoComponent<IProps> {
         const { props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
-        const { searchedRules, selectState } = localState;
+        const { searchedRules, ruleDataGrid } = localState;
         const { onRowsSelectToggle, onAddHostRuleModal, onDelModal } = appStateHandler;
 
         const hsDataSrc = !!(searchedRules ? searchedRules : rules).length;
-        const { areAllRowsSelected, selectedRowKeys } = selectState;
+        const { areAllRowsSelected, selectedRowKeys } = ruleDataGrid.selectState;
         const totalSelected: number = Object.entries(selectedRowKeys).length;
         const hsSelected: boolean = areAllRowsSelected || !!totalSelected;
         const isPartialSelected = !areAllRowsSelected && !!totalSelected;

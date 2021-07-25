@@ -54,15 +54,19 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     //// Delete Rule
     onDelModal(state: AppState, { dataSrc, ctxIdx, parentCtxIdx }) {
-        const { reflect } = this;
         const { localState, setting } = state;
+        const { reflect } = this;
+        const { ruleDataGrid} = localState;
         const { showDeleteModal } = setting;
         const isDelSingleItem = Number.isInteger(ctxIdx);
 
         const baseModState = {
             ...localState,
-            dataSrc: dataSrc.concat(),
             activeModalId: removeConfirm.id,
+            ruleDataGrid: {
+                ...ruleDataGrid,
+                dataSrc: dataSrc.concat(),
+            }
         };
 
         const partialModState: Partial<AppState> = {
@@ -77,24 +81,27 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     onDelModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
-        const { searchedRules, delRule, pgnState } = state.localState;
+        const { searchedRules, delRule, ruleDataGrid } = state.localState;
         const { ctxIdx, parentCtxIdx } = delRule;
         const isDelSingleItem = Number.isInteger(ctxIdx);
         const isSearch = searchedRules?.length;
 
         const resetLocalState: LocalState = {
             ...reflect.onModalCancel(state).localState,
-            pgnState: {
-                ...pgnState,
-                curr: 0,
-                startIdx: 0,
-                endIdx: null
-            },
-            dataSrc: null,
             activeModalId: null,
-            selectState: {              // in case of side-effect on `selectedRowKeys` state
-                areAllRowsSelected: false,
-                selectedRowKeys: {},
+            ruleDataGrid: {
+                ...ruleDataGrid,
+                dataSrc: null,
+                pgnState: {
+                    ...ruleDataGrid.pgnState,
+                    curr: 0,
+                    startIdx: 0,
+                    endIdx: null
+                },
+                selectState: {              // in case of side-effect on `selectedRowKeys` state
+                    areAllRowsSelected: false,
+                    selectedRowKeys: {},
+                }
             }
         };
 
