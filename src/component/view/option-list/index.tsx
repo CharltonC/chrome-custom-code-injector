@@ -90,12 +90,12 @@ export class OptionListView extends MemoComponent<IProps> {
                 />
         );
 
-        const $delAllHeader = (dataSrc) => (
+        const $delAllHeader = data => (
             <IconBtn
                 icon="delete"
                 theme="gray"
                 disabled={!hsSelected}
-                onClick={() => onDelModal({ dataSrc, isMultiple: true })}
+                onClick={() => onDelModal({ dataSrc: data, isMultiple: true })}
                 />
         );
 
