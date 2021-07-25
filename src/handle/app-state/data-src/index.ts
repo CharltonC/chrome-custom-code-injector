@@ -195,7 +195,6 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
         });
     }
 
-
     //// SCRIPT EXEC STAGE & SWITCH
     onItemJsExecStepChange({ rules, localState }: AppState, payload): Partial<AppState> {
         const { isActiveItem, parentCtxIdx, ctxIdx, selectValueAttrVal } = payload;

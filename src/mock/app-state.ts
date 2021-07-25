@@ -9,9 +9,9 @@ const mockHostRuleConfigs: [string, string][] = [
 ]
 
 const mockPathRuleConfigs: [string, string][] = [
-    ['home', 'home'],
-    ['deal', 'deals/today/'],
-    ['panasonic', 'electronics/panasonic'],
+    ['home', '/home'],
+    ['deal', '/deals/today/'],
+    ['panasonic', '/electronics/panasonic'],
 ]
 
 const mockLibRuleConfigs: [string, string][] = [
