@@ -123,6 +123,47 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    onDelLibModal({ rules, localState, setting }: AppState, payload) {
+        const { libIdx } = payload;
+
+        if (setting.showDeleteModal) return {
+            localState: {
+                ...localState,
+                activeModalId: removeConfirm.id,
+                modalLibIdx: libIdx,
+            }
+        };
+
+        // If skipping modal
+        const { activeRule } = localState;
+        const { libs } = HandlerHelper.getActiveItem({
+            ...activeRule,
+            isActiveItem: true,
+            rules,
+        });
+        libs.splice(libIdx, 1);
+        return {};
+    }
+
+    onDelLibModalConfirm(state: AppState) {
+        const { localState, rules } = state;
+        const { activeRule, modalLibIdx } = localState;
+        const { libs } = HandlerHelper.getActiveItem({
+            ...activeRule,
+            isActiveItem: true,
+            rules,
+        });
+        libs.splice(modalLibIdx, 1);
+
+        const resetState = this.reflect.onModalCancel(state);
+        return {
+            localState: {
+                ...resetState.localState,
+                activeRule,
+            }
+        };
+    }
+
     //// Add Rule
     onAddHostRuleModal({ localState }: AppState) {
         return {
