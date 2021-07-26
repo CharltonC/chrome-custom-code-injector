@@ -28,6 +28,7 @@ export class LocalState {
     modalTitleInput = new TextInputState();
     modalValueInput = new TextInputState();
     modalRuleIdx: number = null; // for targeting the host where new path will be added to
+    modalLibIdx: number = null;  // for targeting which host/path's library is edited
 
     //// DATA GRID TABLES
     ruleDataGrid = new DataGridState();
