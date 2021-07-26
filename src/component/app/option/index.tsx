@@ -70,6 +70,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onExportConfigFileModalInputChange, onExportConfigFileModalConfirm,
             onModalTitleInput, onModalValueInput,
             onAddLibModalConfirm,
+            onEditLibModalConfirm,
         } = appStateHandler;
 
         const { isHost, idx: ruleIdx } = activeRule;
@@ -435,7 +436,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         confirm="SAVE"
                         confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onModalCancel}
+                        onConfirm={onEditLibModalConfirm}
                         >
                         <TextInput
                             id="lib-edit-title"

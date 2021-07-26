@@ -254,7 +254,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     //// EDIT
     onEditLibModal({ localState }: AppState, payload) {
-        const { title, value } = payload.lib;
+        const { lib, libIdx } = payload;
+        const { title, value } = lib;
         const isValid = true;
         const modalTitleInput = new TextInputState({
             value: title,
@@ -269,8 +270,39 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             localState: {
                 ...localState,
                 activeModalId: editLib.id,
+                modalLibIdx: libIdx,
                 modalTitleInput,
                 modalValueInput,
+            }
+        };
+    }
+
+    onEditLibModalConfirm(state: AppState) {
+        const { rules, localState } = state;
+        const {
+            activeRule,
+            modalLibIdx,
+            modalTitleInput,
+            modalValueInput
+        } = localState;
+
+        const { libs } = HandlerHelper.getActiveItem({
+            ...activeRule,
+            isActiveItem: true,
+            rules,
+        });
+        const lib = libs[modalLibIdx];
+        lib.title = modalTitleInput.value;
+        lib.value = modalValueInput.value;
+
+        const resetState = this.reflect.onModalCancel(state);
+        return {
+            localState: {
+                // Reset modal state
+                ...resetState.localState,
+
+                // Maintain active item
+                activeRule,
             }
         };
     }
