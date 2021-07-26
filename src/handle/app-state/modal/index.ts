@@ -248,10 +248,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
                 // Maintain active item
                 activeRule,
-
-                // Clear modal text input
-                modalTitleInput: new TextInputState(),
-                modalValueInput: new TextInputState(),
             }
         };
     }
