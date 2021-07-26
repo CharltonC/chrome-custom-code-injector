@@ -69,7 +69,10 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <IconBtn
                         icon="edit"
                         theme="gray"
-                        onClick={() => onEditLibModal({ lib: item })}
+                        onClick={() => onEditLibModal({
+                            libIdx: idx,
+                            lib: item
+                        })}
                     />
                 </td>
                 <td><IconBtn icon="delete" theme="gray" /></td>
