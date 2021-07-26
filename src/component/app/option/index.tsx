@@ -396,7 +396,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         onConfirm={onAddLibModalConfirm}
                         >
                         <TextInput
-                            id="lib-title"
+                            id="lib-add-title"
                             label="Title"
                             required
                             value={modalTitleInput?.value}
@@ -411,7 +411,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             })}
                             />
                         <TextInput
-                            id="lib-value"
+                            id="lib-add-value"
                             label="Url"
                             required
                             value={modalValueInput?.value}
