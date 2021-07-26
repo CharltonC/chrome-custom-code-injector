@@ -40,9 +40,10 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                 // Reset any text input states including text, validation
                 modalTitleInput: new TextInputState(),
                 modalValueInput: new TextInputState(),
+                modalImportFileInput: null,
                 modalExportFileInput: new TextInputState(),
                 modalRuleIdx: null,
-                modalImportFileInput: null,
+                modalLibIdx: null,
             }
         };
     }
