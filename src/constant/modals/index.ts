@@ -38,4 +38,9 @@ export const modals = {
         id: 'modal-lib-edit',
         txt: 'Edit a Library Url'
     },
+
+    delLib: {
+        id: 'modal-delete-lib-confirm',
+        txt: 'Confirmation'
+    }
 };
