@@ -197,7 +197,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onAddRuleModalTitleInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
+    onModalTitleInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
         return HandlerHelper.onTextlInputChange({
             ...payload,
             inputKey: 'modalTitleInput',
@@ -207,7 +207,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         });
     }
 
-    onAddRuleModalValueInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
+    onModalValueInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
         return HandlerHelper.onTextlInputChange({
             ...payload,
             inputKey: 'modalValueInput',
