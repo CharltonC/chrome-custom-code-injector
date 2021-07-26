@@ -3,7 +3,7 @@ import { FileHandle } from '../../file';
 import { HandlerHelper } from '../helper';
 import { modals } from '../../../constant/modals';
 import { AppState } from '../../../model/app-state';
-import { HostRuleConfig, PathRuleConfig } from '../../../model/rule-config';
+import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../../../model/rule-config';
 import { LocalState } from '../../../model/local-state';
 import { TextInputState } from '../../../model/text-input-state';
 import { DelRuleState } from '../../../model/del-rule-state';
@@ -222,6 +222,35 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             localState: {
                 ...localState,
                 activeModalId: addLib.id
+            }
+        };
+    }
+
+    onAddLibModalConfirm(state: AppState) {
+        const { localState, rules } = state;
+        const { activeRule, activeTitleInput, activeValueInput } = localState;
+        const { libs } = HandlerHelper.getActiveItem({
+            ...activeRule,
+            rules,
+            isActiveItem: true,
+        });
+        const title = activeTitleInput.value;
+        const value = activeValueInput.value;
+        const lib = new LibRuleConfig(title, value);
+        libs.push(lib);
+
+        const resetState = this.reflect.onModalCancel(state);
+        return {
+            localState: {
+                // Reset modal state
+                ...resetState.localState,
+
+                // Maintain active item
+                activeRule,
+
+                // Clear modal text input
+                activeTitleInput: new TextInputState(),
+                activeValueInput: new TextInputState(),
             }
         };
     }

@@ -69,6 +69,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onImportConfigFileModalInputChange, onImportConfigFileModalConfirm,
             onExportConfigFileModalInputChange, onExportConfigFileModalConfirm,
             onAddRuleModalTitleInput, onAddRuleModalValueInput,
+            onAddLibModalConfirm,
         } = appStateHandler;
 
         const { isHost, idx: ruleIdx } = activeRule;
@@ -392,9 +393,38 @@ export class OptionApp extends MemoComponent<IProps> {
                         confirm="SAVE"
                         confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onModalCancel}
+                        onConfirm={onAddLibModalConfirm}
                         >
-                        {/* TODO */}
+                        <TextInput
+                            id="lib-title"
+                            label="Title"
+                            required
+                            value={modalTitleInput?.value}
+                            validation={{
+                                rules: validationRule.ruleId,
+                                isValid: modalTitleInput.isValid,
+                                errMsg: modalTitleInput.errMsg
+                            }}
+                            onInputChange={arg => onAddRuleModalTitleInput({
+                                ...arg,
+                                isInModal: true
+                            })}
+                            />
+                        <TextInput
+                            id="lib-value"
+                            label="Url"
+                            required
+                            value={modalValueInput?.value}
+                            validation={{
+                                rules: validationRule.libUrl,
+                                isValid: modalValueInput.isValid,
+                                errMsg: modalValueInput.errMsg
+                            }}
+                            onInputChange={arg => onAddRuleModalValueInput({
+                                ...arg,
+                                isInModal: true
+                            })}
+                            />
                     </Modal>
                     <Modal
                         activeModalId={activeModalId}
