@@ -49,8 +49,8 @@ export const TbRow: React.FC<any> = memo((props) => {
                         checked={isAsync}
                         disabled={isDelDisabled}
                         onChange={() => onItemLibSwitchToggle({
-                            libIdx: idx,
-                            key: 'isAsync'
+                            key: 'isAsync',
+                            lib: item
                         })}
                         />
                 </td>
@@ -60,8 +60,8 @@ export const TbRow: React.FC<any> = memo((props) => {
                         checked={isOn}
                         disabled={isDelDisabled}
                         onChange={() => onItemLibSwitchToggle({
-                            libIdx: idx,
-                            key: 'isOn'
+                            key: 'isOn',
+                            lib: item
                         })}
                         />
                 </td>
