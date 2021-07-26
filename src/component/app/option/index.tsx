@@ -437,7 +437,36 @@ export class OptionApp extends MemoComponent<IProps> {
                         onCancel={onModalCancel}
                         onConfirm={onModalCancel}
                         >
-                        {/* TODO */}
+                        <TextInput
+                            id="lib-edit-title"
+                            label="Title"
+                            required
+                            value={modalTitleInput?.value}
+                            validation={{
+                                rules: validationRule.ruleId,
+                                isValid: modalTitleInput.isValid,
+                                errMsg: modalTitleInput.errMsg
+                            }}
+                            onInputChange={arg => onAddRuleModalTitleInput({
+                                ...arg,
+                                isInModal: true
+                            })}
+                            />
+                        <TextInput
+                            id="lib-edit-value"
+                            label="Url"
+                            required
+                            value={modalValueInput?.value}
+                            validation={{
+                                rules: validationRule.libUrl,
+                                isValid: modalValueInput.isValid,
+                                errMsg: modalValueInput.errMsg
+                            }}
+                            onInputChange={arg => onAddRuleModalValueInput({
+                                ...arg,
+                                isInModal: true
+                            })}
+                            />
                     </Modal>
                 </form>)}
             </div>

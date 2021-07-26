@@ -249,8 +249,31 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                 activeRule,
 
                 // Clear modal text input
-                activeTitleInput: new TextInputState(),
-                activeValueInput: new TextInputState(),
+                modalTitleInput: new TextInputState(),
+                modalValueInput: new TextInputState(),
+            }
+        };
+    }
+
+    //// EDIT
+    onEditLibModal({ localState }: AppState, payload) {
+        const { title, value } = payload.lib;
+        const isValid = true;
+        const modalTitleInput = new TextInputState({
+            value: title,
+            isValid,
+        });
+        const modalValueInput = new TextInputState({
+            value,
+            isValid,
+        });
+
+        return {
+            localState: {
+                ...localState,
+                activeModalId: editLib.id,
+                modalTitleInput,
+                modalValueInput,
             }
         };
     }

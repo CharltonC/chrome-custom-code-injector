@@ -26,6 +26,7 @@ export const TbRow: React.FC<any> = memo((props) => {
     const {
         onLibRowSelectToggle,
         onItemLibSwitchToggle,
+        onEditLibModal,
     } = appStateHandler;
 
     return <>
@@ -64,7 +65,13 @@ export const TbRow: React.FC<any> = memo((props) => {
                         })}
                         />
                 </td>
-                <td><IconBtn icon="edit" theme="gray" /></td>
+                <td>
+                    <IconBtn
+                        icon="edit"
+                        theme="gray"
+                        onClick={() => onEditLibModal({ lib: item })}
+                    />
+                </td>
                 <td><IconBtn icon="delete" theme="gray" /></td>
             </tr>
     </>;
