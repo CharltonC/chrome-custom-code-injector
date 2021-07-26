@@ -296,8 +296,8 @@ export class OptionApp extends MemoComponent<IProps> {
                     </Modal>
                     <Modal
                         activeModalId={activeModalId}
-                        id={modals.removeConfirm.id}
-                        header={modals.removeConfirm.txt}
+                        id={modals.delLib.id}
+                        header={modals.delLib.txt}
                         clsSuffix="delete-lib-confirm"
                         subHeader="Are you sure you want to remove?"
                         cancel="CANCEL"
