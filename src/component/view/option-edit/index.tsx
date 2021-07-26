@@ -185,7 +185,8 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { activeRule, libDataGrid } = localState;
 
         const {
-            onLibRowsSelectToggle
+            onLibRowsSelectToggle,
+            onAddLibModal,
         } = appStateHandler;
 
         const { isHost, idx, pathIdx } = activeRule;
@@ -221,6 +222,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             <IconBtn
                 icon="add-outline"
                 theme="gray"
+                onClick={onAddLibModal}
                 />
         );
 

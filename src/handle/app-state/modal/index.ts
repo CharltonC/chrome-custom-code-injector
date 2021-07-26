@@ -217,6 +217,15 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         });
     }
 
+    onAddLibModal({ localState }: AppState) {
+        return {
+            localState: {
+                ...localState,
+                activeModalId: addLib.id
+            }
+        };
+    }
+
     //// Import/Export Json Config File
     onImportConfigFileModal(state: AppState) {
         return this.reflect.onModalOpen(state, importConfig.id);
