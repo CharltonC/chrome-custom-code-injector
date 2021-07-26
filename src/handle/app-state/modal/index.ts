@@ -228,14 +228,14 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     onAddLibModalConfirm(state: AppState) {
         const { localState, rules } = state;
-        const { activeRule, activeTitleInput, activeValueInput } = localState;
+        const { activeRule, modalTitleInput, modalValueInput } = localState;
         const { libs } = HandlerHelper.getActiveItem({
             ...activeRule,
             rules,
             isActiveItem: true,
         });
-        const title = activeTitleInput.value;
-        const value = activeValueInput.value;
+        const title = modalTitleInput.value;
+        const value = modalValueInput.value;
         const lib = new LibRuleConfig(title, value);
         libs.push(lib);
 
