@@ -71,6 +71,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onModalTitleInput, onModalValueInput,
             onAddLibModalConfirm,
             onEditLibModalConfirm,
+            onDelLibModalConfirm,
         } = appStateHandler;
 
         const { isHost, idx: ruleIdx } = activeRule;
@@ -286,6 +287,23 @@ export class OptionApp extends MemoComponent<IProps> {
                         confirm="remove"
                         onCancel={onModalCancel}
                         onConfirm={onDelModalConfirm}
+                        >
+                        <Checkbox
+                            id="setting-delete-confirm"
+                            label="Don’t show this confirmation again"
+                            onChange={onDelConfirmDialogToggle}
+                            />
+                    </Modal>
+                    <Modal
+                        activeModalId={activeModalId}
+                        id={modals.removeConfirm.id}
+                        header={modals.removeConfirm.txt}
+                        clsSuffix="delete-lib-confirm"
+                        subHeader="Are you sure you want to remove?"
+                        cancel="CANCEL"
+                        confirm="remove"
+                        onCancel={onModalCancel}
+                        onConfirm={onDelLibModalConfirm}
                         >
                         <Checkbox
                             id="setting-delete-confirm"
