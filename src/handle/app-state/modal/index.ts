@@ -11,7 +11,7 @@ import { ActiveRuleState } from '../../../model/active-rule-state';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { IStateHandler } from '../type';
 
-const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib } = modals;
+const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib, delLib } = modals;
 const fileHandle = new FileHandle();
 
 export class ModalStateHandler extends StateHandle.BaseStateHandler {
@@ -129,7 +129,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         if (setting.showDeleteModal) return {
             localState: {
                 ...localState,
-                activeModalId: removeConfirm.id,
+                activeModalId: delLib.id,
                 modalLibIdx: libIdx,
             }
         };
