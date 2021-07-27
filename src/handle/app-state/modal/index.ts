@@ -123,43 +123,57 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    // TODO: single item only, cater for multiple
     onDelLibModal({ rules, localState, setting }: AppState, payload) {
-        const { libIdx } = payload;
+        const { libDataGrid, activeRule } = localState;
+        const { libIdx, dataSrc } = payload;
+        const { showDeleteModal } = setting;
 
-        if (setting.showDeleteModal) return {
+        if (showDeleteModal) return {
             localState: {
                 ...localState,
                 activeModalId: delLib.id,
                 modalLibIdx: libIdx,
+                libDataGrid: {
+                    ...libDataGrid,
+                    dataSrc,
+                }
             }
         };
 
         // If skipping modal
-        const { activeRule } = localState;
-        const { libs } = HandlerHelper.getActiveItem({
+        const item = HandlerHelper.getActiveItem({
             ...activeRule,
             isActiveItem: true,
             rules,
         });
-        libs.splice(libIdx, 1);
+        dataSrc.splice(libIdx, 1);
+        item.libs = dataSrc;
         return {};
     }
 
+    // TODO: single item only, cater for multiple
     onDelLibModalConfirm(state: AppState) {
         const { localState, rules } = state;
-        const { activeRule, modalLibIdx } = localState;
-        const { libs } = HandlerHelper.getActiveItem({
+        const { modalLibIdx, libDataGrid, activeRule } = localState;
+        const item = HandlerHelper.getActiveItem({
             ...activeRule,
             isActiveItem: true,
             rules,
         });
-        libs.splice(modalLibIdx, 1);
+        const { dataSrc } = libDataGrid;
+        dataSrc.splice(modalLibIdx, 1);
+        item.libs = dataSrc;
 
         const resetState = this.reflect.onModalCancel(state);
         return {
+            rules: [...rules],
             localState: {
                 ...resetState.localState,
-                activeRule,
+                libDataGrid: {
+                    ...libDataGrid,
+                    dataSrc: null
+                },
             }
         };
     }

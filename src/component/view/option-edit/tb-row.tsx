@@ -83,7 +83,10 @@ export const TbRow: React.FC<any> = memo((props) => {
                         icon="delete"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={onDelLibModal}
+                        onClick={() => onDelLibModal({
+                            dataSrc,
+                            libIdx: idx
+                        })}
                         />
                 </td>
             </tr>
