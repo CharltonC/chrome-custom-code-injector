@@ -67,7 +67,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     }
 
     // TODO: Helper function not have to return full state
-    onRmvItem({ localState }: AppState, idx: number, parentIdx?: number) {
+    rmvRule({ localState }: AppState, idx: number, parentIdx?: number) {
         const { dataSrc } = localState.ruleDataGrid;      // set by `onDelModal`
         const isSubRow = Number.isInteger(parentIdx);
         const modItems = isSubRow ? dataSrc[parentIdx].paths : dataSrc;
@@ -79,18 +79,18 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onRmvSearchItem(state: AppState, idx: number, parentIdx?: number) {
+    rmvSearchRule(state: AppState, idx: number, parentIdx?: number) {
         const { reflect } = this;
         const { rules: currRules, localState } = state;
         const { searchedRules: currSearchedRules } = localState;
         const isSubRow = Number.isInteger(parentIdx);
 
         // Remove either row or sub row for searched rules
-        const { rules: searchedRules } = reflect.onRmvItem(state, idx, parentIdx);
+        const { rules: searchedRules } = reflect.rmvRule(state, idx, parentIdx);
 
         // If Not sub row, Remove corresponding row in global rules as well
         const ruleIdx = isSubRow ? null : currRules.indexOf(currSearchedRules[idx]);
-        const modRules = isSubRow ? currRules : reflect.onRmvItem({
+        const modRules = isSubRow ? currRules : reflect.rmvRule({
             ...state,
             localState: {
                 ...localState,
@@ -109,7 +109,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onRmvItems(state: AppState) {
+    rmvRules(state: AppState) {
         const { areAllRowsSelected } = state.localState.ruleDataGrid.selectState;
         const { reflect } = this;
         return areAllRowsSelected ? reflect.onRmvAllItems(state) : reflect.onRmvPartialItems(state);
@@ -154,13 +154,13 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onRmvSearchItems(state: AppState) {
+    rmvSearchRules(state: AppState) {
         const { reflect } = this;
         const { localState, rules } = state;
         const { searchedRules } = localState;
 
         // Update the searched rules
-        const { rules: modSearchedRules } = reflect.onRmvItems(state);
+        const { rules: modSearchedRules } = reflect.rmvRules(state);
 
         // Update corresponding global rules by Excluding all removed searched rows
         const removedSearchedRules = searchedRules.filter(rule => !modSearchedRules.includes(rule));

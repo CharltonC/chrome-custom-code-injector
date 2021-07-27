@@ -67,7 +67,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             activeModalId: removeConfirm.id,
             ruleDataGrid: {
                 ...ruleDataGrid,
-                dataSrc: dataSrc.concat(),
+                dataSrc: [...dataSrc],
             }
         };
 
@@ -78,7 +78,9 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                 } : baseModState
         };
 
-        return showDeleteModal ? partialModState : reflect.onDelModalConfirm({...state, ...partialModState});
+        return showDeleteModal
+            ? partialModState
+            : reflect.onDelModalConfirm({...state, ...partialModState});
     }
 
     onDelModalConfirm(state: AppState) {
@@ -109,11 +111,11 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
         const { rules, localState } = isDelSingleItem ?
             ( isSearch ?
-                reflect.onRmvSearchItem(state, ctxIdx, parentCtxIdx) :
-                reflect.onRmvItem(state, ctxIdx, parentCtxIdx) ) :
+                reflect.rmvSearchRule(state, ctxIdx, parentCtxIdx) :
+                reflect.rmvRule(state, ctxIdx, parentCtxIdx) ) :
             ( isSearch ?
-                reflect.onRmvSearchItems(state) :
-                reflect.onRmvItems(state)) ;
+                reflect.rmvSearchRules(state) :
+                reflect.rmvRules(state)) ;
 
         return {
             localState: {
