@@ -2,9 +2,11 @@ import { StateHandle } from '../../state';
 import { HandlerHelper } from '../helper';
 import { AppState } from '../../../model/app-state';
 import { TextInputState } from '../../../model/text-input-state';
+import { DataGridState } from '../../../model/data-grid-state';
+import { LibRuleConfig } from '../../../model/rule-config';
 
 export class SidebarStateHandler extends StateHandle.BaseStateHandler {
-    onActiveItemChange({ rules, localState }: AppState, payload) {
+    onActiveItemChange({ rules, localState }: AppState, payload): Partial<AppState> {
         const { isChild, idx, parentIdx } = payload;
         const itemIdx = isChild ? parentIdx : idx;
         const childItemIdx = isChild ? idx : null
@@ -18,20 +20,22 @@ export class SidebarStateHandler extends StateHandle.BaseStateHandler {
             ...activeRule,
             isActiveItem: true,
         });
-        const resetState = new TextInputState();
+        const resetInputState = new TextInputState();
+        const resetLibDatagridState = new DataGridState<LibRuleConfig>();
 
         return {
             localState: {
                 ...localState,
                 activeRule,
                 activeTitleInput: {
-                    ...resetState,
+                    ...resetInputState,
                     value: title,
                 },
                 activeValueInput: {
-                    ...resetState,
+                    ...resetInputState,
                     value
-                }
+                },
+                libDataGrid: resetLibDatagridState
             }
         };
     }
