@@ -62,6 +62,7 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
                 ...localState,
                 ...activeItemState,
                 ...viewState,
+                libDataGrid: new DataGridState<LibRuleConfig>()
             }
         };
     }
