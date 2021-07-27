@@ -1,6 +1,6 @@
 import { StateHandle } from '../../state';
 import { HandlerHelper } from '../helper';
-import { HostRuleConfig, AActiveTabIdx, PathRuleConfig } from '../../../model/rule-config';
+import { HostRuleConfig, AActiveTabIdx, PathRuleConfig, LibRuleConfig } from '../../../model/rule-config';
 import { AppState } from '../../../model/app-state';
 import { ActiveRuleState } from '../../../model/active-rule-state';
 import { TextInputState } from '../../../model/text-input-state';
@@ -172,6 +172,34 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
                 searchedRules: modSearchedRules
             }
         };
+    }
+
+    rmvLib(libDataGrid: DataGridState<LibRuleConfig>, idx: number): LibRuleConfig[] {
+        const { dataSrc } = libDataGrid;
+        const modLibs = [...dataSrc];
+        modLibs.splice(idx, 1);
+        return modLibs;
+    }
+
+    rmvLibs(libDataGrid: DataGridState<LibRuleConfig>): LibRuleConfig[] {
+        const { dataSrc, selectState } = libDataGrid;
+        const { areAllRowsSelected, selectedRowKeys } = selectState;
+
+        // Remove All
+        if (areAllRowsSelected) return [];
+
+        // Remove multiple selected
+        const modLibs = dataSrc.concat();
+        const libIndexes = Object.getOwnPropertyNames(selectedRowKeys);
+        const libsTotal = libIndexes.length - 1;
+
+        // Remove the item from the end of array so that it doesnt effect the indexes from the beginning
+        for (let i = libsTotal; i >= 0; i--) {
+            const rowIdx: number = Number(libIndexes[i][0]);
+            modLibs.splice(rowIdx, 1);
+        }
+
+        return modLibs;
     }
 
     //// TEXT INPUT FOR TITLE & URL/PATH
