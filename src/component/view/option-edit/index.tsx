@@ -14,27 +14,16 @@ import { DataGrid } from '../../widget/data-grid';
 import { jsExecStage } from '../../../constant/js-exec-stage';
 import { TbRow } from './tb-row';
 import * as TSortHandle from '../../../handle/sort/type';
-import * as TDataGrid from '../../widget/data-grid/type';
 import { IProps } from './type';
 
 export class OptionEditView extends MemoComponent<IProps> {
-    dataGridBaseProps: Partial<TDataGrid.IProps>;
-    $titleInputRef: RefObject<TextInput>;
-    $valueInputRef: RefObject<TextInput>;
-
-    constructor(props: IProps) {
-        super(props);
-        this.$titleInputRef = createRef();
-        this.$valueInputRef = createRef();
-        this.onActiveItemChange = this.onActiveItemChange.bind(this);
-    }
-
     render() {
         const { headerProps, props } = this;
         const { appState, appStateHandler } = props;
         const { rules, localState } = appState;
         const { activeTitleInput, activeValueInput, activeRule, libDataGrid } = localState;
         const {
+            onActiveItemChange,
             onActiveRuleTitleInput, onActiveRuleValueInput,
             onItemJsExecStepChange,
             onItemActiveExecTabChange, onItemExecCodeChange,
@@ -70,13 +59,11 @@ export class OptionEditView extends MemoComponent<IProps> {
                 childListKey="paths"
                 activeItemIdx={idx}
                 activeChildItemIdx={pathIdx}
-                onClick={this.onActiveItemChange}
+                onClick={onActiveItemChange}
                 />
             <div className="main--edit__form">
-                {/* TODO: placeholder text variation */}
                 <section className="fm-field">
                     <TextInput
-                        ref={this.$titleInputRef}
                         id="edit-target-id"
                         label="ID"
                         required
@@ -92,7 +79,6 @@ export class OptionEditView extends MemoComponent<IProps> {
                 </section>
                 <section className="fm-field">
                     <TextInput
-                        ref={this.$valueInputRef}
                         id="edit-target-value"
                         label={isHost ? 'Host' : 'Path'}
                         required
@@ -156,7 +142,10 @@ export class OptionEditView extends MemoComponent<IProps> {
                         theme: 'darcula',
                         lineNumbers: true
                     }}
-                    onChange={(editor, data, val) => onItemExecCodeChange({ value: val, codeMode }) }
+                    onChange={(...[,,value]) => onItemExecCodeChange({
+                        value,
+                        codeMode
+                    })}
                     />}{ isLibTab &&
                 <DataGrid
                     type="table"
@@ -250,14 +239,5 @@ export class OptionEditView extends MemoComponent<IProps> {
                 <SortBtn {...sortBtnProps} disabled={disabled} />
             </>
         );
-    }
-
-    onActiveItemChange(args): void {
-        // TODO: clear input state & validation state?
-        // this.$titleInputRef.current.clearValidState();
-        // this.$valueInputRef.current.clearValidState();
-        setTimeout(() => {
-            this.props.appStateHandler.onActiveItemChange(args);
-        }, 200);
     }
 }
