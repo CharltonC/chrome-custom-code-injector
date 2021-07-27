@@ -217,6 +217,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             <IconBtn
                 icon="delete"
                 theme="gray"
+                disabled={!hsSelected}
                 />
         );
         const $addLib = (
