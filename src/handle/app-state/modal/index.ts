@@ -10,6 +10,7 @@ import { DelRuleState } from '../../../model/del-rule-state';
 import { ActiveRuleState } from '../../../model/active-rule-state';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { IStateHandler } from '../type';
+import { DataGridState } from '../../../model/data-grid-state';
 
 const { defSetting, importConfig, exportConfig, removeConfirm, editHost, editPath, addLib, editLib, delLib } = modals;
 const fileHandle = new FileHandle();
@@ -123,13 +124,14 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    // TODO: single item only, cater for multiple
-    onDelLibModal({ rules, localState, setting }: AppState, payload) {
-        const { libDataGrid, activeRule } = localState;
+    onDelLibModal({ rules, localState, setting } : AppState, payload) {
         const { libIdx, dataSrc } = payload;
+        const { reflect } = this as unknown as IStateHandler;
+        const { libDataGrid } = localState;
         const { showDeleteModal } = setting;
-
-        if (showDeleteModal) return {
+        const baseState = {
+            rules,
+            setting,
             localState: {
                 ...localState,
                 activeModalId: delLib.id,
@@ -141,39 +143,35 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
         };
 
-        // If skipping modal
-        const item = HandlerHelper.getActiveItem({
-            ...activeRule,
-            isActiveItem: true,
-            rules,
-        });
-        dataSrc.splice(libIdx, 1);
-        item.libs = dataSrc;
-        return {};
+        if (showDeleteModal) return baseState;
+        return reflect.onDelLibModalConfirm(baseState);
     }
 
-    // TODO: single item only, cater for multiple
     onDelLibModalConfirm(state: AppState) {
+        const { reflect } = this as unknown as IStateHandler;
         const { localState, rules } = state;
-        const { modalLibIdx, libDataGrid, activeRule } = localState;
+        const { libDataGrid, activeRule, modalLibIdx } = localState;
+        const { areAllRowsSelected, selectedRowKeys } = libDataGrid.selectState;
+        const hasSelected = areAllRowsSelected || !!Object.entries(selectedRowKeys).length;
+
         const item = HandlerHelper.getActiveItem({
             ...activeRule,
             isActiveItem: true,
             rules,
         });
-        const { dataSrc } = libDataGrid;
-        dataSrc.splice(modalLibIdx, 1);
-        item.libs = dataSrc;
+        item.libs = hasSelected
+            ? reflect.rmvLibs(libDataGrid)
+            : reflect.rmvLib(libDataGrid, modalLibIdx);
+        const libDataGridState = hasSelected
+            ? new DataGridState()
+            : { ...libDataGrid, dataSrc: null };
 
         const resetState = this.reflect.onModalCancel(state);
         return {
             rules: [...rules],
             localState: {
                 ...resetState.localState,
-                libDataGrid: {
-                    ...libDataGrid,
-                    dataSrc: null
-                },
+                libDataGrid: libDataGridState,
             }
         };
     }
