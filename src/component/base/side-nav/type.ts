@@ -13,6 +13,7 @@ export interface IState {}
 export interface IClickEvtArg {
     evt: React.MouseEvent;
     item: AObj | string;
+    parentIdx?: number;
     idx: number;
     isChild?: boolean;
 }
