@@ -1,4 +1,4 @@
-import React, { createRef, RefObject } from 'react';
+import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationRule } from '../../../constant/validation-rule';
 import { MemoComponent } from '../../extendable/memo-component';
