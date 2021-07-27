@@ -187,6 +187,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const {
             onLibRowsSelectToggle,
             onAddLibModal,
+            onDelLibModal,
         } = appStateHandler;
 
         const { isHost, idx, pathIdx } = activeRule;
@@ -210,14 +211,16 @@ export class OptionEditView extends MemoComponent<IProps> {
                 />
         );
 
-        const $title = this.getHeaderColRenderFn('ID', hsSelected);
-        const $addr = this.getHeaderColRenderFn('URL', hsSelected);
+        const isSortDisabled = !hsDataSrc || hsSelected;
+        const $title = this.getHeaderColRenderFn('ID', isSortDisabled);
+        const $addr = this.getHeaderColRenderFn('URL', isSortDisabled);
 
-        const $delAll = (
+        const $delAll = dataSrc => (
             <IconBtn
                 icon="delete"
                 theme="gray"
                 disabled={!hsSelected}
+                onClick={() => onDelLibModal({ dataSrc })}
                 />
         );
         const $addLib = (
