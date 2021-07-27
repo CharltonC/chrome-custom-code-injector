@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
+import { AppState } from '../../../model/app-state';
 
 // TODO: Type for props
 export const TbRow: React.FC<any> = memo((props) => {
@@ -14,9 +15,9 @@ export const TbRow: React.FC<any> = memo((props) => {
     const ID_SUFFIX = `${itemLvl}-${idx}`;
 
     //// STATE
-    const { localState } = appState;
+    const { localState } = appState as AppState;
 
-    // Row Select STate
+    // Data Grid State
     const { selectState } = localState.libDataGrid;
     const { areAllRowsSelected, selectedRowKeys } = selectState;
     const isSelected = areAllRowsSelected || idx in selectedRowKeys;
@@ -70,6 +71,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <IconBtn
                         icon="edit"
                         theme="gray"
+                        disabled={isDelDisabled}
                         onClick={() => onEditLibModal({
                             libIdx: idx,
                             lib: item
@@ -80,6 +82,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <IconBtn
                         icon="delete"
                         theme="gray"
+                        disabled={isDelDisabled}
                         onClick={onDelLibModal}
                         />
                 </td>
