@@ -43,7 +43,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const codeMode = isJsCode ? 'js' : 'css'
         const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
 
-        const isActiveItem = true
+        const isActiveItem = true;
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
         const itemIdxCtx = {
             ctxIdx: isHost ? idx : pathIdx,
