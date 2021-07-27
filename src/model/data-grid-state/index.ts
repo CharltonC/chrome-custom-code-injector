@@ -7,11 +7,11 @@ import * as TRowSelect from '../../handle/row-select/type';
 
 const { resultsPerPageIdx } = new SettingState();
 
-export class DataGridState {
+export class DataGridState<T = HostRuleConfig> {
     // Rows used by Modal Delete Confirm `onDelModalConfirm`
-    // - temp storage which points to the current full set of sorted data if exist or plain data (either searched or non-search)
-    // - unpaginated
-    dataSrc: HostRuleConfig[] = null;
+    // - temp storage which points to the current FULL SET of sorted data if exist or plain data (either searched or non-search)
+    // - UNPAGINATED
+    dataSrc: T[]= null;
 
     // Sort
     sortOption: Partial<TSort.IOption> = { reset: true };

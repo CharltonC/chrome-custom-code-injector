@@ -1,4 +1,4 @@
-import { HostRuleConfig } from '../rule-config';
+import { HostRuleConfig, LibRuleConfig } from '../rule-config';
 import { TextInputState } from '../text-input-state';
 import { ActiveRuleState } from '../active-rule-state';
 import { DataGridState } from '../data-grid-state';
@@ -32,5 +32,5 @@ export class LocalState {
 
     //// DATA GRID TABLES
     ruleDataGrid = new DataGridState();
-    libDataGrid = new DataGridState();
+    libDataGrid = new DataGridState<LibRuleConfig>();
 }
