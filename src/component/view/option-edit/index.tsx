@@ -198,6 +198,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const totalSelected = Object.entries(selectedRowKeys).length;
         const hsSelected = areAllRowsSelected || !!totalSelected;
         const isPartialSelected = !areAllRowsSelected && !!totalSelected;
+        const isAddDisabled = areAllRowsSelected || !!totalSelected;
 
         const $selectAllHeader = (
             <Checkbox
@@ -222,6 +223,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             <IconBtn
                 icon="add-outline"
                 theme="gray"
+                disabled={isAddDisabled}
                 onClick={onAddLibModal}
                 />
         );
