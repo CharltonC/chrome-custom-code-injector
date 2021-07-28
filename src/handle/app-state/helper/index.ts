@@ -37,6 +37,7 @@ export const HandlerHelper = {
         };
     },
 
+    // TODO: Remove
     getActiveItem(arg: IGetActiveItemArg): HostRuleConfig | PathRuleConfig {
         const {
             isActiveItem,
@@ -95,12 +96,7 @@ export const HandlerHelper = {
 
         // For Non-Modal only
         // - If valid value, set/sync the item title or value
-        const { activeRule } = localState;
-        const item = this.getActiveItem({
-            rules,
-            ...activeRule,
-            isActiveItem: true,
-        });
+        const { item } = localState.activeRule;
         item[key] = val;
         return {
             ...baseState,

@@ -126,6 +126,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    // No Search context here
     onDelLibModal({ rules, localState, setting } : AppState, payload) {
         const { libIdx, dataSrc } = payload;
         const { reflect } = this as unknown as IStateHandler;
@@ -149,6 +150,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         return reflect.onDelLibModalConfirm(baseState);
     }
 
+    // No Search context here
     onDelLibModalConfirm(state: AppState) {
         const { reflect } = this as unknown as IStateHandler;
         const { localState, rules } = state;
@@ -179,6 +181,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// Add Rule
+    // Search context here
     onAddHostRuleModal({ localState }: AppState) {
         return {
             localState: {
@@ -188,6 +191,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    // Search context here
     onAddHostModalRuleConfirm(state: AppState) {
         const { localState, rules, setting } = state;
 

@@ -1,42 +1,35 @@
 import { StateHandle } from '../../state';
 import { HandlerHelper } from '../helper';
-import { HostRuleConfig, AActiveTabIdx, PathRuleConfig, LibRuleConfig } from '../../../model/rule-config';
+import { HostRuleConfig, AActiveTabIdx, LibRuleConfig } from '../../../model/rule-config';
 import { AppState } from '../../../model/app-state';
 import { ActiveRuleState } from '../../../model/active-rule-state';
 import { TextInputState } from '../../../model/text-input-state';
-import * as TCheckboxTabSwitch from '../../../component/base/checkbox-tab-switch/type';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { DataGridState } from '../../../model/data-grid-state';
 
 export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     //// REMOVE RULE (Host/Path; used only in `reflect`)
+    // No Search context involved here
     onRmvActiveItem({ rules, localState }: AppState) {
         const { activeRule } = localState;
-        const { isHost, idx, pathIdx } = activeRule;
+        const { isHost, ruleIdx, pathIdx } = activeRule;
 
         // Remove either Host or Path Rule
         isHost
-            ? rules.splice(idx, 1)
-            : rules[idx].paths.splice(pathIdx, 1);
+            ? rules.splice(ruleIdx, 1)
+            : rules[ruleIdx].paths.splice(pathIdx, 1);
 
         // Move the current index & value of input placeholder to previous item (if exist)
         const hasRules = !!rules.length;
-        const nextIdx = isHost ? (hasRules ? 0 : null ): idx;
+        const nextRuleIdx = isHost ? (hasRules ? 0 : null ) : ruleIdx;
         const nextPathIdx = isHost ? pathIdx : (rules[0]?.paths.length ? 0 : null);
-        const isNextHost = Number.isInteger(nextIdx) && !Number.isInteger(nextPathIdx);
-        const nextItem = hasRules
-            ? HandlerHelper.getActiveItem({
-                rules,
-                isActiveItem: true,
-                isHost: isNextHost,
-                idx: nextIdx,
-                pathIdx: nextPathIdx,
-            })
-            : {} as (HostRuleConfig | PathRuleConfig);
+        const isNextItemHost = Number.isInteger(nextRuleIdx) && !Number.isInteger(nextPathIdx);
+        const nextItem = isNextItemHost ? rules[nextRuleIdx] : rules[nextRuleIdx]?.paths[nextPathIdx];
         const activeItemState = {
             activeRule: new ActiveRuleState({
-                isHost: isNextHost,
-                idx: nextIdx,
+                isHost: isNextItemHost,
+                item: nextItem,
+                ruleIdx: nextRuleIdx,
                 pathIdx: nextPathIdx
             }),
             activeTitleInput: new TextInputState(
@@ -51,10 +44,8 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
             ),
         };
 
-        // If it is path rule OR If it is Host and there are no more rules, go back to List View
-        const viewState = (isHost && hasRules) || !isHost
-            ? {}
-            : { isListView: true };
+        // If there are no more rules, go back to List View
+        const viewState = hasRules ? {} : { isListView: true };
 
         return {
             rules: [...rules],
@@ -225,66 +216,41 @@ export class DataSrcStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// SCRIPT EXEC STAGE & SWITCH
-    onItemJsExecStepChange({ rules, localState }: AppState, payload): Partial<AppState> {
-        const { isActiveItem, parentCtxIdx, ctxIdx, selectValueAttrVal } = payload;
-        const item = HandlerHelper.getActiveItem({
-            rules,
-            isActiveItem,
-            ...localState.activeRule,
-            parentCtxIdx,
-            ctxIdx,
-        })
+    onItemJsExecStepChange(state: AppState, payload): Partial<AppState> {
+        const { item, selectValueAttrVal } = payload;
         item.jsExecPhase = selectValueAttrVal;
-        return { rules };
+        return {};
     }
 
-    onItemExecSwitchToggle({ rules, localState }: AppState, payload): Partial<AppState> {
-        const {
-            isActiveItem, tab,         // For Active Edit, Item
-            parentCtxIdx, ctxIdx, key, // For Non-Active Item
-        } = payload;
-
-        const itemKey: string = isActiveItem ? `is${tab.id}On` : key;
-        const item = HandlerHelper.getActiveItem({
-            ...localState.activeRule,
-            parentCtxIdx, ctxIdx,
-            isActiveItem,
-            rules,
-        });
-        item[itemKey] = !item[itemKey];
-        return { rules };
+    onItemExecSwitchToggle(state: AppState, payload): Partial<AppState> {
+        const { item, id } = payload;
+        const key = `is${id}On`;
+        const hasKey = key in item;
+        if (!hasKey) throw new Error(`key ${key} does not exist`);
+        item[key] = !item[key];
+        return {};
     }
 
-    onItemActiveExecTabChange({ rules, localState }: AppState, payload: TCheckboxTabSwitch.IOnTabChange) {
-        const item = HandlerHelper.getActiveItem({
-            rules,
-            ...localState.activeRule,
-            isActiveItem: true,
-        });
-        const { idx } = payload;
+    onItemActiveExecTabChange(state: AppState, payload): Partial<AppState> {
+        const { item, idx } = payload;
         item.activeTabIdx = idx as AActiveTabIdx;
-        return { rules };
+        return {};
     }
 
-    onItemExecCodeChange({ rules, localState }: AppState, payload) {
-        const item = HandlerHelper.getActiveItem({
-            rules,
-            ...localState.activeRule,
-            isActiveItem: true,
-        });
-        const { codeMode, value } = payload;
+    onItemExecCodeChange(state: AppState, payload): Partial<AppState> {
+        const { item, codeMode, value } = payload;
         const key = `${codeMode}Code`;
         const hsKey = key in item;
-        if (!hsKey) throw new Error('key does not match');
+        if (!hsKey) throw new Error(`key ${key} does not exist`);
 
         item[key] = value;
-        return { rules };
+        return {};
     }
 
     //// 3RD PARTY LIBRARY SWITCH (async, active)
     onItemLibSwitchToggle(state: AppState, payload): Partial<AppState> {
-        const { key, lib } = payload;
-        lib[key] = !lib[key];
+        const { key, item } = payload;
+        item[key] = !item[key];
         return {};
     }
 }

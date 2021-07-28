@@ -25,12 +25,14 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
 
     const ID_SUFFIX = `${itemLvl}-${idx}`;
     const isRowExp = isHost && title === expdRowId;
-    const parentCtxIdx: number = parentItemCtx?.ctxIdx;
 
     const { areAllRowsSelected, selectedRowKeys } = selectState;
     const isSelected = areAllRowsSelected || ctxIdx in selectedRowKeys;
     const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeys).length;
-    const itemIdxCtx = { ctxIdx, parentCtxIdx };
+
+    // TODO: Dont use index approach, use `item` instead as there might be Sort, Searched and Pagination in place\
+    const parentItem = parentItemCtx?.item;
+    const pathIdx = isHost ? null : idx;
 
     return <>
             <tr className={REG_ROW}>
@@ -40,6 +42,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`check-${ID_SUFFIX}`}
                         clsSuffix=""
                         checked={isSelected}
+                        // TODO: Change to `item` approach
                         onChange={() => onRowSelectToggle(ctxIdx, dataSrc.length)}
                         />}
                 </td><td>{ isHost &&
@@ -47,7 +50,10 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isHttps'})}
+                        onChange={() => onItemExecSwitchToggle({
+                            item,
+                            id: 'Https'
+                        })}
                         />}
                 </td><td>
                     <div>{ isHost &&
@@ -73,28 +79,28 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
                         disabled={isDelDisabled}
-                        onSelect={arg => onItemJsExecStepChange({...itemIdxCtx, ...arg})}
+                        onSelect={arg => onItemJsExecStepChange({...arg, item})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isJsOn'})}
+                        onChange={() => onItemExecSwitchToggle({item, id: 'Js'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isCssOn'})}
+                        onChange={() => onItemExecSwitchToggle({item, id: 'Css'})}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({ ...itemIdxCtx, key: 'isLibOn'})}
+                        onChange={() => onItemExecSwitchToggle({item, id: 'Lib'})}
                         />
                 </td><td>{ isHost &&
                     <IconBtn
@@ -102,6 +108,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         theme="gray"
                         title="add path rule"
                         disabled={isDelDisabled}
+                        // TODO: Change to `item` approach
                         onClick={() => onAddPathRuleModal({ idx: ctxIdx })}
                         />}
                 </td><td>
@@ -109,14 +116,20 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         icon="edit"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onEditView({ isHost, idx, parentCtxIdx }) }
+                        onClick={() => onEditView({
+                            isHost,
+                            item,
+                            parentItem,
+                            pathIdx,
+                        }) }
                         />
                 </td><td>
                     <IconBtn
                         icon="delete"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onDelModal({ dataSrc, ...itemIdxCtx })}
+                        // TODO: Change to `item` approach
+                        onClick={() => onDelModal({ dataSrc })}
                         />
                 </td>
             </tr>{ nestedItems && isRowExp &&

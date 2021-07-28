@@ -74,7 +74,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onDelLibModalConfirm,
         } = appStateHandler;
 
-        const { isHost, idx: ruleIdx } = activeRule;
+        const { isHost, ruleIdx } = activeRule;
         const EDIT_CTRL_CLS = cssCls('header__ctrl', 'edit');
         const MAIN_CLS = cssCls('main', isListView ? 'list' : 'edit');
         const $view = isListView

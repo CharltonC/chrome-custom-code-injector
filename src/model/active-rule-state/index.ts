@@ -1,7 +1,10 @@
+import { HostRuleConfig, PathRuleConfig } from "../rule-config";
+
 export class ActiveRuleState {
+    item: HostRuleConfig | PathRuleConfig = null;
     isHost: boolean = null;
-    idx: number = null;
-    pathIdx: number = null; // i.e.`.paths[pathIdx]`
+    ruleIdx: number = null;         // index in global data `rules` (i.e. source of truth)
+    pathIdx: number = null;         // index in `rules[ruleIdx].paths`
 
     constructor(arg?: ActiveRuleState) {
         if (!arg) return;

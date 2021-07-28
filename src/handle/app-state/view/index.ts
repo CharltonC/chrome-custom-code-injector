@@ -2,27 +2,27 @@ import { RowSelectHandle } from '../../row-select';
 import { StateHandle } from '../../state';
 import { AppState } from '../../../model/app-state';
 import { LocalState } from '../../../model/local-state';
-import { HandlerHelper } from '../helper';
 import { TextInputState } from '../../../model/text-input-state';
 import { DataGridState } from '../../../model/data-grid-state';
+import { ActiveRuleState } from '../../../model/active-rule-state';
 
 const { defState: rowSelectDefState } = new RowSelectHandle();
 
 export class ViewStateHandler extends StateHandle.BaseStateHandler {
-    onEditView({ rules, localState }: AppState, { isHost, idx, parentCtxIdx }): Partial<AppState> {
-        // Set the current active item
-        const activeRule = {
+    onEditView({ rules, localState }: AppState, payload): Partial<AppState> {
+        const { isHost, item, parentItem, pathIdx } = payload;
+
+        // Find the index in rules
+        const ruleIdx = rules.indexOf(isHost ? item : parentItem);
+        const activeRule = new ActiveRuleState({
             isHost,
-            idx:  isHost ? idx : parentCtxIdx,
-            pathIdx: isHost ? null : idx,
-        };
+            item,
+            ruleIdx,
+            pathIdx
+        });
 
         // Get the title and value of the item to be used in input placeholders
-        const { title, value } = HandlerHelper.getActiveItem({
-            rules,
-            ...activeRule,
-            isActiveItem: true,
-        });
+        const { title, value } = item;
         const activeTitleInput = new TextInputState({ value: title });
         const activeValueInput = new TextInputState({ value });
 

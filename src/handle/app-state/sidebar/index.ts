@@ -1,5 +1,4 @@
 import { StateHandle } from '../../state';
-import { HandlerHelper } from '../helper';
 import { AppState } from '../../../model/app-state';
 import { TextInputState } from '../../../model/text-input-state';
 import { DataGridState } from '../../../model/data-grid-state';
@@ -9,25 +8,23 @@ import * as TSideNav from '../../../component/base/side-nav/type';
 export class SidebarStateHandler extends StateHandle.BaseStateHandler {
     onActiveItemChange({ rules, localState }: AppState, payload: TSideNav.IClickEvtArg): Partial<AppState> {
         const { isChild, idx, parentIdx } = payload;
-        const itemIdx = isChild ? parentIdx : idx;
-        const childItemIdx = isChild ? idx : null
-        const activeRule = {
-            isHost: !isChild,
-            idx: itemIdx,
-            pathIdx: childItemIdx
-        };
-        const { title, value } = HandlerHelper.getActiveItem({
-            rules,
-            ...activeRule,
-            isActiveItem: true,
-        });
+        const isHost = !isChild;
+        const ruleIdx = isHost ? idx : parentIdx;
+        const pathIdx = isChild ? idx : null;
+        const item = isHost ? rules[ruleIdx] : rules[ruleIdx].paths[pathIdx];
+        const { title, value } = item;
         const resetInputState = new TextInputState();
         const resetLibDatagridState = new DataGridState<LibRuleConfig>();
 
         return {
             localState: {
                 ...localState,
-                activeRule,
+                activeRule: {
+                    isHost,
+                    item,
+                    ruleIdx,
+                    pathIdx,
+                },
                 activeTitleInput: {
                     ...resetInputState,
                     value: title,

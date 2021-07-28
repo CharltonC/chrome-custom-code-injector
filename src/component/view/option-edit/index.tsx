@@ -31,10 +31,8 @@ export class OptionEditView extends MemoComponent<IProps> {
             onLibSort,
         } = appStateHandler;
 
-        const { isHost, idx, pathIdx } = activeRule;
-        const hostRule = rules[idx];
-        const rule = hostRule.paths[pathIdx] || hostRule;
-        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase} = rule;
+        const { item, isHost, ruleIdx, pathIdx } = activeRule;
+        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
 
         const isLibTab = activeTabIdx === 2;
         const isJsCode = activeTabIdx === 0;
@@ -43,13 +41,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const codeMode = isJsCode ? 'js' : 'css'
         const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
 
-        const isActiveItem = true;
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
-        const itemIdxCtx = {
-            ctxIdx: isHost ? idx : pathIdx,
-            parentCtxIdx: isHost ? null : idx,
-        };
-
         const { sortOption } = libDataGrid;
         const commonProps = { appState, appStateHandler };
 
@@ -57,7 +49,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             <SideNav
                 list={rules}
                 childListKey="paths"
-                activeItemIdx={idx}
+                activeItemIdx={ruleIdx}
                 activeChildItemIdx={pathIdx}
                 onClick={onActiveItemChange}
                 />
@@ -96,10 +88,10 @@ export class OptionEditView extends MemoComponent<IProps> {
                             icon
                             id="https-switch"
                             label="lock-close"
-                            checked={rule["isHttps"]}
+                            checked={item["isHttps"]}
                             onChange={() => onItemExecSwitchToggle({
-                                ...itemIdxCtx,
-                                key: 'isHttps',
+                                item,
+                                key: 'Https',
                             })}
                             /> }
                         <IconSwitch
@@ -114,25 +106,28 @@ export class OptionEditView extends MemoComponent<IProps> {
                         border={true}
                         list={jsExecStage}
                         selectIdx={jsExecPhase}
-                        onSelect={arg => onItemJsExecStepChange({
-                            ...arg,
-                            isActiveItem,
+                        onSelect={({ selectValueAttrVal }) => onItemJsExecStepChange({
+                            item,
+                            selectValueAttrVal,
                         })} />
                 </section>
                 {/* TOD: section-form field? */}
                 <TabSwitch
                     id="tab-switch"
-                    data={rule}
+                    data={item}
                     dataKeyMap={[
                         ['Js', 'isJsOn'],
                         ['Css', 'isCssOn'],
                         ['Lib', 'isLibOn'],
                     ]}
                     activeTabIdx={activeTabIdx}
-                    onTabActive={onItemActiveExecTabChange}
-                    onTabEnable={arg => onItemExecSwitchToggle({
-                        ...arg,
-                        isActiveItem
+                    onTabActive={({ idx }) => onItemActiveExecTabChange({
+                        item,
+                        idx,
+                    })}
+                    onTabEnable={({ tab }) => onItemExecSwitchToggle({
+                        item,
+                        id: tab.id
                     })}
                     />{ isCode &&
                 <CodeMirror
@@ -143,6 +138,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         lineNumbers: true
                     }}
                     onChange={(...[,,value]) => onItemExecCodeChange({
+                        item,
                         value,
                         codeMode
                     })}
@@ -179,9 +175,9 @@ export class OptionEditView extends MemoComponent<IProps> {
             onDelLibModal,
         } = appStateHandler;
 
-        const { isHost, idx, pathIdx } = activeRule;
-        const host = rules[idx];
-        const { libs } = isHost ? host : host.paths[pathIdx];
+        const { isHost, ruleIdx, pathIdx } = activeRule;
+        const host = rules[ruleIdx];
+        const { libs } = isHost ? host : host?.paths[pathIdx];
         const hsDataSrc = !!libs.length;
 
         const { areAllRowsSelected, selectedRowKeys } = libDataGrid.selectState;
