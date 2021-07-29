@@ -5,7 +5,7 @@ import { UtilHandle } from '../../../handle/util';
  * Used for Component Class Inheritance only for React Component
  */
 export class MemoComponent<P = AObj, S = AObj> extends Component<P, S> {
-    readonly cssCls = (new UtilHandle()).cssCls;
+    readonly cssCls = UtilHandle.cssCls;
 
     shouldComponentUpdate(modProps: AObj, modState: AObj) {
         // Check State 1st (since internal state changes should be prioritized)

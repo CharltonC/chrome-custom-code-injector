@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { IProps } from './type';
 import { UtilHandle } from '../../../handle/util';
 
-const { cssCls } = UtilHandle.prototype;
+const { cssCls } = UtilHandle;
 
 export const Checkbox: React.FC<IProps> = memo((props: IProps) => {
     const { id, label, ltLabel, clsSuffix, ...inputProps } = props;

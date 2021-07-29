@@ -1,7 +1,7 @@
 import { UtilHandle } from '.';
 
 describe('Utility Handle', () => {
-    const { cssCls, createId } = UtilHandle.prototype;
+    const { cssCls, createId } = UtilHandle;
 
     describe('method - cssCls: Get the Class Class based on a base class and a suffix', () => {
         const MOCK_BASE_CLS: string = 'lorem';

@@ -5,7 +5,7 @@ import * as TIcon from '../../static/icon/type';
 import { IProps } from './type';
 
 
-const { cssCls } = UtilHandle.prototype;
+const { cssCls } = UtilHandle;
 const BASE_CLS = 'icon-switch';
 
 export const IconSwitch: React.FC<IProps> = memo((props: IProps) => {

@@ -20,7 +20,7 @@ describe('Component - Data Grid', () => {
     let mockState: any;
     let cmp: DataGrid;
     let spy: AMethodSpy<DataGrid>;
-    let utilHandleSpy: AMethodSpy<UtilHandle>;
+    let cssClsSpy: jest.SpyInstance;
     let rowTransformHandleSpy: AMethodSpy<RowTransformHandle>;
     let rowExpdHandleSpy: AMethodSpy<RowExpdHandle>;
     let sortHandleSpy: AMethodSpy<SortHandle>;
@@ -32,7 +32,7 @@ describe('Component - Data Grid', () => {
         mockProps = { type: 'table' };
         mockState = { isTb: true };
 
-        utilHandleSpy = TestUtil.spyProtoMethods(UtilHandle);
+        cssClsSpy = jest.spyOn(UtilHandle, 'cssCls');
         rowTransformHandleSpy = TestUtil.spyProtoMethods(RowTransformHandle);
         rowExpdHandleSpy = TestUtil.spyProtoMethods(RowExpdHandle);
         sortHandleSpy = TestUtil.spyProtoMethods(SortHandle);
@@ -91,7 +91,7 @@ describe('Component - Data Grid', () => {
                     rowKey: 'id'
                 };
 
-                utilHandleSpy.cssCls.mockReturnValue('lorem');
+                cssClsSpy.mockReturnValue('lorem');
                 spy.getSortedData.mockReturnValue(mockSortedData);
                 spy.getPgnCmpProps.mockReturnValue({ pgn: '' });
                 spy.getHeaderProps.mockReturnValue({});
@@ -135,7 +135,7 @@ describe('Component - Data Grid', () => {
                 mockStateProps(mockProps, mockState);
                 $elem = cmp.render();
 
-                expect(utilHandleSpy.cssCls).toHaveBeenCalledWith(BASE_CLS, mockProps.type);
+                expect(cssClsSpy).toHaveBeenCalledWith(BASE_CLS, mockProps.type);
                 expect(spy.getSortedData).toHaveBeenCalled();
                 expect(spy.getHeaderProps).toHaveBeenCalledWith(mockSortedData);
                 expect(spy.getPgnCmpProps).toHaveBeenCalledWith(mockSortedData);
@@ -371,7 +371,7 @@ describe('Component - Data Grid', () => {
                 mockProps = { component: {} } as IProps;
                 mockState = { isTb: true, headerCtx: { colTotal: 1 }} as IState;
                 spy.getRowCmpExpdProps.mockReturnValue(mockExpdProps);
-                utilHandleSpy.cssCls.mockReturnValue(MOCK_CLS);
+                cssClsSpy.mockReturnValue(MOCK_CLS);
             });
 
             it('should return props when it is table', () => {
@@ -488,7 +488,7 @@ describe('Component - Data Grid', () => {
             const MOCK_CLS = 'lorem';
 
             beforeEach(() => {
-                utilHandleSpy.cssCls.mockReturnValue(MOCK_CLS)
+                cssClsSpy.mockReturnValue(MOCK_CLS)
             });
 
             it('should return wrapped element when it is table', () => {

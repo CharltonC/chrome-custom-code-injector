@@ -1,4 +1,4 @@
-export class UtilHandle {
+export const UtilHandle = {
     cssCls(baseCls: string, clsSuffix: string = ''): string {
         if (!clsSuffix) return baseCls;
 
@@ -10,7 +10,7 @@ export class UtilHandle {
                 },
                 baseCls
             );
-    }
+    },
 
     createId(): string {
         const numberId = Math.random().toString(36).substr(2);
