@@ -1,20 +1,24 @@
 export interface IOption {
     isAll: boolean;
-    rowsCtx?: IRowsContext;
+    rowsCtx?: IRowCtx;
     currState: IState;
 }
 
 export interface IState {
     areAllRowsSelected: boolean;
-    selectedRowKeys: ISelectedRowIndexes;
+    selectedRowKeyCtx: ISelectedRowKeyCtx;
 }
 
-export interface ISelectedRowIndexes {
+export interface ISelectedRowKeyCtx {
     [s: string]: boolean;
 }
 
-export interface IRowsContext {
-    startRowIdx: number;
-    endRowIdx: number;      // non-inclusive
-    rowIdx: number;         // must be within `startIdx` and `endRowidx`
+export interface IRowCtx {
+    rows: IObjWithId[]
+    rowKey: string;
+}
+
+interface IObjWithId {
+    id: string;
+    [k: string]: any;
 }

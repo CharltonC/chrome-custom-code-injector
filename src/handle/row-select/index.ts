@@ -1,8 +1,6 @@
-import { IOption, IState, ISelectedRowIndexes, IRowsContext } from './type';
+import { IOption, IState, ISelectedRowKeyCtx, IRowCtx } from './type';
 
 export class RowSelectHandle {
-    readonly ROW_IDX_ERR: string = '`rowIdx` value must be larger than or equal to `startRowIdx` and smaller than `endRowIdx`';
-
     getState(option: Partial<IOption> = {}): IState {
         const { isAll, rowsCtx, currState } = Object.assign(this.defOption, option);
         return isAll ? this.toggleSelectAll(currState) : this.toggleSelectOne(currState, rowsCtx);
@@ -14,61 +12,47 @@ export class RowSelectHandle {
      * - if all rows are selected, Unselect them all
      * - if no rows are selected, Select them all
      */
-    toggleSelectAll({ areAllRowsSelected, selectedRowKeys }: IState): IState {
-        const isPartiallySelected = selectedRowKeys ? Object.getOwnPropertyNames(selectedRowKeys).length : false;
+    toggleSelectAll({ areAllRowsSelected, selectedRowKeyCtx }: IState): IState {
+        const isPartiallySelected = selectedRowKeyCtx ? Object.getOwnPropertyNames(selectedRowKeyCtx).length : false;
         return {
             areAllRowsSelected: isPartiallySelected ? false : !areAllRowsSelected,
-            selectedRowKeys: {},
+            selectedRowKeyCtx: {},
         };
     }
 
-    toggleSelectOne({ areAllRowsSelected, selectedRowKeys }: IState, { startRowIdx, endRowIdx, rowIdx }: IRowsContext): IState {
-        const { toggleSelect, ROW_IDX_ERR } = this;
-        const totalItems: number = endRowIdx - startRowIdx;             // since `endRowIdx` is not inclusive
-        const selectedRowKeysCopy = { ...selectedRowKeys };
-        const isRowSelected = selectedRowKeys[rowIdx];
-
-        if (rowIdx < startRowIdx || rowIdx >= endRowIdx) throw new Error(ROW_IDX_ERR);
+    toggleSelectOne({ areAllRowsSelected, selectedRowKeyCtx }: IState, { rows, rowKey }: IRowCtx): IState {
+        const { toggleSelect } = this;
+        const isRowSelected = selectedRowKeyCtx[rowKey];
+        const rowsTotal = rows.length;
 
         // Add the rest of checkboxes to selected except current one
         if (areAllRowsSelected) {
-            for (let i = startRowIdx; i < endRowIdx; i++) {
-                const isCurrRow = i === rowIdx;
-                const isSelected = i in selectedRowKeysCopy;
-                const isCurrRowSelected = isCurrRow && isSelected;
-                const isUnselectedNonCurrRow = !isCurrRow && !isSelected;
-
-                if (isCurrRowSelected) {
-                    toggleSelect(selectedRowKeysCopy, i, false);
-
-                } else if (isUnselectedNonCurrRow) {
-                    toggleSelect(selectedRowKeysCopy, i);
-                }
-            }
+            rows.forEach(({ id }) => {
+                const isTargetRow = id === rowKey;
+                if (isTargetRow) return;
+                this.toggleSelect(selectedRowKeyCtx, id);
+            });
+            return { areAllRowsSelected: false, selectedRowKeyCtx };
 
         // Toggle the current checkbox
         } else {
-            toggleSelect(selectedRowKeysCopy, rowIdx, !isRowSelected);
+            toggleSelect(selectedRowKeyCtx, rowKey, !isRowSelected);
+            const areAllSelected = rowsTotal === Object.entries(selectedRowKeyCtx).length;
+            return areAllSelected
+                ? { areAllRowsSelected: true, selectedRowKeyCtx: {} }
+                : { areAllRowsSelected: false, selectedRowKeyCtx };
         }
-
-        // if All checkboxes are selected at that page AFTER the abv operation
-        const wereAllSelected = Object.entries(selectedRowKeysCopy).length === totalItems;
-
-        return {
-            areAllRowsSelected: wereAllSelected ? true : (areAllRowsSelected ? false : areAllRowsSelected),
-            selectedRowKeys: wereAllSelected ? {} : selectedRowKeysCopy
-        };
     }
 
-    toggleSelect(selectedRowKeys: ISelectedRowIndexes, rowIdx: number, doSelect: boolean = true) {
-        selectedRowKeys[rowIdx] = doSelect ? true : null;
-        if (!doSelect) delete selectedRowKeys[rowIdx];
+    toggleSelect(selectedRowKeyCtx: ISelectedRowKeyCtx, rowKey: string, doSelect = true) {
+        selectedRowKeyCtx[rowKey] = doSelect ? true : null;
+        if (!doSelect) delete selectedRowKeyCtx[rowKey];
     }
 
     get defState(): IState {
         return {
             areAllRowsSelected: false,
-            selectedRowKeys: {}
+            selectedRowKeyCtx: {}
         };
     }
 

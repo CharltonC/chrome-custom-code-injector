@@ -39,14 +39,14 @@ describe('Row Select Handle', () => {
         it('should return all selected if no rows are currently selected', () => {
             expect(handle.toggleSelectAll({ areAllRowsSelected: false } as IState)).toEqual({
                 areAllRowsSelected: true,
-                selectedRowKeys: {},
+                selectedRowKeyCtx: {},
             });
         });
 
         it('should return all unselected if no rows are currently selected', () => {
             expect(handle.toggleSelectAll({ areAllRowsSelected: true } as IState)).toEqual({
                 areAllRowsSelected: false,
-                selectedRowKeys: {},
+                selectedRowKeyCtx: {},
             });
         });
 
@@ -54,116 +54,88 @@ describe('Row Select Handle', () => {
             const mockSelectedRowKeys = { '0': true };
             expect(handle.toggleSelectAll({
                 areAllRowsSelected: false,
-                selectedRowKeys: mockSelectedRowKeys
+                selectedRowKeyCtx: mockSelectedRowKeys
             } as IState)).toEqual({
                 areAllRowsSelected: false,
-                selectedRowKeys: {},
+                selectedRowKeyCtx: {},
             });
         });
     });
 
     describe('Method - toggleSelectOne: Select/Unselect a single row', () => {
-        it('should return partially selected state when all rows are currently selected', () => {
-            const mockCurrState = { areAllRowsSelected: true, selectedRowKeys: {} };
+        const mockRows = [
+            { id: 'one' },
+            { id: 'two' },
+            { id: 'three' },
+        ];
 
-            expect(handle.toggleSelectOne(mockCurrState, {
-                startRowIdx: 1,
-                endRowIdx: 4,
-                rowIdx: 3
-            })).toEqual({
-                areAllRowsSelected: false,
-                selectedRowKeys: { 1: true, 2: true, }
-            });
-
-            expect(handle.toggleSelectOne(mockCurrState, {
-                startRowIdx: 1,
-                endRowIdx: 4,
-                rowIdx: 1
-            })).toEqual({
-                areAllRowsSelected: false,
-                selectedRowKeys: { 2: true, 3: true, }
-            });
-
-            expect(handle.toggleSelectOne({ ...mockCurrState, selectedRowKeys: { 1: true } }, {
-                startRowIdx: 1,
-                endRowIdx: 4,
-                rowIdx: 1
-            })).toEqual({
-                areAllRowsSelected: false,
-                selectedRowKeys: { 2: true, 3: true }
-            });
-        });
-
-        it('should return state when all rows are currently unselected', () => {
+        it('should return state where all other rows selected except target row', () => {
             const mockCurrState = {
-                areAllRowsSelected: false,
-                selectedRowKeys: { 1: true }
+                areAllRowsSelected: true,
+                selectedRowKeyCtx: {}
             };
 
             expect(handle.toggleSelectOne(mockCurrState, {
-                startRowIdx: 1,
-                endRowIdx: 4,
-                rowIdx: 1
+                rows: mockRows,
+                rowKey: 'one'
             })).toEqual({
                 areAllRowsSelected: false,
-                selectedRowKeys: {}
+                selectedRowKeyCtx: {
+                    'two': true,
+                    'three': true,
+                }
             });
-
-            expect(handle.toggleSelectOne(mockCurrState, {
-                startRowIdx: 1,
-                endRowIdx: 4,
-                rowIdx: 2
-            })).toEqual({
-                areAllRowsSelected: false,
-                selectedRowKeys: { 1: true, 2: true }
-            });
-
-            const modState = handle.toggleSelectOne(mockCurrState, {
-                startRowIdx: 1,
-                endRowIdx: 4,
-                rowIdx: 2
-            });
-            expect(handle.toggleSelectOne(modState, {
-                startRowIdx: 1,
-                endRowIdx: 4,
-                rowIdx: 3
-            })).toEqual({
-                areAllRowsSelected: true,
-                selectedRowKeys: {}
-            })
         });
 
-        it('should throw error when row index is in conflict with either row start index or row end index', () => {
-            const mockCurrState = { areAllRowsSelected: true, selectedRowKeys: {} };
+        it('should return state where target row is toggled when not all rows are selected', () => {
+            const mockCurrState = {
+                areAllRowsSelected: false,
+                selectedRowKeyCtx: {
+                    'one': true,
+                    'two': true
+                }
+            };
 
-            expect(() => {
-                handle.toggleSelectOne(mockCurrState, {
-                    startRowIdx: 1,
-                    endRowIdx: 2,
-                    rowIdx: 10
-                });
-            }).toThrowError(handle.ROW_IDX_ERR);
+            expect(handle.toggleSelectOne(mockCurrState, {
+                rows: mockRows,
+                rowKey: 'one'
+            })).toEqual({
+                areAllRowsSelected: false,
+                selectedRowKeyCtx: {
+                    'two': true,
+                }
+            });
+        });
 
-            expect(() => {
-                handle.toggleSelectOne(mockCurrState, {
-                    startRowIdx: 1,
-                    endRowIdx: 2,
-                    rowIdx: 2
-                });
-            }).toThrowError(handle.ROW_IDX_ERR);
+        it('should return state where all rows are selected when all rows are selected except target row', () => {
+            const mockCurrState = {
+                areAllRowsSelected: false,
+                selectedRowKeyCtx: {
+                    'one': true,
+                    'two': true
+                }
+            };
+
+            expect(handle.toggleSelectOne(mockCurrState, {
+                rows: mockRows,
+                rowKey: 'three'
+            })).toEqual({
+                areAllRowsSelected: true,
+                selectedRowKeyCtx: {}
+            });
         });
     });
 
     describe('Method - toggleSelect', () => {
-        const mockRowIdx = 1;
+        const mockRowKey = 'mock-row-key';
         const mockSelectIndexes = {};
 
         it('should toggle', () => {
-            handle.toggleSelect(mockSelectIndexes, mockRowIdx);
-            expect(mockSelectIndexes[mockRowIdx]).toBeTruthy();
+            handle.toggleSelect(mockSelectIndexes, mockRowKey);
+            expect(mockSelectIndexes[mockRowKey]).toBeTruthy();
 
-            handle.toggleSelect(mockSelectIndexes, mockRowIdx, false);
-            expect(mockSelectIndexes[mockRowIdx]).toBeFalsy();
+            handle.toggleSelect(mockSelectIndexes, mockRowKey, false);
+            expect(mockSelectIndexes[mockRowKey]).toBeFalsy();
         });
     });
 
@@ -174,7 +146,7 @@ describe('Row Select Handle', () => {
                 rowsCtx: null,
                 currState: {
                     areAllRowsSelected: false,
-                    selectedRowKeys: {},
+                    selectedRowKeyCtx: {},
                 }
             });
         });
@@ -182,7 +154,7 @@ describe('Row Select Handle', () => {
         it('should return default state', () => {
             expect(handle.defState).toEqual({
                 areAllRowsSelected: false,
-                selectedRowKeys: {}
+                selectedRowKeyCtx: {}
             });
         });
     });
