@@ -1,5 +1,12 @@
 import { BaseRuleConfig, PathRuleConfig, HostRuleConfig, LibRuleConfig } from '.';
 
+const mockId = '';
+jest.mock('../../handle/util', () => ({
+    UtilHandle: {
+        createId: () => mockId
+    }
+}));
+
 describe('Rule Config Model', () => {
     const mockTitle = 'title';
     const mockValue = 'value';
@@ -16,6 +23,7 @@ describe('Rule Config Model', () => {
     it('should return default values for `PathRuleConfig`', () => {
         expect(new PathRuleConfig(mockTitle, mockValue)).toEqual({
             ...(new BaseRuleConfig()),
+            id: '',
             title: mockTitle,
             value: mockValue,
             jsCode: '',
@@ -30,6 +38,7 @@ describe('Rule Config Model', () => {
         expect(new HostRuleConfig(mockTitle, mockValue)).toEqual({
             ...(new BaseRuleConfig()),
             ...(new PathRuleConfig(mockTitle, mockValue)),
+            id: '',
             isHost: true,
             isHttps: false,
             paths: []
@@ -38,6 +47,7 @@ describe('Rule Config Model', () => {
 
     it('should return default values for `LibRuleConfig`', () => {
         expect(new LibRuleConfig(mockTitle, mockValue)).toEqual({
+            id: '',
             title: mockTitle,
             value: mockValue,
             isOn: false,

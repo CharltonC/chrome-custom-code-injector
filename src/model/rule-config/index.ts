@@ -5,8 +5,6 @@
 import { UtilHandle } from '../../handle/util';
 import { AJsExecPhase } from './type';
 
-const utilHandle = new UtilHandle();
-
 export class BaseRuleConfig {
     isJsOn = false;
     isCssOn = false;
@@ -16,6 +14,7 @@ export class BaseRuleConfig {
 
 export class PathRuleConfig extends BaseRuleConfig {
     id: string;
+    isHost: boolean;
     title = '';
     value = '';
     jsCode = '';
@@ -25,7 +24,7 @@ export class PathRuleConfig extends BaseRuleConfig {
 
     constructor(title: string, value: string) {
         super();
-        this.id = utilHandle.createId();
+        this.id = UtilHandle.createId();
         this.title = title;
         this.value = value;
     }
@@ -45,7 +44,7 @@ export class LibRuleConfig {
     isAsync = true;
 
     constructor(title: string, value: string) {
-        this.id = utilHandle.createId();
+        this.id = UtilHandle.createId();
         this.title = title;
         this.value = value;
     }
