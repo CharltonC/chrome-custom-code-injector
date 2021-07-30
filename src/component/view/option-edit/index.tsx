@@ -14,44 +14,63 @@ import { DataGrid } from '../../widget/data-grid';
 import { jsExecStage } from '../../../constant/js-exec-stage';
 import { TbRow } from './tb-row';
 import * as TSortHandle from '../../../handle/sort/type';
+import * as TSideNav from '../../../component/base/side-nav/type';
 import { IProps } from './type';
+import { HostRuleConfig, PathRuleConfig } from '../../../data/model/rule-config';
+import { HandlerHelper } from '../../../state/handler/helper';
+
+const { getRuleIdxCtx, getRuleFromIdx } = HandlerHelper;
 
 export class OptionEditView extends MemoComponent<IProps> {
+    constructor(props) {
+        super(props);
+        this.onSidebarItemClick = this.onSidebarItemClick.bind(this);
+    }
+
     render() {
         const { headerProps, props } = this;
         const { appState, appStateHandler } = props;
+        const commonProps = { appState, appStateHandler };
+
+        //// STATE
         const { rules, localState } = appState;
         const { activeTitleInput, activeValueInput, activeRule, libDataGrid } = localState;
+
+        //// HANDLER
         const {
-            onActiveItemChange,
-            onActiveRuleTitleInput, onActiveRuleValueInput,
+            onActiveRuleTitleInput,
+            onActiveRuleValueInput,
             onItemJsExecStepChange,
-            onItemActiveExecTabChange, onItemExecCodeChange,
+            onItemActiveExecTabChange,
+            onItemExecCodeChange,
             onItemExecSwitchToggle,
             onLibSort,
         } = appStateHandler;
 
-        const { item, isHost, ruleIdx, pathIdx } = activeRule;
-        const { activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
-
+        //// ITEM
+        const { type } = activeRule;
+        const { hostIdx, pathIdx } = getRuleIdxCtx({ ...activeRule, rules});
+        const item = getRuleFromIdx({ type, rules, hostIdx, pathIdx }) as HostRuleConfig | PathRuleConfig;
+        const { isHost, activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
         const isLibTab = activeTabIdx === 2;
         const isJsCode = activeTabIdx === 0;
         const isCssCode = activeTabIdx === 1;
         const isCode = isJsCode || isCssCode;
         const codeMode = isJsCode ? 'js' : 'css'
         const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
-
-        const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
         const { sortOption } = libDataGrid;
-        const commonProps = { appState, appStateHandler };
+
+        //// INPUT PLACEHOLDER
+        const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
+
 
         return (<>
             <SideNav
                 list={rules}
                 childListKey="paths"
-                activeItemIdx={ruleIdx}
+                activeItemIdx={hostIdx}
                 activeChildItemIdx={pathIdx}
-                onClick={onActiveItemChange}
+                onClick={this.onSidebarItemClick}
                 />
             <div className="main--edit__form">
                 <section className="fm-field">
@@ -180,8 +199,8 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { libs } = isHost ? host : host?.paths[pathIdx];
         const hsDataSrc = !!libs.length;
 
-        const { areAllRowsSelected, selectedRowKeys } = libDataGrid.selectState;
-        const totalSelected = Object.entries(selectedRowKeys).length;
+        const { areAllRowsSelected, selectedRowKeyCtx } = libDataGrid.selectState;
+        const totalSelected = Object.entries(selectedRowKeyCtx).length;
         const hsSelected = areAllRowsSelected || !!totalSelected;
         const isPartialSelected = !areAllRowsSelected && !!totalSelected;
         const isAddDisabled = areAllRowsSelected || !!totalSelected;
@@ -235,5 +254,14 @@ export class OptionEditView extends MemoComponent<IProps> {
                 <SortBtn {...sortBtnProps} disabled={disabled} />
             </>
         );
+    }
+
+    onSidebarItemClick({ item, isChild, parentIdx}: TSideNav.IClickEvtArg) {
+        const { appState, appStateHandler } = this.props;
+        const { id } = item as HostRuleConfig | PathRuleConfig;
+        const hostId = isChild ? appState.rules[parentIdx].id : id;
+        const pathId = isChild ? id : null;
+        const type = isChild ? 'path' : 'host';
+        appStateHandler.onSidebarItemClick({ type, hostId, pathId });
     }
 }

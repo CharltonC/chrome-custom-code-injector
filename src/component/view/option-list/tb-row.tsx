@@ -11,28 +11,27 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { dataSrc, ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
     const { appState, appStateHandler } = commonProps;
     const { localState } = appState;
+    const { ruleDataGrid } = localState;
 
-    const { selectState, expdRowId } = localState.ruleDataGrid;
+    const { selectState, expdRowId } = ruleDataGrid;
 
     const {
-        onDelModal, onAddPathRuleModal,
+        onListViewAddPathModal,
         onItemExecSwitchToggle, onItemJsExecStepChange,
         onEditView, onRowExpand, onRowSelectToggle,
     } = appStateHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
-    const { isHost, isHttps, title, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
+    const { isHost, id, isHttps, title, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
 
     const ID_SUFFIX = `${itemLvl}-${idx}`;
     const isRowExp = isHost && title === expdRowId;
 
-    const { areAllRowsSelected, selectedRowKeys } = selectState;
-    const isSelected = areAllRowsSelected || ctxIdx in selectedRowKeys;
-    const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeys).length;
+    const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
+    const isSelected = areAllRowsSelected || ctxIdx in selectedRowKeyCtx;
+    const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeyCtx).length;
 
-    // TODO: Dont use index approach, use `item` instead as there might be Sort, Searched and Pagination in place\
     const parentItem = parentItemCtx?.item;
-    const pathIdx = isHost ? null : idx;
 
     return <>
             <tr className={REG_ROW}>
@@ -109,7 +108,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         title="add path rule"
                         disabled={isDelDisabled}
                         // TODO: Change to `item` approach
-                        onClick={() => onAddPathRuleModal({ idx: ctxIdx })}
+                        onClick={() => onListViewAddPathModal({ idx: ctxIdx })}
                         />}
                 </td><td>
                     <IconBtn
@@ -117,10 +116,9 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         theme="gray"
                         disabled={isDelDisabled}
                         onClick={() => onEditView({
-                            isHost,
-                            item,
-                            parentItem,
-                            pathIdx,
+                            type: isHost ? 'host' : 'path',
+                            hostId: isHost ? id : parentItem.id,
+                            pathId: isHost ? null : id,
                         }) }
                         />
                 </td><td>
@@ -129,7 +127,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         theme="gray"
                         disabled={isDelDisabled}
                         // TODO: Change to `item` approach
-                        onClick={() => onDelModal({ dataSrc })}
+                        onClick={() => {}}
                         />
                 </td>
             </tr>{ nestedItems && isRowExp &&

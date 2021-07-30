@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
-import { AppState } from '../../../model/app-state';
+import { AppState } from '../../../state/model';
 
 // TODO: Type for props
 export const TbRow: React.FC<any> = memo((props) => {
@@ -19,9 +19,9 @@ export const TbRow: React.FC<any> = memo((props) => {
 
     // Data Grid State
     const { selectState } = localState.libDataGrid;
-    const { areAllRowsSelected, selectedRowKeys } = selectState;
-    const isSelected = areAllRowsSelected || idx in selectedRowKeys;
-    const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeys).length;
+    const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
+    const isSelected = areAllRowsSelected || idx in selectedRowKeyCtx;
+    const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeyCtx).length;
 
     //// STATE HANDLER
     const {

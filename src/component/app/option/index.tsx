@@ -62,12 +62,11 @@ export class OptionApp extends MemoComponent<IProps> {
         const {
             onListView,
             onSearchTextClear,
-            onModalCancel, onSettingModal, onImportConfigFileModal, onExportConfigFileModal, onAddPathRuleModal, onRmvActiveItem,
-            onAddHostModalRuleConfirm, onAddPathRuleModalConfirm,
-            onDelModalConfirm,
+            onModalCancel, onSettingModal, onImportSettingModal, onExportSettingModal, onListViewAddPathModal, onRmvActiveItem,
+            onAddHostModalOk, onListViewAddPathModalOk,
             onResetAll, onDelConfirmDialogToggle, onResultsPerPageChange, onDefHostRuleToggle, onDefJsExecStageChange,
-            onImportConfigFileModalInputChange, onImportConfigFileModalConfirm,
-            onExportConfigFileModalInputChange, onExportConfigFileModalConfirm,
+            onImportConfigFileModalInputChange, onImportSettingModalOk,
+            onExportConfigFileModalInputChange, onExportSettingModalOk,
             onModalTitleInput, onModalValueInput,
             onAddLibModalConfirm,
             onEditLibModalConfirm,
@@ -97,7 +96,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="add"
                             theme="white"
-                            onClick={() => onAddPathRuleModal({
+                            onClick={() => onListViewAddPathModal({
                                 idx: ruleIdx
                             })}
                         />}
@@ -126,14 +125,14 @@ export class OptionApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="download"
                             theme="white"
-                            onClick={onImportConfigFileModal}
+                            onClick={onImportSettingModal}
                             />
                         <IconBtn
                             icon="download"
                             theme="white"
                             clsSuffix="upload"
                             disabled={!rules.length}
-                            onClick={onExportConfigFileModal}
+                            onClick={onExportSettingModal}
                             />
                     </div>
                 </header>
@@ -242,7 +241,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         confirm="IMPORT"
                         confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onImportConfigFileModalConfirm}
+                        onConfirm={onImportSettingModalOk}
                         >
                         <FileInput
                             id="json-import-input"
@@ -261,7 +260,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         confirm="EXPORT"
                         confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onExportConfigFileModalConfirm}
+                        onConfirm={onExportSettingModalOk}
                         >
                         <TextInput
                             id=""
@@ -286,7 +285,6 @@ export class OptionApp extends MemoComponent<IProps> {
                         cancel="CANCEL"
                         confirm="remove"
                         onCancel={onModalCancel}
-                        onConfirm={onDelModalConfirm}
                         >
                         <Checkbox
                             id="setting-delete-confirm"
@@ -320,7 +318,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         confirm="SAVE"
                         confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onAddHostModalRuleConfirm}
+                        onConfirm={onAddHostModalOk}
                         >
                         <TextInput
                             id="host-title"
@@ -370,7 +368,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         confirm="SAVE"
                         confirmDisabled={!isModalConfirmBtnEnabled}
                         onCancel={onModalCancel}
-                        onConfirm={onAddPathRuleModalConfirm}
+                        onConfirm={onListViewAddPathModalOk}
                         >
                         <TextInput
                             id="path-title"
