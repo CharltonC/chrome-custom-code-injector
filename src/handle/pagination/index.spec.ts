@@ -413,7 +413,7 @@ describe('Class - Paginate Handle', () => {
             });
         });
 
-        describe('Method: getPageIdxForSpread -  calculating corresponding page index for left/right spread', () => {
+        describe('Method: getPageIdxForSpread - calculating corresponding page index for left/right spread', () => {
             const { getPageIdxForSpread } = PgnHandle.prototype;
             const mockMaxSpread: number = 3;
 

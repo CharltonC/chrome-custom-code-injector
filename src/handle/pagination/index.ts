@@ -201,39 +201,6 @@ export class PgnHandle implements IUiHandle {
     }
 
     /**
-     *
-     * Formula for calculating a row's end index used for rows removal at a specific page when all rows are selected
-     * - e.g.
-     * Total Rows | Per Page | Start Row Index | Removal Indexes | End Index (which needs to be calculated)
-     * -----------------------------------------------------------------
-     * 3          | 2        | 0               | 0-1             | 2
-     * 3          | 2        | 2               | 2               | 3
-     * 5          | 10       | 0               | 0-4             | 5
-     * 2          | 1        | 0               | 0               | 1
-     * 2          | 1        | 1               | 1               | 2
-     */
-    getPgnRowIdxCtx(rowTotal: number, option: IOption, state: IState) {
-        const { increment, incrementIdx } = option;
-        const { startIdx, endIdx } = state;
-
-        // either the total no. of results per page OR the total results
-        // - e.g. 10 per page, 5 total results --> max no. of items shown on that page is 5
-        // - e.g. 5 per page, 10 results --> max no. of items shown on that page is 5
-        const totalVisibleRowsAllowed = Math.min(rowTotal, increment[incrementIdx]);
-
-        // Find in the actual end index of the row in the actual data based on the pagination context
-        const assumeEndIdx = startIdx + (Number.isInteger(endIdx) ? endIdx : totalVisibleRowsAllowed);
-        const endRowIdx = assumeEndIdx <= rowTotal ? assumeEndIdx : rowTotal;
-
-        return {
-            startRowIdx: startIdx,
-            endRowIdx,
-            totalVisibleRows: endRowIdx - startIdx,
-            totalVisibleRowsAllowed
-        };
-    }
-
-    /**
      * Forumla for calculating corresponding page index for left/right spread '...' based on the
      * context of current page and the maxSpread (no. of pages between current and target page)
      *
