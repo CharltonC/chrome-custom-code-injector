@@ -3,7 +3,7 @@
  * e.g. id, value, isHttps, isRegex
  */
 import { UtilHandle } from '../../handle/util';
-import { AJsExecPhase } from './type';
+import { AJsExecPhase, AActiveTabIdx } from './type';
 
 export class BaseRuleConfig {
     isJsOn = false;
@@ -49,5 +49,3 @@ export class LibRuleConfig {
         this.value = value;
     }
 }
-
-export type AActiveTabIdx = 0 | 1 | 2;

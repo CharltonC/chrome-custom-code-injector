@@ -1,4 +1,4 @@
-import { HostRuleConfig, LibRuleConfig, PathRuleConfig, AActiveTabIdx } from "../../model/rule-config";
+import { HostRuleConfig, LibRuleConfig, PathRuleConfig } from "../../model/rule-config";
 import { HandlerHelper } from "../app-state/helper";
 import * as TRuleConfig from "../../model/rule-config/type";
 import * as TPgnType from "../pagination/type";
@@ -51,7 +51,7 @@ export class DataCrudHandle {
 
     setLastActiveTab(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
-        item.activeTabIdx = val as AActiveTabIdx;
+        item.activeTabIdx = val as TRuleConfig.AActiveTabIdx;
     }
 
     toggleJsSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
