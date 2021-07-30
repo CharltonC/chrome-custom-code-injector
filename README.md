@@ -78,7 +78,7 @@ gulp build-ts:lint
 gulp build-ts:test [--watch]?
 ```    
 
-
+## TODO: Update
 ## Folder Structure
     .storybook/                 // setting for Storybook (doc generation tool)
         main.js                 // webpack config to be merged with storybook's default config
