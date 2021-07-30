@@ -1,12 +1,5 @@
 import { dataCrudHandle } from '.';
 import { HostRuleConfig, LibRuleConfig } from '../model/rule-config';
-import { HandlerHelper } from '../../state/handler/helper';
-
-jest.mock('../../state/handler/helper', () => ({
-    HandlerHelper: {
-        getPgnRowIdxCtx: () => ({})
-    }
-}));
 
 describe('Data Crud Handle', () => {
     let mockRules: HostRuleConfig[];
@@ -320,7 +313,7 @@ describe('Data Crud Handle', () => {
                     .spyOn(dataCrudHandle, 'getRuleFromIdCtx')
                     .mockReturnValue(mockPath);
                 jest
-                    .spyOn(HandlerHelper, 'getPgnRowIdxCtx')
+                    .spyOn(dataCrudHandle.pgnHandle, 'getPgnRowIdxCtx')
                     .mockReturnValue(mockPaginationCtx);
             });
 

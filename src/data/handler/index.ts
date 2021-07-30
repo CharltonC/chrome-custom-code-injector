@@ -1,13 +1,15 @@
-import { HostRuleConfig, LibRuleConfig, PathRuleConfig } from "../model/rule-config";
-import { HandlerHelper } from "../../state/handler/helper";
-import * as TRuleConfig from "../model/rule-config/type";
-import * as TPgnType from "../../handle/pagination/type";
-import { IRuleIdCtx, IRuleIdxCtx } from "./type";
+import { HostRuleConfig, LibRuleConfig, PathRuleConfig } from '../model/rule-config';
+import { PgnHandle } from '../../handle/pagination';
+import * as TRuleConfig from '../model/rule-config/type';
+import * as TPgnType from '../../handle/pagination/type';
+import { IRuleIdCtx, IRuleIdxCtx } from './type';
 
 type AAnyRule = HostRuleConfig | PathRuleConfig | LibRuleConfig;
 type AHostPathRule = HostRuleConfig | PathRuleConfig;
 
 export class DataCrudHandle {
+    pgnHandle = new PgnHandle();
+
     //// GET
     getRuleIdxCtxFromIdCtx(rules: HostRuleConfig[], idCtx: IRuleIdCtx): IRuleIdxCtx {
         const { hostId, pathId, libId } = idCtx;
@@ -143,7 +145,7 @@ export class DataCrudHandle {
 
     //// REMOVE ALL
     rmvAllHosts(rules: HostRuleConfig[], pgnOption: TPgnType.IOption, pgnState: TPgnType.IState): void {
-        const { startRowIdx, endRowIdx } = HandlerHelper.getPgnRowIdxCtx(
+        const { startRowIdx, endRowIdx } = this.getPgnRowIdxCtx(
             rules.length,
             pgnOption,
             pgnState
@@ -156,7 +158,7 @@ export class DataCrudHandle {
 
     rmvAllLibs(rules: HostRuleConfig[], pgnOption: TPgnType.IOption, pgnState: TPgnType.IState, idCtx: IRuleIdCtx): void {
         const { libs } = this.getRuleFromIdCtx(rules, idCtx) as PathRuleConfig;
-        const { startRowIdx, endRowIdx } = HandlerHelper.getPgnRowIdxCtx(
+        const { startRowIdx, endRowIdx } = this.getPgnRowIdxCtx(
             libs.length,
             pgnOption,
             pgnState
@@ -165,6 +167,10 @@ export class DataCrudHandle {
             const idx = libs.findIndex(({ id }) => id === rowId);
             libs.splice(idx, 1);
         });
+    }
+
+    get getPgnRowIdxCtx() {
+        return this.pgnHandle.getPgnRowIdxCtx;
     }
 }
 
