@@ -1,5 +1,4 @@
 import { resultsPerPage } from '../../../constant/result-per-page';
-import { HostRuleConfig } from '../../../data/model/rule-config';
 import { SettingState } from '../setting-state';
 import * as TSort from '../../../handle/sort/type';
 import * as TPgn from '../../../handle/pagination/type';
@@ -7,12 +6,7 @@ import * as TRowSelect from '../../../handle/row-select/type';
 
 const { resultsPerPageIdx } = new SettingState();
 
-export class DataGridState<T = HostRuleConfig> {
-    // Rows used by Modal Delete Confirm `onDelModalConfirm`
-    // - temp storage which points to the current FULL SET of sorted data if exist or plain data (either searched or non-search)
-    // - UNPAGINATED
-    dataSrc: T[]= null;
-
+export class DataGridState {
     // Sort
     sortOption: Partial<TSort.IOption> = { reset: true };
 

@@ -1,5 +1,4 @@
 export class ActiveRuleState {
-    type: 'host' | 'path' | 'lib';
     hostId: string;
     pathId?: string;
     libId?: string;
