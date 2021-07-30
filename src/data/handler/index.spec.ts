@@ -303,22 +303,20 @@ describe('Data Crud Handle', () => {
         });
 
         describe('Remove All', () => {
+            const mockSliceIdxCtx = {
+                startIdx: 1,
+                endIdx: 3,
+            };
+
             beforeEach(() => {
                 const mockPath: any = { libs: mockLibs };
-                const mockPaginationCtx: any = {
-                    startRowIdx: 1,
-                    endRowIdx: 3,
-                };
                 jest
                     .spyOn(dataCrudHandle, 'getRuleFromIdCtx')
                     .mockReturnValue(mockPath);
-                jest
-                    .spyOn(dataCrudHandle.pgnHandle, 'getPgnRowIdxCtx')
-                    .mockReturnValue(mockPaginationCtx);
             });
 
             it('Method - rmvAllHosts: Remove all hosts', () => {
-                dataCrudHandle.rmvAllHosts(mockRules, null, null);
+                dataCrudHandle.rmvAllHosts(mockRules, mockSliceIdxCtx);
                 expect(mockRules.length).toBe(1);
             });
 
@@ -326,8 +324,7 @@ describe('Data Crud Handle', () => {
                 const mockIdCtx: any = {};
                 dataCrudHandle.rmvAllLibs(
                     mockRules,
-                    null,
-                    null,
+                    mockSliceIdxCtx,
                     mockIdCtx
                 );
                 expect(mockLibs.length).toBe(1);

@@ -1,15 +1,8 @@
 import { HostRuleConfig, LibRuleConfig, PathRuleConfig } from '../model/rule-config';
-import { PgnHandle } from '../../handle/pagination';
 import * as TRuleConfig from '../model/rule-config/type';
-import * as TPgnType from '../../handle/pagination/type';
-import { IRuleIdCtx, IRuleIdxCtx } from './type';
-
-type AAnyRule = HostRuleConfig | PathRuleConfig | LibRuleConfig;
-type AHostPathRule = HostRuleConfig | PathRuleConfig;
+import { IRuleIdCtx, IRuleIdxCtx, ISliceIdxCtx, AAnyRule, AHostPathRule } from './type';
 
 export class DataCrudHandle {
-    pgnHandle = new PgnHandle();
-
     //// GET
     getRuleIdxCtxFromIdCtx(rules: HostRuleConfig[], idCtx: IRuleIdCtx): IRuleIdxCtx {
         const { hostId, pathId, libId } = idCtx;
@@ -144,33 +137,21 @@ export class DataCrudHandle {
     }
 
     //// REMOVE ALL
-    rmvAllHosts(rules: HostRuleConfig[], pgnOption: TPgnType.IOption, pgnState: TPgnType.IState): void {
-        const { startRowIdx, endRowIdx } = this.getPgnRowIdxCtx(
-            rules.length,
-            pgnOption,
-            pgnState
-        );
-        rules.slice(startRowIdx, endRowIdx).forEach(({ id: rowId }) => {
+    rmvAllHosts(rules: HostRuleConfig[], sliceIdxCtx: ISliceIdxCtx): void {
+        const { startIdx, endIdx } = sliceIdxCtx;
+        rules.slice(startIdx, endIdx).forEach(({ id: rowId }) => {
             const idx = rules.findIndex(({ id }) => id === rowId);
             rules.splice(idx, 1);
         });
     }
 
-    rmvAllLibs(rules: HostRuleConfig[], pgnOption: TPgnType.IOption, pgnState: TPgnType.IState, idCtx: IRuleIdCtx): void {
+    rmvAllLibs(rules: HostRuleConfig[], sliceIdxCtx: ISliceIdxCtx, idCtx: IRuleIdCtx): void {
         const { libs } = this.getRuleFromIdCtx(rules, idCtx) as PathRuleConfig;
-        const { startRowIdx, endRowIdx } = this.getPgnRowIdxCtx(
-            libs.length,
-            pgnOption,
-            pgnState
-        );
-        libs.slice(startRowIdx, endRowIdx).forEach(({ id: rowId }) => {
+        const { startIdx, endIdx } = sliceIdxCtx;
+        libs.slice(startIdx, endIdx).forEach(({ id: rowId }) => {
             const idx = libs.findIndex(({ id }) => id === rowId);
             libs.splice(idx, 1);
         });
-    }
-
-    get getPgnRowIdxCtx() {
-        return this.pgnHandle.getPgnRowIdxCtx;
     }
 }
 
