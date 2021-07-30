@@ -2,7 +2,7 @@ import { TestUtil } from '../../../asset/ts/test-util';
 import { AppStateHandler } from '../../../state/handler';
 import { StateHandle } from '../../../handle/state';
 import { AppState } from '../../../state/model';
-import { createMockAppState } from '../../../mock/app-state';
+import { createMockAppState } from '../../../state/mock';
 import { OptionApp } from '.';
 
 describe('Component - Option App (UI/E2E)', () => {

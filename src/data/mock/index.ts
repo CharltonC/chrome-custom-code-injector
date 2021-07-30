@@ -1,5 +1,4 @@
-import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../data/model/rule-config';
-import { AppState } from '../state/model';
+import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../model/rule-config';
 
 const mockHostRuleConfigs: [string, string][] = [
     ['Ebay', 'www.ebay.com'],
@@ -20,15 +19,14 @@ const mockLibRuleConfigs: [string, string][] = [
     ['Bootstrap', 'bootstrap.com'],
 ]
 
-export const createMockAppState = (): AppState =>  {
-    const { rules, setting, localState } = new AppState();
-
-    mockHostRuleConfigs.forEach(([ hostId, hostValue]) => {
-        const hostRuleConfig = new HostRuleConfig(hostId, hostValue);
+export const createMockRules = () => {
+    return mockHostRuleConfigs.map(rule => {
+        const [ hostId, hostValue] = rule;
+        const host = new HostRuleConfig(hostId, hostValue);
 
         mockPathRuleConfigs.forEach(([ pathId, pathValue]) => {
             const pathRuleConfig = new PathRuleConfig(`${hostId}${pathId}`, pathValue);
-            hostRuleConfig.paths.push(pathRuleConfig);
+            host.paths.push(pathRuleConfig);
 
             mockLibRuleConfigs.forEach(([ libId, libValue ]) => {
                 pathRuleConfig.libs.push(new LibRuleConfig(`${hostId}${pathId}${libId}`, libValue));
@@ -36,11 +34,9 @@ export const createMockAppState = (): AppState =>  {
         })
 
         mockLibRuleConfigs.forEach(([ libId, libValue ]) => {
-            hostRuleConfig.libs.push(new LibRuleConfig(`${hostId}${libId}`, libValue));
+            host.libs.push(new LibRuleConfig(`${hostId}${libId}`, libValue));
         });
 
-        rules.push(hostRuleConfig);
+        return host;
     });
-
-    return { localState, setting, rules };
-}
+};
