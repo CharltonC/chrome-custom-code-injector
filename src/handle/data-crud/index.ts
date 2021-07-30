@@ -89,6 +89,25 @@ export class DataCrudHandle {
         item.isOn = !item.isOn;
     }
 
+    //// ADD
+    addHost(rules: HostRuleConfig[], host: HostRuleConfig): void {
+        // Relative to `rules`
+        rules.push(host);
+    }
+
+    addPath(rules: HostRuleConfig[], idCtx: IRuleIdCtx, path: PathRuleConfig): void {
+        // Relative to target/current host
+        const { hostIdx } = this.getRuleIdxCtxFromIdCtx(rules, idCtx);
+        rules[hostIdx].paths.push(path);
+    }
+
+    addLib(rules: HostRuleConfig[], idCtx: IRuleIdCtx, lib: LibRuleConfig): void {
+        // Relative to target/current path
+        const { hostIdx, pathIdx } = this.getRuleIdxCtxFromIdCtx(rules, idCtx);
+        rules[hostIdx]?.paths[pathIdx]?.libs.push(lib);
+    }
+
+
     //// REMOVE SINGLE
     rmvHost(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
         const { hostIdx } = this.getRuleIdxCtxFromIdCtx(rules, idCtx);

@@ -21,13 +21,14 @@ describe('Data Crud Handle', () => {
 
         mockRules = [
             {
-                id: 'host-a'
+                id: 'host-a',
+                paths: []
             },
             {
                 id: 'host-b' ,
                 paths: [
-                    { id: 'path-b-0' },
-                    { id: 'path-b-1' },
+                    { id: 'path-b-0', libs: [] },
+                    { id: 'path-b-1', libs: [] },
                 ]
             },
             {
@@ -197,6 +198,45 @@ describe('Data Crud Handle', () => {
                 dataCrudHandle.toggleLibIsOnSwitch(mockRules, mockIdCtx);
                 expect(mockLib.isOn).toBe(!val);
             });
+        });
+    });
+
+    describe('Add', () => {
+        let getRuleIdxCtxFromIdCtxSpy: jest.SpyInstance;
+        const mockRule: any = { id: 'mock-rule' };
+        const mockIdCtx: any = {};
+
+        beforeEach(() => {
+            getRuleIdxCtxFromIdCtxSpy = jest.spyOn(dataCrudHandle, 'getRuleIdxCtxFromIdCtx');
+        });
+
+        it('Method - addHost: should add host to rules', () => {
+            dataCrudHandle.addHost(mockRules, mockRule);
+            expect(mockRules.includes(mockRule)).toBeTruthy();
+        });
+
+        it('Method - addPath: should add path to target host', () => {
+            const mockHostIdx = 1;
+            const mockHostIdCtx = { hostIdx: mockHostIdx };
+            getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockHostIdCtx);
+
+            dataCrudHandle.addPath(mockRules, mockIdCtx, mockRule);
+            const { paths } = mockRules[mockHostIdx];
+            expect(paths.includes(mockRule)).toBeTruthy();
+        });
+
+        it('Method - addLib: should add library to target path', () => {
+            const mockHostIdx = 2;
+            const mockPathIdx = 0;
+            const mockPathIdIdx = {
+                hostIdx: mockHostIdx,
+                pathIdx: mockPathIdx,
+            };
+            getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockPathIdIdx);
+
+            dataCrudHandle.addLib(mockRules, mockIdCtx, mockRule);
+            const { libs } = mockRules[mockHostIdx].paths[mockPathIdx];
+            expect(libs.includes(mockRule)).toBeTruthy();
         });
     });
 
