@@ -7,6 +7,7 @@ export class LocalState {
     //// VIEW
     isListView = true;
     listView: IListViewState = {
+        relativeRuleIdCtx: new ActiveRuleState(),
         searchText: '',
         dataGrid: new DataGridState(),
     };

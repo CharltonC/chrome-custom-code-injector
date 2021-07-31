@@ -3,6 +3,7 @@ import { TextInputState } from '../text-input-state';
 import { ActiveRuleState } from '../active-rule-state';
 
 export interface IListViewState {
+    relativeRuleIdCtx: ActiveRuleState;
     searchText: string;
     dataGrid: DataGridState;
 };
@@ -21,5 +22,5 @@ export interface IModalState {
     importFileInput: File;
     titleInput: TextInputState;
     valueInput: TextInputState;
-    isConfirmBtnEnabled: false;
+    isConfirmBtnEnabled: boolean;
 }
