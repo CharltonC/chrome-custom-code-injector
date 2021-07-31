@@ -2,7 +2,7 @@ import { HostRuleConfig, LibRuleConfig, PathRuleConfig } from '../model/rule-con
 import * as TRuleConfig from '../model/rule-config/type';
 import { IRuleIdCtx, IRuleIdxCtx, ISliceIdxCtx, AAnyRule, AHostPathRule } from './type';
 
-export class DataCrudHandle {
+export class DataHandle {
     //// GET
     getRuleIdxCtxFromIdCtx(rules: HostRuleConfig[], idCtx: IRuleIdCtx): IRuleIdxCtx {
         const { hostId, pathId, libId } = idCtx;
@@ -155,4 +155,4 @@ export class DataCrudHandle {
     }
 }
 
-export const dataCrudHandle = new DataCrudHandle();
+export const dataHandle = new DataHandle();

@@ -1,4 +1,4 @@
-import { dataCrudHandle } from '.';
+import { dataHandle } from '.';
 import { HostRuleConfig, LibRuleConfig } from '../model/rule-config';
 
 describe('Data Crud Handle', () => {
@@ -45,7 +45,7 @@ describe('Data Crud Handle', () => {
         describe('Method - getRuleIdxCtx: Get Rule index context from Id context', () => {
             it('should return rule index context when host id exists', () => {
                 const mockIdCtx = { hostId: 'host-a' };
-                const idxCtx = dataCrudHandle.getRuleIdxCtxFromIdCtx(mockRules, mockIdCtx);
+                const idxCtx = dataHandle.getRuleIdxCtxFromIdCtx(mockRules, mockIdCtx);
                 expect(idxCtx).toEqual({
                     hostIdx: 0,
                     pathIdx: null,
@@ -55,7 +55,7 @@ describe('Data Crud Handle', () => {
 
             it('should return rule index context when host id and path id exist', () => {
                 const mockIdCtx = { hostId: 'host-b', pathId: 'path-b-0' };
-                const idxCtx = dataCrudHandle.getRuleIdxCtxFromIdCtx(mockRules, mockIdCtx);
+                const idxCtx = dataHandle.getRuleIdxCtxFromIdCtx(mockRules, mockIdCtx);
                 expect(idxCtx).toEqual({
                     hostIdx: 1,
                     pathIdx: 0,
@@ -65,7 +65,7 @@ describe('Data Crud Handle', () => {
 
             it('should return rule index context when host id, path id, library id exist', () => {
                 const mockIdCtx = { hostId: 'host-c', pathId: 'path-c-0', libId: 'lib-c-0' };
-                const idxCtx = dataCrudHandle.getRuleIdxCtxFromIdCtx(mockRules, mockIdCtx);
+                const idxCtx = dataHandle.getRuleIdxCtxFromIdCtx(mockRules, mockIdCtx);
                 expect(idxCtx).toEqual({
                     hostIdx: 2,
                     pathIdx: 0,
@@ -77,19 +77,19 @@ describe('Data Crud Handle', () => {
         describe('Method - getRuleFromIdxCtx: Get Rule from index context', () => {
             it('should return host when host index exists', () => {
                 const mockIdxCtx = { hostIdx: 0 };
-                const rule = dataCrudHandle.getRuleFromIdxCtx(mockRules, mockIdxCtx);
+                const rule = dataHandle.getRuleFromIdxCtx(mockRules, mockIdxCtx);
                 expect(rule).toBe(mockRules[0]);
             });
 
             it('should return path when host index, path index exist', () => {
                 const mockIdxCtx = { hostIdx: 1, pathIdx: 0 };
-                const rule = dataCrudHandle.getRuleFromIdxCtx(mockRules, mockIdxCtx);
+                const rule = dataHandle.getRuleFromIdxCtx(mockRules, mockIdxCtx);
                 expect(rule).toBe(mockRules[1].paths[0]);
             });
 
             it('should return library when host index, path index, library index exist', () => {
                 const mockIdxCtx = { hostIdx: 2, pathIdx: 0, libIdx: 0 };
-                const rule = dataCrudHandle.getRuleFromIdxCtx(mockRules, mockIdxCtx);
+                const rule = dataHandle.getRuleFromIdxCtx(mockRules, mockIdxCtx);
                 expect(rule).toBe(mockRules[2].paths[0].libs[0]);
             });
         });
@@ -97,19 +97,19 @@ describe('Data Crud Handle', () => {
         describe('Method - getRuleFromIdCtx: Get Rule from id context', () => {
             it('should return host when host id exists', () => {
                 const mockIdCtx = { hostId: 'host-a' };
-                const rule = dataCrudHandle.getRuleFromIdCtx(mockRules, mockIdCtx);
+                const rule = dataHandle.getRuleFromIdCtx(mockRules, mockIdCtx);
                 expect(rule).toBe(mockRules[0]);
             });
 
             it('should return path when host id and path id exist', () => {
                 const mockIdCtx = { hostId: 'host-b', pathId: 'path-b-0' };
-                const rule = dataCrudHandle.getRuleFromIdCtx(mockRules, mockIdCtx);
+                const rule = dataHandle.getRuleFromIdCtx(mockRules, mockIdCtx);
                 expect(rule).toBe(mockRules[1].paths[0]);
             });
 
             it('should return library when host id, path id, library id exist', () => {
                 const mockIdCtx = { hostId: 'host-c', pathId: 'path-c-0', libId: 'lib-c-0' };
-                const rule = dataCrudHandle.getRuleFromIdCtx(mockRules, mockIdCtx);
+                const rule = dataHandle.getRuleFromIdCtx(mockRules, mockIdCtx);
                 expect(rule).toBe(mockRules[2].paths[0].libs[0]);
             });
         });
@@ -124,7 +124,7 @@ describe('Data Crud Handle', () => {
         beforeEach(() => {
             mockHost = new HostRuleConfig('title', 'value');
             mockLib = new LibRuleConfig('title', 'value');
-            getRuleFromIdCtxSpy = jest.spyOn(dataCrudHandle, 'getRuleFromIdCtx');
+            getRuleFromIdCtxSpy = jest.spyOn(dataHandle, 'getRuleFromIdCtx');
         });
 
         describe('Host/Path', () => {
@@ -134,43 +134,43 @@ describe('Data Crud Handle', () => {
 
             it('Method - toggleJsExecStep: should toggle Js execution step', () => {
                 const mockStep = 3;
-                dataCrudHandle.toggleJsExecStep(mockRules, mockIdCtx, mockStep);
+                dataHandle.toggleJsExecStep(mockRules, mockIdCtx, mockStep);
                 expect(mockHost.jsExecPhase).toBe(mockStep);
             });
 
             it('Method - setLastActiveTab: should set the last active tab index', () => {
                 const mockTabIdx = 3;
-                dataCrudHandle.setLastActiveTab(mockRules, mockIdCtx, mockTabIdx);
+                dataHandle.setLastActiveTab(mockRules, mockIdCtx, mockTabIdx);
                 expect(mockHost.activeTabIdx).toBe(mockTabIdx);
             });
 
             it('Method - toggleJsSwitch: should toggle Js switch', () => {
                 const val = mockHost.isJsOn;
-                dataCrudHandle.toggleJsSwitch(mockRules, mockIdCtx);
+                dataHandle.toggleJsSwitch(mockRules, mockIdCtx);
                 expect(mockHost.isJsOn).toBe(!val);
             });
 
             it('Method - toggleCssSwitch: should toggle Css switch', () => {
                 const val = mockHost.isCssOn;
-                dataCrudHandle.toggleCssSwitch(mockRules, mockIdCtx);
+                dataHandle.toggleCssSwitch(mockRules, mockIdCtx);
                 expect(mockHost.isCssOn).toBe(!val);
             });
 
             it('Method - toggleLibSwitch: should toggle Library switch', () => {
                 const val = mockHost.isLibOn;
-                dataCrudHandle.toggleLibSwitch(mockRules, mockIdCtx);
+                dataHandle.toggleLibSwitch(mockRules, mockIdCtx);
                 expect(mockHost.isLibOn).toBe(!val);
             });
 
             it('Method - setJsCode: should set the Js code', () => {
                 const mockCode = 'lorem';
-                dataCrudHandle.setJsCode(mockRules, mockIdCtx, mockCode);
+                dataHandle.setJsCode(mockRules, mockIdCtx, mockCode);
                 expect(mockHost.jsCode).toBe(mockCode);
             });
 
             it('Method - setCssCode: should set the Css code', () => {
                 const mockCode = 'lorem';
-                dataCrudHandle.setCssCode(mockRules, mockIdCtx, mockCode);
+                dataHandle.setCssCode(mockRules, mockIdCtx, mockCode);
                 expect(mockHost.cssCode).toBe(mockCode);
             });
         });
@@ -182,13 +182,13 @@ describe('Data Crud Handle', () => {
 
             it('Method - toggleLibAsyncSwitch: should toggle Library Async switch', () => {
                 const val = mockLib.isAsync;
-                dataCrudHandle.toggleLibAsyncSwitch(mockRules, mockIdCtx);
+                dataHandle.toggleLibAsyncSwitch(mockRules, mockIdCtx);
                 expect(mockLib.isAsync).toBe(!val);
             });
 
             it('Method - toggleLibIsOnSwitch: should toggle Library enable switch', () => {
                 const val = mockLib.isOn;
-                dataCrudHandle.toggleLibIsOnSwitch(mockRules, mockIdCtx);
+                dataHandle.toggleLibIsOnSwitch(mockRules, mockIdCtx);
                 expect(mockLib.isOn).toBe(!val);
             });
         });
@@ -200,11 +200,11 @@ describe('Data Crud Handle', () => {
         const mockIdCtx: any = {};
 
         beforeEach(() => {
-            getRuleIdxCtxFromIdCtxSpy = jest.spyOn(dataCrudHandle, 'getRuleIdxCtxFromIdCtx');
+            getRuleIdxCtxFromIdCtxSpy = jest.spyOn(dataHandle, 'getRuleIdxCtxFromIdCtx');
         });
 
         it('Method - addHost: should add host to rules', () => {
-            dataCrudHandle.addHost(mockRules, mockRule);
+            dataHandle.addHost(mockRules, mockRule);
             expect(mockRules.includes(mockRule)).toBeTruthy();
         });
 
@@ -213,7 +213,7 @@ describe('Data Crud Handle', () => {
             const mockHostIdCtx = { hostIdx: mockHostIdx };
             getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockHostIdCtx);
 
-            dataCrudHandle.addPath(mockRules, mockIdCtx, mockRule);
+            dataHandle.addPath(mockRules, mockIdCtx, mockRule);
             const { paths } = mockRules[mockHostIdx];
             expect(paths.includes(mockRule)).toBeTruthy();
         });
@@ -227,7 +227,7 @@ describe('Data Crud Handle', () => {
             };
             getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockPathIdIdx);
 
-            dataCrudHandle.addLib(mockRules, mockIdCtx, mockRule);
+            dataHandle.addLib(mockRules, mockIdCtx, mockRule);
             const { libs } = mockRules[mockHostIdx].paths[mockPathIdx];
             expect(libs.includes(mockRule)).toBeTruthy();
         });
@@ -240,14 +240,14 @@ describe('Data Crud Handle', () => {
             let getRuleIdxCtxFromIdCtxSpy: jest.SpyInstance;
 
             beforeEach(() => {
-                getRuleIdxCtxFromIdCtxSpy = jest.spyOn(dataCrudHandle, 'getRuleIdxCtxFromIdCtx');
+                getRuleIdxCtxFromIdCtxSpy = jest.spyOn(dataHandle, 'getRuleIdxCtxFromIdCtx');
             });
 
             it('Method - rmvHost: should remove host', () => {
                 const mockIdxCtx = { hostIdx: 0 };
                 getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockIdxCtx);
 
-                dataCrudHandle.rmvHost(mockRules, mockIdCtx);
+                dataHandle.rmvHost(mockRules, mockIdCtx);
                 expect(mockRules.length).toBe(2);
                 expect(mockRules[0].id).toBe('host-b');
             });
@@ -256,7 +256,7 @@ describe('Data Crud Handle', () => {
                 const mockIdxCtx = { hostIdx: 1, pathIdx: 0 };
                 getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockIdxCtx);
 
-                dataCrudHandle.rmvPath(mockRules, mockIdCtx);
+                dataHandle.rmvPath(mockRules, mockIdCtx);
                 expect(mockRules.length).toBe(3);
                 expect(mockRules[1].paths.length).toBe(1);
                 expect(mockRules[1].paths[0].id).toBe('path-b-1');
@@ -266,7 +266,7 @@ describe('Data Crud Handle', () => {
                 const mockIdxCtx = { hostIdx: 2, pathIdx: 0, libIdx: 0 };
                 getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockIdxCtx);
 
-                dataCrudHandle.rmvLib(mockRules, mockIdCtx);
+                dataHandle.rmvLib(mockRules, mockIdCtx);
                 expect(mockRules.length).toBe(3);
                 expect(mockRules[2].paths[0].libs.length).toBe(2);
                 expect(mockRules[2].paths[0].libs[0].id).toBe('lib-c-1');
@@ -277,7 +277,7 @@ describe('Data Crud Handle', () => {
             beforeEach(() => {
                 const mockPath: any = { libs: mockLibs };
                 jest
-                    .spyOn(dataCrudHandle, 'getRuleFromIdCtx')
+                    .spyOn(dataHandle, 'getRuleFromIdCtx')
                     .mockReturnValue(mockPath);
             });
 
@@ -286,7 +286,7 @@ describe('Data Crud Handle', () => {
                     'host-b': true,
                     'host-c': true,
                 };
-                dataCrudHandle.rmvPartialHosts(mockRules, mockSelectedRowKeyCtx);
+                dataHandle.rmvPartialHosts(mockRules, mockSelectedRowKeyCtx);
                 expect(mockRules.length).toBe(1);
                 expect(mockRules[0].id).toBe('host-a');
             });
@@ -296,7 +296,7 @@ describe('Data Crud Handle', () => {
                     'lib-c-0': true,
                     'lib-c-2': true,
                 };
-                dataCrudHandle.rmvPartialLibs(mockRules, mockSelectedRowKeyCtx, mockIdCtx);
+                dataHandle.rmvPartialLibs(mockRules, mockSelectedRowKeyCtx, mockIdCtx);
                 expect(mockLibs.length).toBe(1);
                 expect(mockLibs[0].id).toBe('lib-c-1');
             });
@@ -311,18 +311,18 @@ describe('Data Crud Handle', () => {
             beforeEach(() => {
                 const mockPath: any = { libs: mockLibs };
                 jest
-                    .spyOn(dataCrudHandle, 'getRuleFromIdCtx')
+                    .spyOn(dataHandle, 'getRuleFromIdCtx')
                     .mockReturnValue(mockPath);
             });
 
             it('Method - rmvAllHosts: Remove all hosts', () => {
-                dataCrudHandle.rmvAllHosts(mockRules, mockSliceIdxCtx);
+                dataHandle.rmvAllHosts(mockRules, mockSliceIdxCtx);
                 expect(mockRules.length).toBe(1);
             });
 
             it('Method - rmvAllibs: Remove all libraries', () => {
                 const mockIdCtx: any = {};
-                dataCrudHandle.rmvAllLibs(
+                dataHandle.rmvAllLibs(
                     mockRules,
                     mockSliceIdxCtx,
                     mockIdCtx
