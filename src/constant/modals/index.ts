@@ -19,12 +19,12 @@ export const modals = {
         txt: 'Confirmation'
     },
 
-    editHost: {
+    addHost: {
         id: 'modal-host-add',
         txt: 'Add Host'
     },
 
-    editPath: {
+    addPath: {
         id: 'modal-path-add',
         txt: 'Add Path'
     },
@@ -37,6 +37,16 @@ export const modals = {
     editLib: {
         id: 'modal-lib-edit',
         txt: 'Edit a Library Url'
+    },
+
+    delHosts: {
+        id: 'modal-hosts-del',
+        txt: 'Confirmation'
+    },
+
+    delHostOrPath: {
+        id: 'modal-host-or-path-del',
+        txt: 'Confirmation'
     },
 
     delLib: {
