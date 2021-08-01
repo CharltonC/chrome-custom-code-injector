@@ -370,7 +370,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { listView, modal } = localState;
         const { dataGrid, searchText: currSearchText } = listView;
 
-        const { selectState, pgnOption, sortedData } = dataGrid;
+        const { selectState, pgnOption, sortedData, pgnState: currPgnState } = dataGrid;
         const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
 
         // Check to see if sorting exists for the DataGrid, if so use the sorted data as Source of truth
@@ -379,7 +379,10 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         // In case is there is pagination, we need to find out the range of data it is showing
         // (i.e. start and end index, not necessary all the data but only at the page)
         // hence use it to get the IDs of all selected rows and remove them
-        const { startIdx, endIdx } = pgnHandle.createState(dataGridSrc, pgnOption);
+        const pgnState = currPgnState
+            ? currPgnState
+            : pgnHandle.createState(dataGridSrc, pgnOption);
+        const { startIdx, endIdx } = pgnState;
         const delIds = dataGridSrc.slice(startIdx, endIdx).map(({ id }) => id);
         areAllRowsSelected
             ? dataHandle.rmvHostsFromIds(rules, delIds)
@@ -405,7 +408,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                     searchText,
                     dataGrid: {
                         ...new DataGridState(),
-                        ...pgnOption
+                        pgnState,
+                        pgnOption
                     }
                 }
             }
