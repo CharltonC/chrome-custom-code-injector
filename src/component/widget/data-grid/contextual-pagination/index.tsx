@@ -20,20 +20,31 @@ export class DataGridPagination extends MemoComponent<IProps> {
             pageSelectAttr, perPageSelectAttr,
         } = this.props;
 
-        const perPageSelectProps: ISelectProps = this.getMappedSelectProps(perPageSelectAttr, true);
-        const pageSelectProps: ISelectProps = this.getMappedSelectProps(pageSelectAttr, false);
-        const firstBtnProps: IBtnProps = this.getMappedBtnProps(firstBtnAttr, 'first');
-        const prevBtnProps: IBtnProps = this.getMappedBtnProps(prevBtnAttr, 'prev');
-        const nextBtnProps: IBtnProps = this.getMappedBtnProps(nextBtnAttr, 'next');
-        const lastBtnProps: IBtnProps = this.getMappedBtnProps(lastBtnAttr, 'last');
+        // Since <Dropdown> component callback arg has slightly diff. structure than result from `getMappedSelectProps`
+        // hence require an extra layer
+        // - `onSelect` from `getMappedSelectProps`: (event) => ..
+        // - `onSelector` from <Dropdown>: ({ evt, ... }) => ...
+        const perPageSelectProps = this.getMappedSelectProps(perPageSelectAttr, true);
+        const pageSelectProps = this.getMappedSelectProps(pageSelectAttr, false);
+
+        const firstBtnProps = this.getMappedBtnProps(firstBtnAttr, 'first');
+        const prevBtnProps = this.getMappedBtnProps(prevBtnAttr, 'prev');
+        const nextBtnProps = this.getMappedBtnProps(nextBtnAttr, 'next');
+        const lastBtnProps = this.getMappedBtnProps(lastBtnAttr, 'last');
 
         return (
             <div className={CLS_PREFIX}>
                 <p className={`${CLS_PREFIX}__record`}>Showing {startRecord} - {endRecord} of {totalRecord}</p>
-                <Dropdown {...perPageSelectProps} />
+                <Dropdown
+                    {...perPageSelectProps}
+                    onSelect={({ evt }) => perPageSelectProps.onSelect(evt)}
+                    />
                 <button {...firstBtnProps}>{$ltArrow}{$ltArrow}</button>
                 <button {...prevBtnProps}>{$ltArrow}</button>
-                <Dropdown {...pageSelectProps} />
+                <Dropdown
+                    {...pageSelectProps}
+                    onSelect={({ evt }) => pageSelectProps.onSelect(evt)}
+                    />
                 <button {...nextBtnProps}>{$rtArrow}</button>
                 <button {...lastBtnProps}>{$rtArrow}{$rtArrow}</button>
             </div>
