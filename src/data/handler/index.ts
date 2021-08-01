@@ -38,6 +38,35 @@ export class DataHandle {
         return lib ? lib : path ? path : host;
     }
 
+    getFilteredRules(rules: HostRuleConfig[], filterText: string): HostRuleConfig[] {
+        const trimText = filterText.trim().toLowerCase();
+        if (!trimText) return rules;
+
+        const texts = trimText.toLowerCase().split(/\s+/);
+        return rules.filter(host => {
+            const { title, value, paths } = host;
+            const hostTitle = title.toLowerCase();
+            const hostValue = value.toLowerCase();
+
+            // Check title, Value in both Host or Path
+            return (
+                texts.some(
+                    (text) =>
+                        hostTitle.includes(text) || hostValue.includes(text)
+                ) ||
+                paths.some((path) => {
+                    const { title: subTitle, value: subValue } = path;
+                    const pathTitle = subTitle.toLowerCase();
+                    const pathValue = subValue.toLowerCase();
+                    return texts.some(
+                        (text) =>
+                            pathTitle.includes(text) || pathValue.includes(text)
+                    );
+                })
+            );
+        });
+    }
+
     //// TOGGLE/SET
     toggleJsExecStep(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
@@ -101,7 +130,6 @@ export class DataHandle {
         const { hostIdx, pathIdx } = this.getRuleIdxCtxFromIdCtx(rules, idCtx);
         rules[hostIdx]?.paths[pathIdx]?.libs.push(lib);
     }
-
 
     //// REMOVE SINGLE
     rmvHost(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {

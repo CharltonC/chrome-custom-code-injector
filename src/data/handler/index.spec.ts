@@ -113,6 +113,60 @@ describe('Data Crud Handle', () => {
                 expect(rule).toBe(mockRules[2].paths[0].libs[0]);
             });
         });
+
+        describe('Method - getFilteredRules: Get filtered rules by searching the text in title and value of host/path', () => {
+            const mockRules = [
+                {
+                    id: '1',
+                    title: 'host-title-1',
+                    value: 'host-value-1',
+                    paths: [
+                        {
+                            id: '1-1',
+                            title: 'path-title-1',
+                            value: 'path-value-1',
+                        }
+                    ]
+                },
+                {
+                    id: '2',
+                    title: 'host-title-2',
+                    value: 'host-value-2',
+                    paths: [
+                        {
+                            id: '2-1',
+                            title: 'path-title-2',
+                            value: 'path-value-2',
+                        }
+                    ]
+                }
+            ] as HostRuleConfig[];
+
+            it('should return unfiltered rules when text is empty or is whitespace', () => {
+                expect(dataHandle.getFilteredRules(mockRules, '')).toBe(mockRules);
+                expect(dataHandle.getFilteredRules(mockRules, ' ')).toBe(mockRules);
+            });
+
+            it('should return filtered rules if text is not empty', () => {
+                expect(dataHandle.getFilteredRules(mockRules, 'host-title-1')).toEqual([ mockRules[0] ]);
+                expect(dataHandle.getFilteredRules(mockRules, 'host-value-1')).toEqual([ mockRules[0] ]);
+                expect(dataHandle.getFilteredRules(mockRules, 'path-title-1')).toEqual([ mockRules[0] ]);
+                expect(dataHandle.getFilteredRules(mockRules, 'path-value-1')).toEqual([ mockRules[0] ]);
+                expect(dataHandle.getFilteredRules(mockRules, ' path-value-1 ')).toEqual([ mockRules[0] ]);
+            });
+
+            it('should return filter rules if text has uppercase characters', () => {
+                expect(dataHandle.getFilteredRules(mockRules, 'HOST-TITLE-1')).toEqual([ mockRules[0] ]);
+            });
+
+            it('should return filtered rules when text is space separated string', () => {
+                expect(dataHandle.getFilteredRules(mockRules, 'abc path-title-1')).toEqual([ mockRules[0] ]);
+            });
+
+            it('should return empty rules when there is not match', () => {
+                expect(dataHandle.getFilteredRules(mockRules, 'lorem')).toEqual([]);
+            });
+        });
     });
 
     describe('Toggle/Set', () => {
