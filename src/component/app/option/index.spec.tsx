@@ -133,7 +133,7 @@ describe('Component - Option App (UI/E2E)', () => {
 
             describe('Non-searched + Paginated', () => {
                 beforeEach(() => {
-                    mockAppState.localState.ruleDataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
+                    mockAppState.localState.listView.dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new AppStateHandler() ],
                     }));
@@ -175,8 +175,7 @@ describe('Component - Option App (UI/E2E)', () => {
                 it('should delete multiple partial rows', () => {
                     const { $header, $rows } = getElem();
                     TestUtil.triggerEvt(getCellElem($rows[0]).$select, 'click');
-                    TestUtil.triggerEvt(getCellElem
-                        ($header, true).$del, 'click');
+                    TestUtil.triggerEvt(getCellElem($header, true).$del, 'click');
                     const { $rows: $modRows, totalRows } = getElem();
 
                     expect(totalRows).toBe(3);
@@ -207,7 +206,7 @@ describe('Component - Option App (UI/E2E)', () => {
                 }
 
                 beforeEach(() => {
-                    mockAppState.localState.ruleDataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
+                    mockAppState.localState.listView.dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new AppStateHandler() ],
                     }));
