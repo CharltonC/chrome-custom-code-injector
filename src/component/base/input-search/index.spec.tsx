@@ -52,7 +52,7 @@ describe('Component - Search', () => {
 
                 expect(searchInput.$input.value).toBe('');
                 expect(mockFocus).toHaveBeenCalled();
-                expect(mockCbFn).toHaveBeenCalledWith(mockEvt);
+                expect(mockCbFn).toHaveBeenCalledWith({ evt: mockEvt });
             });
 
             it('should not trigger onClear callback if not provided', () => {
