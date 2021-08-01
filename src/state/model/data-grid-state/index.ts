@@ -9,6 +9,7 @@ const { resultsPerPageIdx } = new SettingState();
 export class DataGridState {
     // Sort
     sortOption: Partial<TSort.IOption> = { reset: true };
+    sortedData: AObj[] = null;
 
     // Select
     selectState: TRowSelect.IState = {
@@ -25,9 +26,8 @@ export class DataGridState {
         incrementIdx: resultsPerPageIdx
     } as TPgn.IOption;
 
-    pgnState = {
-        curr: 0,
-        startIdx: 0,
-        endIdx: undefined
-    } as TPgn.IState;
+    // By def leave it as empty
+    // - the state will be auto generated inside the component (however no access)
+    // - will be auto set here whenever a paginated state is changed
+    pgnState: TPgn.IState = null;
 }
