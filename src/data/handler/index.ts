@@ -149,6 +149,13 @@ export class DataHandle {
     }
 
     //// REMOVE MULTIPLE
+    rmvHostsFromIds(rules: HostRuleConfig[], ids: string[]): void {
+        ids.forEach(rowId => {
+            const idx = rules.findIndex(({ id }) => id === rowId);
+            rules.splice(idx, 1);
+        });
+    }
+
     rmvPartialHosts(rules: HostRuleConfig[], selectedRowKeyCtx: { [k: string]: boolean }): void {
         Object.getOwnPropertyNames(selectedRowKeyCtx).forEach((rowId) => {
             const idx = rules.findIndex(({ id }) => id === rowId);
