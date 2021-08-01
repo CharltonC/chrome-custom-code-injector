@@ -7,12 +7,12 @@ export class LocalState {
     //// VIEW
     isListView = true;
     listView: IListViewState = {
-        relativeRuleIdCtx: new ActiveRuleState(),
+        ruleIdCtx: new ActiveRuleState(),
         searchText: '',
         dataGrid: new DataGridState(),
     };
     editView: IEditViewState = {
-        activeRuleIdCtx: new ActiveRuleState(),
+        ruleIdCtx: new ActiveRuleState(),
         titleInput: new TextInputState(),
         valueInput: new TextInputState(),
         dataGrid: new DataGridState(),
@@ -21,7 +21,7 @@ export class LocalState {
     //// MODAL
     modal: IModalState = {
         currentId: null,
-        activeRuleIdCtx: new ActiveRuleState(),
+        ruleIdCtx: new ActiveRuleState(),
         exportFileInput: new TextInputState(),
         importFileInput: null,
         titleInput: new TextInputState(),
