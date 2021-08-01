@@ -28,6 +28,6 @@ export class DataGridState {
     pgnState = {
         curr: 0,
         startIdx: 0,
-        endIdx: null
+        endIdx: undefined
     } as TPgn.IState;
 }
