@@ -26,8 +26,8 @@ export const DisabledSearch = () => {
 
 export const WithPassedValue = () => {
     const [ text, setText ] = useState('lorem');
-    const onChange = (evt: Event, val: string) => setText(val);         // 2-way binding
-    const onClear = (evt: Event, val: string) => { setText(''); };
+    const onChange = ({ value }) => setText(value);         // 2-way binding
+    const onClear = () => { setText(''); };
 
     return (
         <div style={defStyle} >

@@ -16,15 +16,15 @@ export class SearchInput extends MemoComponent<IProps> {
     }
 
     onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
-        const text: string = evt.target.value;
-        const gte3Char = text.length >= 3;
-        this.props.onInputChange?.(evt, text, gte3Char);
+        const { value } = evt.target;
+        const isGte3Char = value.length >= 3;
+        this.props.onInputChange?.({ evt, value, isGte3Char });
     }
 
     onClick(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
         this.$input.value = '';
         this.$input.focus();
-        this.props.onInputClear?.(evt);
+        this.props.onInputClear?.({ evt });
     }
 
     render() {

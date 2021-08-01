@@ -24,7 +24,11 @@ describe('Component - Search', () => {
             it('should set state and trigger onChange callback if provided', () => {
                 (searchInput.props as any).onInputChange = mockCbFn;
                 searchInput.onChange(mockEvt);
-                expect(mockCbFn).toHaveBeenCalledWith(mockEvt, mockNewText, mockNewText.length >=2);
+                expect(mockCbFn).toHaveBeenCalledWith({
+                    evt: mockEvt,
+                    value: mockNewText,
+                    isGte3Char: mockNewText.length >=2
+                });
             });
 
             it('should not trigger onChange callback if not provided', () => {
