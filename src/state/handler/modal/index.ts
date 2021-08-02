@@ -2,7 +2,7 @@ import { HostRuleConfig, PathRuleConfig } from '../../../data/model/rule-config'
 import { StateHandle } from '../../../handle/state';
 import { FileHandle } from '../../../handle/file';
 import { dataHandle } from '../../../data/handler';
-import { AppState } from '../../model';
+import { IAppState } from '../../model/type';
 import { LocalState } from '../../model/local-state';
 import { SettingState } from '../../model/setting-state';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
@@ -12,13 +12,14 @@ import { modals } from '../../../constant/modals';
 import { ActiveRuleState } from '../../model/active-rule-state';
 import { DataGridState } from '../../model/data-grid-state';
 import { PgnHandle } from '../../../handle/pagination';
+import { ModalState } from '../../model/modal-state';
 
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
 
 export class ModalStateHandler extends StateHandle.BaseStateHandler {
     //// BASE
-    onModal({ localState }: AppState, payload) {
+    onModal({ localState }: IAppState, payload) {
         const { id } = payload;
         const { modal } = localState;
         return {
@@ -32,9 +33,9 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onModalCancel({ localState }: AppState) {
+    onModalCancel({ localState }: IAppState) {
         // Reset modal state
-        const { modal } = new LocalState();
+        const modal = new ModalState();
         return {
             localState: {
                 ...localState,
@@ -44,7 +45,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// SETTING IMPORT/EXPORT
-    async onImportSettingModalOk(state: AppState) {
+    async onImportSettingModalOk(state: IAppState) {
         const { modal } = state.localState;
         const { importFileInput } = modal;
 
@@ -58,7 +59,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         }
     }
 
-    onExportSettingModalOk(state: AppState) {
+    onExportSettingModalOk(state: IAppState) {
         const { rules, localState } = state;
         const { value } = localState.modal.exportFileInput;
         fileHandle.saveJson(rules, value, true);
@@ -76,7 +77,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onExportInputChange({ localState }: AppState, payload) {
+    onExportInputChange({ localState }: IAppState, payload) {
         const { isGte3, validState, val } = payload;
         const isValid = isGte3 && validState?.isValid;
 
@@ -94,7 +95,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// SETTINGS
-    onResultsPerPageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg) {
+    onResultsPerPageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg) {
         const { selectValueAttrVal } = payload;
         return {
             setting: {
@@ -110,7 +111,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefHttpsToggle({ setting }: AppState) {
+    onDefHttpsToggle({ setting }: IAppState) {
         const { defRuleConfig } = setting;
         const { isHttps } = defRuleConfig;
         return {
@@ -124,7 +125,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefJsToggle({ setting }: AppState) {
+    onDefJsToggle({ setting }: IAppState) {
         const { defRuleConfig } = setting;
         const { isJsOn } = defRuleConfig;
         return {
@@ -138,7 +139,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefCssToggle({ setting }: AppState) {
+    onDefCssToggle({ setting }: IAppState) {
         const { defRuleConfig } = setting;
         const { isCssOn } = defRuleConfig;
         return {
@@ -152,7 +153,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefLibToggle({ setting }: AppState) {
+    onDefLibToggle({ setting }: IAppState) {
         const { defRuleConfig } = setting;
         const { isLibOn } = defRuleConfig;
         return {
@@ -166,7 +167,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefJsExecStageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg) {
+    onDefJsExecStageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg) {
         const { selectValueAttrVal } = payload;
         const { defRuleConfig } = setting;
         return {
@@ -180,7 +181,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDelConfirmDialogToggle({ setting }: AppState) {
+    onDelConfirmDialogToggle({ setting }: IAppState) {
         return {
             setting: {
                 ...setting,
@@ -190,7 +191,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// RULE CRUD
-    onAddHostModalOk(state: AppState): Partial<AppState> {
+    onAddHostModalOk(state: IAppState): Partial<IAppState> {
         const { reflect } = this;
         const { localState, rules, setting } = state;
         const { titleInput, valueInput } = localState.modal;
@@ -210,7 +211,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onAddPathModal({ localState }: AppState, payload): Partial<AppState> {
+    onAddPathModal({ localState }: IAppState, payload): Partial<IAppState> {
         const { hostId } = payload;
         const { isListView, listView, modal } = localState;
         const baseLocalState = {
@@ -237,7 +238,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             };
     }
 
-    onAddPathModalOk(state: AppState): Partial<AppState> {
+    onAddPathModalOk(state: IAppState): Partial<IAppState> {
         const { reflect } = this;
         const { localState, rules, setting } = state;
         const { modal, listView } = localState;
@@ -259,7 +260,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDelHostOrPathModal(state: AppState, payload): Partial<AppState> {
+    onDelHostOrPathModal(state: IAppState, payload): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { hostId, pathId } = payload;
@@ -295,20 +296,24 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             });
     }
 
-    onDelHostOrPathModalOk(state: AppState): Partial<AppState> {
+    onDelHostOrPathModalOk(state: IAppState): Partial<IAppState> {
         const { rules, localState } = state;
         const { isListView, listView, editView, modal } = localState;
-        const { searchText: currSearchText } = listView;
 
-        // Get the ID context (host, path) depending on the view
+        // List View only
+        const { searchText: currSearchText, dataGrid, } = listView;
+        const { pgnOption } = dataGrid;
+
+        // List View & Edit View: Get the ID context (host, path) depending on the view
         const { ruleIdCtx } = isListView ? listView : editView;
         ruleIdCtx.pathId
             ? dataHandle.rmvPath(rules, ruleIdCtx)
             : dataHandle.rmvHost(rules, ruleIdCtx);
 
-        // Clear the Search after rules are altered (List view only)
+        // List View only: Clear the Search after rules are altered
+        const { length: totalRecord } = rules;
         const searchText = currSearchText
-            ? rules.length
+            ? totalRecord
                 ? currSearchText
                 : ''
             : currSearchText ;
@@ -321,6 +326,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
         };
 
+        // List View only: If a host is removed, Update new pagination state after rules removal (depends on total no. of hosts)
+        const isHost = !ruleIdCtx.pathId;
+        const dataGridState = isHost
+            ? new DataGridState({ totalRecord, pgnOption })
+            : dataGrid;
+
         return isListView
             ? {
                 localState: {
@@ -328,7 +339,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                     listView: {
                         ...listView,
                         searchText,
-                        ruleIdCtx: new ActiveRuleState()
+                        ruleIdCtx: new ActiveRuleState(),
+                        dataGrid: dataGridState
                     },
                 },
             }
@@ -343,7 +355,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
     }
 
-    onDelHostsModal(state: AppState): Partial<AppState> {
+    onDelHostsModal(state: IAppState): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { modal } = localState;
@@ -365,23 +377,16 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             });
     }
 
-    onDelHostsModalOk(state: AppState): Partial<AppState> {
+    onDelHostsModalOk(state: IAppState): Partial<IAppState> {
         const { rules, localState } = state;
         const { listView, modal } = localState;
         const { dataGrid, searchText: currSearchText } = listView;
 
-        const { selectState, pgnOption, sortedData, pgnState: currPgnState } = dataGrid;
+        const { selectState, pgnOption, sortedData, pgnState } = dataGrid;
         const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
 
         // Check to see if sorting exists for the DataGrid, if so use the sorted data as Source of truth
         const dataGridSrc = sortedData || rules;
-
-        // In case is there is pagination, we need to find out the range of data it is showing
-        // (i.e. start and end index, not necessary all the data but only at the page)
-        // hence use it to get the IDs of all selected rows and remove them
-        const pgnState = currPgnState
-            ? currPgnState
-            : pgnHandle.createState(dataGridSrc, pgnOption);
         const { startIdx, endIdx } = pgnState;
         const delIds = dataGridSrc.slice(startIdx, endIdx).map(({ id }) => id);
         areAllRowsSelected
@@ -389,11 +394,18 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             : dataHandle.rmvPartialHosts(rules, selectedRowKeyCtx);
 
         // Clear the Search after rules are altered (List view only)
+        const { length } = rules;
         const searchText = currSearchText
-            ? rules.length
+            ? length
                 ? currSearchText
                 : ''
             : currSearchText ;
+
+        // Update new pagination state after rules removal (depends on total no. of hosts)
+        const dataGridState = new DataGridState({
+            totalRecord: length,
+            pgnOption
+        });
 
         return {
             ...state,
@@ -406,17 +418,13 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                 listView: {
                     ...listView,
                     searchText,
-                    dataGrid: {
-                        ...new DataGridState(),
-                        pgnState,
-                        pgnOption
-                    }
+                    dataGrid: dataGridState
                 }
             }
         };
     }
 
-    onModalTitleInput({ localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState> {
+    onModalTitleInput({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
         const { val, isValid, errMsg } = payload;
         const { modal } = localState;
         const isValueValid = modal.valueInput.isValid;
@@ -436,7 +444,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onModalValueInput({ localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState>  {
+    onModalValueInput({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState>  {
         const { val, isValid, errMsg } = payload;
         const { modal } = localState;
         const isTitleValid = modal.titleInput.isValid;
