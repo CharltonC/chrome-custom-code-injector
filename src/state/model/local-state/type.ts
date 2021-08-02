@@ -16,13 +16,3 @@ export interface IEditViewState {
     valueInput: TextInputState;
     dataGrid: DataGridState;
 }
-
-export interface IModalState {
-    currentId: string;
-    ruleIdCtx: ActiveRuleState;
-    exportFileInput: TextInputState;
-    importFileInput: File;
-    titleInput: TextInputState;
-    valueInput: TextInputState;
-    isConfirmBtnEnabled: boolean;
-}

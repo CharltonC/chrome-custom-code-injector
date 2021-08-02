@@ -1,7 +1,8 @@
 import { TextInputState } from '../text-input-state';
-import { DataGridState } from '../data-grid-state';
 import { ActiveRuleState } from '../active-rule-state';
-import { IListViewState, IEditViewState, IModalState } from './type';
+import { IListViewState, IEditViewState } from './type';
+import { DataGridState } from '../data-grid-state';
+import { ModalState } from '../modal-state';
 
 export class LocalState {
     //// VIEW
@@ -9,7 +10,7 @@ export class LocalState {
     listView: IListViewState = {
         ruleIdCtx: new ActiveRuleState(),
         searchText: '',
-        dataGrid: new DataGridState(),
+        dataGrid: null, // Required to be initialized
     };
     editView: IEditViewState = {
         ruleIdCtx: new ActiveRuleState(),
@@ -19,13 +20,10 @@ export class LocalState {
     };
 
     //// MODAL
-    modal: IModalState = {
-        currentId: null,
-        ruleIdCtx: new ActiveRuleState(),
-        exportFileInput: new TextInputState(),
-        importFileInput: null,
-        titleInput: new TextInputState(),
-        valueInput: new TextInputState(),
-        isConfirmBtnEnabled: false,
+    modal = new ModalState();
+
+    constructor(totalRecord: number) {
+        // Set the Pagination state of Data Grid in List View when instantiated
+        this.listView.dataGrid = new DataGridState({ totalRecord });
     }
 }
