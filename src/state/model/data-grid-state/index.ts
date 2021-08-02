@@ -1,10 +1,16 @@
 import { resultsPerPage } from '../../../constant/result-per-page';
 import { SettingState } from '../setting-state';
+import { PgnHandle } from '../../../handle/pagination';
 import * as TSort from '../../../handle/sort/type';
 import * as TPgn from '../../../handle/pagination/type';
 import * as TRowSelect from '../../../handle/row-select/type';
 
 const { resultsPerPageIdx } = new SettingState();
+const pgnHandle = new PgnHandle();
+const defPgnOption = {
+    increment: resultsPerPage,
+    incrementIdx: resultsPerPageIdx
+};
 
 export class DataGridState {
     // Sort
@@ -20,14 +26,24 @@ export class DataGridState {
     // Expand (only for allow 1 row to be expanded at the same time)
     expdRowId: string = null;
 
-    // Pagination
-    pgnOption = {
-        increment: resultsPerPage,
-        incrementIdx: resultsPerPageIdx
-    } as TPgn.IOption;
+    // Pagination (optional)
+    // - By def leave them as unless pagination is required
+    // - `pgnState` is required to be set when instantiated
+    // - `pgnState` should be auto set in this App here whenever a paginated state is changed
+    pgnOption?: TPgn.IOption;
+    pgnState?: TPgn.IState;
 
-    // By def leave it as empty
-    // - the state will be auto generated inside the component (however no access)
-    // - will be auto set here whenever a paginated state is changed
-    pgnState: TPgn.IState = null;
+    constructor(arg?: { totalRecord: number, pgnOption?: Partial<TPgn.IOption> }) {
+        if (!arg) return;
+
+        const { totalRecord, pgnOption } = arg;
+        if (totalRecord < 0) return;
+        const option = (
+            pgnOption
+                ? { ...defPgnOption, ...pgnOption }
+                : defPgnOption
+        ) as TPgn.IOption;
+        this.pgnOption = option;
+        this.pgnState = pgnHandle.getState(totalRecord, option);
+    }
 }
