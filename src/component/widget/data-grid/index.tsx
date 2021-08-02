@@ -74,7 +74,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { rows } = component;
         const { headerGrpHandle, rowExpdHandle, sortHandle, pgnHandle } = this;
         const sortOption = sort ? sortHandle.createOption(sort) : null;
-        const pgnOption = paginate ? pgnHandle.createOption(paginate) : null;
+        const pgnOption = paginate ? pgnHandle.getOption(paginate) : null;
         const isTb = type !== 'list' ? true : false;
         const headerCtx = header ?
             (isTb ?
@@ -90,7 +90,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
             sortOption,
             sortState: sort ? sortHandle.createState(data, sortOption) : null,
             pgnOption,
-            pgnState: paginate ? pgnHandle.createState(data, pgnOption) : null,
+            pgnState: paginate ? pgnHandle.getState(data.length, pgnOption) : null,
             expdState: rows?.length > 1 && expand ? rowExpdHandle.createState() : null
         };
 
@@ -270,7 +270,7 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         return {
             ...pgnState,
             ...this.pgnHandle.createGenericCmpAttr({
-                data: sortedData,
+                totalRecord: sortedData.length,
                 callback: this.getOnStateChangeHandler(onPaginateChange),
                 option: pgnOption,
                 state: pgnState

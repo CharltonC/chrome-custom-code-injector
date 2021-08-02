@@ -173,8 +173,8 @@ describe('Component - Data Grid', () => {
                 spy.transformRowOption.mockReturnValue('rows');
                 sortHandleSpy.createOption.mockReturnValue('sort-option');
                 sortHandleSpy.createState.mockReturnValue('sort-state');
-                pgnHandleSpy.createOption.mockReturnValue('pgn-option');
-                pgnHandleSpy.createState.mockReturnValue('pgn-state');
+                pgnHandleSpy.getOption.mockReturnValue('pgn-option');
+                pgnHandleSpy.getState.mockReturnValue('pgn-state');
                 rowExpdHandleSpy.createState.mockReturnValue('expd-state')
                 headerGrpHandleSpy.getCtxTbHeaders.mockReturnValue('tb-header');
                 headerGrpHandleSpy.getCtxListHeaders.mockReturnValue('list-header');
