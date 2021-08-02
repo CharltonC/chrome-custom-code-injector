@@ -1,10 +1,15 @@
-import { AppState } from '../model';
 import { createMockRules } from '../../data/mock';
+import { LocalState } from '../model/local-state';
+import { SettingState } from '../model/setting-state';
+import { IAppState } from '../model/type';
 
-export const createMockAppState = () => {
-    const baseAppState = new AppState();
+export const createMockAppState = (): IAppState => {
+    const rules = createMockRules();
+    const setting = new SettingState();
+    const localState = new LocalState(rules.length);
     return {
-        ...baseAppState,
-        rules: createMockRules()
+        rules,
+        setting,
+        localState,
     };
 };
