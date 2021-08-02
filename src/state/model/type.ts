@@ -2,13 +2,13 @@ import { SettingState } from './setting-state';
 import { HostRuleConfig } from '../../data/model/rule-config';
 import { LocalState } from './local-state';
 
-export class AppState {
+export interface IAppState {
     // Persistant: user default config
-    setting = new SettingState();
+    setting: SettingState;
 
     // Persistant: host/path rules
-    rules: HostRuleConfig[] = [];
+    rules: HostRuleConfig[];
 
     // Non-Persistant (in-memory): local state
-    localState = new LocalState();
+    localState: LocalState;
 }
