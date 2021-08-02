@@ -1,16 +1,17 @@
-import { IUiHandle } from '../../asset/ts/type/ui-handle';
 import {
     IState, IOption,
     IPageNavQuery,
-    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, ASpreadCtx,
-    ICmpAttrQuery, ICmpAttr, ICmpBtnAttr, ICmpSelectAttr, ISelectEvt, APageList,
+    IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, IRecordCtx, ISpreadCtx, TSpreadCtx,
+    ICmpAttrQuery, ICmpAttr, ICmpBtnAttr, ICmpSelectAttr, ISelectEvt, TPageList,
+    TFn
 } from './type';
 
 /**
  * Usage:
  *      const list = ['a', 'b', 'c', 'd'];
+ *      const totalRecord = list.length;
  *
- *      const example = pgnHandle.createState(list, {
+ *      const example = pgnHandle.getState(totalRecord, {
  *           page: 1,                       // optional starting page index
  *           increment: [100, 200, 300],    // used for <select>'s <option> (default 10 per page, i.e. [10])
  *           incrementIdx: 0,               // i.e. 100 per age
@@ -19,13 +20,13 @@ import {
  *      const { startIdx, endIdx } = example;
  *      const listFor1stPage = list.slice(startIdx, endIdx);
  */
-export class PgnHandle implements IUiHandle {
+export class PgnHandle {
     //// Option
     /**
      * Merge the updated option with existing option (either custom or default)
      * e.g. existingOption = this.state.sortOption
      */
-    createOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
+    getOption(modOption: Partial<IOption>, existingOption?: IOption): IOption {
         const baseOption = existingOption ? existingOption : this.getDefOption();
         return { ...baseOption, ...modOption };
     }
@@ -40,7 +41,7 @@ export class PgnHandle implements IUiHandle {
     }
 
     //// Full State
-    createState(list: any[], pgnOption: Partial<IOption>): IState {
+    getState(totalRecord: number, pgnOption: Partial<IOption>): IState {
         // Merge def. option with User's option
         const defOption: IOption = this.getDefOption();
         const { increment: [defIncrmVal] } = defOption;
@@ -48,7 +49,6 @@ export class PgnHandle implements IUiHandle {
         let perPage: number = this.getNoPerPage(increment, incrementIdx, defIncrmVal);
 
         // Skip if we only have 1 list item OR less than 2 pages
-        const totalRecord: number = list.length;
         const defState: IState = this.getDefState(totalRecord, perPage);
         if (totalRecord <= 1) return defState;
         const totalPage: number = this.getTotalPage(totalRecord, perPage);
@@ -56,7 +56,7 @@ export class PgnHandle implements IUiHandle {
 
         // Proceed as we have >=2 pages
         const { curr, pageNo }: IPageCtx = this.getCurrPage(page, totalPage - 1);
-        const currSlice: IPageSlice = this.getPageSliceIdx(list, perPage, curr);
+        const currSlice: IPageSlice = this.getPageSliceIdx(totalRecord, perPage, curr);
         const { startIdx, endIdx } = currSlice;
         const recordCtx = this.getRecordCtx(totalRecord, startIdx, endIdx);
         const spreadCtx: ISpreadCtx = this.getSpreadCtx(pageNo, totalPage, maxSpread);
@@ -143,11 +143,11 @@ export class PgnHandle implements IUiHandle {
         return relPage;
     }
 
-    getPageSliceIdx(list: any[], perPage: number, page: number): IPageSlice {
+    getPageSliceIdx(totalRecord: number, perPage: number, page: number): IPageSlice {
         let startIdx: number = page * perPage;     // inclusive index
         let endIdx: number = startIdx + perPage;      // exclusive index
-        startIdx = this.isDefined(list[startIdx]) ? startIdx : undefined;   // `undefined` is used as `null` cant be used as empty value in ES6
-        endIdx = this.isDefined(list[endIdx]) ? endIdx : undefined;
+        startIdx = startIdx < totalRecord ? startIdx : undefined;   // `undefined` is used as `null` cant be used as empty value in ES6
+        endIdx = endIdx < totalRecord ? endIdx : undefined;
         return { startIdx, endIdx };
     }
 
@@ -170,8 +170,8 @@ export class PgnHandle implements IUiHandle {
         const hsRtSpread: boolean = rtTotalRemain > 1 && rtTotalRemain < totalPage;
         const hsLtSpread: boolean = ltTotalRemain > 1 && ltTotalRemain < totalPage;
 
-        const rtSpread: ASpreadCtx = hsRtSpread ?
-            spreadRange.reduce((container: ASpreadCtx, item, idx: number) => {
+        const rtSpread: TSpreadCtx = hsRtSpread ?
+            spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
                 const pageNo: number = currPageNo + idx + 1;
 
                 // We exclude the 1st page or last page since its already available in the Pagination state
@@ -187,8 +187,8 @@ export class PgnHandle implements IUiHandle {
             }, []) :
             null;
 
-        const ltSpread: ASpreadCtx = hsLtSpread ?
-            spreadRange.reduce((container: ASpreadCtx, item, idx: number) => {
+        const ltSpread: TSpreadCtx = hsLtSpread ?
+            spreadRange.reduce((container: TSpreadCtx, item, idx: number) => {
                 const pageNo: number = currPageNo - idx - 1;
                 const isInRange: boolean = pageNo > 1 && pageNo < totalPage;
                 const hsGtOnePageTilFirstPage: boolean = idx === maxSpread && (currPageNo - pageNo) >= 1;
@@ -242,10 +242,6 @@ export class PgnHandle implements IUiHandle {
         }
     }
 
-    isDefined(val?: any): boolean {
-        return typeof val !== 'undefined';
-    }
-
     isGteZero(vals: any | any[]): boolean {
         return Array.isArray(vals) ?
             vals.every((val: any) => (Number.isInteger(val) && val >= 0)) :
@@ -260,9 +256,9 @@ export class PgnHandle implements IUiHandle {
      * const callback = (modState => this.setState({...this.state, ...modState})).bind(this);
      * createGenericCmpProps({option, state, data, callback});
      */
-    createGenericCmpAttr({ data, option, state, callback }: ICmpAttrQuery): ICmpAttr {
+    createGenericCmpAttr({ totalRecord, option, state, callback }: ICmpAttrQuery): ICmpAttr {
         const { first, prev, next, last, ltSpread, rtSpread } = state;
-        const onEvt: AFn = this.getGenericCmpEvtHandler(data, option, callback);
+        const onEvt: TFn = this.getGenericCmpEvtHandler(totalRecord, option, callback);
 
         return {
             // Attr. for First/Prev/Next/Last as Button
@@ -285,7 +281,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getTextBtnAttr(onEvt: AFn, [title, pageIdx]: [string, number]): ICmpBtnAttr {
+    getTextBtnAttr(onEvt: TFn, [title, pageIdx]: [string, number]): ICmpBtnAttr {
         return {
             title,
             disabled: !Number.isInteger(pageIdx),
@@ -295,7 +291,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getSpreadBtnAttr(onEvt: AFn, state: IState, [page, isLtSpread]: [any, boolean]): ICmpBtnAttr {
+    getSpreadBtnAttr(onEvt: TFn, state: IState, [page, isLtSpread]: [any, boolean]): ICmpBtnAttr {
         const { curr, maxSpread } = state;
 
         // If the page is not a number, then its likely dots '...' so page is jumped by an interval of `maxSpread`
@@ -316,21 +312,21 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getPageSelectAttr(onEvt: AFn, state: IState): ICmpSelectAttr {
+    getPageSelectAttr(onEvt: TFn, state: IState): ICmpSelectAttr {
         const { pageNo, totalPage, ltSpread, rtSpread } = state;
 
         const isLteOnePage: boolean = totalPage <= 1;
 
         // Options (inclusive of all pages here)
-        const leftOptions: APageList = (isLteOnePage || pageNo === 1) ?
+        const leftOptions: TPageList = (isLteOnePage || pageNo === 1) ?
             [ 1 ] :
             [ 1, ...(ltSpread ? ltSpread : []), pageNo ];
 
-        const rightOptions: APageList = (isLteOnePage || pageNo === totalPage) ?
+        const rightOptions: TPageList = (isLteOnePage || pageNo === totalPage) ?
             [] :
             [ ...(rtSpread ? rtSpread : []), totalPage ];
 
-        const options: APageList = [ ...leftOptions, ...rightOptions ];
+        const options: TPageList = [ ...leftOptions, ...rightOptions ];
         const selectedOptionIdx: number = leftOptions.length - 1;
 
         return {
@@ -350,7 +346,7 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getPerPageSelectAttr(onEvt: AFn, option: IOption): ICmpSelectAttr {
+    getPerPageSelectAttr(onEvt: TFn, option: IOption): ICmpSelectAttr {
         const { increment, incrementIdx } = option;
         return {
             title: 'per page select',
@@ -365,15 +361,15 @@ export class PgnHandle implements IUiHandle {
         };
     }
 
-    getGenericCmpEvtHandler(data: any[], option: IOption, callback?: AFn): AFn {
+    getGenericCmpEvtHandler(totalRecord: number, option: IOption, callback?: TFn): TFn {
         return ((modOption: Partial<IOption>): void => {
-            const pgnOption: IOption = this.createOption(modOption, option);
-            const pgnState: IState = this.createState(data, pgnOption);
+            const pgnOption: IOption = this.getOption(modOption, option);
+            const pgnState: IState = this.getState(totalRecord, pgnOption);
             if (callback) callback({ pgnOption, pgnState });
         });
     }
 
-    getTargetPageIdxByPos(state: IState, pages: APageList, [currPos, activePos]: [number, number]): number {
+    getTargetPageIdxByPos(state: IState, pages: TPageList, [currPos, activePos]: [number, number]): number {
         const { curr, maxSpread } = state;
         const page: string | number = pages[currPos];
         const targetPageIdx: number = typeof page === 'number' ?
@@ -382,3 +378,5 @@ export class PgnHandle implements IUiHandle {
         return targetPageIdx;
     }
 }
+
+export default PgnHandle;

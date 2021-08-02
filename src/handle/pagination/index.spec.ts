@@ -1,22 +1,31 @@
-import { AMethodSpy } from '../../asset/ts/test-util/type';
-import { TestUtil } from '../../asset/ts/test-util';
 import {
     IState, IOption,
     IPageNavQuery,
     IPageCtx, IPageSlice, IPageRange, IRelPage, IRelPageCtx, ISpreadCtx,
-    ICmpAttrQuery, APageList,
+    ICmpAttrQuery, TPageList,
 } from './type';
-import { PgnHandle } from '.';
+import PgnHandle from '.';
 
 describe('Class - Paginate Handle', () => {
+    function spyMethods(target: Record<string, any>): Record<string, jest.SpyInstance> {
+        const $spy: Record<string, jest.SpyInstance> = {};
+        const proto: Record<string, any> = Object.getPrototypeOf(target);
+        Object
+            .getOwnPropertyNames(proto)
+            .forEach((name: string) => {
+                $spy[name] = jest.spyOn(target, name);
+            });
+        return $spy;
+    }
+
     let handle: PgnHandle;
     let defOption: IOption;
-    let spy: AMethodSpy<PgnHandle>;
+    let spy: Record<keyof PgnHandle, jest.SpyInstance>;
 
     beforeEach(() => {
         handle = new PgnHandle();
         defOption = handle.getDefOption();
-        spy = TestUtil.spyMethods(handle);
+        spy = spyMethods(handle);
     });
 
     afterEach(() => {
@@ -25,8 +34,9 @@ describe('Class - Paginate Handle', () => {
     });
 
     describe('Method Group - Full State and Option', () => {
-        describe('Method: createState - Get Pagination state based on list and user option', () => {
+        describe('Method: getState - Get Pagination state based on list and user option', () => {
             const mockList: any[] = ['a', 'b', 'c', 'd', 'e', 'f'];
+            const mockTotalRecord: number = mockList.length;
 
             describe('test with spied/mocked methods', () => {
                 const mockPgnOption: Partial<IOption> = {};
@@ -45,19 +55,20 @@ describe('Class - Paginate Handle', () => {
                 });
 
                 it('should return def paginate state when list only has 1 or less items', () => {
-                    expect(handle.createState(['a'], mockPgnOption)).toEqual(mockEmptyObj);
+                    const mockLteOneTotalRecord = 1;
+                    expect(handle.getState(mockLteOneTotalRecord, mockPgnOption)).toEqual(mockEmptyObj);
                     expect(spy.getDefOption).toHaveBeenCalled();
                     expect(spy.getNoPerPage).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
-                    expect(spy.getDefState).toHaveBeenCalledWith(1, mockNoPerPage);
+                    expect(spy.getDefState).toHaveBeenCalledWith(mockLteOneTotalRecord, mockNoPerPage);
                     expect(spy.getTotalPage).not.toHaveBeenCalled();
                 });
 
                 it('should return def paginate state when total page is lte 1', () => {
-                    expect(handle.createState(mockList, mockPgnOption)).toEqual(mockEmptyObj);
+                    expect(handle.getState(mockTotalRecord, mockPgnOption)).toEqual(mockEmptyObj);
                     expect(spy.getDefOption).toHaveBeenCalled();
                     expect(spy.getNoPerPage).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
-                    expect(spy.getTotalPage).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
-                    expect(spy.getDefState).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
+                    expect(spy.getTotalPage).toHaveBeenCalledWith(mockTotalRecord, mockNoPerPage);
+                    expect(spy.getDefState).toHaveBeenCalledWith(mockTotalRecord, mockNoPerPage);
                     expect(spy.getCurrPage).not.toHaveBeenCalled();
                 });
 
@@ -82,7 +93,7 @@ describe('Class - Paginate Handle', () => {
                     spy.parseRelPage.mockReturnValue(mockParsedRelPage);
                     spy.getSpreadCtx.mockReturnValue(mockSpread);
 
-                    expect(handle.createState(mockList, mockPgnOption)).toEqual({
+                    expect(handle.getState(mockTotalRecord, mockPgnOption)).toEqual({
                         ...mockSliceIdx,
                         ...mockParsedRelPage,
                         ...mockSpread,
@@ -93,10 +104,10 @@ describe('Class - Paginate Handle', () => {
                     });
                     expect(spy.getDefOption).toHaveBeenCalled();
                     expect(spy.getNoPerPage).toHaveBeenCalledWith(increment, incrementIdx, increment[0]);
-                    expect(spy.getDefState).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
-                    expect(spy.getTotalPage).toHaveBeenCalledWith(mockList.length, mockNoPerPage);
+                    expect(spy.getDefState).toHaveBeenCalledWith(mockTotalRecord, mockNoPerPage);
+                    expect(spy.getTotalPage).toHaveBeenCalledWith(mockTotalRecord, mockNoPerPage);
                     expect(spy.getCurrPage).toHaveBeenCalledWith(page, mockTotalPage-1);
-                    expect(spy.getPageSliceIdx).toHaveBeenCalledWith(mockList, mockNoPerPage, page);
+                    expect(spy.getPageSliceIdx).toHaveBeenCalledWith(mockTotalRecord, mockNoPerPage, page);
                     expect(spy.getRelPage).toHaveBeenCalledWith(mockTotalPage, page);
                     expect(spy.getRelPageCtx).toHaveBeenCalledWith({curr: page, last: mockRelPage.last}, mockRelPage);
                     expect(spy.getSpreadCtx).toHaveBeenCalledWith(mockCurrPageNo, mockTotalPage, 3);
@@ -109,7 +120,7 @@ describe('Class - Paginate Handle', () => {
                 const mockPgnOption: Partial<IOption> = { increment: [mockPerPage] };
 
                 it('should return paginate state by default', () => {
-                    expect(handle.createState(mockList, mockPgnOption)).toEqual({
+                    expect(handle.getState(mockTotalRecord, mockPgnOption)).toEqual({
                         curr: 0,
                         startIdx: 0,
                         endIdx: 4,
@@ -122,7 +133,7 @@ describe('Class - Paginate Handle', () => {
                         perPage: mockPerPage,
                         startRecord: 1,
                         endRecord: 4,
-                        totalRecord: mockList.length,
+                        totalRecord: mockTotalRecord,
                         ltSpread: null,
                         rtSpread: null,
                         maxSpread: 3,
@@ -131,7 +142,7 @@ describe('Class - Paginate Handle', () => {
 
                 it('should return paginate state when provided current page index', () => {
                     const mockCurrPage: number = 1;
-                    expect(handle.createState(mockList, {...mockPgnOption, page: mockCurrPage})).toEqual({
+                    expect(handle.getState(mockTotalRecord, {...mockPgnOption, page: mockCurrPage})).toEqual({
                         curr: mockCurrPage,
                         startIdx: 4,
                         endIdx: undefined,
@@ -171,18 +182,18 @@ describe('Class - Paginate Handle', () => {
             });
         });
 
-        describe('Method: createOption - Create a new Pagination option from an option merged with either default or custom existing option', () => {
+        describe('Method: getOption - Create a new Pagination option from an option merged with either default or custom existing option', () => {
             const mockOption: Partial<IOption> = { page: 2 };
 
             it('should return an option merged with default option when existing option is not provided', () => {
                 spy.getDefOption.mockReturnValue({});
-                expect(handle.createOption(mockOption)).toEqual(mockOption);
+                expect(handle.getOption(mockOption)).toEqual(mockOption);
                 expect(spy.getDefOption).toHaveBeenCalled();
             });
 
             it('should return an option merged with existing option when it is provided', () => {
                 const mockExistOption = {} as IOption;
-                expect(handle.createOption(mockOption, mockExistOption)).toEqual(mockOption);
+                expect(handle.getOption(mockOption, mockExistOption)).toEqual(mockOption);
                 expect(spy.getDefOption).not.toHaveBeenCalled();
             });
         });
@@ -268,13 +279,13 @@ describe('Class - Paginate Handle', () => {
             const mockNoPerPage: number = 2;
 
             it('should return a rounded total no. of pages if total list items is greater than total per page', () => {
-                const mockListLen: number = 3;
-                expect(handle.getTotalPage(mockListLen, mockNoPerPage)).toBe(2);
+                const mockTotalRecord: number = 3;
+                expect(handle.getTotalPage(mockTotalRecord, mockNoPerPage)).toBe(2);
             });
 
             it('should return 1 if total list items is lte total per page', () => {
-                const mockListLen: number = 1;
-                expect(handle.getTotalPage(mockListLen, mockNoPerPage)).toBe(1);
+                const mockTotalRecord: number = 1;
+                expect(handle.getTotalPage(mockTotalRecord, mockNoPerPage)).toBe(1);
             });
         });
 
@@ -334,22 +345,27 @@ describe('Class - Paginate Handle', () => {
         });
 
         describe('Method: getPageSliceIdx - Get the corresponding slice index for `slice` in the list array based on a provided page index', () => {
-            const mockList: any[] = [];
+            const mockTotalRecord: number = 4;
             const mockPerPage: number = 2;
-            const mockPage: number = 1;
-            let slice: IPageSlice
+            let mockPage: number;
+            let slice: IPageSlice;
 
-            it('should return the index if it exists in the list array', () => {
-                spy.isDefined.mockReturnValue(true);
-                slice = handle.getPageSliceIdx(mockList, mockPerPage, mockPage);
-
-                expect(slice).toEqual({startIdx: 2, endIdx: 4});
+            it('should return the index when given page is within page', () => {
+                mockPage = 0;
+                slice = handle.getPageSliceIdx(mockTotalRecord, mockPerPage, mockPage);
+                expect(slice).toEqual({startIdx: 0, endIdx: 2});
             });
 
-            it('should return the index if it doesnt exist in the list array', () => {
-                spy.isDefined.mockReturnValue(false);
-                slice = handle.getPageSliceIdx(mockList, mockPerPage, mockPage);
+            it('should return the index when given page is partially within page', () => {
+                mockPage = 1;
+                slice = handle.getPageSliceIdx(mockTotalRecord, mockPerPage, mockPage);
+                expect(slice).toEqual({startIdx: 2, endIdx: undefined});
+            });
 
+
+            it('should return the index as undefined when given page is out of range', () => {
+                mockPage = 3;
+                slice = handle.getPageSliceIdx(mockTotalRecord, mockPerPage, mockPage);
                 expect(slice).toEqual({startIdx: undefined, endIdx: undefined});
             });
         });
@@ -413,7 +429,7 @@ describe('Class - Paginate Handle', () => {
             });
         });
 
-        describe('Method: getPageIdxForSpread - calculating corresponding page index for left/right spread', () => {
+        describe('Method: getPageIdxForSpread -  calculating corresponding page index for left/right spread', () => {
             const { getPageIdxForSpread } = PgnHandle.prototype;
             const mockMaxSpread: number = 3;
 
@@ -457,7 +473,6 @@ describe('Class - Paginate Handle', () => {
                 it('should return false if requested page type does not match', () => {
                     expect(handle.canNavToPage(mockCurrPage1, {type: ''})).toBe(false);
                     expect(spy.isGteZero).toHaveBeenCalledTimes(1);
-                    expect(spy.isDefined).not.toHaveBeenCalled();
                 });
             });
 
@@ -521,16 +536,6 @@ describe('Class - Paginate Handle', () => {
             });
         });
 
-        describe('Method: isDefined - Check if a value is define', () => {
-            it('should return true if value is defined', () => {
-                expect(handle.isDefined('')).toBe(true);
-            });
-
-            it('should return false if value isnt defined', () => {
-                expect(handle.isDefined()).toBe(false);
-            });
-        });
-
         describe('Method: isGteZero - Check if a value or an array of value is an interger and also greater or equal to 0', () => {
             it('should return true if it or all of the values are an interger and gte 0', () => {
                 expect(handle.isGteZero(1)).toBe(true);
@@ -571,7 +576,7 @@ describe('Class - Paginate Handle', () => {
             } as IState;
 
             const mockQuery = {
-                data: [],
+                totalRecord: 0,
                 option: mockOption,
                 state: mockState,
                 callback: mockEvtHandler
@@ -692,8 +697,8 @@ describe('Class - Paginate Handle', () => {
         describe('Method - getPageSelectAttr: Get Generic Attributes of a Pagination Page Select Element', () => {
             const pageNo: number = 4;
             const totalPage: number = 10;
-            const ltSpread: APageList = [2,3];
-            const rtSpread: APageList = [5,6];
+            const ltSpread: TPageList = [2,3];
+            const rtSpread: TPageList = [5,6];
             const mockEvt = { target: { value: 0 }};
             const mockTargetPageIdx: number = 99;
             let mockState;
@@ -757,7 +762,7 @@ describe('Class - Paginate Handle', () => {
                     onSelect(mockEvt);
 
                     const expectOptionIdx: number = 0;
-                    const expectOptions: APageList = [ mockPageNo, ...rtSpread, totalPage ];
+                    const expectOptions: TPageList = [ mockPageNo, ...rtSpread, totalPage ];
 
                     expect(attrs).toEqual({
                         title: 'page select',
@@ -771,7 +776,7 @@ describe('Class - Paginate Handle', () => {
 
                 it('should return attributes when current page is last page', () => {
                     mockState = {...mockState, totalPage: pageNo };
-                    const expectOptions: APageList = [ 1, ...ltSpread, pageNo ];
+                    const expectOptions: TPageList = [ 1, ...ltSpread, pageNo ];
                     const expectOptionIdx: number = 1 + ltSpread.length;
                     const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
                     onSelect(mockEvt);
@@ -788,7 +793,7 @@ describe('Class - Paginate Handle', () => {
 
                 it('should return attributes when total page is 1', () => {
                     mockState = {...mockState, totalPage: 1 };
-                    const expectOptions: APageList = [ 1 ];
+                    const expectOptions: TPageList = [ 1 ];
                     const expectOptionIdx: number = 0;
                     const { onSelect, ...attrs } = handle.getPageSelectAttr(mockEvtHandler, mockState);
                     onSelect(mockEvt);
@@ -836,20 +841,20 @@ describe('Class - Paginate Handle', () => {
             const mockRtnPgnState = 'state'
 
             beforeEach(() => {
-                spy.createOption.mockReturnValue(mockRtnPgnOption);
-                spy.createState.mockReturnValue(mockRtnPgnState);
+                spy.getOption.mockReturnValue(mockRtnPgnOption);
+                spy.getState.mockReturnValue(mockRtnPgnState);
             });
 
             it('should return the event handler function when callback is provided', () => {
-                const mockData = [];
+                const mockTotalRecord = 0;
                 const mockOption = {} as IOption;
                 const mockModOption = { page: 1 } as IOption;
 
-                const evtHandler = handle.getGenericCmpEvtHandler(mockData, mockOption, mockEvtHandler);
+                const evtHandler = handle.getGenericCmpEvtHandler(mockTotalRecord, mockOption, mockEvtHandler);
                 evtHandler(mockModOption);
 
-                expect(spy.createOption).toHaveBeenCalledWith(mockModOption, mockOption);
-                expect(spy.createState).toHaveBeenCalledWith(mockData, mockRtnPgnOption);
+                expect(spy.getOption).toHaveBeenCalledWith(mockModOption, mockOption);
+                expect(spy.getState).toHaveBeenCalledWith(mockTotalRecord, mockRtnPgnOption);
                 expect(mockEvtHandler).toHaveBeenCalledWith({
                     pgnOption: mockRtnPgnOption,
                     pgnState: mockRtnPgnState
@@ -857,15 +862,15 @@ describe('Class - Paginate Handle', () => {
             });
 
             it('should return the event handler function when callback is not provided', () => {
-                const mockData = [];
+                const mockTotalRecord = 0;
                 const mockOption = {} as IOption;
                 const mockModOption = { page: 1 } as IOption;
 
-                const evtHandler = handle.getGenericCmpEvtHandler(mockData, mockOption);
+                const evtHandler = handle.getGenericCmpEvtHandler(mockTotalRecord, mockOption);
                 evtHandler(mockModOption);
 
-                expect(spy.createOption).toHaveBeenCalledWith(mockModOption, mockOption);
-                expect(spy.createState).toHaveBeenCalledWith(mockData, mockRtnPgnOption);
+                expect(spy.getOption).toHaveBeenCalledWith(mockModOption, mockOption);
+                expect(spy.getState).toHaveBeenCalledWith(mockTotalRecord, mockRtnPgnOption);
                 expect(mockEvtHandler).not.toHaveBeenCalledWith();
             });
         });

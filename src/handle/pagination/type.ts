@@ -37,12 +37,12 @@ export interface IRecordCtx {
 }
 
 export interface ISpreadCtx {
-    ltSpread: ASpreadCtx;
-    rtSpread: ASpreadCtx;
+    ltSpread: TSpreadCtx;
+    rtSpread: TSpreadCtx;
     maxSpread: number;
 }
 
-export type ASpreadCtx = (number | '...')[];
+export type TSpreadCtx = (number | '...')[];
 
 
 //// Pagination Request/Query
@@ -59,8 +59,8 @@ export interface IPageNavQuery {
 }
 
 // Whether relevant pages are navigatable
-export interface IRelPageCtx extends ARelPageCtx {}
-type ARelPageCtx = {
+export interface IRelPageCtx extends TRelPageCtx {}
+type TRelPageCtx = {
     [K in keyof IRelPage]: boolean;
 }
 
@@ -78,22 +78,22 @@ export interface ICmpAttr {
 }
 
 export interface ICmpAttrQuery {
-    data: any[];
+    totalRecord: number;
     option: IOption;
     state: IState;
-    callback: AFn;
+    callback: TFn;
 }
 
 export interface ICmpBtnAttr extends ICommonCmpAttr {
     isSpread?: boolean;
-    onClick: AFn;
+    onClick: TFn;
 }
 
 export interface ICmpSelectAttr extends ICommonCmpAttr {
     options: (string | number)[];
     selectedOptionValue: string | number;
     selectedOptionIdx: number;
-    onSelect: AFn;
+    onSelect: TFn;
 }
 
 interface ICommonCmpAttr {
@@ -106,4 +106,8 @@ export interface ISelectEvt extends Event {
     target: HTMLSelectElement;
 }
 
-export type APageList = (string | number)[];
+export type TPageList = (string | number)[];
+
+
+//// Misc
+export type TFn = (...args: any[]) => any;
