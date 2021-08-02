@@ -152,6 +152,7 @@ export class DataHandle {
     rmvHostsFromIds(rules: HostRuleConfig[], ids: string[]): void {
         ids.forEach(rowId => {
             const idx = rules.findIndex(({ id }) => id === rowId);
+            if (idx === -1) return;
             rules.splice(idx, 1);
         });
     }
@@ -159,6 +160,7 @@ export class DataHandle {
     rmvPartialHosts(rules: HostRuleConfig[], selectedRowKeyCtx: { [k: string]: boolean }): void {
         Object.getOwnPropertyNames(selectedRowKeyCtx).forEach((rowId) => {
             const idx = rules.findIndex(({ id }) => id === rowId);
+            if (idx === -1) return;
             rules.splice(idx, 1);
         });
     }
@@ -167,6 +169,7 @@ export class DataHandle {
         const { libs } = this.getRuleFromIdCtx(rules, idCtx) as PathRuleConfig;
         Object.getOwnPropertyNames(selectedRowKeyCtx).forEach((rowId) => {
             const idx = libs.findIndex(({ id }) => id === rowId);
+            if (idx === -1) return;
             libs.splice(idx, 1);
         });
     }

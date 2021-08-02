@@ -335,10 +335,22 @@ describe('Data Crud Handle', () => {
                     .mockReturnValue(mockPath);
             });
 
+            it('Method - rmvHostsFromIds: Remove partial hosts from a list of host IDs', () => {
+                const mockRules = [
+                    { id: 'a' },
+                    { id: 'b' }
+                ] as HostRuleConfig[];
+                const mockHostIds = ['a', 'c'];
+                dataHandle.rmvHostsFromIds(mockRules, mockHostIds);
+                expect(mockRules.length).toBe(1);
+                expect(mockRules[0].id).toEqual('b');
+            });
+
             it('Method - rmvPartialHosts: Remove partial hosts', () => {
                 const mockSelectedRowKeyCtx = {
                     'host-b': true,
                     'host-c': true,
+                    'host-not-exist': true,
                 };
                 dataHandle.rmvPartialHosts(mockRules, mockSelectedRowKeyCtx);
                 expect(mockRules.length).toBe(1);
@@ -349,6 +361,7 @@ describe('Data Crud Handle', () => {
                 const mockSelectedRowKeyCtx = {
                     'lib-c-0': true,
                     'lib-c-2': true,
+                    'lib-not-exist': true,
                 };
                 dataHandle.rmvPartialLibs(mockRules, mockSelectedRowKeyCtx, mockIdCtx);
                 expect(mockLibs.length).toBe(1);
