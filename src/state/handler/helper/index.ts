@@ -1,7 +1,7 @@
-import { AppState } from '../../model';
+import { IAppState } from '../../model/type';
 
 export const HandlerHelper = {
-    getTextlInputChangeState(arg): Partial<AppState> {
+    getTextlInputChangeState(arg): Partial<IAppState> {
         const {
             rules, localState,
             isInModal, inputKey, key,
