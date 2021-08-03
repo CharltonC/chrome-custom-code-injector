@@ -3,7 +3,6 @@ import { StateHandle } from '../../../handle/state';
 import { FileHandle } from '../../../handle/file';
 import { dataHandle } from '../../../data/handler';
 import { IAppState } from '../../model/type';
-import { LocalState } from '../../model/local-state';
 import { SettingState } from '../../model/setting-state';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
@@ -239,23 +238,34 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     onAddPathModalOk(state: IAppState): Partial<IAppState> {
-        const { reflect } = this;
         const { localState, rules, setting } = state;
         const { modal, listView } = localState;
         const { titleInput, valueInput } = modal;
-        const { ruleIdCtx } = listView;
+        const { ruleIdCtx, dataGrid } = listView;
+        const { pgnOption } = dataGrid;
 
+        // Add host
         const title = titleInput.value;
         const urlPath = valueInput.value;
         const path = new PathRuleConfig(title, urlPath);
         Object.assign(path, setting.defRuleConfig);
         dataHandle.addPath(rules, ruleIdCtx, path);
 
-        const { modal: resetModal } = reflect.onModalCancel(state).localState;
+        // Update pagination state after addition
+        const { length } = rules;
+        const pgnState = pgnHandle.getState(length, pgnOption);
+
         return {
             localState: {
                 ...localState,
-                modal: resetModal
+                modal: new ModalState(),
+                listView: {
+                    ...listView,
+                    dataGrid: {
+                        ...dataGrid,
+                        pgnState
+                    }
+                }
             }
         };
     }
