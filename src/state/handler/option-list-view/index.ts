@@ -1,7 +1,7 @@
 import { StateHandle } from '../../../handle/state';
 import { IAppState } from '../../model/type';
 import { TextInputState } from '../../model/text-input-state';
-import { ActiveRuleState } from '../../model/active-rule-state';
+import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import { RowSelectHandle } from '../../../handle/row-select';
 import { dataHandle } from '../../../data/handler';
 import * as TPgn from '../../../handle/pagination/type';
@@ -156,7 +156,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         const { editView } = localState;
 
         // Find the index in rules
-        const ruleIdCtx = new ActiveRuleState({ hostId, pathId });
+        const ruleIdCtx = new RuleIdCtxState({ hostId, pathId });
 
         // Get the title and value of the item to be used in input placeholders
         const { title, value } = dataHandle.getRuleFromIdCtx(rules, { hostId, pathId });

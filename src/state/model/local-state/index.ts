@@ -1,5 +1,5 @@
 import { TextInputState } from '../text-input-state';
-import { RuleIdCtxState } from '../active-rule-state';
+import { RuleIdCtxState } from '../rule-id-ctx-state';
 import { IListViewState, IEditViewState } from './type';
 import { DataGridState } from '../data-grid-state';
 import { ModalState } from '../modal-state';

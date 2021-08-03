@@ -8,7 +8,7 @@ import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { modals } from '../../../constant/modals';
-import { RuleIdCtxState } from '../../model/active-rule-state';
+import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import { DataGridState } from '../../model/data-grid-state';
 import { PgnHandle } from '../../../handle/pagination';
 import { ModalState } from '../../model/modal-state';
