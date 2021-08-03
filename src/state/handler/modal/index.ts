@@ -290,7 +290,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             ? {
                 localState: {
                     ...baseLocalState,
-                    // TODO; searchText clear if any?
                     listView: {
                         ...listView,
                         ruleIdCtx: { hostId, pathId }
@@ -324,7 +323,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             ? dataHandle.rmvPath(rules, ruleIdCtx)
             : dataHandle.rmvHost(rules, ruleIdCtx);
 
-        // List View only: Clear the Search after rules are altered
+        // List View only: Clear the Search only if text exists + all hosts are removed
         const { length: totalRecord } = rules;
         const searchText = currSearchText
             ? totalRecord
@@ -408,16 +407,16 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             : dataHandle.rmvPartialHosts(rules, selectedRowKeyCtx);
 
         // Clear the Search after rules are altered (List view only)
-        const { length } = rules;
+        const { length: totalRecord } = rules;
         const searchText = currSearchText
-            ? length
+            ? totalRecord
                 ? currSearchText
                 : ''
             : currSearchText ;
 
         // Update new pagination state after rules removal (depends on total no. of hosts)
         const dataGridState = new DataGridState({
-            totalRecord: length,
+            totalRecord,
             pgnOption
         });
 
