@@ -401,7 +401,14 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         // Check to see if sorting exists for the DataGrid, if so use the sorted data as Source of truth
         const dataGridSrc = sortedData || rules;
         const { startIdx, endIdx } = pgnState;
-        const delIds = dataGridSrc.slice(startIdx, endIdx).map(({ id }) => id);
+
+        // Get Ids of hosts to be deleted from the set of rules we use: sorted data
+        // - Sorted Data takes priority if exists (since it is inclusive of search)
+        // - else we fall back to `rules` (if search doesnt exists) or search rules (if search text exists)
+        const delIds = sortedData
+            ? dataGridSrc.slice(startIdx, endIdx).map(({ id }) => id)
+            : dataHandle.getFilteredRules(rules, currSearchText).map(({id}) => id);
+
         areAllRowsSelected
             ? dataHandle.rmvHostsFromIds(rules, delIds)
             : dataHandle.rmvPartialHosts(rules, selectedRowKeyCtx);
