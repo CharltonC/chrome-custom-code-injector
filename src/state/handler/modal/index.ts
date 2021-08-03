@@ -18,7 +18,8 @@ const pgnHandle = new PgnHandle();
 
 export class ModalStateHandler extends StateHandle.BaseStateHandler {
     //// BASE
-    onModal({ localState }: IAppState, payload) {
+    // used ONLY WHEN setting modal Id is the only thing required to be altered
+    onModal({ localState }: IAppState, payload: {id: string}): Partial<IAppState> {
         const { id } = payload;
         const { modal } = localState;
         return {
@@ -32,7 +33,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onModalCancel({ localState }: IAppState) {
+    onModalCancel({ localState }: IAppState): Partial<IAppState> {
         // Reset modal state
         const modal = new ModalState();
         return {
@@ -44,12 +45,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// SETTING IMPORT/EXPORT
-    async onImportSettingModalOk(state: IAppState) {
+    async onImportSettingModalOk(state: IAppState): Promise<Partial<IAppState>> {
         const { modal } = state.localState;
         const { importFileInput } = modal;
 
         try {
-            const rules = await fileHandle.readJson(importFileInput);
+            const rules = (await fileHandle.readJson(importFileInput)) as HostRuleConfig[];
             const { localState } = this.reflect.onModalCancel(state);
             return { rules, localState };
         } catch (e) {
@@ -58,7 +59,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         }
     }
 
-    onExportSettingModalOk(state: IAppState) {
+    onExportSettingModalOk(state: IAppState): Partial<IAppState> {
         const { rules, localState } = state;
         const { value } = localState.modal.exportFileInput;
         fileHandle.saveJson(rules, value, true);
@@ -76,25 +77,28 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onExportInputChange({ localState }: IAppState, payload) {
-        const { isGte3, validState, val } = payload;
-        const isValid = isGte3 && validState?.isValid;
+    onExportInputChange({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
+        const { errMsg, isValid, val } = payload;
+        const { modal } = localState;
 
         return {
             localState: {
                 ...localState,
-                modalExportFileInput: {
-                    value: val,
-                    isValid,
-                    errMsg: validState?.errMsg,
-                },
-                isModalConfirmBtnEnabled: isValid,
+                modal: {
+                    ...modal,
+                    isConfirmBtnEnabled: isValid,
+                    exportFileInput: {
+                        value: val,
+                        isValid,
+                        errMsg: errMsg,
+                    },
+                }
             }
         };
     }
 
     //// SETTINGS
-    onResultsPerPageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg) {
+    onResultsPerPageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg): Partial<IAppState> {
         const { selectValueAttrVal } = payload;
         return {
             setting: {
@@ -104,13 +108,13 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onResetAll() {
+    onResetAll(): Partial<IAppState> {
         return {
             setting: new SettingState()
         };
     }
 
-    onDefHttpsToggle({ setting }: IAppState) {
+    onDefHttpsToggle({ setting }: IAppState): Partial<IAppState> {
         const { defRuleConfig } = setting;
         const { isHttps } = defRuleConfig;
         return {
@@ -124,7 +128,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefJsToggle({ setting }: IAppState) {
+    onDefJsToggle({ setting }: IAppState): Partial<IAppState> {
         const { defRuleConfig } = setting;
         const { isJsOn } = defRuleConfig;
         return {
@@ -138,7 +142,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefCssToggle({ setting }: IAppState) {
+    onDefCssToggle({ setting }: IAppState): Partial<IAppState> {
         const { defRuleConfig } = setting;
         const { isCssOn } = defRuleConfig;
         return {
@@ -152,7 +156,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefLibToggle({ setting }: IAppState) {
+    onDefLibToggle({ setting }: IAppState): Partial<IAppState> {
         const { defRuleConfig } = setting;
         const { isLibOn } = defRuleConfig;
         return {
@@ -166,7 +170,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDefJsExecStageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg) {
+    onDefJsExecStageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg): Partial<IAppState> {
         const { selectValueAttrVal } = payload;
         const { defRuleConfig } = setting;
         return {
@@ -180,7 +184,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDelConfirmDialogToggle({ setting }: IAppState) {
+    onDelConfirmDialogToggle({ setting }: IAppState): Partial<IAppState> {
         return {
             setting: {
                 ...setting,
@@ -210,7 +214,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onAddPathModal({ localState }: IAppState, payload): Partial<IAppState> {
+    onAddPathModal({ localState }: IAppState, payload: {hostId: string}): Partial<IAppState> {
         const { hostId } = payload;
         const { isListView, listView, modal } = localState;
         const baseLocalState = {
@@ -270,7 +274,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDelHostOrPathModal(state: IAppState, payload): Partial<IAppState> {
+    onDelHostOrPathModal(state: IAppState, payload: {hostId: string; pathId?: string}): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { hostId, pathId } = payload;
