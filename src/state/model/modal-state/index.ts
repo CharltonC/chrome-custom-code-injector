@@ -1,9 +1,9 @@
 import { TextInputState } from '../text-input-state';
-import { ActiveRuleState } from '../active-rule-state';
+import { RuleIdCtxState } from '../active-rule-state';
 
 export class ModalState {
     currentId: string = null;
-    ruleIdCtx = new ActiveRuleState();
+    ruleIdCtx = new RuleIdCtxState();
     exportFileInput = new TextInputState();
     importFileInput: File = null;
     titleInput = new TextInputState();

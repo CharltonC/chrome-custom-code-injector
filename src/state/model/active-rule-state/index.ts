@@ -1,9 +1,9 @@
-export class ActiveRuleState {
+export class RuleIdCtxState {
     hostId: string;
     pathId?: string;
     libId?: string;
 
-    constructor(arg?: ActiveRuleState) {
+    constructor(arg?: RuleIdCtxState) {
         if (!arg) return;
         Object.assign(this, arg);
     }
