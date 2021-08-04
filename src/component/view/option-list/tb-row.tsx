@@ -43,7 +43,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const ID_SUFFIX = `${itemLvl}-${idx}`;
 
     // Expand state
-    const isRowExp = isHost && id === expdRowId;
+    const isRowExp = isHost && hostId === expdRowId;
 
     // Selected State
     const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
