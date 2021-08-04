@@ -79,7 +79,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onRowSelectToggle({ localState }: IAppState, payload) {
+    onRowSelectToggle({ localState }: IAppState, payload: IOnRowSelectTogglePayload): Partial<IAppState> {
         const { dataSrc, hostId } = payload;
         const { dataGrid } = localState.listView;
         const {
@@ -135,10 +135,10 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onRowExpand({ localState }: IAppState, expdState: Record<string, number>) {
+    onRowExpand({ localState }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+        const { hostId } = payload;
         const { dataGrid } = localState.listView;
         const { expdRowId } = dataGrid;
-        const [ id ]: string[] = Object.getOwnPropertyNames(expdState);
 
         return {
             localState: {
@@ -147,7 +147,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
                     ...localState.listView,
                     dataGrid: {
                         ...dataGrid,
-                        expdRowId: id === expdRowId ? null : id
+                        expdRowId: hostId === expdRowId ? null : hostId
                     }
                 }
             }

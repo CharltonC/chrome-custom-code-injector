@@ -41,8 +41,11 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const ruleIdCtx = isHost ? { hostId } : { hostId, pathId };
 
     const ID_SUFFIX = `${itemLvl}-${idx}`;
-    const isRowExp = isHost && title === expdRowId;
 
+    // Expand state
+    const isRowExp = isHost && id === expdRowId;
+
+    // Selected State
     const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
     const isSelected = areAllRowsSelected || hostId in selectedRowKeyCtx;
     const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeyCtx).length;
@@ -71,7 +74,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                                 icon="arrow-rt"
                                 clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
                                 disabled={!paths?.length}
-                                onClick={() => onRowExpand({[title]: itemLvl})}
+                                onClick={() => onRowExpand({ hostId })}
                                 />
                             <NumBadge total={paths?.length} />
                         </>}
