@@ -142,34 +142,6 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
             });
 
-            describe('Searched + Non-paginated', () => {
-                beforeEach(() => {
-                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandler() ],
-                    }));
-
-                    mockSearch('ebay');
-                });
-
-                it('should delete all rows for search', () => {
-                    const $targetRow = getElem().$rows[0];
-                    const { $select, $del } = getCellElem(getElem().$header, true);
-                    TestUtil.triggerEvt($select, 'click');
-                    TestUtil.triggerEvt($del, 'click');
-                    const { $rows, totalRows } = getElem();
-
-                    expect($rows.length).toBe(0);
-                    expect(totalRows).toBe(0);
-                    expect(hsTargetRow($rows, $targetRow)).toBeFalsy();
-
-                    // Clear the search
-                    mockSearch('');
-                    const { $rows: $newRows, totalRows: newTotalRows } = getElem();
-                    expect($newRows.length).toBe(3);
-                    expect(newTotalRows).toBe(3);
-                });
-            });
-
             describe('Non-searched + Paginated', () => {
                 beforeEach(() => {
                     // Mock both pagination option and state
@@ -235,6 +207,34 @@ describe('Component - Option App (UI/E2E)', () => {
 
                     expect(totalRows).toBe(2);
                     expect($rows.length).toBe(2);            // 1st page has been replaced with 2 remianing rows
+                });
+            });
+
+            describe('Searched + Non-paginated', () => {
+                beforeEach(() => {
+                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
+                        root: [ mockAppState, new AppStateHandler() ],
+                    }));
+
+                    mockSearch('ebay');
+                });
+
+                it('should delete all rows for search', () => {
+                    const $targetRow = getElem().$rows[0];
+                    const { $select, $del } = getCellElem(getElem().$header, true);
+                    TestUtil.triggerEvt($select, 'click');
+                    TestUtil.triggerEvt($del, 'click');
+                    const { $rows, totalRows } = getElem();
+
+                    expect($rows.length).toBe(0);
+                    expect(totalRows).toBe(0);
+                    expect(hsTargetRow($rows, $targetRow)).toBeFalsy();
+
+                    // Clear the search
+                    mockSearch('');
+                    const { $rows: $newRows, totalRows: newTotalRows } = getElem();
+                    expect($newRows.length).toBe(3);
+                    expect(newTotalRows).toBe(3);
                 });
             });
 
