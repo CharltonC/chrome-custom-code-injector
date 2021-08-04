@@ -1,5 +1,6 @@
 import { resultsPerPage } from '../../../constant/result-per-page';
 import { SettingState } from '../setting-state';
+import { HostRuleConfig } from '../../../data/model/rule-config';
 import { PgnHandle } from '../../../handle/pagination';
 import * as TSort from '../../../handle/sort/type';
 import * as TPgn from '../../../handle/pagination/type';
@@ -15,7 +16,11 @@ const defPgnOption = {
 export class DataGridState {
     // Sort
     sortOption: Partial<TSort.IOption> = { reset: true };
-    sortedData: AObj[] = null;
+
+    // Current Data used in Data Grid component
+    // - could be sorted data hence diff. to original data source `rules`
+    // - used in case external state handler can't access the data grid data
+    srcRules: HostRuleConfig[] = null;
 
     // Select
     selectState: TRowSelect.IState = {

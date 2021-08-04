@@ -368,14 +368,22 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
     }
 
-    onDelHostsModal(state: IAppState): Partial<IAppState> {
+    onDelHostsModal(state: IAppState, payload: { srcRules: HostRuleConfig[] }): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
-        const { modal } = localState;
+        const { modal, listView } = localState;
+        const { srcRules } = payload;
 
         const newState = {
             localState: {
                 ...localState,
+                listView: {
+                    ...listView,
+                    dataGrid: {
+                        ...listView.dataGrid,
+                        srcRules
+                    },
+                },
                 modal: {
                     ...modal,
                     currentId: modals.delHosts.id
@@ -395,20 +403,11 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { listView, modal } = localState;
         const { dataGrid, searchText: currSearchText } = listView;
 
-        const { selectState, pgnOption, sortedData, pgnState } = dataGrid;
+        // Remove based on specifid IDs
+        const { selectState, pgnOption, pgnState, srcRules } = dataGrid;
         const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
-
-        // Check to see if sorting exists for the DataGrid, if so use the sorted data as Source of truth
-        const dataGridSrc = sortedData || rules;
         const { startIdx, endIdx } = pgnState;
-
-        // Get Ids of hosts to be deleted from the set of rules we use: sorted data
-        // - Sorted Data takes priority if exists (since it is inclusive of search)
-        // - else we fall back to `rules` (if search doesnt exists) or search rules (if search text exists)
-        const delIds = sortedData
-            ? dataGridSrc.slice(startIdx, endIdx).map(({ id }) => id)
-            : dataHandle.getFilteredRules(rules, currSearchText).map(({id}) => id);
-
+        const delIds = srcRules.slice(startIdx, endIdx).map(({ id }) => id)
         areAllRowsSelected
             ? dataHandle.rmvHostsFromIds(rules, delIds)
             : dataHandle.rmvPartialHosts(rules, selectedRowKeyCtx);
