@@ -151,14 +151,10 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
     }
 
     onEditView({ rules, localState }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        const { hostId, pathId } = payload;
         const { editView } = localState;
 
-        // Find the index in rules
-        const ruleIdCtx = new RuleIdCtxState({ hostId, pathId });
-
         // Get the title and value of the item to be used in input placeholders
-        const { title, value } = dataHandle.getRuleFromIdCtx(rules, { hostId, pathId });
+        const { title, value } = dataHandle.getRuleFromIdCtx(rules, payload);
         const titleInput = new TextInputState({ value: title });
         const valueInput = new TextInputState({ value });
 
@@ -171,7 +167,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
 
                 editView: {
                     ...editView,
-                    ruleIdCtx,
+                    ruleIdCtx: payload,
                     titleInput,
                     valueInput,
                 }
@@ -179,6 +175,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    //// TODO: Shared btw List & Edit View?
     onHttpsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         dataHandle.toggleHttpsSwitch(rules, payload);
         return {};
