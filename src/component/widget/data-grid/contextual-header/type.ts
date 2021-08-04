@@ -11,4 +11,4 @@ export interface IProps extends React.HTMLAttributes<HTMLElement> {
 
 export type TListHeaderRows = THeaderGrpHandle.ICtxListHeader<TTitle>;
 export type TTbHeaderRows = THeaderGrpHandle.ICtxTbHeader<TTitle>;
-export type TTitle = string | ReactElement | ((...args: any[]) => ReactElement);
+export type TTitle = string | JSX.Element | ReactElement | ((...args: any[]) => ReactElement);
