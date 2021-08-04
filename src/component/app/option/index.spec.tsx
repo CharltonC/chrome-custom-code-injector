@@ -1,13 +1,14 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { AppStateHandler } from '../../../state/handler';
 import { StateHandle } from '../../../handle/state';
-import { AppState } from '../../../state/model';
+import { IAppState } from '../../../state/model/type';
 import { createMockAppState } from '../../../state/mock';
 import { OptionApp } from '.';
+import PgnHandle from '../../../handle/pagination';
 
 describe('Component - Option App (UI/E2E)', () => {
     let $elem: HTMLElement;
-    let mockAppState: AppState;
+    let mockAppState: IAppState;
 
     function getElem() {
         const pgnRecordTxt = $elem.querySelector('.paginate__record').textContent;
@@ -53,8 +54,18 @@ describe('Component - Option App (UI/E2E)', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Row CRUD', () => {
+    describe('List View - Row CRUD', () => {
         describe('Delete Row', () => {
+            function mockSearch(searchText: string) {
+                const { $searchInput } = getElem();
+                TestUtil.setInputVal($searchInput, searchText);
+                TestUtil.triggerEvt($searchInput, 'change');
+
+                // Mocking debounce fn causes inconsistent testing issue compared to the UI
+                // therefore we use timer to deal with `setTimeout` in debounce involved in search
+                // jest.runAllTimers();
+            }
+
             beforeEach(() => {
                 // Turn off modal so it wont popup
                 mockAppState.setting.showDeleteModal = false;
@@ -131,9 +142,42 @@ describe('Component - Option App (UI/E2E)', () => {
                 });
             });
 
+            describe('Searched + Non-paginated', () => {
+                beforeEach(() => {
+                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
+                        root: [ mockAppState, new AppStateHandler() ],
+                    }));
+
+                    mockSearch('ebay');
+                });
+
+                it('should delete all rows for search', () => {
+                    const $targetRow = getElem().$rows[0];
+                    const { $select, $del } = getCellElem(getElem().$header, true);
+                    TestUtil.triggerEvt($select, 'click');
+                    TestUtil.triggerEvt($del, 'click');
+                    const { $rows, totalRows } = getElem();
+
+                    expect($rows.length).toBe(0);
+                    expect(totalRows).toBe(0);
+                    expect(hsTargetRow($rows, $targetRow)).toBeFalsy();
+
+                    // Clear the search
+                    mockSearch('');
+                    const { $rows: $newRows, totalRows: newTotalRows } = getElem();
+                    expect($newRows.length).toBe(3);
+                    expect(newTotalRows).toBe(3);
+                });
+            });
+
             describe('Non-searched + Paginated', () => {
                 beforeEach(() => {
-                    mockAppState.localState.listView.dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
+                    // Mock both pagination option and state
+                    const { rules, localState } = mockAppState;
+                    const { dataGrid } = localState.listView;
+                    dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
+                    dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
+
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new AppStateHandler() ],
                     }));
@@ -195,18 +239,13 @@ describe('Component - Option App (UI/E2E)', () => {
             });
 
             describe('Searched + Paginated', () => {
-                function mockSearch(searchText: string) {
-                    const { $searchInput } = getElem();
-                    TestUtil.setInputVal($searchInput, searchText);
-                    TestUtil.triggerEvt($searchInput, 'change');
-
-                    // Mocking debounce fn causes inconsistent testing issue compared to the UI
-                    // therefore we use timer to deal with `setTimeout` in debounce involved in search
-                    jest.runAllTimers();
-                }
-
                 beforeEach(() => {
-                    mockAppState.localState.listView.dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
+                    // Mock both pagination option and state
+                    const { rules, localState } = mockAppState;
+                    const { dataGrid } = localState.listView;
+                    dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
+                    dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
+
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
                         root: [ mockAppState, new AppStateHandler() ],
                     }));
