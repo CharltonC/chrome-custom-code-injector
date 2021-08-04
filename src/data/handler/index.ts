@@ -68,6 +68,11 @@ export class DataHandle {
     }
 
     //// TOGGLE/SET
+    toggleHttpsSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
+        const item = this.getRuleFromIdCtx(rules, idCtx) as HostRuleConfig;
+        item.isHttps = !item.isHttps;
+    }
+
     toggleJsExecStep(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
         item.jsExecPhase = val as TRuleConfig.AJsExecPhase;

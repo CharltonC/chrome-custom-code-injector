@@ -186,6 +186,12 @@ describe('Data Crud Handle', () => {
                 getRuleFromIdCtxSpy.mockReturnValue(mockHost);
             });
 
+            it('Method - toggleHttpsSwitch: should toggle Https switch ', () => {
+                const val = mockHost.isHttps;
+                dataHandle.toggleHttpsSwitch(mockRules, mockIdCtx);
+                expect(mockHost.isHttps).toBe(!val);
+            });
+
             it('Method - toggleJsExecStep: should toggle Js execution step', () => {
                 const mockStep = 3;
                 dataHandle.toggleJsExecStep(mockRules, mockIdCtx, mockStep);
