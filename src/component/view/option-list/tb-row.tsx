@@ -8,30 +8,37 @@ import { NumBadge } from '../../base/num-badge';
 import { ITbRowProps } from './type';
 
 export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
+    // Note `dataSrc`
+    // - is full set of data (i.e. unpaginated)
+    // - can be 1) unaltered results  OR  2) filterd results based on search text  OR  3) Sorted + Unaltered/Filtered
     const { dataSrc, ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
     const { appState, appStateHandler } = commonProps;
     const { localState } = appState;
-    const { ruleDataGrid } = localState;
+    const { dataGrid } = localState.listView;
 
-    const { selectState, expdRowId } = ruleDataGrid;
+    const { selectState, expdRowId } = dataGrid;
 
     const {
-        onListViewAddPathModal,
-        onItemExecSwitchToggle, onItemJsExecStepChange,
-        onEditView, onRowExpand, onRowSelectToggle,
+        onAddPathModal,
+        onDelHostOrPathModal,
+
+        onRowExpand,
+        onRowSelectToggle,
     } = appStateHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
     const { isHost, id, isHttps, title, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
 
+    const parentItem = parentItemCtx?.item;
+    const hostId = isHost ? id : parentItem.id;
+    const pathId = isHost ? null : id;
+
     const ID_SUFFIX = `${itemLvl}-${idx}`;
     const isRowExp = isHost && title === expdRowId;
 
     const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
-    const isSelected = areAllRowsSelected || ctxIdx in selectedRowKeyCtx;
+    const isSelected = areAllRowsSelected || hostId in selectedRowKeyCtx;
     const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeyCtx).length;
-
-    const parentItem = parentItemCtx?.item;
 
     return <>
             <tr className={REG_ROW}>
@@ -41,18 +48,14 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         id={`check-${ID_SUFFIX}`}
                         clsSuffix=""
                         checked={isSelected}
-                        // TODO: Change to `item` approach
-                        onChange={() => onRowSelectToggle(ctxIdx, dataSrc.length)}
+                        onChange={() => onRowSelectToggle({ dataSrc, hostId })}
                         />}
                 </td><td>{ isHost &&
                     <SliderSwitch
                         id={`https-${ID_SUFFIX}`}
                         checked={isHttps}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({
-                            item,
-                            id: 'Https'
-                        })}
+                        onChange={() => { /* TODO */ }}
                         />}
                 </td><td>
                     <div>{ isHost &&
@@ -78,28 +81,28 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
                         disabled={isDelDisabled}
-                        onSelect={arg => onItemJsExecStepChange({...arg, item})}
+                        onSelect={() => { /* TODO */ }}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({item, id: 'Js'})}
+                        onChange={() => { /* TODO */ }}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({item, id: 'Css'})}
+                        onChange={() => { /* TODO */ }}
                         />
                 </td><td>
                     <SliderSwitch
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
-                        onChange={() => onItemExecSwitchToggle({item, id: 'Lib'})}
+                        onChange={() => { /* TODO */ }}
                         />
                 </td><td>{ isHost &&
                     <IconBtn
@@ -107,27 +110,21 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         theme="gray"
                         title="add path rule"
                         disabled={isDelDisabled}
-                        // TODO: Change to `item` approach
-                        onClick={() => onListViewAddPathModal({ idx: ctxIdx })}
+                        onClick={() => onAddPathModal({ hostId })}
                         />}
                 </td><td>
                     <IconBtn
                         icon="edit"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => onEditView({
-                            type: isHost ? 'host' : 'path',
-                            hostId: isHost ? id : parentItem.id,
-                            pathId: isHost ? null : id,
-                        }) }
+                        onClick={() => { /* TODO */ }}
                         />
                 </td><td>
                     <IconBtn
                         icon="delete"
                         theme="gray"
                         disabled={isDelDisabled}
-                        // TODO: Change to `item` approach
-                        onClick={() => {}}
+                        onClick={() => onDelHostOrPathModal({ hostId, pathId })}
                         />
                 </td>
             </tr>{ nestedItems && isRowExp &&
