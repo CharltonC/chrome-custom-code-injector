@@ -1,12 +1,14 @@
+import { ReactElement } from "react";
+
 //// Option
 export interface IOption {
-    title: string;
+    title: ATitle;
     sortKey?: string;
     subHeader?: IOption[]
 }
 
 //// Table Header
-export interface ICtxTbHeader<T = string> extends IRowColTotal {
+export interface ICtxTbHeader<T = ATitle> extends IRowColTotal {
     headers: IHeader<T>[][];
 }
 
@@ -19,7 +21,7 @@ export interface ITbHeaderCache extends IRowColTotal {
 }
 
 //// List Header
-export interface ICtxListHeader<T = string>  extends IRowColTotal {
+export interface ICtxListHeader<T = ATitle>  extends IRowColTotal {
     headers: IListHeader<T>[];
     gridTemplateRows: string;
     gridTemplateColumns: string;
@@ -44,7 +46,7 @@ export interface IListHeader<T> extends IHeader<T> {
 }
 
 //// Common
-export interface IHeader<T = string> {
+export interface IHeader<T = ATitle> {
     title: T;
     sortKey?: string;
     rowSpan?: number;
@@ -55,3 +57,5 @@ export interface IRowColTotal {
     rowTotal: number;
     colTotal: number;
 }
+
+type ATitle = string | ReactElement | ((...args: any[]) => ReactElement);
