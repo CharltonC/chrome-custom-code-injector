@@ -8,10 +8,6 @@ import * as TRowSelect from '../../../handle/row-select/type';
 
 const { resultsPerPageIdx } = new SettingState();
 const pgnHandle = new PgnHandle();
-const defPgnOption = {
-    increment: resultsPerPage,
-    incrementIdx: resultsPerPageIdx
-};
 
 export class DataGridState {
     // Sort
@@ -43,10 +39,14 @@ export class DataGridState {
 
         const { totalRecord, pgnOption } = arg;
         if (totalRecord < 0) return;
+        const defOption = {
+            increment: [...resultsPerPage],
+            incrementIdx: resultsPerPageIdx
+        };
         const option = (
             pgnOption
-                ? { ...defPgnOption, ...pgnOption }
-                : defPgnOption
+                ? { ...defOption, ...pgnOption }
+                : defOption
         ) as TPgn.IOption;
         this.pgnOption = option;
         this.pgnState = pgnHandle.getState(totalRecord, option);
