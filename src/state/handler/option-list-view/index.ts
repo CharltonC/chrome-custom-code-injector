@@ -1,17 +1,21 @@
 import { StateHandle } from '../../../handle/state';
-import { IAppState } from '../../model/type';
-import { TextInputState } from '../../model/text-input-state';
-import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import { RowSelectHandle } from '../../../handle/row-select';
 import { dataHandle } from '../../../data/handler';
-import * as TPgn from '../../../handle/pagination/type';
-import * as TSort from '../../../handle/sort/type';
+
+import { TextInputState } from '../../model/text-input-state';
+import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
+import { HostRuleConfig } from '../../../data/model/rule-config';
+
+import * as TRuleConfig from '../../../data/model/rule-config/type';
+import * as TData from '../../../data/handler/type';
+import { IAppState } from '../../model/type';
+import { IOnPaginatePayload, IOnSortPayload } from '../type';
 
 const rowSelectHandle = new RowSelectHandle();
 
 export class OptionListViewHandler extends StateHandle.BaseStateHandler {
     //// DATA GRID
-    onSearchTextChange({ localState }: IAppState, payload): Partial<IAppState> {
+    onSearchTextChange({ localState }: IAppState, payload: {value: string}): Partial<IAppState> {
         const { value } = payload;
         return {
             localState: {
@@ -36,7 +40,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onPaginate({ localState}: IAppState, payload: { pgnOption: TPgn.IOption, pgnState: TPgn.IState }) {
+    onPaginate({ localState}: IAppState, payload: IOnPaginatePayload) {
         return {
             localState: {
                 ...localState,
@@ -59,7 +63,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onSort({ localState }: IAppState, payload: { sortOption: TSort.IOption, sortState: TSort.IState }): Partial<IAppState> {
+    onSort({ localState }: IAppState, payload: IOnSortPayload): Partial<IAppState> {
         const { sortOption } = payload;
         return {
             localState: {
@@ -150,7 +154,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onEditView({ rules, localState }: IAppState, payload): Partial<IAppState> {
+    onEditView({ rules, localState }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         const { hostId, pathId } = payload;
         const { editView } = localState;
 
@@ -177,5 +181,44 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
                 }
             }
         };
+    }
+
+    onHttpsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+        const { hostId } = payload;
+        const item = dataHandle.getRuleFromIdCtx(rules, { hostId }) as HostRuleConfig;
+        const { isHttps } = item;
+        item.isHttps = !isHttps;
+        return {};
+    }
+
+    onJsExecStepChange({ rules }: IAppState, payload: { hostId: string, pathId: string, selectValueAttrVal: number}): Partial<IAppState> {
+        const { hostId, pathId, selectValueAttrVal } = payload;
+        const item = dataHandle.getRuleFromIdCtx(rules, { hostId, pathId }) as TData.AHostPathRule;
+        item.jsExecPhase = selectValueAttrVal as TRuleConfig.AJsExecPhase;
+        return {};
+    }
+
+    onJsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+        const { hostId, pathId } = payload;
+        const item = dataHandle.getRuleFromIdCtx(rules, { hostId, pathId }) as TData.AHostPathRule;
+        const { isJsOn } = item;
+        item.isJsOn = !isJsOn;
+        return {};
+    }
+
+    onCssToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+        const { hostId, pathId } = payload;
+        const item = dataHandle.getRuleFromIdCtx(rules, { hostId, pathId }) as TData.AHostPathRule;
+        const { isCssOn } = item;
+        item.isCssOn = !isCssOn;
+        return {};
+    }
+
+    onLibToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+        const { hostId, pathId } = payload;
+        const item = dataHandle.getRuleFromIdCtx(rules, { hostId, pathId }) as TData.AHostPathRule;
+        const { isLibOn } = item;
+        item.isLibOn = !isLibOn;
+        return {};
     }
 }
