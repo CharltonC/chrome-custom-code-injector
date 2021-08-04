@@ -1,17 +1,18 @@
-import { HostRuleConfig, PathRuleConfig } from '../../../data/model/rule-config';
 import { StateHandle } from '../../../handle/state';
 import { FileHandle } from '../../../handle/file';
+import { PgnHandle } from '../../../handle/pagination';
 import { dataHandle } from '../../../data/handler';
-import { IAppState } from '../../model/type';
+import { modals } from '../../../constant/modals';
+
+import { HostRuleConfig, PathRuleConfig } from '../../../data/model/rule-config';
 import { SettingState } from '../../model/setting-state';
+import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
+import { DataGridState } from '../../model/data-grid-state';
+import { ModalState } from '../../model/modal-state';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
 import * as TTextInput from '../../../component/base/input-text/type';
-import { modals } from '../../../constant/modals';
-import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
-import { DataGridState } from '../../model/data-grid-state';
-import { PgnHandle } from '../../../handle/pagination';
-import { ModalState } from '../../model/modal-state';
+import { IAppState } from '../../model/type';
 
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
@@ -214,7 +215,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onAddPathModal({ localState }: IAppState, payload: {hostId: string}): Partial<IAppState> {
+    onAddPathModal({ localState }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         const { hostId } = payload;
         const { isListView, listView, modal } = localState;
         const baseLocalState = {
@@ -274,7 +275,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDelHostOrPathModal(state: IAppState, payload: {hostId: string; pathId?: string}): Partial<IAppState> {
+    onDelHostOrPathModal(state: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { hostId, pathId } = payload;
