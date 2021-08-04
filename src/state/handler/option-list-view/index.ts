@@ -184,37 +184,28 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
     }
 
     onHttpsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        const item = dataHandle.getRuleFromIdCtx(rules, payload) as HostRuleConfig;
-        const { isHttps } = item;
-        item.isHttps = !isHttps;
+        dataHandle.toggleHttpsSwitch(rules, payload);
         return {};
     }
 
     onJsExecStepChange({ rules }: IAppState, payload: IOnJsExecStepChangePayload): Partial<IAppState> {
         const { selectValueAttrVal, ...ruleIdCtx } = payload;
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TData.AHostPathRule;
-        item.jsExecPhase = selectValueAttrVal as TRuleConfig.AJsExecPhase;
+        dataHandle.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
         return {};
     }
 
     onJsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        const item = dataHandle.getRuleFromIdCtx(rules, payload) as TData.AHostPathRule;
-        const { isJsOn } = item;
-        item.isJsOn = !isJsOn;
+        dataHandle.toggleJsSwitch(rules, payload);
         return {};
     }
 
     onCssToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        const item = dataHandle.getRuleFromIdCtx(rules, payload) as TData.AHostPathRule;
-        const { isCssOn } = item;
-        item.isCssOn = !isCssOn;
+        dataHandle.toggleCssSwitch(rules, payload);
         return {};
     }
 
     onLibToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        const item = dataHandle.getRuleFromIdCtx(rules, payload) as TData.AHostPathRule;
-        const { isLibOn } = item;
-        item.isLibOn = !isLibOn;
+        dataHandle.toggleLibSwitch(rules, payload);
         return {};
     }
 }
