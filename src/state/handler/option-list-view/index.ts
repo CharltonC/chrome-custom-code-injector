@@ -4,10 +4,6 @@ import { dataHandle } from '../../../data/handler';
 
 import { TextInputState } from '../../model/text-input-state';
 import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
-import { HostRuleConfig } from '../../../data/model/rule-config';
-
-import * as TRuleConfig from '../../../data/model/rule-config/type';
-import * as TData from '../../../data/handler/type';
 import { IAppState } from '../../model/type';
 import { IOnPaginatePayload, IOnSortPayload, IOnRowSelectTogglePayload, IOnJsExecStepChangePayload } from '../type';
 
