@@ -60,7 +60,7 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
     }
 
     onSort({ localState }: IAppState, payload: { sortOption: TSort.IOption, sortState: TSort.IState }): Partial<IAppState> {
-        const { sortOption, sortState } = payload;
+        const { sortOption } = payload;
         return {
             localState: {
                 ...localState,
@@ -69,7 +69,6 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
                     dataGrid: {
                         ...localState.listView.dataGrid,
                         sortOption,
-                        sortedData: sortState.data
                     }
                 }
             }
