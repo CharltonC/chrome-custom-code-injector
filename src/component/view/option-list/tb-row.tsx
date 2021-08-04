@@ -19,9 +19,6 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { selectState, expdRowId } = dataGrid;
 
     const {
-        onAddPathModal,
-        onDelHostOrPathModal,
-
         onRowExpand,
         onRowSelectToggle,
 
@@ -30,6 +27,10 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
         onJsToggle,
         onCssToggle,
         onLibToggle,
+
+        onAddPathModal,
+        onEditView,
+        onDelHostOrPathModal,
     } = appStateHandler;
 
     const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
@@ -127,7 +128,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         icon="edit"
                         theme="gray"
                         disabled={isDelDisabled}
-                        onClick={() => { /* TODO */ }}
+                        onClick={() => onEditView(ruleIdCtx)}
                         />
                 </td><td>
                     <IconBtn
