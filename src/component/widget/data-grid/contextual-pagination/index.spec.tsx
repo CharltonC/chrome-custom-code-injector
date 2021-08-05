@@ -62,45 +62,54 @@ describe('Component - DataGridPagination', () => {
         });
 
         describe('Method - getMappedSelectProps: Get Mapped Props for Select Element', () => {
-            const mockSelectAttr: TPgnHandle.ICmpSelectAttr = {
-                title: '',
-                disabled: true,
-                options: [],
-                selectedOptionValue: 1,
-                selectedOptionIdx: 1,
-                onSelect: jest.fn()
-            };
+            const mockEvt = { evt: 'lorem' };
+            let mockSelectAttr: TPgnHandle.ICmpSelectAttr;
+            let onSelectSpy: jest.Mock;
             let mockPipeFn: jest.Mock;
 
             beforeEach(() => {
+                onSelectSpy = jest.fn();
+                mockSelectAttr = {
+                    title: '',
+                    disabled: true,
+                    options: [],
+                    selectedOptionValue: 1,
+                    selectedOptionIdx: 1,
+                    onSelect: onSelectSpy
+                };
                 mockPipeFn = jest.fn();
                 spy.getOptionTextPipe.mockReturnValue(mockPipeFn);
             });
 
             it('should return props for Per Page Select', () => {
-                expect(cmp.getMappedSelectProps(mockSelectAttr, true)).toEqual({
+                const { onSelect, ...props } = cmp.getMappedSelectProps(mockSelectAttr, true);
+                onSelect(mockEvt);
+
+                expect(props).toEqual({
                     clsSuffix: 'perpage',
                     border: true,
                     disabled: mockSelectAttr.disabled,
                     list: mockSelectAttr.options,
                     listTxtTransform: mockPipeFn,
                     selectIdx: mockSelectAttr.selectedOptionIdx,
-                    onSelect: mockSelectAttr.onSelect,
                 });
                 expect(spy.getOptionTextPipe).toHaveBeenCalledWith(true);
+                expect(onSelectSpy).toHaveBeenCalledWith(mockEvt.evt);
             });
 
             it('should return props for Page Select', () => {
-                expect(cmp.getMappedSelectProps(mockSelectAttr, false)).toEqual({
+                const { onSelect, ...props } = cmp.getMappedSelectProps(mockSelectAttr, false);
+                onSelect(mockEvt);
+
+                expect(props).toEqual({
                     clsSuffix: 'page',
                     border: true,
                     disabled: mockSelectAttr.disabled,
                     list: mockSelectAttr.options,
                     listTxtTransform: mockPipeFn,
                     selectIdx: mockSelectAttr.selectedOptionIdx,
-                    onSelect: mockSelectAttr.onSelect,
                 });
-                expect(spy.getOptionTextPipe).toHaveBeenCalledWith(false);
+                expect(onSelectSpy).toHaveBeenCalledWith(mockEvt.evt);
             });
         });
     });

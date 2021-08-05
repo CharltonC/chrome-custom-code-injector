@@ -35,16 +35,10 @@ export class DataGridPagination extends MemoComponent<IProps> {
         return (
             <div className={CLS_PREFIX}>
                 <p className={`${CLS_PREFIX}__record`}>Showing {startRecord} - {endRecord} of {totalRecord}</p>
-                <Dropdown
-                    {...perPageSelectProps}
-                    onSelect={({ evt }) => perPageSelectProps.onSelect(evt)}
-                    />
+                <Dropdown {...perPageSelectProps} />
                 <button {...firstBtnProps}>{$ltArrow}{$ltArrow}</button>
                 <button {...prevBtnProps}>{$ltArrow}</button>
-                <Dropdown
-                    {...pageSelectProps}
-                    onSelect={({ evt }) => pageSelectProps.onSelect(evt)}
-                    />
+                <Dropdown {...pageSelectProps} />
                 <button {...nextBtnProps}>{$rtArrow}</button>
                 <button {...lastBtnProps}>{$rtArrow}{$rtArrow}</button>
             </div>
@@ -76,7 +70,7 @@ export class DataGridPagination extends MemoComponent<IProps> {
             list: options,
             listTxtTransform: this.getOptionTextPipe(isPerPage),
             selectIdx: selectedOptionIdx,
-            onSelect,
+            onSelect: ({ evt }) => onSelect(evt)
         };
     }
 }
