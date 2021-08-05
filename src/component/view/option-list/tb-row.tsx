@@ -11,13 +11,9 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     // Note `dataSrc`
     // - is full set of data (i.e. unpaginated)
     // - can be 1) unaltered results  OR  2) filterd results based on search text  OR  3) Sorted + Unaltered/Filtered
-    const { dataSrc, ctxIdx, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
+    const { dataSrc, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
     const { appState, appStateHandler } = commonProps;
     const { localState } = appState;
-    const { dataGrid } = localState.listView;
-
-    const { selectState, expdRowId } = dataGrid;
-
     const {
         onRowExpand,
         onRowSelectToggle,
@@ -33,20 +29,23 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
         onDelHostOrPathModal,
     } = appStateHandler;
 
-    const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
+    // Item
     const { isHost, id, isHttps, title, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
-
     const parentItem = parentItemCtx?.item;
-    const hostId = isHost ? id : parentItem.id;
+    const hostId = isHost ? id : parentItem?.id;
     const pathId = isHost ? null : id;
     const ruleIdCtx = isHost ? { hostId } : { hostId, pathId };
 
+    // ID/Class names
     const ID_SUFFIX = `${itemLvl}-${idx}`;
+    const { REG_ROW, NESTED_ROW, NESTED_GRID } = classNames;
 
-    // Expand state
+    // DataGrid
+    // - Expand
+    const { selectState, expdRowId } = localState.listView.dataGrid;
     const isRowExp = isHost && hostId === expdRowId;
 
-    // Selected State
+    // - Selected
     const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
     const isSelected = areAllRowsSelected || hostId in selectedRowKeyCtx;
     const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeyCtx).length;
