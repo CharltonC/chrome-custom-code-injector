@@ -83,7 +83,14 @@ export class OptionApp extends MemoComponent<IProps> {
     get $header() {
         const { rules, localState } = this.appState;
         const { isListView, listView, editView } = localState;
-        const { onSearchTextChange, onSearchTextClear } = this.appStateHandler;
+        const {
+            onListView,
+            onDelHostOrPathModal,
+            onAddPathModal,
+
+            onSearchTextChange,
+            onSearchTextClear,
+        } = this.appStateHandler;
 
         //// ListView
         const { searchText } = listView;
@@ -100,17 +107,17 @@ export class OptionApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="arrow-lt"
                         theme="white"
-                        onClick={() => { /* TODO */}}
+                        onClick={onListView}
                         />
                     <IconBtn
                         icon="delete"
                         theme="white"
-                        onClick={() => { /* TODO */}}
+                        onClick={() => onDelHostOrPathModal(ruleIdCtx)}
                         />{isHost &&
                     <IconBtn
                         icon="add"
                         theme="white"
-                        onClick={() => { /* TODO */}}
+                        onClick={onAddPathModal}
                     />}
                 </div>)}
                 <div className="header__ctrl">{isListView &&
