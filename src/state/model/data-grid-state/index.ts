@@ -33,6 +33,10 @@ export class DataGridState {
     // - `pgnState` should be auto set in this App here whenever a paginated state is changed
     pgnOption?: TPgn.IOption;
     pgnState?: TPgn.IState;
+    sliceIdxCtx?: {
+        startIdx: number;
+        endIdx: number;
+    }
 
     constructor(arg?: { totalRecord: number, pgnOption?: Partial<TPgn.IOption> }) {
         if (!arg) return;
