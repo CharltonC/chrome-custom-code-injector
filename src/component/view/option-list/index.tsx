@@ -10,8 +10,8 @@ import { SortBtn } from '../../base/btn-sort';
 import { TbRow } from './tb-row';
 
 import * as TSortHandle from '../../../handle/sort/type';
-import { IProps } from './type';
 import { HostRuleConfig } from '../../../data/model/rule-config';
+import { IProps } from './type';
 
 export class OptionListView extends MemoComponent<IProps> {
     render() {
@@ -34,8 +34,6 @@ export class OptionListView extends MemoComponent<IProps> {
         // Pagination
         const {  increment, incrementIdx } = pgnOption;
         const { curr: page } = pgnState;
-        const paginateOption = { page, increment, incrementIdx };
-        const expandOption = { onePerLevel: true };
 
         // Select
         const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
@@ -53,13 +51,13 @@ export class OptionListView extends MemoComponent<IProps> {
                 onChange={onRowsSelectToggle}
                 />
         );
-        const $title = (data, sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+        const $title = (data: HostRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>TITLE</span>
                 <SortBtn {...sortBtnProps} disabled={hasSelected} />
             </>
         );
-        const $address = (data, sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+        const $address = (data: HostRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>ADDRESS</span>
                 <SortBtn {...sortBtnProps} disabled={hasSelected} />
@@ -74,7 +72,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 onClick={() => onModal({id: modals.addHost.id})}
                 />
         );
-        const $delHosts = (srcRules, btnProps, pgnState) => {
+        const $delHosts = (srcRules: HostRuleConfig[], btnProps, pgnState) => {
             const { startIdx, endIdx } = pgnState;
             const sliceIdxCtx = { startIdx, endIdx };
             return (
@@ -88,26 +86,13 @@ export class OptionListView extends MemoComponent<IProps> {
                     })}
                     />
             );
-        }
-        const headerOption = [
-            { title: $selectAll },
-            { title: 'HTTPS' },
-            { title: $title, sortKey: 'title' },
-            { title: $address, sortKey: 'value' },
-            { title: 'SCRIPT EXECUTION' },
-            { title: 'JS' },
-            { title: 'CSS' },
-            { title: 'LIBRARY' },
-            { title: $addHost },
-            { title: '' },
-            { title: $delHosts }
-        ];
+        };
 
         return (
             <DataGrid
                 type="table"
                 rowKey="title"
-                expand={expandOption}
+                expand={{ onePerLevel: true }}
                 data={data}
                 component={{
                     rows: [
@@ -116,9 +101,21 @@ export class OptionListView extends MemoComponent<IProps> {
                     ],
                     commonProps: this.props
                 }}
-                header={headerOption}
+                header={[
+                    { title: $selectAll },
+                    { title: 'HTTPS' },
+                    { title: $title, sortKey: 'title' },
+                    { title: $address, sortKey: 'value' },
+                    { title: 'SCRIPT EXECUTION' },
+                    { title: 'JS' },
+                    { title: 'CSS' },
+                    { title: 'LIBRARY' },
+                    { title: $addHost },
+                    { title: '' },
+                    { title: $delHosts }
+                ]}
                 sort={sortOption}
-                paginate={paginateOption}
+                paginate={{ page, increment, incrementIdx }}
                 callback={{
                     onPaginateChange: onPaginate,
                     onSortChange: onSort,
