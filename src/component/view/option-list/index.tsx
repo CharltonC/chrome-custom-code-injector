@@ -74,14 +74,21 @@ export class OptionListView extends MemoComponent<IProps> {
                 onClick={() => onModal({id: modals.addHost.id})}
                 />
         );
-        const $delHosts = (srcRules: HostRuleConfig[]) => (
-            <IconBtn
-                icon="delete"
-                theme="gray"
-                disabled={!hasSelected}
-                onClick={() => onDelHostsModal({ srcRules })}
-                />
-        );
+        const $delHosts = (srcRules, btnProps, pgnState) => {
+            const { startIdx, endIdx } = pgnState;
+            const sliceIdxCtx = { startIdx, endIdx };
+            return (
+                <IconBtn
+                    icon="delete"
+                    theme="gray"
+                    disabled={!hasSelected}
+                    onClick={() => onDelHostsModal({
+                        srcRules,
+                        sliceIdxCtx
+                    })}
+                    />
+            );
+        }
         const headerOption = [
             { title: $selectAll },
             { title: 'HTTPS' },

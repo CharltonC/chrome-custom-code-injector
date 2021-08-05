@@ -369,11 +369,11 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
     }
 
-    onDelHostsModal(state: IAppState, payload: { srcRules: HostRuleConfig[] }): Partial<IAppState> {
+    onDelHostsModal(state: IAppState, payload: { srcRules: HostRuleConfig[], sliceIdxCtx }): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { modal, listView } = localState;
-        const { srcRules } = payload;
+        const { srcRules, sliceIdxCtx } = payload;
 
         const newState = {
             localState: {
@@ -382,7 +382,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                     ...listView,
                     dataGrid: {
                         ...listView.dataGrid,
-                        srcRules
+                        srcRules,
+                        sliceIdxCtx,
                     },
                 },
                 modal: {
@@ -405,9 +406,9 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { dataGrid, searchText: currSearchText } = listView;
 
         // Remove based on specifid IDs
-        const { selectState, pgnOption, pgnState, srcRules } = dataGrid;
+        const { selectState, pgnOption, srcRules, sliceIdxCtx } = dataGrid;
         const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
-        const { startIdx, endIdx } = pgnState;
+        const { startIdx, endIdx } = sliceIdxCtx;
         const delIds = srcRules.slice(startIdx, endIdx).map(({ id }) => id)
         areAllRowsSelected
             ? dataHandle.rmvHostsFromIds(rules, delIds)
