@@ -24,6 +24,13 @@ import { IProps } from './type';
 const $docIcon = inclStaticIcon('doc', 'white');
 
 export class OptionApp extends MemoComponent<IProps> {
+    constructor(props: IProps) {
+        super(props);
+        this.onSettingModal = this.onSettingModal.bind(this);
+        this.onExportConfigModal = this.onExportConfigModal.bind(this);
+        this.onImportConfigModal = this.onImportConfigModal.bind(this);
+    }
+
     render() {
         const { props } = this;
         const { isListView } = this.appState.localState;
@@ -55,10 +62,28 @@ export class OptionApp extends MemoComponent<IProps> {
         );
     }
 
+    onSettingModal() {
+        this.appStateHandler.onModal({
+            id: modals.defSetting.id
+        });
+    }
+
+    onExportConfigModal() {
+        this.appStateHandler.onModal({
+            id: modals.exportConfig.id
+        });
+    }
+
+    onImportConfigModal() {
+        this.appStateHandler.onModal({
+            id: modals.importConfig.id
+        })
+    }
+
     get $header() {
         const { rules, localState } = this.appState;
         const { isListView, listView, editView } = localState;
-        const { onModal, onSearchTextChange, onSearchTextClear } = this.appStateHandler;
+        const { onSearchTextChange, onSearchTextClear } = this.appStateHandler;
 
         //// ListView
         const { searchText } = listView;
@@ -99,9 +124,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="setting"
                         theme="white"
-                        onClick={() => onModal({
-                            id: modals.defSetting.id
-                        })}
+                        onClick={this.onSettingModal}
                         />
                     <a
                         target="_blank"
@@ -114,18 +137,14 @@ export class OptionApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="download"
                         theme="white"
-                        onClick={() => onModal({
-                            id: modals.exportConfig.id
-                        })}
+                        onClick={this.onExportConfigModal}
                         />
                     <IconBtn
                         icon="download"
                         theme="white"
                         clsSuffix="upload"
                         disabled={!rules.length}
-                        onClick={() => onModal({
-                            id: modals.importConfig.id
-                        })}
+                        onClick={this.onImportConfigModal}
                         />
                 </div>
             </header>
@@ -533,7 +552,6 @@ export class OptionApp extends MemoComponent<IProps> {
                 onCancel={onModalCancel}
                 onConfirm={onDelHostOrPathModalOk}
                 >
-                {/* TODO: gettter */}
                 <Checkbox
                     id="setting-delete-confirm"
                     label="Don’t show this confirmation again"
