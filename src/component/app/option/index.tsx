@@ -152,8 +152,9 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $settingModal() {
+        const { id, txt } = modals.defSetting;
         const { showDeleteModal, resultsPerPageIdx, defRuleConfig } = this.settingState;
-        const { currentId } = this.modalState
+        const { currentId } = this.modalState;
 
         const {
             onModalCancel,
@@ -170,8 +171,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.defSetting.id}
-                header={modals.defSetting.txt}
+                id={id}
+                header={txt}
                 clsSuffix="setting"
                 onCancel={onModalCancel}
                 onConfirm={onModalCancel}
@@ -191,7 +192,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     </li>
                     <li>
                         <SliderSwitch
-                            id="show-dialog"
+                            id="setting-show-delete-dialog"
                             label="Show delete confirmation dialog"
                             checked={showDeleteModal}
                             ltLabel
@@ -200,7 +201,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     </li>
                     <li>
                         <Dropdown
-                            id="result-per-page"
+                            id="setting-result-per-page"
                             label="Results per page"
                             ltLabel
                             list={resultsPerPage}
@@ -214,7 +215,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     </li>
                     <li>
                         <SliderSwitch
-                            id="match-https"
+                            id="setting-toggle-https"
                             label="HTTPS"
                             ltLabel
                             checked={defRuleConfig.isHttps}
@@ -223,7 +224,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     </li>
                     <li>
                         <SliderSwitch
-                            id="run-js"
+                            id="setting-toggle-js"
                             label="Run Custom Js"
                             ltLabel
                             checked={defRuleConfig.isJsOn}
@@ -232,7 +233,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     </li>
                     <li>
                         <SliderSwitch
-                            id="run-css"
+                            id="setting-toggle-css"
                             label="Run Custom CSS"
                             ltLabel
                             checked={defRuleConfig.isCssOn}
@@ -241,7 +242,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     </li>
                     <li>
                         <SliderSwitch
-                            id="run-library"
+                            id="setting-toggle-library"
                             label="Run Libraries"
                             ltLabel
                             checked={defRuleConfig.isLibOn}
@@ -251,7 +252,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     <li>
                         <p>Javascript Execution</p>
                         <Dropdown
-                            id="js-exec-order"
+                            id="setting-js-exec-order"
                             list={jsExecStage}
                             border
                             selectIdx={defRuleConfig.jsExecPhase}
@@ -264,6 +265,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $importDataModal() {
+        const { id, txt } = modals.importConfig;
         const { currentId, isConfirmBtnEnabled } = this.modalState;
         const {
             onModalCancel,
@@ -274,8 +276,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.importConfig.id}
-                header={modals.importConfig.txt}
+                id={id}
+                header={txt}
                 clsSuffix="setting-import"
                 cancel="CANCEL"
                 confirm="IMPORT"
@@ -284,7 +286,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 onConfirm={onImportSettingModalOk}
                 >
                 <FileInput
-                    id="json-import-input"
+                    id="json-import"
                     fileType="application/json"
                     required
                     validate={validationRule.importConfig}
@@ -295,6 +297,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $exportDataModal() {
+        const { id, txt } = modals.exportConfig;
         const { currentId, isConfirmBtnEnabled, exportFileInput } = this.modalState;
         const {
             onModalCancel,
@@ -305,8 +308,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.exportConfig.id}
-                header={modals.exportConfig.txt}
+                id={id}
+                header={txt}
                 clsSuffix="setting-export"
                 cancel="CANCEL"
                 confirm="EXPORT"
@@ -315,7 +318,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 onConfirm={onExportSettingModalOk}
                 >
                 <TextInput
-                    id=""
+                    id="json-export"
                     label="Filename"
                     required
                     autoFocus
@@ -332,6 +335,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $addHostModal() {
+        const { id, txt } = modals.addHost;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput } = this.modalState;
         const {
             onModalCancel,
@@ -343,8 +347,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.addHost.id}
-                header={modals.addHost.txt}
+                id={id}
+                header={txt}
                 clsSuffix="host-add"
                 cancel="CANCEL"
                 confirm="SAVE"
@@ -383,6 +387,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $addPathModal() {
+        const { id, txt } = modals.addPath;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput } = this.modalState;
         const {
             onModalCancel,
@@ -394,8 +399,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.addPath.id}
-                header={modals.addPath.txt}
+                id={id}
+                header={txt}
                 clsSuffix="path-add"
                 cancel="CANCEL"
                 confirm="SAVE"
@@ -434,6 +439,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $addLibModal() {
+        const { id, txt } = modals.addLib;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput} = this.modalState;
         const {
             onModalCancel,
@@ -444,8 +450,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.addLib.id}
-                header={modals.addLib.txt}
+                id={id}
+                header={txt}
                 clsSuffix="lib-add"
                 cancel="CANCEL"
                 confirm="SAVE"
@@ -484,6 +490,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $editLibModal() {
+        const { id, txt } = modals.editLib;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput} = this.modalState;
         const {
             onModalCancel,
@@ -493,8 +500,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.editLib.id}
-                header={modals.editLib.txt}
+                id={id}
+                header={txt}
                 clsSuffix="lib-edit"
                 cancel="CANCEL"
                 confirm="SAVE"
@@ -533,6 +540,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $delHostOrPathModal() {
+        const { id, txt } = modals.delHostOrPath;
         const { currentId } = this.modalState;
         const {
             onModalCancel,
@@ -543,8 +551,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.delHostOrPath.id}
-                header={modals.delHostOrPath.txt}
+                id={id}
+                header={txt}
                 clsSuffix="delete-confirm"
                 subHeader="Are you sure you want to remove?"
                 cancel="CANCEL"
@@ -562,6 +570,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $delHostsModal() {
+        const { id, txt } = modals.delHosts;
         const { currentId } = this.modalState;
         const {
             onModalCancel,
@@ -572,8 +581,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.delHosts.id}
-                header={modals.delHosts.txt}
+                id={id}
+                header={txt}
                 clsSuffix="delete-confirm"
                 subHeader="Are you sure you want to remove?"
                 cancel="CANCEL"
@@ -591,6 +600,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $delLibModal() {
+        const { id, txt } = modals.delLib;
         const { currentId } = this.modalState;
         const {
             onModalCancel,
@@ -598,8 +608,8 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <Modal
                 activeModalId={currentId}
-                id={modals.delLib.id}
-                header={modals.delLib.txt}
+                id={id}
+                header={txt}
                 clsSuffix="delete-lib-confirm"
                 subHeader="Are you sure you want to remove?"
                 cancel="CANCEL"
