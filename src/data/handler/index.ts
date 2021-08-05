@@ -68,6 +68,16 @@ export class DataHandle {
     }
 
     //// TOGGLE/SET
+    setTitle(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: string): void {
+        const item = this.getRuleFromIdCtx(rules, idCtx);
+        item.title = val;
+    }
+
+    setValue(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: string): void {
+        const item = this.getRuleFromIdCtx(rules, idCtx);
+        item.value = val;
+    }
+
     toggleHttpsSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as HostRuleConfig;
         item.isHttps = !item.isHttps;

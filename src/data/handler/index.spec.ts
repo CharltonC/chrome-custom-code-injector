@@ -181,6 +181,24 @@ describe('Data Crud Handle', () => {
             getRuleFromIdCtxSpy = jest.spyOn(dataHandle, 'getRuleFromIdCtx');
         });
 
+        describe('Host/Path/Library', () => {
+            beforeEach(() => {
+                getRuleFromIdCtxSpy.mockReturnValue(mockHost);
+            });
+
+            it('Method - setTitle: should set title', () => {
+                const mockTitle = 'title';
+                dataHandle.setTitle(mockRules, mockIdCtx, mockTitle);
+                expect(mockHost.title).toBe(mockTitle);
+            });
+
+            it('Method - setValue: should set value', () => {
+                const mockValue = 'value';
+                dataHandle.setValue(mockRules, mockIdCtx, mockValue);
+                expect(mockHost.value).toBe(mockValue);
+            });
+        });
+
         describe('Host/Path', () => {
             beforeEach(() => {
                 getRuleFromIdCtxSpy.mockReturnValue(mockHost);
