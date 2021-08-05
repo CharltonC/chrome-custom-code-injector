@@ -13,6 +13,7 @@ import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { IAppState } from '../../model/type';
+import { IOnDelHostsModalPayload } from '../type';
 
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
@@ -369,7 +370,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
     }
 
-    onDelHostsModal(state: IAppState, payload: { srcRules: HostRuleConfig[], sliceIdxCtx }): Partial<IAppState> {
+    onDelHostsModal(state: IAppState, payload: IOnDelHostsModalPayload): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { modal, listView } = localState;

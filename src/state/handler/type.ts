@@ -23,9 +23,16 @@ export interface IOnRowSelectTogglePayload {
     hostId: string
 }
 
-
 export interface IOnJsExecStepChangePayload {
     hostId: string;
     pathId: string;
     selectValueAttrVal: number;
+}
+
+export interface IOnDelHostsModalPayload {
+    srcRules: HostRuleConfig[];
+    sliceIdxCtx: {
+        startIdx: number;
+        endIdx: number;
+    };
 }
