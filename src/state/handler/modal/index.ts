@@ -197,7 +197,6 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     //// RULE CRUD
     onAddHostModalOk(state: IAppState): Partial<IAppState> {
-        const { reflect } = this;
         const { localState, rules, setting } = state;
         const { titleInput, valueInput } = localState.modal;
 
@@ -207,17 +206,15 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         Object.assign(host, setting.defRuleConfig);
         dataHandle.addHost(rules, host);
 
-        const { modal: resetModal } = reflect.onModalCancel(state).localState;
         return {
             localState: {
                 ...localState,
-                modal: resetModal
+                modal: new ModalState()
             }
         };
     }
 
-    onAddPathModal({ localState }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        const { hostId } = payload;
+    onAddPathModal({ localState }: IAppState, payload?: RuleIdCtxState): Partial<IAppState> {
         const { isListView, listView, modal } = localState;
         const baseLocalState = {
             ...localState,
@@ -233,7 +230,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                     ...baseLocalState,
                     listView: {
                         ...listView,
-                        ruleIdCtx: { hostId }
+                        ruleIdCtx: payload
                     },
                 }
             }
@@ -243,12 +240,10 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             };
     }
 
-    onAddPathModalOk(state: IAppState): Partial<IAppState> {
-        const { localState, rules, setting } = state;
-        const { modal, listView } = localState;
+    onAddPathModalOk({ localState, rules, setting }: IAppState): Partial<IAppState> {
+        const { modal, isListView, listView, editView } = localState;
+        const { ruleIdCtx } = isListView ? listView : editView;
         const { titleInput, valueInput } = modal;
-        const { ruleIdCtx, dataGrid } = listView;
-        const { pgnOption } = dataGrid;
 
         // Add host
         const title = titleInput.value;
@@ -257,23 +252,35 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         Object.assign(path, setting.defRuleConfig);
         dataHandle.addPath(rules, ruleIdCtx, path);
 
-        // Update pagination state after addition
-        const { length } = rules;
-        const pgnState = pgnHandle.getState(length, pgnOption);
+        const resetLocalState = {
+            ...localState,
+            modal: new ModalState(),
+        };
 
-        return {
-            localState: {
-                ...localState,
-                modal: new ModalState(),
-                listView: {
-                    ...listView,
-                    dataGrid: {
-                        ...dataGrid,
-                        pgnState
+        if (isListView) {
+            // Update pagination state after addition
+            const { dataGrid } = listView;
+            const { pgnOption } = dataGrid;
+            const pgnState = pgnHandle.getState(rules.length, pgnOption);
+
+            return {
+                localState: {
+                    ...resetLocalState,
+                    listView: {
+                        ...listView,
+                        dataGrid: {
+                            ...dataGrid,
+                            pgnState
+                        }
                     }
                 }
-            }
-        };
+            };
+        } else {
+            return {
+                rules: [...rules],
+                localState: resetLocalState
+            };
+        }
     }
 
     onDelHostOrPathModal(state: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
