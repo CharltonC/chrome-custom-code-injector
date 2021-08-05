@@ -279,8 +279,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     onDelHostOrPathModal(state: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
-        const { hostId, pathId } = payload;
-        const { isListView, listView, modal } = localState;
+        const { isListView, listView, editView, modal } = localState;
         const baseLocalState = {
             ...localState,
             modal: {
@@ -288,19 +287,25 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                 currentId: modals.delHostOrPath.id
             },
         };
-        const newState = isListView
+        const newState: Partial<IAppState> = isListView
             ? {
                 localState: {
                     ...baseLocalState,
                     listView: {
                         ...listView,
-                        ruleIdCtx: { hostId, pathId }
+                        ruleIdCtx: payload
                     },
                 }
             }
             // Edit View already has a relative context via `ruleIdCtx` hence empty
             : {
-                localState: baseLocalState
+                localState: {
+                    ...baseLocalState,
+                    editView: {
+                        ...editView,
+                        ruleIdCtx: payload
+                    }
+                }
             };
 
         return setting.showDeleteModal
@@ -315,25 +320,18 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { rules, localState } = state;
         const { isListView, listView, editView, modal } = localState;
 
-        // List View only
-        const { searchText: currSearchText, dataGrid, } = listView;
-        const { pgnOption } = dataGrid;
-
-        // List View & Edit View: Get the ID context (host, path) depending on the view
+        // Get the ID context (host, path) depending on the view
         const { ruleIdCtx } = isListView ? listView : editView;
+        const isHost = !ruleIdCtx.pathId;
+        const { hostIdx, pathIdx } = dataHandle.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
+
+        // Delete Host or Path
         ruleIdCtx.pathId
             ? dataHandle.rmvPath(rules, ruleIdCtx)
             : dataHandle.rmvHost(rules, ruleIdCtx);
 
-        // List View only: Clear the Search only if text exists + all hosts are removed
-        const { length: totalRecord } = rules;
-        const searchText = currSearchText
-            ? totalRecord
-                ? currSearchText
-                : ''
-            : currSearchText ;
-
-        const newLocalState = {
+        const hasRules = !!rules.length;
+        const resetLocalState = {
             ...localState,
             modal: {
                 ...modal,
@@ -341,16 +339,27 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
             }
         };
 
-        // List View only: If a host is removed, Update new pagination state after rules removal (depends on total no. of hosts)
-        const isHost = !ruleIdCtx.pathId;
-        const dataGridState = isHost
-            ? new DataGridState({ totalRecord, pgnOption })
-            : dataGrid;
+        // If delete from List view
+        if (isListView) {
+            const { searchText: currSearchText, dataGrid, } = listView;
+            const { pgnOption } = dataGrid;
 
-        return isListView
-            ? {
+            // Clear the Search only if text exists + all hosts are removed
+            const { length: totalRecord } = rules;
+            const searchText = currSearchText
+                ? totalRecord
+                    ? currSearchText
+                    : ''
+                : currSearchText ;
+
+            // If a host is removed, Update new pagination state after rules removal (depends on total no. of hosts)
+            const dataGridState = isHost
+                ? new DataGridState({ totalRecord, pgnOption })
+                : dataGrid;
+
+            return {
                 localState: {
-                    ...newLocalState,
+                    ...resetLocalState,
                     listView: {
                         ...listView,
                         searchText,
@@ -358,16 +367,39 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                         dataGrid: dataGridState
                     },
                 },
-            }
-            : {
+            };
+
+        // If Edit View but all rules are deleted
+        } else if (!isListView && !hasRules) {
+            return {
                 localState: {
-                    ...newLocalState,
+                    ...resetLocalState,
+                    isListView: true
+                }
+            };
+
+        // If Edit view but has rules remained
+        } else {
+            // If a host is deleted, set the active host back to the 1st, else use the existing active host (if path is deleted)
+            const nextHostIdx = isHost ? 0 : hostIdx;
+            const nextHost = rules[nextHostIdx];
+            const hostId = nextHost.id;
+
+            // Get the next path Id, if paths remain in the next host
+            const nextPaths = nextHost.paths;
+            const nextPathIdx = isHost ? pathIdx : (nextPaths.length ? 0 : null);
+            const pathId = nextPaths[nextPathIdx]?.id;
+
+            return {
+                localState: {
+                    ...resetLocalState,
                     editView: {
                         ...editView,
-                        // TODO: ruleIdCtx (for the next active item)
+                        ruleIdCtx: new RuleIdCtxState({ hostId, pathId })
                     }
                 }
-            }
+            };
+        }
     }
 
     onDelHostsModal(state: IAppState, payload: IOnDelHostsModalPayload): Partial<IAppState> {
