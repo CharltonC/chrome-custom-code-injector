@@ -157,7 +157,7 @@ describe('Component - Grid Header', () => {
                 const title = cmp.getCellContent(mockTitleFn, mockSortKey);
 
                 expect(title).toBe(mockTitle);
-                expect(mockTitleFn).toHaveBeenCalledWith(mockData, {});
+                expect(mockTitleFn).toHaveBeenCalledWith(mockData, {}, undefined);
             });
 
             it('should return cell content when title is react element ', () => {

@@ -49,7 +49,8 @@ export class DataGrid extends MemoComponent<IProps, IState> {
         const { cssCls, props, state } = this;
         const { isTb, headerCtx, pgnState } = state;
         const { type, component } = props;
-        const { commonProps, rows, ...defCmp } = component;
+        const { commonProps: defCommonProps, rows, ...defCmp } = component;
+        const commonProps = { ...defCommonProps, props, state };
 
         const ROOT_CLS = cssCls(`${BASE_CLS}`, type);
         const sortedData: ADataOption = this.getSortedData();

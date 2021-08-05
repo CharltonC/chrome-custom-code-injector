@@ -61,12 +61,13 @@ export class DataGridHeader extends MemoComponent<IProps> {
     }
 
     getCellContent(title: unknown, sortKey?: string): ReactElement {
-        const { data, sortBtnProps } = this.props;
+        const { data, sortBtnProps, commonProps } = this.props;
+        const pgnState = commonProps?.state?.pgnState;
 
         // Custom render function
         if (typeof title === 'function') {
             const btnProps = (sortKey && sortBtnProps) ? sortBtnProps(sortKey) : null;
-            return title(data, btnProps);
+            return title(data, btnProps, pgnState);
 
         // String or React element
         } else {
