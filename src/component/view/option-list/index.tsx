@@ -32,7 +32,7 @@ export class OptionListView extends MemoComponent<IProps> {
         const data = dataHandle.getFilteredRules(rules, searchText);
 
         // Pagination
-        const {  increment, incrementIdx } = pgnOption;
+        const { increment, incrementIdx } = pgnOption;
         const { curr: page } = pgnState;
 
         // Select
