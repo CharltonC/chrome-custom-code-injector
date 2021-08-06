@@ -175,12 +175,13 @@ export class OptionListViewHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    //// TODO: Shared btw List & Edit View?
+    // Shared btw List & Edit View
     onHttpsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         dataHandle.toggleHttpsSwitch(rules, payload);
         return {};
     }
 
+    // Shared btw List & Edit View
     onJsExecStepChange({ rules }: IAppState, payload: IOnJsExecStepChangePayload): Partial<IAppState> {
         const { selectValueAttrVal, ...ruleIdCtx } = payload;
         dataHandle.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
