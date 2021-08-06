@@ -25,13 +25,6 @@ import { IProps } from './type';
 const $docIcon = inclStaticIcon('doc', 'white');
 
 export class OptionApp extends MemoComponent<IProps> {
-    constructor(props: IProps) {
-        super(props);
-        this.onSettingModal = this.onSettingModal.bind(this);
-        this.onExportConfigModal = this.onExportConfigModal.bind(this);
-        this.onImportConfigModal = this.onImportConfigModal.bind(this);
-    }
-
     render() {
         const { props } = this;
         const { isListView } = this.appState.localState;
@@ -45,6 +38,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     ? <OptionListView {...props} />
                     : <OptionEditView {...props} />}
                 </main>{currentId && (
+                    /* ID, disable submit */
                 <form className="modals">
                     {this.$settingModal}
                     {this.$importDataModal}
@@ -62,24 +56,6 @@ export class OptionApp extends MemoComponent<IProps> {
         );
     }
 
-    onSettingModal() {
-        this.appStateHandler.onModal({
-            id: modals.defSetting.id
-        });
-    }
-
-    onExportConfigModal() {
-        this.appStateHandler.onModal({
-            id: modals.exportConfig.id
-        });
-    }
-
-    onImportConfigModal() {
-        this.appStateHandler.onModal({
-            id: modals.importConfig.id
-        })
-    }
-
     get $header() {
         const { rules, localState } = this.appState;
         const { isListView, listView, editView } = localState;
@@ -87,6 +63,9 @@ export class OptionApp extends MemoComponent<IProps> {
             onListView,
             onDelHostOrPathModal,
             onAddPathModal,
+            onSettingModal,
+            onImportDataModal,
+            onExportDataModal,
 
             onSearchTextChange,
             onSearchTextClear,
@@ -131,7 +110,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="setting"
                         theme="white"
-                        onClick={this.onSettingModal}
+                        onClick={onSettingModal}
                         />
                     <a
                         target="_blank"
@@ -144,14 +123,14 @@ export class OptionApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="download"
                         theme="white"
-                        onClick={this.onExportConfigModal}
+                        onClick={onExportDataModal}
                         />
                     <IconBtn
                         icon="download"
                         theme="white"
                         clsSuffix="upload"
                         disabled={!rules.length}
-                        onClick={this.onImportConfigModal}
+                        onClick={onImportDataModal}
                         />
                 </div>
             </header>
@@ -276,7 +255,7 @@ export class OptionApp extends MemoComponent<IProps> {
         const { currentId, isConfirmBtnEnabled } = this.modalState;
         const {
             onModalCancel,
-            onImportSettingModalOk,
+            onImportDataModalOk,
             onImportFileInputChange,
         } = this.appStateHandler;
 
@@ -290,7 +269,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 confirm="IMPORT"
                 confirmDisabled={!isConfirmBtnEnabled}
                 onCancel={onModalCancel}
-                onConfirm={onImportSettingModalOk}
+                onConfirm={onImportDataModalOk}
                 >
                 <FileInput
                     id="json-import"
@@ -308,7 +287,7 @@ export class OptionApp extends MemoComponent<IProps> {
         const { currentId, isConfirmBtnEnabled, exportFileInput } = this.modalState;
         const {
             onModalCancel,
-            onExportSettingModalOk,
+            onExportDataModalOk,
             onExportInputChange,
         } = this.appStateHandler;
 
@@ -322,7 +301,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 confirm="EXPORT"
                 confirmDisabled={!isConfirmBtnEnabled}
                 onCancel={onModalCancel}
-                onConfirm={onExportSettingModalOk}
+                onConfirm={onExportDataModalOk}
                 >
                 <TextInput
                     id="json-export"
