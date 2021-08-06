@@ -51,7 +51,6 @@ export class OptionApp extends MemoComponent<IProps> {
                     {this.$exportDataModal}
                     {this.$addHostModal}
                     {this.$addPathModal}
-                    {/* TODO: editHostOrPathModal */}
                     {this.$addLibModal}
                     {this.$editLibModal}
                     {this.$delHostsModal}
