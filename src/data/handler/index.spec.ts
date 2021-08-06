@@ -232,6 +232,17 @@ describe('Data Crud Handle', () => {
                 getRuleFromIdCtxSpy.mockReturnValue(mockHost);
             });
 
+            it('Method - setProps: should set multiple properties', () => {
+                const mockTitle = 'lorem';
+                const mockValue = 'sum';
+                dataHandle.setProps(mockRules, mockIdCtx, {
+                    title: mockTitle,
+                    value: mockValue
+                });
+                expect(mockHost.title).toBe(mockTitle);
+                expect(mockHost.value).toBe(mockValue);
+            });
+
             it('Method - setTitle: should set title', () => {
                 const mockTitle = 'title';
                 dataHandle.setTitle(mockRules, mockIdCtx, mockTitle);

@@ -100,6 +100,11 @@ export class DataHandle {
     }
 
     //// TOGGLE/SET
+    setProps<T = AAnyRule>(rules: HostRuleConfig[], idCtx: IRuleIdCtx, props: Partial<T>) {
+        const item = this.getRuleFromIdCtx(rules, idCtx);
+        Object.assign(item, props)
+    }
+
     setTitle(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: string): void {
         const item = this.getRuleFromIdCtx(rules, idCtx);
         item.title = val;
