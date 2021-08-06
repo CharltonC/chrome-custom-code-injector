@@ -469,13 +469,11 @@ describe('Data Crud Handle', () => {
             });
 
             it('Method - rmvAllibs: Remove all libraries', () => {
-                const mockIdCtx: any = {};
                 dataHandle.rmvAllLibs(
                     mockRules,
-                    mockSliceIdxCtx,
                     mockIdCtx
                 );
-                expect(mockLibs.length).toBe(1);
+                expect(mockLibs.length).toBe(0);
             });
         });
     });

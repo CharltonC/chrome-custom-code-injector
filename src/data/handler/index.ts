@@ -222,7 +222,7 @@ export class DataHandle {
     }
 
     rmvPartialLibs(rules: HostRuleConfig[], selectedRowKeyCtx: { [k: string]: boolean }, idCtx: IRuleIdCtx): void {
-        const { libs } = this.getRuleFromIdCtx(rules, idCtx) as PathRuleConfig;
+        const { libs } = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
         Object.getOwnPropertyNames(selectedRowKeyCtx).forEach((rowId) => {
             const idx = libs.findIndex(({ id }) => id === rowId);
             if (idx === -1) return;
@@ -239,13 +239,10 @@ export class DataHandle {
         });
     }
 
-    rmvAllLibs(rules: HostRuleConfig[], sliceIdxCtx: ISliceIdxCtx, idCtx: IRuleIdCtx): void {
-        const { libs } = this.getRuleFromIdCtx(rules, idCtx) as PathRuleConfig;
-        const { startIdx, endIdx } = sliceIdxCtx;
-        libs.slice(startIdx, endIdx).forEach(({ id: rowId }) => {
-            const idx = libs.findIndex(({ id }) => id === rowId);
-            libs.splice(idx, 1);
-        });
+    rmvAllLibs(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
+        // Since there will be no pagination in libraries table, we dont need the pattern like in `rmvAllHosts`
+        const { libs } = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
+        libs.length = 0;
     }
 }
 
