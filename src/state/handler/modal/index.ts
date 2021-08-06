@@ -4,7 +4,7 @@ import { PgnHandle } from '../../../handle/pagination';
 import { dataHandle } from '../../../data/handler';
 import { modals } from '../../../constant/modals';
 
-import { HostRuleConfig, PathRuleConfig } from '../../../data/model/rule-config';
+import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../../../data/model/rule-config';
 import { SettingState } from '../../model/setting-state';
 import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import { DataGridState } from '../../model/data-grid-state';
@@ -14,6 +14,7 @@ import * as TFileInput from  '../../../component/base/input-file/type';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { IAppState } from '../../model/type';
 import { IOnDelHostsModalPayload } from '../type';
+import { TextInputState } from '../../model/text-input-state';
 
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
@@ -196,6 +197,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// RULE CRUD
+    // Add
     onAddHostModalOk(state: IAppState): Partial<IAppState> {
         const { localState, rules, setting } = state;
         const { titleInput, valueInput } = localState.modal;
@@ -283,6 +285,37 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         }
     }
 
+    onAddLibModal({ localState }: IAppState) {
+        const { modal } = localState;
+        return {
+            localState: {
+                ...localState,
+                modal: {
+                    ...modal,
+                    currentId: modals.addLib.id
+                }
+            }
+        };
+    }
+
+    onAddLibModalOk({ rules, localState }: IAppState) {
+        const { modal, editView } = localState;
+        const { titleInput, valueInput } = modal;
+        const { ruleIdCtx } = editView;
+        const { value: title } = titleInput;
+        const { value } = valueInput;
+        const lib = new LibRuleConfig(title, value);
+        dataHandle.addLib(rules, ruleIdCtx, lib);
+
+        return {
+            localState: {
+                ...localState,
+                modal: new ModalState()
+            }
+        }
+    }
+
+    // Delete
     onDelHostOrPathModal(state: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         const { reflect } = this;
         const { localState, setting } = state;
