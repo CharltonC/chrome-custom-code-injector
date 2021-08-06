@@ -16,6 +16,7 @@ import { IAppState } from '../../model/type';
 import { IOnDelHostsModalPayload } from '../type';
 import { TextInputState } from '../../model/text-input-state';
 
+// TODO: property
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
 

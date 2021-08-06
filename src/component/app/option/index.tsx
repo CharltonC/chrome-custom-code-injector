@@ -16,6 +16,7 @@ import { Dropdown } from '../../base/select-dropdown';
 import { FileInput } from '../../base/input-file';
 import { Modal } from '../../widget/modal';
 import { OptionListView } from '../../view/option-list';
+import { OptionEditView } from '../../view/option-edit';
 import { inclStaticIcon } from '../../static/icon';
 
 import { AHostPathRule } from '../../../data/handler/type';
@@ -40,10 +41,9 @@ export class OptionApp extends MemoComponent<IProps> {
         return (
             <div className="app app--option">
                 {this.$header}
-                <main className={MAIN_CLS}>{/* {isListView
+                <main className={MAIN_CLS}>{isListView
                     ? <OptionListView {...props} />
-                    : <OptionEditView {...props} />} */}
-                    <OptionListView {...props} />
+                    : <OptionEditView {...props} />}
                 </main>{currentId && (
                 <form className="modals">
                     {this.$settingModal}

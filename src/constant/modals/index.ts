@@ -52,5 +52,10 @@ export const modals = {
     delLib: {
         id: 'modal-delete-lib-confirm',
         txt: 'Confirmation'
+    },
+
+    delLibs: {
+        id: 'modal-delete-libs-confirm',
+        txt: 'Confirmation'
     }
 };
