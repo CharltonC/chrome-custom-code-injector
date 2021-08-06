@@ -20,7 +20,7 @@ export class OptionListView extends MemoComponent<IProps> {
             onSort,
             onRowsSelectToggle,
 
-            onModal,
+            onAddHostModal,
             onDelHostsModal,
         } = this.appStateHandler;
 
@@ -72,7 +72,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 theme="gray"
                 title="add host rule"
                 disabled={hasSelected}
-                onClick={() => onModal({id: modals.addHost.id})}
+                onClick={onAddHostModal}
                 />
         );
         const $delHosts = (srcRules: HostRuleConfig[], btnProps, pgnState) => {
