@@ -530,6 +530,59 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    // Edit
+    onEditLibModal({ rules, localState }: IAppState, payload: {id: string}): Partial<IAppState> {
+        const { id } = payload;
+        const { editView, modal } = localState;
+
+        const libRuleIdCtx = { ...editView.ruleIdCtx, libId: id };
+        const { title, value } = dataHandle.getRuleFromIdCtx(rules, libRuleIdCtx);
+        const isValid = true;
+        const titleInput = new TextInputState({ value: title, isValid });
+        const valueInput = new TextInputState({ value, isValid });
+
+        return {
+            localState: {
+                ...localState,
+                editView: {
+                    ...editView,
+                    libRuleIdCtx
+                },
+                modal: {
+                    ...modal,
+                    currentId: modals.editLib.id,
+                    titleInput,
+                    valueInput,
+                    isConfirmBtnEnabled: true,
+                }
+            }
+        };
+    }
+
+    onEditLibModalOk({ rules, localState }: IAppState) {
+        const { modal, editView } = localState;
+        const { titleInput, valueInput } = modal;
+        const { libRuleIdCtx } = editView;
+        const { value: title } = titleInput;
+        const { value } = valueInput;
+        dataHandle.setProps(rules, libRuleIdCtx, {
+            title,
+            value
+        });
+
+        return {
+            localState: {
+                ...localState,
+                editView: {
+                    ...editView,
+                    libRuleIdCtx: new RuleIdCtxState()
+                },
+                modal: new ModalState()
+            }
+        }
+    }
+
+    // Text Input change
     onModalTitleInput({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
         const { val, isValid, errMsg } = payload;
         const { modal } = localState;
