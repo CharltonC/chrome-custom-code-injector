@@ -503,6 +503,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onModalCancel,
             onModalTitleInput,
             onModalValueInput,
+            onEditLibModalOk,
         } = this.appStateHandler;
         return (
             <Modal
@@ -514,7 +515,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 confirm="SAVE"
                 confirmDisabled={!isConfirmBtnEnabled}
                 onCancel={onModalCancel}
-                onConfirm={() => { /* TODO */ }}
+                onConfirm={onEditLibModalOk}
                 >
                 <TextInput
                     id="lib-edit-title"
@@ -549,11 +550,7 @@ export class OptionApp extends MemoComponent<IProps> {
     get $delHostOrPathModal() {
         const { id, txt } = modals.delHostOrPath;
         const { currentId } = this.modalState;
-        const {
-            onModalCancel,
-            onDelConfirmDialogToggle,
-            onDelHostOrPathModalOk,
-        } = this.appStateHandler;
+        const { onModalCancel, onDelHostOrPathModalOk } = this.appStateHandler;
 
         return (
             <Modal
@@ -567,11 +564,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 onCancel={onModalCancel}
                 onConfirm={onDelHostOrPathModalOk}
                 >
-                <Checkbox
-                    id="setting-delete-confirm"
-                    label="Don’t show this confirmation again"
-                    onChange={onDelConfirmDialogToggle}
-                    />
+                {this.$showDelDialogCheckbox}
             </Modal>
         );
     }
@@ -581,7 +574,6 @@ export class OptionApp extends MemoComponent<IProps> {
         const { currentId } = this.modalState;
         const {
             onModalCancel,
-            onDelConfirmDialogToggle,
             onDelHostsModalOk,
         } = this.appStateHandler;
 
@@ -597,11 +589,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 onCancel={onModalCancel}
                 onConfirm={onDelHostsModalOk}
                 >
-                <Checkbox
-                    id="setting-delete-confirm"
-                    label="Don’t show this confirmation again"
-                    onChange={onDelConfirmDialogToggle}
-                    />
+                {this.$showDelDialogCheckbox}
             </Modal>
         );
     }
@@ -609,9 +597,7 @@ export class OptionApp extends MemoComponent<IProps> {
     get $delLibModal() {
         const { id, txt } = modals.delLib;
         const { currentId } = this.modalState;
-        const {
-            onModalCancel,
-        } = this.appStateHandler;
+        const { onModalCancel, onDelLibModalOk } = this.appStateHandler;
         return (
             <Modal
                 activeModalId={currentId}
@@ -622,14 +608,21 @@ export class OptionApp extends MemoComponent<IProps> {
                 cancel="CANCEL"
                 confirm="remove"
                 onCancel={onModalCancel}
-                onConfirm={() => { /* TODO */ }}
+                onConfirm={onDelLibModalOk}
                 >
-                <Checkbox
-                    id="setting-delete-confirm"
-                    label="Don’t show this confirmation again"
-                    onChange={() => { /* TODO */ }}
-                    />
+                {this.$showDelDialogCheckbox}
             </Modal>
+        );
+    }
+
+    get $showDelDialogCheckbox() {
+        const { onDelConfirmDialogToggle } = this.appStateHandler;
+        return (
+            <Checkbox
+                id="setting-delete-confirm"
+                label="Don’t show this confirmation again"
+                onChange={onDelConfirmDialogToggle}
+                />
         );
     }
 
