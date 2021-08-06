@@ -1,11 +1,12 @@
 import { ModalStateHandler } from './modal';
 import { OptionListViewHandler } from './option-list-view';
+import { OptionEditViewHandler } from './option-edit-view';
 import { HostRuleConfig } from '../../data/model/rule-config';
 import * as TPgn from '../../handle/pagination/type';
 import * as TSort from '../../handle/sort/type';
 
 // Used for casting `this.reflect` property inside individual Handler
-export interface IStateHandler extends ModalStateHandler, OptionListViewHandler {}
+export interface IStateHandler extends ModalStateHandler, OptionListViewHandler, OptionEditViewHandler {}
 
 // Payload
 export interface IOnPaginatePayload {
