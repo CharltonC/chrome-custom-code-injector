@@ -73,7 +73,9 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
         const isPartiallySelected = !areAllRowsSelected && !!Object.entries(selectedRowKeyCtx).length;
         const hasSelected = areAllRowsSelected || isPartiallySelected;
-        const isDisabled = !hsDataSrc || hasSelected;
+
+        // - Sort
+        const isSortDisabled = hasSelected || libs.length <= 1;
 
         // - Header
         const $selectAllHeader = (
@@ -88,13 +90,13 @@ export class OptionEditView extends MemoComponent<IProps> {
         const $title = (data: LibRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>TITLE</span>
-                <SortBtn {...sortBtnProps} disabled={isDisabled} />
+                <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
             </>
         );
         const $addr = (data: LibRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>URL</span>
-                <SortBtn {...sortBtnProps} disabled={isDisabled} />
+                <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
             </>
         );
         const $delAll = (dataSrc: LibRuleConfig[]) => (
