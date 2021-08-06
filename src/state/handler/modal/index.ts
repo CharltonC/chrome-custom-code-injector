@@ -563,6 +563,39 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    onDelLibsModal({ localState }: IAppState, payload): Partial<IAppState> {
+        return {
+            localState: {
+                ...localState,
+                modal: {
+                    ...localState.modal,
+                    currentId: modals.delLibs.id
+                }
+            }
+        };
+    }
+
+    onDelLibsModalOk({ rules, localState }: IAppState): Partial<IAppState> {
+        const { editView } = localState;
+        const { ruleIdCtx, dataGrid } = editView;
+        const { areAllRowsSelected, selectedRowKeyCtx } = dataGrid.selectState;
+
+        areAllRowsSelected
+            ? dataHandle.rmvAllLibs(rules, ruleIdCtx)
+            : dataHandle.rmvPartialLibs(rules, selectedRowKeyCtx, ruleIdCtx);
+
+        return {
+            localState: {
+                ...localState,
+                modal: new ModalState(),
+                editView: {
+                    ...editView,
+                    dataGrid: new DataGridState()
+                }
+            }
+        };
+    }
+
     // Edit
     onEditLibModal({ rules, localState }: IAppState, payload: {id: string}): Partial<IAppState> {
         const { id } = payload;
