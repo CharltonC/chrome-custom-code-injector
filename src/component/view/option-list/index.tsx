@@ -41,6 +41,9 @@ export class OptionListView extends MemoComponent<IProps> {
         const isPartiallySelected = !areAllRowsSelected && partiallySelected;
         const hasSelected = areAllRowsSelected || partiallySelected;
 
+        // Sort
+        const isSortDisabled = hasSelected || data.length <= 1;
+
         // Header
         const $selectAll = (
             <Checkbox
@@ -54,13 +57,13 @@ export class OptionListView extends MemoComponent<IProps> {
         const $title = (data: HostRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>TITLE</span>
-                <SortBtn {...sortBtnProps} disabled={hasSelected} />
+                <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
             </>
         );
         const $address = (data: HostRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>ADDRESS</span>
-                <SortBtn {...sortBtnProps} disabled={hasSelected} />
+                <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
             </>
         );
         const $addHost = (
