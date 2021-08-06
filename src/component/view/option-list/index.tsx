@@ -1,5 +1,4 @@
 import React from 'react';
-import { modals } from '../../../constant/modals';
 import { dataHandle } from '../../../data/handler';
 
 import { MemoComponent } from '../../extendable/memo-component';

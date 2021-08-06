@@ -2,7 +2,6 @@ import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationRule } from '../../../constant/validation-rule';
 import { jsExecStage } from '../../../constant/js-exec-stage';
-
 import { dataHandle } from '../../../data/handler';
 
 import { MemoComponent } from '../../extendable/memo-component';
@@ -18,7 +17,6 @@ import { DataGrid } from '../../widget/data-grid';
 import { TbRow } from './tb-row';
 
 import { LibRuleConfig } from '../../../data/model/rule-config';
-import * as TSideNav from '../../../component/base/side-nav/type';
 import * as TSortHandle from '../../../handle/sort/type';
 import * as TDataHandler from '../../../data/handler/type';
 import { IProps } from './type';

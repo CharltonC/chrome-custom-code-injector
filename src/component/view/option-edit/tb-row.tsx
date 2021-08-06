@@ -1,7 +1,9 @@
 import React, { memo } from 'react';
+
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
+
 import { IAppState } from '../../../state/model/type';
 
 // TODO: Type for props
