@@ -1,322 +1,222 @@
+import { dataHandle } from '../../../data/handler';
 import { StateHandle } from '../../../handle/state';
-import { AppState } from '../../model';
+import { RowSelectHandle } from '../../../handle/row-select';
+import { LibRuleConfig } from '../../../data/model/rule-config';
 import { TextInputState } from '../../model/text-input-state';
 import { DataGridState } from '../../model/data-grid-state';
-import { LibRuleConfig } from '../../../data/model/rule-config';
-import { ActiveRuleState } from '../../model/active-rule-state';
-import { DataCrudHandle } from '../../../data/handler';
-import { RowSelectHandle } from '../../../handle/row-select';
-import { HandlerHelper } from '../helper';
+import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
+import * as TTextInput from '../../../component/base/input-text/type';
+import { IAppState } from '../../model/type';
+import { AHostPathRule } from '../../../data/handler/type';
 
 const rowSelectHandle = new RowSelectHandle();
 
 export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
+    //// HEADER
+    onListView({ localState }: IAppState) {
+        // Not required to reset Edit View state as already covered by `onEditView`
+        return {
+            localState: {
+                ...localState,
+                isListView: true,
+            }
+        }
+    }
+
     //// SIDE BAR
-    onSidebarItemClick({ rules, localState }: AppState, payload): Partial<AppState> {
-        const { type, hostId, pathId } = payload;
+    onActiveRuleChange({ rules, localState }: IAppState, payload): Partial<IAppState> {
+        const { item, parentIdx, isChild} = payload;
+        const { id, title, value } = item;
 
-        // Find the index in rules
-        const activeRule = new ActiveRuleState({ type, hostId, pathId });
+        // Rule Id context
+        const hostId = isChild ? rules[parentIdx].id : id;
+        const pathId = isChild ? id : null;
+        const ruleIdCtx = new RuleIdCtxState({ hostId, pathId });
 
-        // Get the title and value of the item to be used in input placeholders
-        const ruleIdxCtx = DataCrudHandle.getRuleIdxCtx({
-            rules,
-            type,
-            hostId,
-            pathId,
-            libId: null
-        });
-        const { title, value } = DataCrudHandle.getRuleFromIdx({
-            rules,
-            type,
-            ...ruleIdxCtx,
-        });
-        const resetInputState = new TextInputState();
-        const resetLibDatagridState = new DataGridState<LibRuleConfig>();
+        // Text input
+        const titleInput = new TextInputState({ value: title });
+        const valueInput = new TextInputState({ value: value });
+
+        // Library grid
+        const dataGrid = new DataGridState();
 
         return {
             localState: {
                 ...localState,
-                activeRule,
-                activeTitleInput: {
-                    ...resetInputState,
-                    value: title,
-                },
-                activeValueInput: {
-                    ...resetInputState,
-                    value
-                },
-                libDataGrid: resetLibDatagridState
+                editView: {
+                    ...localState.editView,
+                    ruleIdCtx,
+                    titleInput,
+                    valueInput,
+                    dataGrid,
+                }
             }
         };
     }
 
-    // No Search context involved here
-    onRmvActiveItem({ rules, localState }: AppState) {
-        const { activeRule } = localState;
-        const { isHost, ruleIdx, pathIdx } = activeRule;
-
-        // Remove either Host or Path Rule
-        isHost
-            ? rules.splice(ruleIdx, 1)
-            : rules[ruleIdx].paths.splice(pathIdx, 1);
-
-        // Move the current index & value of input placeholder to previous item (if exist)
-        const hasRules = !!rules.length;
-        const nextRuleIdx = isHost ? (hasRules ? 0 : null ) : ruleIdx;
-        const nextPathIdx = isHost ? pathIdx : (rules[0]?.paths.length ? 0 : null);
-        const isNextItemHost = Number.isInteger(nextRuleIdx) && !Number.isInteger(nextPathIdx);
-        const nextItem = isNextItemHost ? rules[nextRuleIdx] : rules[nextRuleIdx]?.paths[nextPathIdx];
-        const activeItemState = {
-            activeRule: new ActiveRuleState({
-                isHost: isNextItemHost,
-                item: nextItem,
-                ruleIdx: nextRuleIdx,
-                pathIdx: nextPathIdx
-            }),
-            activeTitleInput: new TextInputState(
-                nextItem
-                ? { value: nextItem.title }
-                : {}
-            ),
-            activeValueInput: new TextInputState(
-                nextItem
-                ? { value: nextItem.value }
-                : {}
-            ),
-        };
-
-        // If there are no more rules, go back to List View
-        const viewState = hasRules ? {} : { isListView: true };
-
-        return {
-            rules: [...rules],
+    //// TEXT INPUTS
+    onActiveTitleInput({ rules, localState }: IAppState, payload: TTextInput.IOnInputChangeArg) {
+        const { isValid, val, errMsg } = payload;
+        const { editView } = localState;
+        const { ruleIdCtx } = editView;
+        const baseState = {
             localState: {
                 ...localState,
-                ...activeItemState,
-                ...viewState,
-                libDataGrid: new DataGridState<LibRuleConfig>()
+                editView: {
+                    ...editView,
+                    titleInput: new TextInputState({
+                        isValid,
+                        errMsg,
+                        value: val
+                    })
+                }
             }
         };
+
+        // If not vaild, we only update the temporary value of the input
+        if (!isValid) return baseState;
+
+        // If valid value, set/sync the item title
+        dataHandle.setTitle(rules, ruleIdCtx, val);
+        return {
+            ...baseState,
+            rules: [...rules], // force rerender for Side Nav
+        }
     }
 
-    //// TEXT INPUT FOR TITLE & URL/PATH
-    // TODO: Renamed this to e.g. `onTitleChange`, `onValueChange`
-    onActiveRuleTitleInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
-        return HandlerHelper.getTextlInputChangeState({
-            ...payload,
-            inputKey: 'activeTitleInput',
-            key: 'title',
-            rules,
-            localState,
-        });
+    onActiveValueInput({ rules, localState }: IAppState, payload: TTextInput.IOnInputChangeArg) {
+        const { isValid, val, errMsg } = payload;
+        const { editView } = localState;
+        const { ruleIdCtx } = editView;
+        const baseState = {
+            localState: {
+                ...localState,
+                editView: {
+                    ...editView,
+                    valueInput: new TextInputState({
+                        isValid,
+                        errMsg,
+                        value: val
+                    })
+                }
+            }
+        };
+
+        // If not vaild, we only update the temporary value of the input
+        if (!isValid) return baseState;
+
+        // If valid value, set/sync the item value
+        dataHandle.setValue(rules, ruleIdCtx, val);
+        return {
+            ...baseState,
+            rules: [...rules], // force rerender for Side Nav
+        }
     }
 
-    onActiveRuleValueInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg) {
-        return HandlerHelper.getTextlInputChangeState({
-            ...payload,
-            inputKey: 'activeValueInput',
-            key: 'value',
-            rules,
-            localState,
-        });
+    //// TABS
+    onActiveTabChange({ rules }: IAppState, payload) {
+        const { ruleIdCtx, idx } = payload;
+        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
+        item.activeTabIdx = idx;
+        return {};
     }
 
-    //// DATA GRID
-    onLibSort({ localState }: AppState, payload) {
+    onTabToggle({ rules }: IAppState, payload) {
+        const { ruleIdCtx, tab } = payload;
+        const id = `is${tab.id}On`;
+        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
+        item[id] = !item[id];
+        return {};
+    }
+
+    onCodeChange({ rules }: IAppState, payload) {
+        const { ruleIdCtx, codeKey, codeMirrorArgs } = payload;
+        const [,,value] = codeMirrorArgs;
+        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
+        item[codeKey] = value;
+        return {};
+    }
+
+    //// DATA GRID FOR LIBRARIES
+    onLibSort({ localState }: IAppState, payload) {
         const { sortOption } = payload;
+        const { editView } = localState;
         return {
             localState: {
                 ...localState,
-                libDataGrid: {
-                    ...localState.libDataGrid,
-                    sortOption
+                editView: {
+                    ...editView,
+                    dataGrid: {
+                        ...editView.dataGrid,
+                        sortOption
+                    }
                 }
             }
         }
     }
 
-    onLibRowSelectToggle({ rules, localState }: AppState, id: string, totalRules: number) {
-        const { libDataGrid } = localState;
-        const { selectState } = libDataGrid;
-        const rowSelectState = rowSelectHandle.getState({
+    onLibRowSelectToggle({ localState }: IAppState, payload): Partial<IAppState> {
+        const { libs, id } = payload;
+        const { editView } = localState;
+        const { dataGrid } = editView;
+        const selectState = rowSelectHandle.getState({
             isAll: false,
-            currState: selectState,
+            currState: dataGrid.selectState,
             rowsCtx: {
-                rows: rules,
+                rows: libs,
                 rowKey: id,
             }
         });
+
         return {
             localState: {
                 ...localState,
-                libDataGrid: {
-                    ...libDataGrid,
-                    selectState: rowSelectState
+                editView: {
+                    ...editView,
+                    dataGrid: {
+                        ...dataGrid,
+                        selectState
+                    }
                 }
             }
         };
     }
 
-    onLibRowsSelectToggle({ localState }: AppState): Partial<AppState> {
-        const { libDataGrid } = localState;
-        const { selectState } = libDataGrid;
-        const rowSelectState = rowSelectHandle.getState({
+    onLibRowsSelectToggle({ localState }: IAppState): Partial<IAppState> {
+        const { editView } = localState;
+        const { dataGrid } = editView;
+        const selectState = rowSelectHandle.getState({
             isAll: true,
-            currState: selectState
+            currState: dataGrid.selectState
         });
 
         return {
             localState: {
                 ...localState,
-                libDataGrid: {
-                    ...libDataGrid,
-                    selectState: rowSelectState
+                editView: {
+                    ...editView,
+                    dataGrid: {
+                        ...dataGrid,
+                        selectState
+                    }
                 }
             }
         };
     }
 
-    //// MODAL
-    // No Search context here
-    onDelLibModal({ rules, localState, setting } : AppState, payload) {
-        const { libIdx, dataSrc } = payload;
-        const { reflect } = this as unknown as IStateHandler;
-        const { libDataGrid } = localState;
-        const { showDeleteModal } = setting;
-        const baseState = {
-            rules,
-            setting,
-            localState: {
-                ...localState,
-                activeModalId: delLib.id,
-                modalLibIdx: libIdx,
-                libDataGrid: {
-                    ...libDataGrid,
-                    dataSrc,
-                }
-            }
-        };
-
-        if (showDeleteModal) return baseState;
-        return reflect.onDelLibModalConfirm(baseState);
+    onLibAsyncToggle({ rules, localState }: IAppState, payload: {id: string}): Partial<IAppState> {
+        dataHandle.toggleLibAsyncSwitch(rules, {
+            ...localState.editView.ruleIdCtx,
+            libId: payload.id
+        });
+        return {};
     }
 
-    // No Search context here
-    onDelLibModalConfirm(state: AppState) {
-        const { reflect } = this as unknown as IStateHandler;
-        const { localState, rules } = state;
-        const { libDataGrid, activeRule, modalLibIdx } = localState;
-        const { areAllRowsSelected, selectedRowKeyCtx } = libDataGrid.selectState;
-        const hasSelected = areAllRowsSelected || !!Object.entries(selectedRowKeyCtx).length;
-
-        const item = HandlerHelper.getActiveItem({
-            ...activeRule,
-            isActiveItem: true,
-            rules,
+    onLibIsOnToggle({ rules,  localState }: IAppState, payload: {id: string}): Partial<IAppState> {
+        dataHandle.toggleLibIsOnSwitch(rules, {
+            ...localState.editView.ruleIdCtx,
+            libId: payload.id
         });
-        item.libs = hasSelected
-            ? reflect.rmvEditViewLibs(libDataGrid)
-            : reflect.rmvEditViewLib(libDataGrid, modalLibIdx);
-        const libDataGridState = hasSelected
-            ? new DataGridState()
-            : { ...libDataGrid, dataSrc: null };
-
-        const resetState = this.reflect.onModalCancel(state);
-        return {
-            rules: [...rules],
-            localState: {
-                ...resetState.localState,
-                libDataGrid: libDataGridState,
-            }
-        };
-    }
-
-    onAddLibModal({ localState }: AppState) {
-        return {
-            localState: {
-                ...localState,
-                activeModalId: addLib.id
-            }
-        };
-    }
-
-    onAddLibModalConfirm(state: AppState) {
-        const { localState, rules } = state;
-        const { activeRule, modalTitleInput, modalValueInput } = localState;
-        const { libs } = HandlerHelper.getActiveItem({
-            ...activeRule,
-            rules,
-            isActiveItem: true,
-        });
-        const title = modalTitleInput.value;
-        const value = modalValueInput.value;
-        const lib = new LibRuleConfig(title, value);
-        libs.push(lib);
-
-        const resetState = this.reflect.onModalCancel(state);
-        return {
-            localState: {
-                // Reset modal state
-                ...resetState.localState,
-
-                // Maintain active item
-                activeRule,
-            }
-        };
-    }
-
-    onEditLibModal({ localState }: AppState, payload) {
-        const { lib, libIdx } = payload;
-        const { title, value } = lib;
-        const isValid = true;
-        const modalTitleInput = new TextInputState({
-            value: title,
-            isValid,
-        });
-        const modalValueInput = new TextInputState({
-            value,
-            isValid,
-        });
-
-        return {
-            localState: {
-                ...localState,
-                activeModalId: editLib.id,
-                modalLibIdx: libIdx,
-                modalTitleInput,
-                modalValueInput,
-            }
-        };
-    }
-
-    onEditLibModalConfirm(state: AppState) {
-        const { rules, localState } = state;
-        const {
-            activeRule,
-            modalLibIdx,
-            modalTitleInput,
-            modalValueInput
-        } = localState;
-
-        const { libs } = HandlerHelper.getActiveItem({
-            ...activeRule,
-            isActiveItem: true,
-            rules,
-        });
-        const lib = libs[modalLibIdx];
-        lib.title = modalTitleInput.value;
-        lib.value = modalValueInput.value;
-
-        const resetState = this.reflect.onModalCancel(state);
-        return {
-            localState: {
-                // Reset modal state
-                ...resetState.localState,
-
-                // Maintain active item
-                activeRule,
-            }
-        };
+        return {};
     }
 }
