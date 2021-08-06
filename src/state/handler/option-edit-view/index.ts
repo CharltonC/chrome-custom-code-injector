@@ -1,7 +1,6 @@
 import { dataHandle } from '../../../data/handler';
 import { StateHandle } from '../../../handle/state';
 import { RowSelectHandle } from '../../../handle/row-select';
-import { LibRuleConfig } from '../../../data/model/rule-config';
 import { TextInputState } from '../../model/text-input-state';
 import { DataGridState } from '../../model/data-grid-state';
 import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
