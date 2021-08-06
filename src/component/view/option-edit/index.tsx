@@ -1,6 +1,10 @@
 import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationRule } from '../../../constant/validation-rule';
+import { jsExecStage } from '../../../constant/js-exec-stage';
+
+import { dataHandle } from '../../../data/handler';
+
 import { MemoComponent } from '../../extendable/memo-component';
 import { TextInput } from '../../base/input-text';
 import { TabSwitch } from '../../base/checkbox-tab-switch';
@@ -11,58 +15,104 @@ import { IconBtn } from '../../base/btn-icon';
 import { SortBtn } from '../../base/btn-sort';
 import { Checkbox } from '../../base/checkbox';
 import { DataGrid } from '../../widget/data-grid';
-import { jsExecStage } from '../../../constant/js-exec-stage';
 import { TbRow } from './tb-row';
-import * as TSortHandle from '../../../handle/sort/type';
-import * as TSideNav from '../../../component/base/side-nav/type';
-import { IProps } from './type';
-import { HostRuleConfig, PathRuleConfig } from '../../../data/model/rule-config';
-import { HandlerHelper } from '../../../state/handler/helper';
 
-const { getRuleIdxCtx, getRuleFromIdx } = HandlerHelper;
+import { LibRuleConfig } from '../../../data/model/rule-config';
+import * as TSideNav from '../../../component/base/side-nav/type';
+import * as TSortHandle from '../../../handle/sort/type';
+import * as TDataHandler from '../../../data/handler/type';
+import { IProps } from './type';
 
 export class OptionEditView extends MemoComponent<IProps> {
-    constructor(props) {
-        super(props);
-        this.onSidebarItemClick = this.onSidebarItemClick.bind(this);
-    }
-
     render() {
-        const { headerProps, props } = this;
-        const { appState, appStateHandler } = props;
-        const commonProps = { appState, appStateHandler };
-
-        //// STATE
-        const { rules, localState } = appState;
-        const { activeTitleInput, activeValueInput, activeRule, libDataGrid } = localState;
-
-        //// HANDLER
         const {
-            onActiveRuleTitleInput,
-            onActiveRuleValueInput,
-            onItemJsExecStepChange,
-            onItemActiveExecTabChange,
-            onItemExecCodeChange,
-            onItemExecSwitchToggle,
+            onActiveRuleChange,
+
+            onActiveTitleInput,
+            onActiveValueInput,
+            onHttpsToggle,
+            onJsExecStepChange,
+
+            onActiveTabChange,
+            onTabToggle,
+            onCodeChange,
+
             onLibSort,
-        } = appStateHandler;
+            onLibRowsSelectToggle,
 
-        //// ITEM
-        const { type } = activeRule;
-        const { hostIdx, pathIdx } = getRuleIdxCtx({ ...activeRule, rules});
-        const item = getRuleFromIdx({ type, rules, hostIdx, pathIdx }) as HostRuleConfig | PathRuleConfig;
+            onAddLibModal,
+            onDelLibsModal,
+        } = this.appStateHandler;
+
+        const { rules } = this.appState;
+        const { ruleIdCtx, titleInput, valueInput, dataGrid } = this.editViewState;
+
+        // Item
+        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
+        const { hostIdx, pathIdx } = dataHandle.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
         const { isHost, activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
-        const isLibTab = activeTabIdx === 2;
-        const isJsCode = activeTabIdx === 0;
-        const isCssCode = activeTabIdx === 1;
-        const isCode = isJsCode || isCssCode;
-        const codeMode = isJsCode ? 'js' : 'css'
-        const codeContent = isCode ? (isJsCode ? jsCode : cssCode) : '';
-        const { sortOption } = libDataGrid;
 
-        //// INPUT PLACEHOLDER
+        // Text Input
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
+        const isHttpsOn = item["isHttps"];
 
+        // Tab
+        const isJsTab = activeTabIdx === 0;
+        const isCssTab = activeTabIdx === 1;
+        const isLibTab = activeTabIdx === 2;
+        const isCodeTab = isJsTab || isCssTab;
+        const codeMode = isJsTab ? 'js' : 'css';
+        const codeKey = isJsTab ? 'jsCode' : 'cssCode';
+        const codeContent = isCodeTab ? (isJsTab ? jsCode : cssCode) : '';
+
+        // Data grid
+        const { sortOption, selectState } = dataGrid;
+        const hsDataSrc = !!libs.length;
+
+        // - Select
+        const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
+        const isPartiallySelected = !areAllRowsSelected && !!Object.entries(selectedRowKeyCtx).length;
+        const hasSelected = areAllRowsSelected || isPartiallySelected;
+        const isDisabled = !hsDataSrc || hasSelected;
+
+        // - Header
+        const $selectAllHeader = (
+            <Checkbox
+                id="check-all"
+                clsSuffix={isPartiallySelected ? 'partial' : ''}
+                disabled={!hsDataSrc}
+                checked={hasSelected}
+                onChange={onLibRowsSelectToggle}
+                />
+        );
+        const $title = (data: LibRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+            <>
+                <span>TITLE</span>
+                <SortBtn {...sortBtnProps} disabled={isDisabled} />
+            </>
+        );
+        const $addr = (data: LibRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+            <>
+                <span>URL</span>
+                <SortBtn {...sortBtnProps} disabled={isDisabled} />
+            </>
+        );
+        const $delAll = (dataSrc: LibRuleConfig[]) => (
+            <IconBtn
+                icon="delete"
+                theme="gray"
+                disabled={!hasSelected}
+                onClick={onDelLibsModal}
+                />
+        );
+        const $addLib = (
+            <IconBtn
+                icon="add-outline"
+                theme="gray"
+                disabled={hasSelected}
+                onClick={onAddLibModal}
+                />
+        );
 
         return (<>
             <SideNav
@@ -70,7 +120,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                 childListKey="paths"
                 activeItemIdx={hostIdx}
                 activeChildItemIdx={pathIdx}
-                onClick={this.onSidebarItemClick}
+                onClick={onActiveRuleChange}
                 />
             <div className="main--edit__form">
                 <section className="fm-field">
@@ -78,14 +128,14 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-id"
                         label="ID"
                         required
-                        value={activeTitleInput.value}
+                        value={titleInput.value}
                         validation={{
                             rules: ruleId,
-                            isValid: activeTitleInput.isValid,
-                            errMsg: activeTitleInput.errMsg
+                            isValid: titleInput.isValid,
+                            errMsg: titleInput.errMsg
                         }}
-                        onInputChange={onActiveRuleTitleInput}
-                        onInputBlur={onActiveRuleTitleInput}
+                        onInputChange={onActiveTitleInput}
+                        onInputBlur={onActiveTitleInput}
                         />
                 </section>
                 <section className="fm-field">
@@ -93,29 +143,28 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-value"
                         label={isHost ? 'Host' : 'Path'}
                         required
-                        value={activeValueInput.value}
+                        value={valueInput.value}
                         validation={{
                             rules: isHost ? ruleUrlHost : ruleUrlPath,
-                            isValid: activeValueInput.isValid,
-                            errMsg: activeValueInput.errMsg
+                            isValid: valueInput.isValid,
+                            errMsg: valueInput.errMsg
                         }}
-                        onInputChange={onActiveRuleValueInput}
-                        onInputBlur={onActiveRuleValueInput}
+                        onInputChange={onActiveValueInput}
+                        onInputBlur={onActiveValueInput}
                         />
                     <div className="fm-field__ctrl">{ isHost &&
                         <IconSwitch
                             icon
                             id="https-switch"
                             label="lock-close"
-                            checked={item["isHttps"]}
-                            onChange={() => onItemExecSwitchToggle({
-                                item,
-                                key: 'Https',
-                            })}
+                            checked={isHttpsOn}
+                            onChange={() => onHttpsToggle(ruleIdCtx)}
                             /> }
                         <IconSwitch
                             id="regex-switch"
-                            label="(.*)" />
+                            label="(.*)"
+                            /* TODO */
+                            />
                     </div>
                 </section>
                 <section className="fm-field">
@@ -125,10 +174,8 @@ export class OptionEditView extends MemoComponent<IProps> {
                         border={true}
                         list={jsExecStage}
                         selectIdx={jsExecPhase}
-                        onSelect={({ selectValueAttrVal }) => onItemJsExecStepChange({
-                            item,
-                            selectValueAttrVal,
-                        })} />
+                        onSelect={(arg) => onJsExecStepChange({ ...arg, ...ruleIdCtx})}
+                        />
                 </section>
                 {/* TOD: section-form field? */}
                 <TabSwitch
@@ -140,15 +187,9 @@ export class OptionEditView extends MemoComponent<IProps> {
                         ['Lib', 'isLibOn'],
                     ]}
                     activeTabIdx={activeTabIdx}
-                    onTabActive={({ idx }) => onItemActiveExecTabChange({
-                        item,
-                        idx,
-                    })}
-                    onTabEnable={({ tab }) => onItemExecSwitchToggle({
-                        item,
-                        id: tab.id
-                    })}
-                    />{ isCode &&
+                    onTabActive={arg => onActiveTabChange({...arg, ruleIdCtx})}
+                    onTabEnable={arg => onTabToggle({...arg, ruleIdCtx})}
+                    />{ isCodeTab &&
                 <CodeMirror
                     value={codeContent}
                     options={{
@@ -156,10 +197,10 @@ export class OptionEditView extends MemoComponent<IProps> {
                         theme: 'darcula',
                         lineNumbers: true
                     }}
-                    onChange={(...[,,value]) => onItemExecCodeChange({
-                        item,
-                        value,
-                        codeMode
+                    onChange={(...codeMirrorArgs) => onCodeChange({
+                        codeMirrorArgs,
+                        codeKey,
+                        ruleIdCtx
                     })}
                     />}{ isLibTab &&
                 <DataGrid
@@ -170,9 +211,17 @@ export class OptionEditView extends MemoComponent<IProps> {
                         rows: [
                             [TbRow]
                         ],
-                        commonProps
+                        commonProps: this.props
                     }}
-                    header={headerProps}
+                    header={[
+                        { title: $selectAllHeader },
+                        { title: $title, sortKey: 'title' },
+                        { title: $addr, sortKey: 'value' },
+                        { title: 'ASYNC' },
+                        { title: 'ACTIVE' },
+                        { title: $addLib },
+                        { title: $delAll },
+                    ]}
                     sort={sortOption}
                     callback={{
                         onSortChange: onLibSort
@@ -182,86 +231,15 @@ export class OptionEditView extends MemoComponent<IProps> {
         </>);
     }
 
-    get headerProps() {
-        const { props } = this;
-        const { appState, appStateHandler } = props;
-        const { rules, localState } = appState;
-        const { activeRule, libDataGrid } = localState;
-
-        const {
-            onLibRowsSelectToggle,
-            onAddLibModal,
-            onDelLibModal,
-        } = appStateHandler;
-
-        const { isHost, ruleIdx, pathIdx } = activeRule;
-        const host = rules[ruleIdx];
-        const { libs } = isHost ? host : host?.paths[pathIdx];
-        const hsDataSrc = !!libs.length;
-
-        const { areAllRowsSelected, selectedRowKeyCtx } = libDataGrid.selectState;
-        const totalSelected = Object.entries(selectedRowKeyCtx).length;
-        const hsSelected = areAllRowsSelected || !!totalSelected;
-        const isPartialSelected = !areAllRowsSelected && !!totalSelected;
-        const isAddDisabled = areAllRowsSelected || !!totalSelected;
-
-        const $selectAllHeader = (
-            <Checkbox
-                id="check-all"
-                clsSuffix={isPartialSelected ? 'partial' : ''}
-                disabled={!hsDataSrc}
-                checked={hsSelected}
-                onChange={onLibRowsSelectToggle}
-                />
-        );
-
-        const isSortDisabled = !hsDataSrc || hsSelected;
-        const $title = this.getHeaderColRenderFn('ID', isSortDisabled);
-        const $addr = this.getHeaderColRenderFn('URL', isSortDisabled);
-
-        const $delAll = dataSrc => (
-            <IconBtn
-                icon="delete"
-                theme="gray"
-                disabled={!hsSelected}
-                onClick={() => onDelLibModal({ dataSrc })}
-                />
-        );
-        const $addLib = (
-            <IconBtn
-                icon="add-outline"
-                theme="gray"
-                disabled={isAddDisabled}
-                onClick={onAddLibModal}
-                />
-        );
-
-        return [
-            { title: $selectAllHeader },
-            { title: $title as any, sortKey: 'title' },
-            { title: $addr as any, sortKey: 'value' },
-            { title: 'ASYNC' },
-            { title: 'ACTIVE' },
-            { title: $addLib as any },
-            { title: $delAll as any },
-        ];
+    get appState() {
+        return this.props.appState;
     }
 
-    getHeaderColRenderFn(title: string, disabled: boolean) {
-        return (data, sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
-            <>
-                <span>{title}</span>
-                <SortBtn {...sortBtnProps} disabled={disabled} />
-            </>
-        );
+    get appStateHandler() {
+        return this.props.appStateHandler;
     }
 
-    onSidebarItemClick({ item, isChild, parentIdx}: TSideNav.IClickEvtArg) {
-        const { appState, appStateHandler } = this.props;
-        const { id } = item as HostRuleConfig | PathRuleConfig;
-        const hostId = isChild ? appState.rules[parentIdx].id : id;
-        const pathId = isChild ? id : null;
-        const type = isChild ? 'path' : 'host';
-        appStateHandler.onSidebarItemClick({ type, hostId, pathId });
+    get editViewState() {
+        return this.appState.localState.editView;
     }
 }

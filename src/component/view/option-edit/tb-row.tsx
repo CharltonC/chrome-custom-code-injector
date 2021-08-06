@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
-import { AppState } from '../../../state/model';
+import { IAppState } from '../../../state/model/type';
 
 // TODO: Type for props
 export const TbRow: React.FC<any> = memo((props) => {
@@ -10,26 +10,25 @@ export const TbRow: React.FC<any> = memo((props) => {
     const { appState, appStateHandler } = commonProps;
     const { REG_ROW } = classNames;
 
-    //// ITEM
-    const { title, value, isOn, isAsync } = item;
-    const ID_SUFFIX = `${itemLvl}-${idx}`;
-
-    //// STATE
-    const { localState } = appState as AppState;
-
-    // Data Grid State
-    const { selectState } = localState.libDataGrid;
-    const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
-    const isSelected = areAllRowsSelected || idx in selectedRowKeyCtx;
-    const isDelDisabled = areAllRowsSelected || !!Object.entries(selectedRowKeyCtx).length;
-
-    //// STATE HANDLER
     const {
         onLibRowSelectToggle,
-        onItemLibSwitchToggle,
+        onLibAsyncToggle,
+        onLibIsOnToggle,
         onEditLibModal,
         onDelLibModal,
     } = appStateHandler;
+
+    // Item
+    const { id, title, value, isOn, isAsync } = item;
+    const ID_SUFFIX = `${itemLvl}-${idx}`;
+
+    //// STATE
+    const { localState } = appState as IAppState;
+
+    // Data Grid State
+    const { selectState } = localState.editView.dataGrid;
+    const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
+    const isSelected = areAllRowsSelected || id in selectedRowKeyCtx;
 
     return <>
             {/* TODO: Index required for each id */}
@@ -39,54 +38,45 @@ export const TbRow: React.FC<any> = memo((props) => {
                         id={`lib-check-${ID_SUFFIX}`}
                         clsSuffix=""
                         checked={isSelected}
-                        onChange={() => onLibRowSelectToggle(idx, dataSrc.length)}
+                        onChange={() => onLibRowSelectToggle({
+                            libs: dataSrc,
+                            id
+                        })}
                         />
                 </td>
-                {/* TODO: Trim id if too long */}
+                {/* TODO: Trim title if too long */}
                 <td>{title}</td>
                 <td>{value}</td>
                 <td>
                     <SliderSwitch
                         id={`lib-async-${ID_SUFFIX}`}
                         checked={isAsync}
-                        disabled={isDelDisabled}
-                        onChange={() => onItemLibSwitchToggle({
-                            item,
-                            key: 'isAsync',
-                        })}
+                        disabled={isSelected}
+                        onChange={() => onLibAsyncToggle({ id })}
                         />
                 </td>
                 <td>
                     <SliderSwitch
                         id={`lib-active-${ID_SUFFIX}`}
                         checked={isOn}
-                        disabled={isDelDisabled}
-                        onChange={() => onItemLibSwitchToggle({
-                            item,
-                            key: 'isOn',
-                        })}
+                        disabled={isSelected}
+                        onChange={() => onLibIsOnToggle({ id })}
                         />
                 </td>
                 <td>
                     <IconBtn
                         icon="edit"
                         theme="gray"
-                        disabled={isDelDisabled}
-                        onClick={() => onEditLibModal({
-                            item,
-                            libIdx: idx,
-                        })}
+                        disabled={isSelected}
+                        onClick={() => onEditLibModal({ id })}
                     />
                 </td>
                 <td>
                     <IconBtn
                         icon="delete"
                         theme="gray"
-                        disabled={isDelDisabled}
-                        onClick={() => onDelLibModal({
-                            dataSrc,
-                            libIdx: idx
-                        })}
+                        disabled={isSelected}
+                        onClick={() => onDelLibModal({ id })}
                         />
                 </td>
             </tr>
