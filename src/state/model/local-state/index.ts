@@ -14,6 +14,7 @@ export class LocalState {
     };
     editView: IEditViewState = {
         ruleIdCtx: new RuleIdCtxState(),
+        libRuleIdCtx: new RuleIdCtxState(),
         titleInput: new TextInputState(),
         valueInput: new TextInputState(),
         dataGrid: new DataGridState(),

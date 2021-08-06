@@ -10,9 +10,17 @@ export interface IListViewState {
 };
 
 export interface IEditViewState {
-    // stores host id and path id for the current host/path in Edit View
+    //// current host/path
+    // stores host id and path id
     ruleIdCtx: RuleIdCtxState;
+
+    // title and value
     titleInput: TextInputState;
     valueInput: TextInputState;
+
+    //// Libraries of current host path
+    // similar to `ruleIdCtx` but specifically for library (used when removing library)
+    libRuleIdCtx: RuleIdCtxState;
+
     dataGrid: DataGridState;
 }
