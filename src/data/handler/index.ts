@@ -7,12 +7,19 @@ export class DataHandle {
     getRuleIdxCtxFromIdCtx(rules: HostRuleConfig[], idCtx: IRuleIdCtx): IRuleIdxCtx {
         const { hostId, pathId, libId } = idCtx;
         const hostIdx = rules.findIndex(({ id }) => id === hostId);
-        const paths = rules[hostIdx]?.paths;
+        const host = rules[hostIdx];
+        const paths = host.paths;
+
         const pathIdx = pathId
             ? paths.findIndex(({ id }) => id === pathId)
             : null;
+
+        // libraries exists in both host and path
+        // - if path exists, getting its libraries is prioritized over host's libraries
         const libIdx = libId
-            ? paths[pathIdx].libs.findIndex(({ id }) => id === libId)
+            ? pathId
+                ? paths[pathIdx].libs.findIndex(({ id }) => id === libId)
+                : host.libs.findIndex(({ id }) => id === libId)
             : null;
         return { hostIdx, pathIdx, libIdx };
     }
@@ -20,21 +27,38 @@ export class DataHandle {
     getRuleFromIdxCtx(rules: HostRuleConfig[], idxCtx: IRuleIdxCtx): AAnyRule {
         const { hostIdx, pathIdx, libIdx } = idxCtx;
         const host = rules[hostIdx];
+
         const isPath = Number.isInteger(pathIdx);
         const path = isPath ? host?.paths[pathIdx] : null;
-        const isLib = path && Number.isInteger(libIdx);
-        const lib = isLib ? path?.libs[libIdx] : null;
-        return isLib ? lib : isPath ? path : host;
+
+        // libraries exists in both host and path
+        // - if path exists, getting its libraries is prioritized over host's libraries
+        const isLib = Number.isInteger(libIdx);
+        const lib = isLib
+            ? path
+                ? path.libs[libIdx]
+                : host.libs[libIdx]
+            : null;
+
+        return lib || path || host;
     }
 
     getRuleFromIdCtx(rules: HostRuleConfig[], idCtx: IRuleIdCtx): AAnyRule {
         const { hostId, pathId, libId } = idCtx;
+
         const host = rules.find(({ id }) => id === hostId);
         const path = pathId
             ? host?.paths.find(({ id }) => id === pathId)
             : null;
-        const lib =
-            path && libId ? path?.libs.find(({ id }) => id === libId) : null;
+
+        // libraries exists in both host and path
+        // - if path exists, getting its libraries is prioritized over host's libraries
+        const lib = libId
+            ? path
+                ? path?.libs.find(({ id }) => id === libId)
+                : host.libs.find(({ id }) => id === libId)
+            : null;
+
         return lib ? lib : path ? path : host;
     }
 
@@ -65,6 +89,14 @@ export class DataHandle {
                 })
             );
         });
+    }
+
+    getLibs(host: HostRuleConfig, pathIdx?: number): LibRuleConfig[] {
+        // libraries exists in both host and path
+        // - if path exists, getting its libraries is prioritized over host's libraries
+        const isPath = Number.isInteger(pathIdx);
+        const { libs } = isPath ? host.paths[pathIdx] : host;
+        return libs;
     }
 
     //// TOGGLE/SET
@@ -143,7 +175,9 @@ export class DataHandle {
     addLib(rules: HostRuleConfig[], idCtx: IRuleIdCtx, lib: LibRuleConfig): void {
         // Relative to target/current path
         const { hostIdx, pathIdx } = this.getRuleIdxCtxFromIdCtx(rules, idCtx);
-        rules[hostIdx]?.paths[pathIdx]?.libs.push(lib);
+        const host = rules[hostIdx];
+        const libs = this.getLibs(host, pathIdx);
+        libs.push(lib);
     }
 
     //// REMOVE SINGLE
@@ -160,7 +194,9 @@ export class DataHandle {
     rmvLib(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
         const idxCtx = this.getRuleIdxCtxFromIdCtx(rules, idCtx);
         const { hostIdx, pathIdx, libIdx } = idxCtx;
-        rules[hostIdx]?.paths[pathIdx]?.libs.splice(libIdx, 1);
+        const host = rules[hostIdx];
+        const libs = this.getLibs(host, pathIdx);
+        libs.splice(libIdx, 1);
     }
 
     //// REMOVE MULTIPLE
