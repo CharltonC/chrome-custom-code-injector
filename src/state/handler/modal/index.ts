@@ -48,8 +48,14 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    //// SETTING IMPORT/EXPORT
-    async onImportSettingModalOk(state: IAppState): Promise<Partial<IAppState>> {
+    //// DATA IMPORT/EXPORT
+    onImportDataModal(state: IAppState): Partial<IAppState> {
+        return this.reflect.onModal(state, {
+            id: modals.importConfig.id
+        });
+    }
+
+    async onImportDataModalOk(state: IAppState): Promise<Partial<IAppState>> {
         const { modal } = state.localState;
         const { importFileInput } = modal;
 
@@ -63,7 +69,13 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         }
     }
 
-    onExportSettingModalOk(state: IAppState): Partial<IAppState> {
+    onExportDataModal(state: IAppState): Partial<IAppState> {
+        return this.reflect.onModal(state, {
+            id: modals.exportConfig.id
+        });
+    }
+
+    onExportDataModalOk(state: IAppState): Partial<IAppState> {
         const { rules, localState } = state;
         const { value } = localState.modal.exportFileInput;
         fileHandle.saveJson(rules, value, true);
@@ -102,6 +114,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     }
 
     //// SETTINGS
+    onSettingModal(state: IAppState): Partial<IAppState> {
+        return this.reflect.onModal(state, {
+            id: modals.defSetting.id
+        });
+    }
+
     onResultsPerPageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg): Partial<IAppState> {
         const { selectValueAttrVal } = payload;
         return {
@@ -199,6 +217,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
 
     //// RULE CRUD
     // Add
+    onAddHostModal(state: IAppState) {
+        return this.reflect.onModal(state, {
+            id: modals.addHost.id
+        });
+    }
+
     onAddHostModalOk(state: IAppState): Partial<IAppState> {
         const { localState, rules, setting } = state;
         const { titleInput, valueInput } = localState.modal;
