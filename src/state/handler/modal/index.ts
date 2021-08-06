@@ -485,8 +485,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
-    onDelLibModal(state: IAppState, payload): Partial<IAppState> {
-        const { libId } = payload;
+    onDelLibModal(state: IAppState, payload: {id: string}): Partial<IAppState> {
         const { localState, setting } = state;
         const { editView } = localState;
         const baseState = {
@@ -496,7 +495,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
                     ...editView,
                     libRuleIdCtx: {
                         ...editView.ruleIdCtx,
-                        libId,
+                        libId: payload.id,
                     }
                 },
                 modal: {
