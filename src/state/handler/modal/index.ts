@@ -485,6 +485,52 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         };
     }
 
+    onDelLibModal(state: IAppState, payload): Partial<IAppState> {
+        const { libId } = payload;
+        const { localState, setting } = state;
+        const { editView } = localState;
+        const baseState = {
+            localState: {
+                ...localState,
+                editView: {
+                    ...editView,
+                    libRuleIdCtx: {
+                        ...editView.ruleIdCtx,
+                        libId,
+                    }
+                },
+                modal: {
+                    ...localState.modal,
+                    currentId: modals.delLib.id
+                }
+            }
+        };
+
+        return setting.showDeleteModal
+            ? baseState
+            : this.reflect.onDelLibModalOk({
+                ...state,
+                ...baseState
+            });
+    }
+
+    onDelLibModalOk({ rules, localState }: IAppState): Partial<IAppState> {
+        const { editView } = localState;
+        const { libRuleIdCtx } = editView;
+        dataHandle.rmvLib(rules, libRuleIdCtx);
+
+        return {
+            localState: {
+                ...localState,
+                modal: new ModalState(),
+                editView: {
+                    ...editView,
+                    libRuleIdCtx: new RuleIdCtxState()
+                }
+            }
+        };
+    }
+
     onModalTitleInput({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
         const { val, isValid, errMsg } = payload;
         const { modal } = localState;
