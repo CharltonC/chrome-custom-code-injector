@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps } from './type';
-import { SideNav } from '.';
+import { SideBar } from '.';
 
 describe('Component - Side Nav', () => {
     const mockList = [
@@ -15,7 +15,7 @@ describe('Component - Side Nav', () => {
     let onClickSpy: jest.SpyInstance;
 
     beforeEach(() => {
-        onClickSpy = jest.spyOn(SideNav.prototype, 'onClick');
+        onClickSpy = jest.spyOn(SideBar.prototype, 'onClick');
     });
 
     afterEach(() => {
@@ -50,7 +50,7 @@ describe('Component - Side Nav', () => {
 
         describe('general', () => {
             beforeEach(() => {
-                TestUtil.renderPlain($elem, SideNav, mockDefProps);
+                TestUtil.renderPlain($elem, SideBar, mockDefProps);
                 assignChildElem();
             });
 
@@ -102,7 +102,7 @@ describe('Component - Side Nav', () => {
             const MOCK_TITLE = 'TITLE';
 
             beforeEach(() => {
-                TestUtil.renderPlain($elem, SideNav, {
+                TestUtil.renderPlain($elem, SideBar, {
                     list: [
                         {
                             title: 'lorem',
@@ -120,7 +120,7 @@ describe('Component - Side Nav', () => {
 
         describe('downward arrow for parent item ', () => {
             it('should appear when the itself is active', () => {
-                TestUtil.renderPlain($elem, SideNav, mockDefProps);
+                TestUtil.renderPlain($elem, SideBar, mockDefProps);
                 assignChildElem();
 
                 expect($1stItem.querySelector('.icon--arrow-dn')).toBeTruthy();
@@ -128,7 +128,7 @@ describe('Component - Side Nav', () => {
             });
 
             it('should appear when a nested list item is active', () => {
-                TestUtil.renderPlain($elem, SideNav, {
+                TestUtil.renderPlain($elem, SideBar, {
                     ...mockDefProps,
                     activeItemIdx: 1,
                     activeChildItemIdx: 0

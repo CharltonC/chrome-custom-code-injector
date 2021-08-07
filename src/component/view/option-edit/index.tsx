@@ -9,7 +9,7 @@ import { TextInput } from '../../base/input-text';
 import { TabSwitch } from '../../base/checkbox-tab-switch';
 import { IconSwitch } from '../../base/checkbox-icon-switch';
 import { Dropdown } from '../../base/select-dropdown';
-import { SideNav } from '../../base/side-nav';
+import { SideBar } from '../../base/side-bar';
 import { IconBtn } from '../../base/btn-icon';
 import { SortBtn } from '../../base/btn-sort';
 import { Checkbox } from '../../base/checkbox';
@@ -115,7 +115,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         );
 
         return (<>
-            <SideNav
+            <SideBar
                 list={rules}
                 childListKey="paths"
                 activeItemIdx={hostIdx}

@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import { SideNav } from '.';
+import { SideBar } from '.';
 
 export default {
     title: 'Base/Side Nav',
-    component: SideNav,
+    component: SideBar,
 };
 
 const defStyle = {};
@@ -54,7 +54,7 @@ export const ActiveListItemRemainsActiveWhenListChanges = () => {
     return (
         <div style={defStyle} >
             <button type="button" onClick={changeList}>change list</button>
-            <SideNav
+            <SideBar
                 list={list}
                 activeItemIdx={activeIdx}
                 activeChildItemIdx={activeChildIdx}

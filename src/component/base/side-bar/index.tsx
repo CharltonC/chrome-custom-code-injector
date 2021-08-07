@@ -11,7 +11,7 @@ const CHILD_LIST_MAX_HEIGHT = '320px';
 const $rtArrowIcon: ReactElement = inclStaticIcon('arrow-rt');
 const $dnArrowIcon: ReactElement = inclStaticIcon('arrow-dn');
 
-export class SideNav extends MemoComponent<IProps, IState> {
+export class SideBar extends MemoComponent<IProps, IState> {
     static defaultProps: Partial<IProps> = {
         listTitleKey: 'title',
         childListKey: 'list',
