@@ -1,5 +1,5 @@
 import React, { ComponentClass } from 'react';
-import { BaseStateHandler } from './base-handler';
+import { BaseStateManager } from './base-state-manager';
 import { BaseStateComponent } from './base-component';
 import { IStateConfigs } from './type';
 
@@ -14,23 +14,23 @@ import { IStateConfigs } from './type';
  * - `.reflect` to consolidate multipe and/or dependent state changes
  */
 export const StateHandle = {
-    BaseStateHandler,
+    BaseStateManager,
 
     init(Cmp: ACmp, stateConfigs: IStateConfigs): ComponentClass {
         return class extends BaseStateComponent {
-            appStateHandler: AObj;
+            appStateManager: AObj;
 
             constructor(props: AObj) {
                 super(props);
-                const { appState, appStateHandler } = this.transformStateConfigs(stateConfigs);
+                const { appState, appStateManager } = this.transformStateConfigs(stateConfigs);
                 this.state = appState;
-                this.appStateHandler = appStateHandler;
+                this.appStateManager = appStateManager;
             }
 
             render() {
                 return <Cmp
                     appState={this.state}
-                    appStateHandler={this.appStateHandler}
+                    appStateManager={this.appStateManager}
                     />;
             }
         }

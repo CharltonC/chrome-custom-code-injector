@@ -1,16 +1,17 @@
-import { dataHandle } from '../../../data/handler';
+import { dataManager } from '../../../data/manager';
 import { StateHandle } from '../../../handle/state';
 import { RowSelectHandle } from '../../../handle/row-select';
+
 import { TextInputState } from '../../model/text-input-state';
 import { DataGridState } from '../../model/data-grid-state';
 import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { IAppState } from '../../model/type';
-import { AHostPathRule } from '../../../data/handler/type';
+import { AHostPathRule } from '../../../data/manager/type';
 
 const rowSelectHandle = new RowSelectHandle();
 
-export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
+export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
     //// HEADER
     onListView({ localState }: IAppState) {
         // Not required to reset Edit View state as already covered by `onEditView`
@@ -76,7 +77,7 @@ export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
         if (!isValid) return baseState;
 
         // If valid value, set/sync the item title
-        dataHandle.setTitle(rules, ruleIdCtx, val);
+        dataManager.setTitle(rules, ruleIdCtx, val);
         return {
             ...baseState,
             rules: [...rules], // force rerender for Side Nav
@@ -105,7 +106,7 @@ export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
         if (!isValid) return baseState;
 
         // If valid value, set/sync the item value
-        dataHandle.setValue(rules, ruleIdCtx, val);
+        dataManager.setValue(rules, ruleIdCtx, val);
         return {
             ...baseState,
             rules: [...rules], // force rerender for Side Nav
@@ -115,7 +116,7 @@ export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
     //// TABS
     onActiveTabChange({ rules }: IAppState, payload) {
         const { ruleIdCtx, idx } = payload;
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
+        const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
         item.activeTabIdx = idx;
         return {};
     }
@@ -123,7 +124,7 @@ export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
     onTabToggle({ rules }: IAppState, payload) {
         const { ruleIdCtx, tab } = payload;
         const id = `is${tab.id}On`;
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
+        const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
         item[id] = !item[id];
         return {};
     }
@@ -131,7 +132,7 @@ export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
     onCodeChange({ rules }: IAppState, payload) {
         const { ruleIdCtx, codeKey, codeMirrorArgs } = payload;
         const [,,value] = codeMirrorArgs;
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
+        const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
         item[codeKey] = value;
         return {};
     }
@@ -204,7 +205,7 @@ export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
     }
 
     onLibAsyncToggle({ rules, localState }: IAppState, payload: {id: string}): Partial<IAppState> {
-        dataHandle.toggleLibAsyncSwitch(rules, {
+        dataManager.toggleLibAsyncSwitch(rules, {
             ...localState.editView.ruleIdCtx,
             libId: payload.id
         });
@@ -212,7 +213,7 @@ export class OptionEditViewHandler extends StateHandle.BaseStateHandler {
     }
 
     onLibIsOnToggle({ rules,  localState }: IAppState, payload: {id: string}): Partial<IAppState> {
-        dataHandle.toggleLibIsOnSwitch(rules, {
+        dataManager.toggleLibIsOnSwitch(rules, {
             ...localState.editView.ruleIdCtx,
             libId: payload.id
         });

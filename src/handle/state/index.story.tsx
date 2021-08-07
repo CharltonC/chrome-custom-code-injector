@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StateHandle } from '.';
 
-const { BaseStateHandler } = StateHandle;
+const { BaseStateManager } = StateHandle;
 
 export default {
     title: 'State Handle',
@@ -17,7 +17,7 @@ export const SingleState = () => {
     }
 
     // 2. State Handler
-    class SampleStateHandler extends BaseStateHandler {
+    class SampleStateHandler extends BaseStateManager {
         onNameChange(appState, evt?) {
             // Setting state Directly
             return {
@@ -56,9 +56,9 @@ export const SingleState = () => {
     const sampleStateHandler = new SampleStateHandler();
 
     // 3. Root Component which reference state and state hanlder
-    const SampleComponent = ({ appState, appStateHandler }) => {
+    const SampleComponent = ({ appState, appStateManager }) => {
         const { name, age, gender, address } = appState;
-        const { onNameChange, onAgeChange, onAllChange, onAddressChange } = appStateHandler;
+        const { onNameChange, onAgeChange, onAllChange, onAddressChange } = appStateManager;
         return (
             <div>
                 <p>name: {name}</p>
@@ -95,7 +95,7 @@ export const MultipleStates = () => {
     const sampleState1 = {
         name: 'joe',
     };
-    class SampleStateHandler1 extends BaseStateHandler {
+    class SampleStateHandler1 extends BaseStateManager {
         onNameChange(appState, evt?) {
             return { name: 'jane' };
         }
@@ -107,7 +107,7 @@ export const MultipleStates = () => {
         project: 'VsCode',
         license: 'MIT'
     };
-    class SampleStateHandler2 extends BaseStateHandler {
+    class SampleStateHandler2 extends BaseStateManager {
         onProjectChange(appState, evt?) {
             return { project: 'Apache' };
         }
@@ -115,11 +115,11 @@ export const MultipleStates = () => {
     const sampleStateHandler2 = new SampleStateHandler2();
 
     // 3. Root Component which references state and state hanlder
-    const SampleComponent = ({ appState, appStateHandler }) => {
+    const SampleComponent = ({ appState, appStateManager }) => {
         const { name } = appState.stateOne;
         const { project } = appState.stateTwo;
-        const { onNameChange } = appStateHandler.stateOne;
-        const { onProjectChange } = appStateHandler.stateTwo;
+        const { onNameChange } = appStateManager.stateOne;
+        const { onProjectChange } = appStateManager.stateTwo;
 
         return (
             <div>
@@ -161,23 +161,23 @@ export const SingleStateeWithPartialHandlers = () => {
     };
 
     // 2. Partial State Handlers
-    class PartialHandlerA extends BaseStateHandler {
+    class PartialHandlerA extends BaseStateManager {
         onH1Click(appState) {
             return { name: 'jane' }
         }
     }
-    class PartialHandlerB extends BaseStateHandler {
+    class PartialHandlerB extends BaseStateManager {
         onH2Click(appState) {
             return { age: 20 }
         }
     }
-    const SampleStateHandler = BaseStateHandler.join([PartialHandlerA, PartialHandlerB]);
+    const SampleStateHandler = BaseStateManager.join([PartialHandlerA, PartialHandlerB]);
     const sampleStateHandler = new SampleStateHandler()
 
     // 3. Root componennt
-    const SampleComponent = ({ appState, appStateHandler }) => {
+    const SampleComponent = ({ appState, appStateManager }) => {
         const { name, age } = appState;
-        const { onH1Click, onH2Click } = appStateHandler;
+        const { onH1Click, onH2Click } = appStateManager;
         return (
             <div>
                 <h1 onClick={onH1Click}>{name}</h1>

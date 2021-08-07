@@ -1,6 +1,6 @@
 import React from 'react';
 import { TestUtil } from '../../asset/ts/test-util';
-import { BaseStateHandler } from './base-handler';
+import { BaseStateManager } from './base-state-manager';
 import { StateHandle } from '.';
 
 describe('State Handle', () => {
@@ -15,9 +15,9 @@ describe('State Handle', () => {
     });
 
     describe('Single State and State Handler', () => {
-        const MockCmp = ({ appState, appStateHandler }) => <h1 onClick={appStateHandler.onClick}>{appState.name}</h1>;
+        const MockCmp = ({ appState, appStateManager }) => <h1 onClick={appStateManager.onClick}>{appState.name}</h1>;
         const mockState = { name: 'john' };
-        class MockStateHandler extends BaseStateHandler {
+        class MockStateHandler extends BaseStateManager {
             onClick() {
                 return { name: 'jane' };
             }
@@ -43,26 +43,26 @@ describe('State Handle', () => {
     });
 
     describe('Single State and State Handler with multiple partial handlers', () => {
-        const MockCmp = ({ appState, appStateHandler }) => (
+        const MockCmp = ({ appState, appStateManager }) => (
             <>
-                <h1 onClick={appStateHandler.onH1Click}>{appState.name}</h1>
-                <h2 onClick={appStateHandler.onH2Click}>{appState.name}</h2>
+                <h1 onClick={appStateManager.onH1Click}>{appState.name}</h1>
+                <h2 onClick={appStateManager.onH2Click}>{appState.name}</h2>
             </>
         );
 
         const mockState = { name: 'john' };
 
-        class MockPartialeHandlerA extends BaseStateHandler {
+        class MockPartialeHandlerA extends BaseStateManager {
             onH1Click() {
                 return { name: 'jane' };
             }
         }
-        class MockPartialHandlerB extends BaseStateHandler {
+        class MockPartialHandlerB extends BaseStateManager {
             onH2Click() {
                 return { name: 'amy' };
             }
         }
-        const MockStateHandler = BaseStateHandler.join([MockPartialeHandlerA, MockPartialHandlerB]);
+        const MockStateHandler = BaseStateManager.join([MockPartialeHandlerA, MockPartialHandlerB]);
 
         let $h1: HTMLHeadingElement;
         let $h2: HTMLHeadingElement;
@@ -92,20 +92,20 @@ describe('State Handle', () => {
     describe('Multiple States and State Handlers', () => {
         const MOCK_STATE_ONE = 'STATE1';
         const MOCK_STATE_TWO = 'STATE2';
-        const MockCmp = ({ appState, appStateHandler }) => (
+        const MockCmp = ({ appState, appStateManager }) => (
             <>
-                <h1 onClick={appStateHandler[MOCK_STATE_ONE].onClick}>{appState[MOCK_STATE_ONE].name}</h1>
-                <h2 onClick={appStateHandler[MOCK_STATE_TWO].onClick}>{appState[MOCK_STATE_TWO].name}</h2>
+                <h1 onClick={appStateManager[MOCK_STATE_ONE].onClick}>{appState[MOCK_STATE_ONE].name}</h1>
+                <h2 onClick={appStateManager[MOCK_STATE_TWO].onClick}>{appState[MOCK_STATE_TWO].name}</h2>
             </>
         );
         const mockState1 = { name: 'john1' };
         const mockState2 = { name: 'john2' };
-        class MockStateHandler1 extends BaseStateHandler {
+        class MockStateHandler1 extends BaseStateManager {
             onClick() {
                 return { name: 'jane1' };
             }
         }
-        class MockStateHandler2 extends BaseStateHandler {
+        class MockStateHandler2 extends BaseStateManager {
             onClick() {
                 return { name: 'jane2' };
             }

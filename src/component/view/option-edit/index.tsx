@@ -2,7 +2,7 @@ import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationRule } from '../../../constant/validation-rule';
 import { jsExecStage } from '../../../constant/js-exec-stage';
-import { dataHandle } from '../../../data/handler';
+import { dataManager } from '../../../data/manager';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { TextInput } from '../../base/input-text';
@@ -18,7 +18,7 @@ import { TbRow } from './tb-row';
 
 import { LibRuleConfig } from '../../../data/model/rule-config';
 import * as TSortHandle from '../../../handle/sort/type';
-import * as TDataHandler from '../../../data/handler/type';
+import * as TDataHandler from '../../../data/manager/type';
 import { IProps } from './type';
 
 export class OptionEditView extends MemoComponent<IProps> {
@@ -40,14 +40,14 @@ export class OptionEditView extends MemoComponent<IProps> {
 
             onAddLibModal,
             onDelLibsModal,
-        } = this.appStateHandler;
+        } = this.appStateManager;
 
         const { rules } = this.appState;
         const { ruleIdCtx, titleInput, valueInput, dataGrid } = this.editViewState;
 
         // Item
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
-        const { hostIdx, pathIdx } = dataHandle.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
+        const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
+        const { hostIdx, pathIdx } = dataManager.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
         const { isHost, activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
 
         // Text Input
@@ -235,8 +235,8 @@ export class OptionEditView extends MemoComponent<IProps> {
         return this.props.appState;
     }
 
-    get appStateHandler() {
-        return this.props.appStateHandler;
+    get appStateManager() {
+        return this.props.appStateManager;
     }
 
     get editViewState() {

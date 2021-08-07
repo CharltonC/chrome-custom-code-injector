@@ -1,6 +1,6 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { BaseStateComponent } from '.';
-import { BaseStateHandler } from '../base-handler';
+import { BaseStateManager } from '../base-state-manager';
 import { AMethodSpy } from '../../../asset/ts/test-util/type';
 
 describe('Base State Component', () => {
@@ -26,35 +26,35 @@ describe('Base State Component', () => {
 
         it('should return transformed config if root state and state handler are provided', () => {
             const mockState = { name: 'john' };
-            class MockStateHandler extends BaseStateHandler {
+            class MockStateHandler extends BaseStateManager {
                 sayHello() { return 'hello'; }
             }
-            const { appState, appStateHandler } = cmp.transformStateConfigs({
+            const { appState, appStateManager } = cmp.transformStateConfigs({
                 root: [ mockState, new MockStateHandler() ]
             });
 
             expect(appState).toBe(mockState);
-            expect(appStateHandler).toBe(getProxyStateHandler);
+            expect(appStateManager).toBe(getProxyStateHandler);
         });
 
         it('should return transformed config if multiple non-root state and state handlers are provied', () => {
             const mockState1 = { name: 'john' };
             const mockState2 = { name: 'jane' };
-            class MockStateHandler1 extends BaseStateHandler {
+            class MockStateHandler1 extends BaseStateManager {
                 sayHello1() { return 'hello1'; }
             }
-            class MockStateHandler2 extends BaseStateHandler {
+            class MockStateHandler2 extends BaseStateManager {
                 sayHello2() { return 'hello2'; }
             }
-            const { appState, appStateHandler } = cmp.transformStateConfigs({
+            const { appState, appStateManager } = cmp.transformStateConfigs({
                 one: [ mockState1, new MockStateHandler1() ],
                 two: [ mockState2, new MockStateHandler2() ]
             });
 
             expect(appState.one).toBe(mockState1);
             expect(appState.two).toBe(mockState2);
-            expect(appStateHandler['one']).toBe(getProxyStateHandler);
-            expect(appStateHandler['two']).toBe(getProxyStateHandler);
+            expect(appStateManager['one']).toBe(getProxyStateHandler);
+            expect(appStateManager['two']).toBe(getProxyStateHandler);
         });
     });
 
@@ -64,7 +64,7 @@ describe('Base State Component', () => {
         const MOCK_STATE_NAME = 'state_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
-        class MockHandler extends BaseStateHandler {
+        class MockHandler extends BaseStateManager {
             age = 10;
             [MOCK_METHOD_NAME]() {}
         }

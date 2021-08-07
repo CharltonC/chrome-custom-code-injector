@@ -1,7 +1,7 @@
 import { StateHandle } from '../../../handle/state';
 import { FileHandle } from '../../../handle/file';
 import { PgnHandle } from '../../../handle/pagination';
-import { dataHandle } from '../../../data/handler';
+import { dataManager } from '../../../data/manager';
 import { modals } from '../../../constant/modals';
 
 import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../../../data/model/rule-config';
@@ -20,7 +20,7 @@ import { TextInputState } from '../../model/text-input-state';
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
 
-export class ModalStateHandler extends StateHandle.BaseStateHandler {
+export class ModalStateManager extends StateHandle.BaseStateManager {
     //// BASE
     // used ONLY WHEN setting modal Id is the only thing required to be altered
     onModal({ localState }: IAppState, payload: {id: string}): Partial<IAppState> {
@@ -231,7 +231,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const url = valueInput.value;
         const host = new HostRuleConfig(title, url);
         Object.assign(host, setting.defRuleConfig);
-        dataHandle.addHost(rules, host);
+        dataManager.addHost(rules, host);
 
         return {
             localState: {
@@ -277,7 +277,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const urlPath = valueInput.value;
         const path = new PathRuleConfig(title, urlPath);
         Object.assign(path, setting.defRuleConfig);
-        dataHandle.addPath(rules, ruleIdCtx, path);
+        dataManager.addPath(rules, ruleIdCtx, path);
 
         const resetLocalState = {
             ...localState,
@@ -330,7 +330,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { value: title } = titleInput;
         const { value } = valueInput;
         const lib = new LibRuleConfig(title, value);
-        dataHandle.addLib(rules, ruleIdCtx, lib);
+        dataManager.addLib(rules, ruleIdCtx, lib);
 
         return {
             localState: {
@@ -388,12 +388,12 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         // Get the ID context (host, path) depending on the view
         const { ruleIdCtx } = isListView ? listView : editView;
         const isHost = !ruleIdCtx.pathId;
-        const { hostIdx, pathIdx } = dataHandle.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
+        const { hostIdx, pathIdx } = dataManager.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
 
         // Delete Host or Path
         ruleIdCtx.pathId
-            ? dataHandle.rmvPath(rules, ruleIdCtx)
-            : dataHandle.rmvHost(rules, ruleIdCtx);
+            ? dataManager.rmvPath(rules, ruleIdCtx)
+            : dataManager.rmvHost(rules, ruleIdCtx);
 
         const hasRules = !!rules.length;
         const resetLocalState = {
@@ -509,8 +509,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { startIdx, endIdx } = sliceIdxCtx;
         const delIds = srcRules.slice(startIdx, endIdx).map(({ id }) => id)
         areAllRowsSelected
-            ? dataHandle.rmvHostsFromIds(rules, delIds)
-            : dataHandle.rmvPartialHosts(rules, selectedRowKeyCtx);
+            ? dataManager.rmvHostsFromIds(rules, delIds)
+            : dataManager.rmvPartialHosts(rules, selectedRowKeyCtx);
 
         // Clear the Search after rules are altered (List view only)
         const { length: totalRecord } = rules;
@@ -574,7 +574,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
     onDelLibModalOk({ rules, localState }: IAppState): Partial<IAppState> {
         const { editView } = localState;
         const { libRuleIdCtx } = editView;
-        dataHandle.rmvLib(rules, libRuleIdCtx);
+        dataManager.rmvLib(rules, libRuleIdCtx);
 
         return {
             localState: {
@@ -606,8 +606,8 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { areAllRowsSelected, selectedRowKeyCtx } = dataGrid.selectState;
 
         areAllRowsSelected
-            ? dataHandle.rmvAllLibs(rules, ruleIdCtx)
-            : dataHandle.rmvPartialLibs(rules, selectedRowKeyCtx, ruleIdCtx);
+            ? dataManager.rmvAllLibs(rules, ruleIdCtx)
+            : dataManager.rmvPartialLibs(rules, selectedRowKeyCtx, ruleIdCtx);
 
         return {
             localState: {
@@ -627,7 +627,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { editView, modal } = localState;
 
         const libRuleIdCtx = { ...editView.ruleIdCtx, libId: id };
-        const { title, value } = dataHandle.getRuleFromIdCtx(rules, libRuleIdCtx);
+        const { title, value } = dataManager.getRuleFromIdCtx(rules, libRuleIdCtx);
         const isValid = true;
         const titleInput = new TextInputState({ value: title, isValid });
         const valueInput = new TextInputState({ value, isValid });
@@ -656,7 +656,7 @@ export class ModalStateHandler extends StateHandle.BaseStateHandler {
         const { libRuleIdCtx } = editView;
         const { value: title } = titleInput;
         const { value } = valueInput;
-        dataHandle.setProps(rules, libRuleIdCtx, {
+        dataManager.setProps(rules, libRuleIdCtx, {
             title,
             value
         });

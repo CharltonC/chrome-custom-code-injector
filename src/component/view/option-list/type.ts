@@ -1,6 +1,6 @@
 import { IAppProps } from '../../../handle/state/type';
 import { IAppState } from '../../../state/model/type';
-import { IStateHandler } from '../../../state/handler/type';
+import { IStateHandler } from '../../../state/manager/type';
 import { IRowComponentProps } from '../../widget/data-grid/type';
 
 export type IProps = IAppProps<IAppState, IStateHandler>;

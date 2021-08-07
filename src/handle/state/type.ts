@@ -1,20 +1,20 @@
-import { BaseStateHandler } from './base-handler';
+import { BaseStateManager } from './base-state-manager';
 
 export interface IStateConfigs {
-    root?: [ AObj, BaseStateHandler ];
-    [k: string]: [ AObj, BaseStateHandler ];
+    root?: [ AObj, BaseStateManager ];
+    [k: string]: [ AObj, BaseStateManager ];
 }
 
 export interface ITransfmStateConfigs {
     appState: AObj;
-    appStateHandler: BaseStateHandler | Record<string, BaseStateHandler>;
+    appStateManager: BaseStateManager | Record<string, BaseStateManager>;
 }
 
-export interface IStateHandlerClass<T = BaseStateHandler> {
+export interface IStateHandlerClass<T = BaseStateManager> {
     new(...args: any[]): T;
 }
 
 export interface IAppProps<T, U> {
     appState: T;
-    appStateHandler: Record<keyof U, (...args: any[]) => any>;
+    appStateManager: Record<keyof U, (...args: any[]) => any>;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { dataHandle } from '../../../data/handler';
+import { dataManager } from '../../../data/manager';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
@@ -21,14 +21,14 @@ export class OptionListView extends MemoComponent<IProps> {
 
             onAddHostModal,
             onDelHostsModal,
-        } = this.appStateHandler;
+        } = this.appStateManager;
 
         const { rules, localState } = this.appState;
         const { pgnOption, pgnState, sortOption, selectState } = this.dataGridState;
 
         // Data
         const { searchText } = localState.listView;
-        const data = dataHandle.getFilteredRules(rules, searchText);
+        const data = dataManager.getFilteredRules(rules, searchText);
 
         // Pagination
         const { increment, incrementIdx } = pgnOption;
@@ -130,8 +130,8 @@ export class OptionListView extends MemoComponent<IProps> {
         return this.props.appState;
     }
 
-    get appStateHandler() {
-        return this.props.appStateHandler;
+    get appStateManager() {
+        return this.props.appStateManager;
     }
 
     get dataGridState() {

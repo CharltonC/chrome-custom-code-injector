@@ -1,10 +1,10 @@
 import PubSub from 'pubsub-js';
-import { BaseStateHandler } from '.';
+import { BaseStateManager } from '.';
 
-describe('Base State Handler', () => {
+describe('Base State Manager', () => {
     const MOCK_TOPIC = 'lorem';
     let mockPubSub: Partial<PubSub>;
-    let handle: BaseStateHandler;
+    let handle: BaseStateManager;
     let getTopicSpy: jest.SpyInstance;
 
     beforeEach(() => {
@@ -13,7 +13,7 @@ describe('Base State Handler', () => {
             unsubscribe: jest.fn(),
             publish: jest.fn(),
         };
-        handle = new BaseStateHandler();
+        handle = new BaseStateManager();
 
         (handle as any).PubSub = mockPubSub;
         getTopicSpy = jest.spyOn(handle, 'getTopic');
@@ -25,9 +25,9 @@ describe('Base State Handler', () => {
     });
 
     it('static - `join`: should join the prototypal methods of multiple partial state handlers into the prototypal methods of 1 main state handler', () => {
-        class MockHandlerA extends BaseStateHandler { logA() {} }
-        class MockHandlerB extends BaseStateHandler { logB() {} }
-        const { logA, logB } = BaseStateHandler.join([MockHandlerA, MockHandlerB]).prototype;
+        class MockHandlerA extends BaseStateManager { logA() {} }
+        class MockHandlerB extends BaseStateManager { logB() {} }
+        const { logA, logB } = BaseStateManager.join([MockHandlerA, MockHandlerB]).prototype;
         expect(logA).toBeTruthy();
         expect(logB).toBeTruthy();
     });

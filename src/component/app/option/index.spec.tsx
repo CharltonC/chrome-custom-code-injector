@@ -1,5 +1,5 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { AppStateHandler } from '../../../state/handler';
+import { AppStateManager } from '../../../state/manager';
 import { StateHandle } from '../../../handle/state';
 import { IAppState } from '../../../state/model/type';
 import { createMockAppState } from '../../../state/mock';
@@ -80,7 +80,7 @@ describe('Component - Option App (UI/E2E)', () => {
             describe('Non-searched + Non-paginated', () => {
                 beforeEach(() => {
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandler() ],
+                        root: [ mockAppState, new AppStateManager() ],
                     }));
                 });
 
@@ -151,7 +151,7 @@ describe('Component - Option App (UI/E2E)', () => {
                     dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
 
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandler() ],
+                        root: [ mockAppState, new AppStateManager() ],
                     }));
                 });
 
@@ -213,7 +213,7 @@ describe('Component - Option App (UI/E2E)', () => {
             describe('Searched + Non-paginated', () => {
                 beforeEach(() => {
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandler() ],
+                        root: [ mockAppState, new AppStateManager() ],
                     }));
 
                     mockSearch('ebay');
@@ -247,7 +247,7 @@ describe('Component - Option App (UI/E2E)', () => {
                     dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
 
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandler() ],
+                        root: [ mockAppState, new AppStateManager() ],
                     }));
 
                     mockSearch('ebay');

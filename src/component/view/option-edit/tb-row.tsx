@@ -9,7 +9,7 @@ import { IAppState } from '../../../state/model/type';
 // TODO: Type for props
 export const TbRow: React.FC<any> = memo((props) => {
     const { dataSrc, idx, itemLvl, item, classNames, commonProps } = props;
-    const { appState, appStateHandler } = commonProps;
+    const { appState, appStateManager } = commonProps;
     const { REG_ROW } = classNames;
 
     const {
@@ -18,7 +18,7 @@ export const TbRow: React.FC<any> = memo((props) => {
         onLibIsOnToggle,
         onEditLibModal,
         onDelLibModal,
-    } = appStateHandler;
+    } = appStateManager;
 
     // Item
     const { id, title, value, isOn, isAsync } = item;

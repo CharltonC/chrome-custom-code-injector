@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { BaseStateHandler } from '../base-handler';
+import { BaseStateManager } from '../base-state-manager';
 import { IStateConfigs, ITransfmStateConfigs } from '../type';
 
 export class BaseStateComponent extends Component<any, AObj> {
@@ -9,10 +9,10 @@ export class BaseStateComponent extends Component<any, AObj> {
         // For single state and state handler
         const { root } = stateConfigs;
         if (root) {
-            const [ appState, appStateHandler ] = root;
+            const [ appState, appStateManager ] = root;
             return {
                 appState,
-                appStateHandler: this.getProxyStateHandler(appStateHandler)
+                appStateManager: this.getProxyStateHandler(appStateManager)
             };
         }
 
@@ -20,26 +20,26 @@ export class BaseStateComponent extends Component<any, AObj> {
         return Object
             .entries(stateConfigs)
             .reduce((container, [ name, subStateConfig ]) => {
-                const { appState, appStateHandler } = container;
-                this.checkStateName(name, appState, appStateHandler);
+                const { appState, appStateManager } = container;
+                this.checkStateName(name, appState, appStateManager);
 
                 const [ subState, subStateHandler ] = subStateConfig;
                 appState[name] = subState;
-                appStateHandler[name] = this.getProxyStateHandler(subStateHandler, name);
+                appStateManager[name] = this.getProxyStateHandler(subStateHandler, name);
                 return container;
             }, {
                 appState: {},
-                appStateHandler: {}
+                appStateManager: {}
             });
     }
 
-    getProxyStateHandler(appStateHandler: BaseStateHandler, name?: string): BaseStateHandler {
-        const allowedMethodNames: string[] = this.getAllowedMethodNames(appStateHandler);
+    getProxyStateHandler(appStateManager: BaseStateManager, name?: string): BaseStateManager {
+        const allowedMethodNames: string[] = this.getAllowedMethodNames(appStateManager);
         const getModPartialState = this.getModPartialState.bind(this);
         const updateState = this.updateState.bind(this);
 
-        return new Proxy(appStateHandler, {
-            get: (target: BaseStateHandler, key: string, proxy: BaseStateHandler) => {
+        return new Proxy(appStateManager, {
+            get: (target: BaseStateManager, key: string, proxy: BaseStateManager) => {
                 const method: any = target[key];
 
                 // TODO - if User requests the root appState handler, `rootHandler`, return the rootHandler object
@@ -57,11 +57,11 @@ export class BaseStateComponent extends Component<any, AObj> {
                     // If contains promise or async/await logic
                     if (modPartialState instanceof Promise) {
                         const partialState = await modPartialState;
-                        updateState(partialState, appStateHandler, name);
+                        updateState(partialState, appStateManager, name);
 
                     } else {
                         // TODO - Check type if its not object, throw error
-                        updateState(modPartialState, appStateHandler, name);
+                        updateState(modPartialState, appStateManager, name);
                     }
 
                 };
@@ -79,22 +79,22 @@ export class BaseStateComponent extends Component<any, AObj> {
             });
     }
 
-    getModPartialState(fn: AFn, proxy: BaseStateHandler, args: any[]): AObj {
+    getModPartialState(fn: AFn, proxy: BaseStateManager, args: any[]): AObj {
         return fn.apply(proxy, [this.state, ...args]);
     }
 
-    updateState(modPartialState: AObj, appStateHandler: BaseStateHandler, name?: string): void {
+    updateState(modPartialState: AObj, appStateManager: BaseStateManager, name?: string): void {
         const { state } = this;
         const modState = name ?
             { ...state, [name]: { ...state[name] , ...modPartialState } } :
             { ...state, ...modPartialState };
         const diffState = { prev: state, curr: modState };
-        this.setState(modState, () => appStateHandler.pub(diffState, name));
+        this.setState(modState, () => appStateManager.pub(diffState, name));
     }
 
-    checkStateName(name: string, appState: AObj, appStateHandler: AObj): void {
+    checkStateName(name: string, appState: AObj, appStateManager: AObj): void {
         const isInState: boolean = name in appState;
-        const isInHandler: boolean = name in appStateHandler;
+        const isInHandler: boolean = name in appStateManager;
         if (isInState || isInHandler) throw new Error(`${name} ${this.STATE_NAME_ERR}`);
     }
 }
