@@ -9,16 +9,16 @@
     "cmp-w": "source schematic/cmp.sh widget",
     "cmp-c": "source schematic/cmp.sh structural",
     "cmp-v": "source schematic/cmp.sh view",
-    "serve-files-dev": "./node_modules/gulp/bin/gulp.js serve",
-    "serve-files-prod": "./node_modules/gulp/bin/gulp.js serve --prod --watchify",
-    "serve-index-popup": "./node_modules/gulp/bin/gulp.js serve --startIdxPage=popup",
-    "serve-index-option": "./node_modules/gulp/bin/gulp.js serve --startIdxPage=option",
-    "serve-styleguide": "./node_modules/gulp/bin/gulp.js build-copy && ./node_modules/gulp/bin/gulp.js build-css; ./node_modules/gulp/bin/gulp.js watch --files=css & npx start-storybook --ci -p 9001 -s ./dist/build/",
+    "serve-files-dev": "gulp serve",
+    "serve-files-prod": "gulp serve --prod --watchify",
+    "serve-index-popup": "gulp serve --startIdxPage=popup",
+    "serve-index-option": "gulp serve --startIdxPage=option",
+    "serve-styleguide": "gulp build-copy && gulp build-css; gulp watch --files=css & npx start-storybook --ci -p 9001 -s ./dist/build/",
     "doc": "./node_modules/.bin/esdoc",
     "typedoc": "node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, doc, coverage'",
-    "build": "./node_modules/gulp/bin/gulp.js build --prod",
-    "test": "./node_modules/gulp/bin/gulp.js build-ts:test"
+    "build": "gulp build --prod",
+    "test": "gulp build-ts:test"
   },
   "private": true,
   "dependencies": {
