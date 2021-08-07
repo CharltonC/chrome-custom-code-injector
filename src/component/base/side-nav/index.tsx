@@ -39,17 +39,20 @@ export class SideNav extends MemoComponent<IProps, IState> {
             listTitleKey,
             childListKey,
             activeItemIdx,
+            activeChildItemIdx,
          } = props;
 
         const nestedItems = item[childListKey];
         const nestedItemsTotal = nestedItems?.length;
         const isActive = idx === activeItemIdx;
         const showNestedItems = isActive && !!nestedItemsTotal;
+        const hasActiveChild = Number.isInteger(activeChildItemIdx);
 
         const { ITEM_KEY, ITEM_CLS, ITEM_TITLE_CLS } = this.getItemAttrs({
             idx,
             suffix: PARENT_CLS_SFX,
-            isActive
+            isActive,
+            hasActiveChild
         });
         const ITEM_TITLE: string = item[listTitleKey];
         const ITEM_HEADER_CLS = `${BASE_CLS}__item-header`;
@@ -111,10 +114,14 @@ export class SideNav extends MemoComponent<IProps, IState> {
         this.props.onClick?.(arg);
     }
 
-    getItemAttrs({ idx, suffix, isActive }: IItemAttrsQuery): IItemAttrs {
+    getItemAttrs({ idx, suffix, isActive, hasActiveChild }: IItemAttrsQuery): IItemAttrs {
+        const ACTIVE_CLS = isActive
+            ? ` atv${hasActiveChild ? ' atv-parent' : ''}`
+            : '';
+
         return {
             ITEM_KEY: `${BASE_CLS}__item-${suffix}-${idx}`,
-            ITEM_CLS: this.cssCls(`${BASE_CLS}__item`, suffix + (isActive ? ' atv' : '')),
+            ITEM_CLS: this.cssCls(`${BASE_CLS}__item`, suffix + ACTIVE_CLS),
             ITEM_TITLE_CLS: `${BASE_CLS}__title`,
         };
     }

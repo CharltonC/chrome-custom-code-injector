@@ -124,6 +124,7 @@ describe('Component - Side Nav', () => {
                 assignChildElem();
 
                 expect($1stItem.querySelector('.icon--arrow-dn')).toBeTruthy();
+                expect($1stItem.className.includes('atv-parent')).toBeFalsy();
             });
 
             it('should appear when a nested list item is active', () => {
@@ -135,6 +136,7 @@ describe('Component - Side Nav', () => {
                 assignChildElem();
 
                 expect($2ndItem.querySelector('.icon--arrow-dn')).toBeTruthy();
+                expect($2ndItem.className.includes('atv-parent')).toBeTruthy();
             });
         });
     });

@@ -22,6 +22,7 @@ export interface IItemAttrsQuery {
     idx: number;
     suffix: string;
     isActive: boolean;
+    hasActiveChild?: boolean;
 }
 
 export interface IItemAttrs {

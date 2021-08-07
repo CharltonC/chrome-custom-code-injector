@@ -25,7 +25,6 @@
         &.side-nav__item--atv {
             .side-nav__item-header {
                 @include side-nav__item-header($dark-blue-300);
-                // TODO: transparent bg?
 
                 .badge {
                     color: $white;
@@ -37,6 +36,12 @@
                 transition: max-height .3s ease-in .05s;
                 transform: translateZ(0);
                 will-change: max-height;
+            }
+
+            &.side-nav__item--atv-parent {
+                .side-nav__item-header {
+                    background-color: transparent;
+                }
             }
         }
 
