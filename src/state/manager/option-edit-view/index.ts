@@ -113,6 +113,11 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
         }
     }
 
+    onRegexToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+        dataManager.toggleRegexSwitch(rules, payload);
+        return {};
+    }
+
     //// TABS
     onActiveTabChange({ rules }: IAppState, payload) {
         const { ruleIdCtx, idx } = payload;

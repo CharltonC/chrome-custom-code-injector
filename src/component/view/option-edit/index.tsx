@@ -29,6 +29,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             onActiveTitleInput,
             onActiveValueInput,
             onHttpsToggle,
+            onRegexToggle,
             onJsExecStepChange,
 
             onActiveTabChange,
@@ -48,7 +49,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         // Item
         const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
         const { hostIdx, pathIdx } = dataManager.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
-        const { isHost, activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
+        const { isHost, isRegex, activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
 
         // Text Input
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationSet;
@@ -163,7 +164,8 @@ export class OptionEditView extends MemoComponent<IProps> {
                         <IconSwitch
                             id="regex-switch"
                             label="(.*)"
-                            /* TODO */
+                            checked={isRegex}
+                            onChange={() => onRegexToggle(ruleIdCtx)}
                             />
                     </div>
                 </section>
