@@ -45,9 +45,12 @@ export const TbRow: React.FC<any> = memo((props) => {
                         })}
                         />
                 </td>
-                {/* TODO: Trim title if too long */}
-                <td>{title}</td>
-                <td>{value}</td>
+                <td>
+                    <span className="datagrid__cell datagrid__cell--title">{title}</span>
+                </td>
+                <td>
+                    <span className="datagrid__cell datagrid__cell--url">{value}</span>
+                </td>
                 <td>
                     <SliderSwitch
                         id={`lib-async-${ID_SUFFIX}`}

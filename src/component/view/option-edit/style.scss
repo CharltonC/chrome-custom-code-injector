@@ -72,6 +72,19 @@
         td {
             @include gen-tb-cells-width( (65, 175, 310, 130, (100, 2), (50, 2)) );   // total: 980px
         }
-    }
 
+        &__cell {
+            @extend %text-trim-ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+
+            &--title {
+                max-width: 175px;
+            }
+
+            &--url {
+                max-width: 310px;
+            }
+        }
+    }
 }
