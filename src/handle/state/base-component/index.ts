@@ -42,7 +42,7 @@ export class BaseStateComponent extends Component<any, AObj> {
             get: (target: BaseStateManager, key: string, proxy: BaseStateManager) => {
                 const method: any = target[key];
 
-                // TODO - if User requests the root appState handler, `rootHandler`, return the rootHandler object
+                // MAYBE - if User requests the root appState handler, `rootHandler`, return the rootHandler object
                 // e.g. if (key === 'rootHandler')
 
                 // Filter out non-own prototype methods
@@ -60,7 +60,7 @@ export class BaseStateComponent extends Component<any, AObj> {
                         updateState(partialState, appStateManager, name);
 
                     } else {
-                        // TODO - Check type if its not object, throw error
+                        // MAYBE - Check type if its not object, throw error
                         updateState(modPartialState, appStateManager, name);
                     }
 
