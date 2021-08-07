@@ -15,6 +15,7 @@ export class BaseRuleConfig {
 export class PathRuleConfig extends BaseRuleConfig {
     id: string;
     isHost: boolean;
+    isRegex = false;
     title = '';
     value = '';
     jsCode = '';
