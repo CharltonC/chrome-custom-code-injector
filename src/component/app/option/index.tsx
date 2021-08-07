@@ -1,10 +1,10 @@
 import React from 'react';
 import { dataManager } from '../../../data/manager';
-import { modals } from '../../../constant/modals';
-import { urls } from '../../../constant/urls';
-import { resultsPerPage } from '../../../constant/result-per-page';
-import { jsExecStage } from '../../../constant/js-exec-stage';
-import { validationRule } from '../../../constant/validation-rule';
+import { modalSet } from '../../../constant/modal-set';
+import { urlSet } from '../../../constant/url-set';
+import { resultsPerPageList } from '../../../constant/result-per-page-list';
+import { jsExecStageList } from '../../../constant/js-exec-stage-list';
+import { validationSet } from '../../../constant/validation-set';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { IconBtn } from '../../base/btn-icon';
@@ -114,7 +114,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         />
                     <a
                         target="_blank"
-                        href={urls.DOC}
+                        href={urlSet.DOC}
                         rel="noopener noreferrer"
                         className="icon-btn icon-btn--link"
                         >
@@ -138,7 +138,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $settingModal() {
-        const { id, txt } = modals.defSetting;
+        const { id, txt } = modalSet.defSetting;
         const { showDeleteModal, resultsPerPageIdx, defRuleConfig } = this.settingState;
         const { currentId } = this.modalState;
 
@@ -190,7 +190,7 @@ export class OptionApp extends MemoComponent<IProps> {
                             id="setting-result-per-page"
                             label="Results per page"
                             ltLabel
-                            list={resultsPerPage}
+                            list={resultsPerPageList}
                             selectIdx={resultsPerPageIdx}
                             border
                             onSelect={onResultsPerPageChange}
@@ -239,7 +239,7 @@ export class OptionApp extends MemoComponent<IProps> {
                         <p>Javascript Execution</p>
                         <Dropdown
                             id="setting-js-exec-order"
-                            list={jsExecStage}
+                            list={jsExecStageList}
                             border
                             selectIdx={defRuleConfig.jsExecPhase}
                             onSelect={onDefJsExecStageChange}
@@ -251,7 +251,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $importDataModal() {
-        const { id, txt } = modals.importConfig;
+        const { id, txt } = modalSet.importConfig;
         const { currentId, isConfirmBtnEnabled } = this.modalState;
         const {
             onModalCancel,
@@ -275,7 +275,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     id="json-import"
                     fileType="application/json"
                     required
-                    validate={validationRule.importConfig}
+                    validate={validationSet.importConfig}
                     onFileChange={onImportFileInputChange}
                     />
             </Modal>
@@ -283,7 +283,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $exportDataModal() {
-        const { id, txt } = modals.exportConfig;
+        const { id, txt } = modalSet.exportConfig;
         const { currentId, isConfirmBtnEnabled, exportFileInput } = this.modalState;
         const {
             onModalCancel,
@@ -310,7 +310,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     autoFocus
                     value={exportFileInput.value}
                     validation={{
-                        rules: validationRule.exportConfig,
+                        rules: validationSet.exportConfig,
                         isValid: exportFileInput.isValid,
                         errMsg: exportFileInput.errMsg
                     }}
@@ -321,7 +321,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $addHostModal() {
-        const { id, txt } = modals.addHost;
+        const { id, txt } = modalSet.addHost;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput } = this.modalState;
         const {
             onModalCancel,
@@ -348,7 +348,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={titleInput?.value}
                     validation={{
-                        rules: validationRule.ruleId,
+                        rules: validationSet.ruleId,
                         isValid: titleInput.isValid,
                         errMsg: titleInput.errMsg
                     }}
@@ -361,7 +361,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={valueInput?.value}
                     validation={{
-                        rules: validationRule.ruleUrlHost,
+                        rules: validationSet.ruleUrlHost,
                         isValid: valueInput.isValid,
                         errMsg: valueInput.errMsg
                     }}
@@ -373,7 +373,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $addPathModal() {
-        const { id, txt } = modals.addPath;
+        const { id, txt } = modalSet.addPath;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput } = this.modalState;
         const {
             onModalCancel,
@@ -400,7 +400,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={titleInput?.value}
                     validation={{
-                        rules: validationRule.ruleId,
+                        rules: validationSet.ruleId,
                         isValid: titleInput.isValid,
                         errMsg: titleInput.errMsg
                     }}
@@ -413,7 +413,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={valueInput?.value}
                     validation={{
-                        rules: validationRule.ruleUrlPath,
+                        rules: validationSet.ruleUrlPath,
                         isValid: valueInput.isValid,
                         errMsg: valueInput.errMsg
                     }}
@@ -425,7 +425,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $addLibModal() {
-        const { id, txt } = modals.addLib;
+        const { id, txt } = modalSet.addLib;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput} = this.modalState;
         const {
             onModalCancel,
@@ -452,7 +452,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={titleInput?.value}
                     validation={{
-                        rules: validationRule.ruleId,
+                        rules: validationSet.ruleId,
                         isValid: titleInput.isValid,
                         errMsg: titleInput.errMsg
                     }}
@@ -465,7 +465,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={valueInput?.value}
                     validation={{
-                        rules: validationRule.libUrl,
+                        rules: validationSet.libUrl,
                         isValid: valueInput.isValid,
                         errMsg: valueInput.errMsg
                     }}
@@ -477,7 +477,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $editLibModal() {
-        const { id, txt } = modals.editLib;
+        const { id, txt } = modalSet.editLib;
         const { currentId, isConfirmBtnEnabled, titleInput, valueInput} = this.modalState;
         const {
             onModalCancel,
@@ -503,7 +503,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={titleInput?.value}
                     validation={{
-                        rules: validationRule.ruleId,
+                        rules: validationSet.ruleId,
                         isValid: titleInput.isValid,
                         errMsg: titleInput.errMsg
                     }}
@@ -516,7 +516,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     required
                     value={valueInput?.value}
                     validation={{
-                        rules: validationRule.libUrl,
+                        rules: validationSet.libUrl,
                         isValid: valueInput.isValid,
                         errMsg: valueInput.errMsg
                     }}
@@ -528,7 +528,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $delHostOrPathModal() {
-        const { id, txt } = modals.delHostOrPath;
+        const { id, txt } = modalSet.delHostOrPath;
         const { currentId } = this.modalState;
         const { onModalCancel, onDelHostOrPathModalOk } = this.appStateManager;
 
@@ -550,7 +550,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $delHostsModal() {
-        const { id, txt } = modals.delHosts;
+        const { id, txt } = modalSet.delHosts;
         const { currentId } = this.modalState;
         const {
             onModalCancel,
@@ -575,7 +575,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $delLibModal() {
-        const { id, txt } = modals.delLib;
+        const { id, txt } = modalSet.delLib;
         const { currentId } = this.modalState;
         const { onModalCancel, onDelLibModalOk } = this.appStateManager;
         return (
@@ -596,7 +596,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $delLibsModal() {
-        const { id, txt } = modals.delLibs;
+        const { id, txt } = modalSet.delLibs;
         const { currentId } = this.modalState;
         const { onModalCancel, onDelLibsModalOk } = this.appStateManager;
         return (

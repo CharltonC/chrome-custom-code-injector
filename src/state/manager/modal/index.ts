@@ -2,7 +2,7 @@ import { StateHandle } from '../../../handle/state';
 import { FileHandle } from '../../../handle/file';
 import { PgnHandle } from '../../../handle/pagination';
 import { dataManager } from '../../../data/manager';
-import { modals } from '../../../constant/modals';
+import { modalSet } from '../../../constant/modal-set';
 
 import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../../../data/model/rule-config';
 import { SettingState } from '../../model/setting-state';
@@ -51,7 +51,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     //// DATA IMPORT/EXPORT
     onImportDataModal(state: IAppState): Partial<IAppState> {
         return this.reflect.onModal(state, {
-            id: modals.importConfig.id
+            id: modalSet.importConfig.id
         });
     }
 
@@ -71,7 +71,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
 
     onExportDataModal(state: IAppState): Partial<IAppState> {
         return this.reflect.onModal(state, {
-            id: modals.exportConfig.id
+            id: modalSet.exportConfig.id
         });
     }
 
@@ -116,7 +116,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     //// SETTINGS
     onSettingModal(state: IAppState): Partial<IAppState> {
         return this.reflect.onModal(state, {
-            id: modals.defSetting.id
+            id: modalSet.defSetting.id
         });
     }
 
@@ -219,7 +219,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     // Add
     onAddHostModal(state: IAppState) {
         return this.reflect.onModal(state, {
-            id: modals.addHost.id
+            id: modalSet.addHost.id
         });
     }
 
@@ -247,7 +247,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
             ...localState,
             modal: {
                 ...modal,
-                currentId: modals.addPath.id
+                currentId: modalSet.addPath.id
             },
         };
 
@@ -317,7 +317,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
                 ...localState,
                 modal: {
                     ...modal,
-                    currentId: modals.addLib.id
+                    currentId: modalSet.addLib.id
                 }
             }
         };
@@ -349,7 +349,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
             ...localState,
             modal: {
                 ...modal,
-                currentId: modals.delHostOrPath.id
+                currentId: modalSet.delHostOrPath.id
             },
         };
         const newState: Partial<IAppState> = isListView
@@ -486,7 +486,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
                 },
                 modal: {
                     ...modal,
-                    currentId: modals.delHosts.id
+                    currentId: modalSet.delHosts.id
                 },
             }
         };
@@ -558,7 +558,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
                 },
                 modal: {
                     ...localState.modal,
-                    currentId: modals.delLib.id
+                    currentId: modalSet.delLib.id
                 }
             }
         };
@@ -594,7 +594,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
                 ...localState,
                 modal: {
                     ...localState.modal,
-                    currentId: modals.delLibs.id
+                    currentId: modalSet.delLibs.id
                 }
             }
         };
@@ -641,7 +641,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
                 },
                 modal: {
                     ...modal,
-                    currentId: modals.editLib.id,
+                    currentId: modalSet.editLib.id,
                     titleInput,
                     valueInput,
                     isConfirmBtnEnabled: true,

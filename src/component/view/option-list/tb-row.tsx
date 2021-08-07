@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { jsExecStage } from '../../../constant/js-exec-stage';
+import { jsExecStageList } from '../../../constant/js-exec-stage-list';
 
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
@@ -89,7 +89,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td><td>
                     <Dropdown
                         id={`select-${ID_SUFFIX}`}
-                        list={jsExecStage}
+                        list={jsExecStageList}
                         selectIdx={jsExecPhase}
                         className="dropdown__select--cell"
                         disabled={isDelDisabled}

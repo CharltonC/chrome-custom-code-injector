@@ -1,7 +1,7 @@
 import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
-import { validationRule } from '../../../constant/validation-rule';
-import { jsExecStage } from '../../../constant/js-exec-stage';
+import { validationSet } from '../../../constant/validation-set';
+import { jsExecStageList } from '../../../constant/js-exec-stage-list';
 import { dataManager } from '../../../data/manager';
 
 import { MemoComponent } from '../../extendable/memo-component';
@@ -51,7 +51,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { isHost, activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
 
         // Text Input
-        const { ruleId, ruleUrlHost, ruleUrlPath } = validationRule;
+        const { ruleId, ruleUrlHost, ruleUrlPath } = validationSet;
         const isHttpsOn = item["isHttps"];
 
         // Tab
@@ -172,7 +172,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                     <Dropdown
                         id="js-execution"
                         border={true}
-                        list={jsExecStage}
+                        list={jsExecStageList}
                         selectIdx={jsExecPhase}
                         onSelect={(arg) => onJsExecStepChange({ ...arg, ...ruleIdCtx})}
                         />

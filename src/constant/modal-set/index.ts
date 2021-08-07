@@ -1,4 +1,4 @@
-export const modals = {
+export const modalSet = {
     defSetting: {
         id: 'modal-setting',
         txt: 'Default Settings'

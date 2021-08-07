@@ -1,4 +1,4 @@
-import { resultsPerPage } from '../../../constant/result-per-page';
+import { resultsPerPageList } from '../../../constant/result-per-page-list';
 import { SettingState } from '../setting-state';
 import { HostRuleConfig } from '../../../data/model/rule-config';
 import { PgnHandle } from '../../../handle/pagination';
@@ -44,7 +44,7 @@ export class DataGridState {
         const { totalRecord, pgnOption } = arg;
         if (totalRecord < 0) return;
         const defOption = {
-            increment: [...resultsPerPage],
+            increment: [...resultsPerPageList],
             incrementIdx: resultsPerPageIdx
         };
         const option = (
