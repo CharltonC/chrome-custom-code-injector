@@ -120,6 +120,11 @@ export class DataManager {
         item.isHttps = !item.isHttps;
     }
 
+    toggleRegexSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
+        const item = this.getRuleFromIdCtx(rules, idCtx) as HostRuleConfig;
+        item.isRegex = !item.isRegex;
+    }
+
     toggleJsExecStep(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
         item.jsExecPhase = val as TRuleConfig.AJsExecPhase;
