@@ -16,11 +16,10 @@ import { IAppState } from '../../model/type';
 import { IOnDelHostsModalPayload } from '../type';
 import { TextInputState } from '../../model/text-input-state';
 
-// TODO: property
-const fileHandle = new FileHandle();
-const pgnHandle = new PgnHandle();
-
 export class ModalStateManager extends StateHandle.BaseStateManager {
+    fileHandle = new FileHandle();
+    pgnHandle = new PgnHandle();
+
     //// BASE
     // used ONLY WHEN setting modal Id is the only thing required to be altered
     onModal({ localState }: IAppState, payload: {id: string}): Partial<IAppState> {
@@ -60,7 +59,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         const { importFileInput } = modal;
 
         try {
-            const rules = (await fileHandle.readJson(importFileInput)) as HostRuleConfig[];
+            const rules = (await this.fileHandle.readJson(importFileInput)) as HostRuleConfig[];
             const { localState } = this.reflect.onModalCancel(state);
             return { rules, localState };
         } catch (e) {
@@ -78,7 +77,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     onExportDataModalOk(state: IAppState): Partial<IAppState> {
         const { rules, localState } = state;
         const { value } = localState.modal.exportFileInput;
-        fileHandle.saveJson(rules, value, true);
+        this.fileHandle.saveJson(rules, value, true);
         return this.reflect.onModalCancel(state);
     }
 
@@ -288,7 +287,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
             // Update pagination state after addition
             const { dataGrid } = listView;
             const { pgnOption } = dataGrid;
-            const pgnState = pgnHandle.getState(rules.length, pgnOption);
+            const pgnState = this.pgnHandle.getState(rules.length, pgnOption);
 
             return {
                 localState: {
