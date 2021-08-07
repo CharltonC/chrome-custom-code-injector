@@ -22,7 +22,6 @@ export class BaseStateManager {
         return BaseClass as unknown as IStateHandlerClass<T>;
     }
 
-    // TODO: type `T`
     get reflect() {
         return this;
     }

@@ -33,7 +33,6 @@ export const TbRow: React.FC<any> = memo((props) => {
     const isSelected = areAllRowsSelected || id in selectedRowKeyCtx;
 
     return <>
-            {/* TODO: Index required for each id */}
             <tr className={REG_ROW}>
                 <td>
                     <Checkbox

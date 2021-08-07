@@ -10,5 +10,4 @@
 
 // const containerElem = document.createElement('div');
 // document.body.appendChild(containerElem);
-// TODO: wrap with state
 // render(<OptionApp />, containerElem);
