@@ -5,7 +5,7 @@ export class BaseStateManager {
     readonly CHANGE_EVT: string = 'CHANGE';
     readonly PubSub: PubSub = PubSub;
 
-    static join<T extends BaseStateManager>(Handlers: IStateHandlerClass[]): IStateHandlerClass<T> {
+    static join<T extends BaseStateManager>(Handlers: IStateHandlerClass[]): T {
         class BaseClass extends BaseStateManager {}
         Handlers.forEach((Handler: IStateHandlerClass) => {
             const { prototype: baseProto } = BaseClass;
@@ -19,7 +19,7 @@ export class BaseStateManager {
                 baseProto[key] = prototype[key];
             });
         });
-        return BaseClass as unknown as IStateHandlerClass<T>;
+        return BaseClass as unknown as T;
     }
 
     get reflect() {
