@@ -9,7 +9,7 @@ export class BaseRuleConfig {
     isJsOn = false;
     isCssOn = false;
     isLibOn = false;
-    jsExecPhase: AJsExecPhase = 1;
+    jsExecPhase: AJsExecPhase = 0;
 }
 
 export class PathRuleConfig extends BaseRuleConfig {

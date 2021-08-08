@@ -16,7 +16,7 @@ describe('Rule Config Model', () => {
             isJsOn: false,
             isCssOn: false,
             isLibOn: false,
-            jsExecPhase: 1
+            jsExecPhase: 0
         });
     });
 
