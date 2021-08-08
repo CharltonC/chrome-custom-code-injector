@@ -170,7 +170,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                     </div>
                 </section>
                 <section className="fm-field">
-                    <p className="fm-field__label">Script Execution</p>
+                    <p className="fm-field__label">Code Execution</p>
                     <Dropdown
                         id="js-execution"
                         border={true}

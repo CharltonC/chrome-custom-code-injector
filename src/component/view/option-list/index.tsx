@@ -108,7 +108,7 @@ export class OptionListView extends MemoComponent<IProps> {
                     { title: 'HTTPS' },
                     { title: $title, sortKey: 'title' },
                     { title: $address, sortKey: 'value' },
-                    { title: 'SCRIPT EXECUTION' },
+                    { title: 'CODE EXECUTION' },
                     { title: 'JS' },
                     { title: 'CSS' },
                     { title: 'LIBRARY' },
