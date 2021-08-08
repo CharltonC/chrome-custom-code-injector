@@ -3,7 +3,7 @@ import { dataManager } from '../../../data/manager';
 import { modalSet } from '../../../constant/modal-set';
 import { urlSet } from '../../../constant/url-set';
 import { resultsPerPageList } from '../../../constant/result-per-page-list';
-import { jsExecStageList } from '../../../constant/js-exec-stage-list';
+import { codeExecStageList } from '../../../constant/code-exec-stage-list';
 import { validationSet } from '../../../constant/validation-set';
 
 import { MemoComponent } from '../../extendable/memo-component';
@@ -239,9 +239,9 @@ export class OptionApp extends MemoComponent<IProps> {
                         <p>Javascript Execution</p>
                         <Dropdown
                             id="setting-js-exec-order"
-                            list={jsExecStageList}
+                            list={codeExecStageList}
                             border
-                            selectIdx={defRuleConfig.jsExecPhase}
+                            selectIdx={defRuleConfig.codeExecPhase}
                             onSelect={onDefJsExecStageChange}
                             />
                     </li>

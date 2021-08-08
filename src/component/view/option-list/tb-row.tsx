@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { jsExecStageList } from '../../../constant/js-exec-stage-list';
+import { codeExecStageList } from '../../../constant/code-exec-stage-list';
 
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
@@ -32,7 +32,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     } = appStateManager;
 
     // Item
-    const { isHost, id, isHttps, title, value, jsExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
+    const { isHost, id, isHttps, title, value, codeExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
     const parentItem = parentItemCtx?.item;
     const hostId = isHost ? id : parentItem?.id;
     const pathId = isHost ? null : id;
@@ -89,8 +89,8 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td><td>
                     <Dropdown
                         id={`select-${ID_SUFFIX}`}
-                        list={jsExecStageList}
-                        selectIdx={jsExecPhase}
+                        list={codeExecStageList}
+                        selectIdx={codeExecPhase}
                         className="dropdown__select--cell"
                         disabled={isDelDisabled}
                         onSelect={(arg) => onJsExecStepChange({ ...arg, ...ruleIdCtx})}

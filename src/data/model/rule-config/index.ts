@@ -3,13 +3,13 @@
  * e.g. id, value, isHttps, isRegex
  */
 import { UtilHandle } from '../../../handle/util';
-import { AJsExecPhase, AActiveTabIdx } from './type';
+import { ACodeExecPhase, AActiveTabIdx } from './type';
 
 export class BaseRuleConfig {
     isJsOn = false;
     isCssOn = false;
     isLibOn = false;
-    jsExecPhase: AJsExecPhase = 0;
+    codeExecPhase: ACodeExecPhase = 0;
 }
 
 export class PathRuleConfig extends BaseRuleConfig {

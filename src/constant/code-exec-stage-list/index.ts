@@ -1,4 +1,4 @@
-export const jsExecStageList: string[] = [
+export const codeExecStageList: string[] = [
     'dom content ready',
     'after page load'
 ];

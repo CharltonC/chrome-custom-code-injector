@@ -127,7 +127,7 @@ export class DataManager {
 
     toggleJsExecStep(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
-        item.jsExecPhase = val as TRuleConfig.AJsExecPhase;
+        item.codeExecPhase = val as TRuleConfig.ACodeExecPhase;
     }
 
     setLastActiveTab(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {

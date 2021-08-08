@@ -6,6 +6,6 @@ export class SettingState {
         isJsOn: false,
         isCssOn: false,
         isLibOn: false,
-        jsExecPhase: 0
+        codeExecPhase: 0
     };
 }

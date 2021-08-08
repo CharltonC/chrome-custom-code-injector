@@ -1,7 +1,7 @@
 import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationSet } from '../../../constant/validation-set';
-import { jsExecStageList } from '../../../constant/js-exec-stage-list';
+import { codeExecStageList } from '../../../constant/code-exec-stage-list';
 import { dataManager } from '../../../data/manager';
 
 import { MemoComponent } from '../../extendable/memo-component';
@@ -49,7 +49,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         // Item
         const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
         const { hostIdx, pathIdx } = dataManager.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
-        const { isHost, isRegex, activeTabIdx, libs, jsCode, cssCode, jsExecPhase } = item;
+        const { isHost, isRegex, activeTabIdx, libs, jsCode, cssCode, codeExecPhase } = item;
 
         // Text Input
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationSet;
@@ -174,8 +174,8 @@ export class OptionEditView extends MemoComponent<IProps> {
                     <Dropdown
                         id="js-execution"
                         border={true}
-                        list={jsExecStageList}
-                        selectIdx={jsExecPhase}
+                        list={codeExecStageList}
+                        selectIdx={codeExecPhase}
                         onSelect={(arg) => onJsExecStepChange({ ...arg, ...ruleIdCtx})}
                         />
                 </section>

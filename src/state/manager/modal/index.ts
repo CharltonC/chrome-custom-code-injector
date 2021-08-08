@@ -199,7 +199,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
                 ...setting,
                 defRuleConfig: {
                     ...defRuleConfig,
-                    jsExecPhase: selectValueAttrVal
+                    codeExecPhase: selectValueAttrVal
                 }
             }
         };

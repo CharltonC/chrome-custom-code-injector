@@ -276,7 +276,7 @@ describe('Data Crud Handle', () => {
             it('Method - toggleJsExecStep: should toggle Js execution step', () => {
                 const mockStep = 3;
                 dataManager.toggleJsExecStep(mockRules, mockIdCtx, mockStep);
-                expect(mockHost.jsExecPhase).toBe(mockStep);
+                expect(mockHost.codeExecPhase).toBe(mockStep);
             });
 
             it('Method - setLastActiveTab: should set the last active tab index', () => {
