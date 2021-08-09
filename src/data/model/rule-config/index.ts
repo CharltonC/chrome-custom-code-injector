@@ -39,6 +39,7 @@ export class HostRuleConfig extends PathRuleConfig {
 
 export class LibRuleConfig {
     id: string;
+    type: ALibType = 'js';
     title = '';
     value = '';
     isOn = false;

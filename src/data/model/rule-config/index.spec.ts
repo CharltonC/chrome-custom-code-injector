@@ -49,6 +49,7 @@ describe('Rule Config Model', () => {
     it('should return default values for `LibRuleConfig`', () => {
         expect(new LibRuleConfig(mockTitle, mockValue)).toEqual({
             id: '',
+            type: 'js',
             title: mockTitle,
             value: mockValue,
             isOn: false,
