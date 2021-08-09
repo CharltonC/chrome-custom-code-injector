@@ -27,7 +27,11 @@ describe('Base State Manager', () => {
     it('static - `join`: should join the prototypal methods of multiple partial state handlers into the prototypal methods of 1 main state handler', () => {
         class MockHandlerA extends BaseStateManager { logA() {} }
         class MockHandlerB extends BaseStateManager { logB() {} }
-        const { logA, logB } = BaseStateManager.join([MockHandlerA, MockHandlerB]).prototype;
+        interface IMockStateManager extends MockHandlerA, MockHandlerB {
+            new(...args: any[]): IMockStateManager;
+        };
+
+        const { logA, logB } = BaseStateManager.join<IMockStateManager>([MockHandlerA, MockHandlerB]).prototype;
         expect(logA).toBeTruthy();
         expect(logB).toBeTruthy();
     });

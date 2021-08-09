@@ -171,7 +171,12 @@ export const SingleStateeWithPartialHandlers = () => {
             return { age: 20 }
         }
     }
-    const SampleStateHandler = BaseStateManager.join([PartialHandlerA, PartialHandlerB]);
+
+    interface ISampleStateManager extends PartialHandlerA, PartialHandlerB {
+        new(...args: any[]): ISampleStateManager;
+    };
+
+    const SampleStateHandler = BaseStateManager.join<ISampleStateManager>([PartialHandlerA, PartialHandlerB]);
     const sampleStateHandler = new SampleStateHandler()
 
     // 3. Root componennt

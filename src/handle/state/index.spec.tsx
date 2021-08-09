@@ -43,6 +43,10 @@ describe('State Handle', () => {
     });
 
     describe('Single State and State Handler with multiple partial handlers', () => {
+        interface IMockStateManager extends MockPartialeHandlerA, MockPartialHandlerB {
+            new(...args: any[]): IMockStateManager;
+        };
+
         const MockCmp = ({ appState, appStateManager }) => (
             <>
                 <h1 onClick={appStateManager.onH1Click}>{appState.name}</h1>
@@ -62,7 +66,10 @@ describe('State Handle', () => {
                 return { name: 'amy' };
             }
         }
-        const MockStateHandler = BaseStateManager.join([MockPartialeHandlerA, MockPartialHandlerB]);
+        const MockStateHandler = BaseStateManager.join<IMockStateManager>([
+            MockPartialeHandlerA,
+            MockPartialHandlerB
+        ]);
 
         let $h1: HTMLHeadingElement;
         let $h2: HTMLHeadingElement;
