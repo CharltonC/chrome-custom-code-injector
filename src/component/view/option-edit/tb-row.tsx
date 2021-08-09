@@ -21,7 +21,7 @@ export const TbRow: React.FC<any> = memo((props) => {
     } = appStateManager;
 
     // Item
-    const { id, title, value, isOn, isAsync } = item;
+    const { id, title, type, value, isOn, isAsync } = item;
     const ID_SUFFIX = `${itemLvl}-${idx}`;
 
     //// STATE
@@ -47,6 +47,9 @@ export const TbRow: React.FC<any> = memo((props) => {
                 </td>
                 <td>
                     <span className="datagrid__cell datagrid__cell--title">{title}</span>
+                </td>
+                <td>
+                    <span className="datagrid__cell datagrid__cell--type">{type}</span>
                 </td>
                 <td>
                     <span className="datagrid__cell datagrid__cell--url">{value}</span>
