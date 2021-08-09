@@ -5,6 +5,7 @@ import { IProps } from './type';
 
 export const PopupApp: React.FC<IProps> = memo((props: IProps) => {
     return (
+        /* TODO: add rule, if host/path applied */
         <div className="app app--popup">
             <header>
                 <IconBtn icon="doc" theme="white" />
