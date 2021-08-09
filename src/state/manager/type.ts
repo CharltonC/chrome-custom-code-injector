@@ -6,7 +6,9 @@ import * as TPgn from '../../handle/pagination/type';
 import * as TSort from '../../handle/sort/type';
 
 // Used for casting `this.reflect` property inside individual Handler
-export interface IStateHandler extends ModalStateManager, OptionListViewStateManager, OptionEditViewStateManager {}
+export interface IStateHandler extends ModalStateManager, OptionListViewStateManager, OptionEditViewStateManager {
+    new(...args: any[]): IStateHandler;
+}
 
 // Payload
 export interface IOnPaginatePayload {
