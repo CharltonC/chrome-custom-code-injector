@@ -114,7 +114,7 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
     }
 
     onRegexToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        dataManager.toggleRegexSwitch(rules, payload);
+        dataManager.toggleExactSwitch(rules, payload);
         return {};
     }
 

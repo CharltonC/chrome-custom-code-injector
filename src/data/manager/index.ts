@@ -120,9 +120,9 @@ export class DataManager {
         item.isHttps = !item.isHttps;
     }
 
-    toggleRegexSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
+    toggleExactSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as HostRuleConfig;
-        item.isRegex = !item.isRegex;
+        item.isExact = !item.isExact;
     }
 
     toggleJsExecStep(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {

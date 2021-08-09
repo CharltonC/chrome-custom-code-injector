@@ -49,7 +49,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         // Item
         const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
         const { hostIdx, pathIdx } = dataManager.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
-        const { isHost, isRegex, activeTabIdx, libs, jsCode, cssCode, codeExecPhase } = item;
+        const { isHost, isExact, activeTabIdx, libs, jsCode, cssCode, codeExecPhase } = item;
 
         // Text Input
         const { ruleId, ruleUrlHost, ruleUrlPath } = validationSet;
@@ -163,8 +163,8 @@ export class OptionEditView extends MemoComponent<IProps> {
                             /> }
                         <IconSwitch
                             id="regex-switch"
-                            label="(.*)"
-                            checked={isRegex}
+                            label="="
+                            checked={isExact}
                             onChange={() => onRegexToggle(ruleIdCtx)}
                             />
                     </div>

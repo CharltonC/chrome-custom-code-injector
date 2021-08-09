@@ -24,7 +24,7 @@ describe('Rule Config Model', () => {
         expect(new PathRuleConfig(mockTitle, mockValue)).toEqual({
             ...(new BaseRuleConfig()),
             id: '',
-            isRegex: false,
+            isExact: false,
             title: mockTitle,
             value: mockValue,
             jsCode: '',

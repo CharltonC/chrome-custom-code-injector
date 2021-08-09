@@ -267,10 +267,10 @@ describe('Data Crud Handle', () => {
                 expect(mockHost.isHttps).toBe(!val);
             });
 
-            it('Method - toggleRegexSwitch: should toggle Regex switch ', () => {
-                const val = mockHost.isRegex;
-                dataManager.toggleRegexSwitch(mockRules, mockIdCtx);
-                expect(mockHost.isRegex).toBe(!val);
+            it('Method - toggleExactSwitch: should toggle Regex switch ', () => {
+                const val = mockHost.isExact;
+                dataManager.toggleExactSwitch(mockRules, mockIdCtx);
+                expect(mockHost.isExact).toBe(!val);
             });
 
             it('Method - toggleJsExecStep: should toggle Js execution step', () => {
