@@ -3,9 +3,16 @@
     grid-template-columns: 220px auto;
     height: calc(100% - 60px);
 
-    .text-ipt input {
-        padding-right: 70px;
-        background-color: transparent;
+    .text-ipt {
+        input {
+            padding-right: 70px;
+            background-color: transparent;
+        }
+
+        // Override and Hide the Validation Tick/Cross
+        .icon::before {
+            display: none;
+        }
     }
 
     &__form {
