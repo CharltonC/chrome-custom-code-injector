@@ -1,6 +1,6 @@
 export class ValidationHandle {
     readonly url = {
-        rule: /^(https?:\/\/)?(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+(\/([^?\/]+))*$/i,
+        rule: /^(https?:\/\/)?(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+(\/([^?/]+))*$/i,
         msg: 'must be a url, e.g. www.xzy.com, www.xyz.com/file.ext'
     };
 
@@ -10,7 +10,7 @@ export class ValidationHandle {
     };
 
     readonly urlPath = {
-        rule: /^\/([^?\/]+)/,
+        rule: /^\/([^?/]+)/,
         msg: 'must be Url path, e.g. /home'
     };
 
