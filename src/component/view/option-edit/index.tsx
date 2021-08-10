@@ -29,7 +29,7 @@ export class OptionEditView extends MemoComponent<IProps> {
             onActiveTitleInput,
             onActiveValueInput,
             onHttpsToggle,
-            onRegexToggle,
+            onExactMatchToggle,
             onJsExecStepChange,
 
             onActiveTabChange,
@@ -165,7 +165,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                             id="regex-switch"
                             label="="
                             checked={isExact}
-                            onChange={() => onRegexToggle(ruleIdCtx)}
+                            onChange={() => onExactMatchToggle(ruleIdCtx)}
                             />
                     </div>
                 </section>

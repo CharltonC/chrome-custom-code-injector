@@ -22,6 +22,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
         onRowSelectToggle,
 
         onHttpsToggle,
+        onExactMatchToggle,
         onJsExecStepChange,
         onJsToggle,
         onCssToggle,
@@ -90,7 +91,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         label="="
                         checked={isExact}
                         disabled={isDelDisabled}
-                        // TODO: onChange={() => toggleExactSwitch(ruleIdCtx)}
+                        onChange={() => onExactMatchToggle(ruleIdCtx)}
                         />
                     <span className="datagrid__cell datagrid__cell--addr">
                         {value}
