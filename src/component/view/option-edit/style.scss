@@ -3,18 +3,6 @@
     grid-template-columns: 220px auto;
     height: calc(100% - 60px);
 
-    .text-ipt {
-        input {
-            padding-right: 70px;
-            background-color: transparent;
-        }
-
-        // Override and Hide the Validation Tick/Cross
-        .icon::before {
-            display: none;
-        }
-    }
-
     &__form {
         padding: 40px;
 
@@ -44,7 +32,7 @@
                 .fm-field__ctrl {
                     display: inline-block;
                     position: absolute;
-                    top: -3px;
+                    top: -2px;
                     right: 0;
                 }
             }
@@ -71,6 +59,19 @@
 
         .tab-switch {
             margin-bottom: 20px;
+        }
+
+        .text-ipt {
+            input {
+                padding-right: 70px;
+                background-color: transparent;
+            }
+        }
+
+        label[for="edit-target-value"] + .text-ipt__input {
+            .icon {
+                right: 64px;
+            }
         }
     }
 
