@@ -34,7 +34,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     } = appStateManager;
 
     // Item
-    const { isHost, id, isHttps, isExact, title, value, codeExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
+    const { isHost, id, isHttps, isExactMatch, title, value, codeExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
     const parentItem = parentItemCtx?.item;
     const hostId = isHost ? id : parentItem?.id;
     const pathId = isHost ? null : id;
@@ -89,7 +89,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                     <IconSwitch
                         id={`exact-${ID_SUFFIX}`}
                         label="="
-                        checked={isExact}
+                        checked={isExactMatch}
                         disabled={isDelDisabled}
                         onChange={() => onExactMatchToggle(ruleIdCtx)}
                         />

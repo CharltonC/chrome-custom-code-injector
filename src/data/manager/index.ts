@@ -122,7 +122,7 @@ export class DataManager {
 
     toggleExactSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as HostRuleConfig;
-        item.isExact = !item.isExact;
+        item.isExactMatch = !item.isExactMatch;
     }
 
     toggleJsExecStep(rules: HostRuleConfig[], idCtx: IRuleIdCtx, val: number): void {

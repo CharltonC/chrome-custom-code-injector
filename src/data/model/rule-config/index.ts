@@ -1,6 +1,6 @@
 /**
  * Since JS doesnt allow multiple inheritance, some properties are inevitably repeated
- * e.g. id, value, isHttps, isExact
+ * e.g. id, value, isHttps, isExactMatch
  */
 import { UtilHandle } from '../../../handle/util';
 import { ACodeExecPhase, AActiveTabIdx, ALibType } from './type';
@@ -15,7 +15,7 @@ export class BaseRuleConfig {
 export class PathRuleConfig extends BaseRuleConfig {
     id: string;
     isHost: boolean;
-    isExact = false;
+    isExactMatch = false;
     title = '';
     value = '';
     jsCode = '';
