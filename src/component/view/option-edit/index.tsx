@@ -218,8 +218,8 @@ export class OptionEditView extends MemoComponent<IProps> {
                     header={[
                         { title: $selectAllHeader },
                         { title: $title, sortKey: 'title' },
-                        { title: 'TYPE' },
                         { title: $addr, sortKey: 'value' },
+                        { title: 'TYPE' },
                         { title: 'ASYNC' },
                         { title: 'ACTIVE' },
                         { title: $addLib },

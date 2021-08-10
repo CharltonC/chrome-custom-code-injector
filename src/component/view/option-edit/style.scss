@@ -78,7 +78,7 @@
     .datagrid {
         th,
         td {
-            @include gen-tb-cells-width( (65, 175, 100, 340, (100, 2), (50, 2)) );   // total: 980px
+            @include gen-tb-cells-width( (65, 175, 320, 120, (100, 2), (50, 2)) );   // total: 980px
         }
 
         &__cell {
@@ -90,12 +90,17 @@
                 max-width: 175px;
             }
 
-            &--type {
-                text-transform: uppercase;
-            }
-
             &--url {
                 max-width: 310px;
+            }
+        }
+
+        .dropdown {
+            min-width: 80px;
+
+            select {
+                padding-left: 5px;
+                text-transform: uppercase;
             }
         }
     }

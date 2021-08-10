@@ -1,8 +1,10 @@
 import React, { memo } from 'react';
+import { libTypeList } from '../../../constant/lib-type-list';
 
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
+import { Dropdown } from '../../base/select-dropdown';
 
 import { IAppState } from '../../../state/model/type';
 
@@ -14,6 +16,7 @@ export const TbRow: React.FC<any> = memo((props) => {
 
     const {
         onLibRowSelectToggle,
+        onLibTypeChange,
         onLibAsyncToggle,
         onLibIsOnToggle,
         onEditLibModal,
@@ -31,6 +34,7 @@ export const TbRow: React.FC<any> = memo((props) => {
     const { selectState } = localState.editView.dataGrid;
     const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
     const isSelected = areAllRowsSelected || id in selectedRowKeyCtx;
+    const libTypeIdx = libTypeList.indexOf(type);
 
     return <>
             <tr className={REG_ROW}>
@@ -49,10 +53,15 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <span className="datagrid__cell datagrid__cell--title">{title}</span>
                 </td>
                 <td>
-                    <span className="datagrid__cell datagrid__cell--type">{type}</span>
+                    <span className="datagrid__cell datagrid__cell--url">{value}</span>
                 </td>
                 <td>
-                    <span className="datagrid__cell datagrid__cell--url">{value}</span>
+                    <Dropdown
+                        id="lib-type"
+                        list={libTypeList}
+                        selectIdx={libTypeIdx}
+                        onSelect={arg => onLibTypeChange({ ...arg, id })}
+                        />
                 </td>
                 <td>
                     <SliderSwitch
