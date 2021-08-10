@@ -204,6 +204,15 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
+    onLibTypeChange({ rules, localState }: IAppState, payload): Partial<IAppState> {
+        const { selectValue, id } = payload;
+        dataManager.setLibType(rules, {
+            ...localState.editView.ruleIdCtx,
+            libId: id
+        }, selectValue);
+        return {};
+    }
+
     onLibAsyncToggle({ rules, localState }: IAppState, payload: {id: string}): Partial<IAppState> {
         dataManager.toggleLibAsyncSwitch(rules, {
             ...localState.editView.ruleIdCtx,
