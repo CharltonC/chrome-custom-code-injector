@@ -1,0 +1,1 @@
+export const libTypeList = ['js', 'css'];
