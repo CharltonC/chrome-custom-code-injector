@@ -160,7 +160,7 @@ export class DataManager {
         item.cssCode = val;
     }
 
-    setLibType(rules: HostRuleConfig[], idCtx: IRuleIdCtx, type: TRuleConfig.ALibType = 'js') {
+    setLibType(rules: HostRuleConfig[], idCtx: IRuleIdCtx, type: TRuleConfig.ALibType) {
         const item = this.getRuleFromIdCtx(rules, idCtx) as LibRuleConfig;
         item.type = type;
     }
