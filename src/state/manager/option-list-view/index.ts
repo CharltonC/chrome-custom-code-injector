@@ -182,6 +182,12 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
     }
 
     // Shared btw List & Edit View
+    onExactMatchToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+        dataManager.toggleExactSwitch(rules, payload);
+        return {};
+    }
+
+    // Shared btw List & Edit View
     onJsExecStepChange({ rules }: IAppState, payload: IOnJsExecStepChangePayload): Partial<IAppState> {
         const { selectValueAttrVal, ...ruleIdCtx } = payload;
         dataManager.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
