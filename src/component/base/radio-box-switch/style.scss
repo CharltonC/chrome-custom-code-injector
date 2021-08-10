@@ -1,0 +1,54 @@
+.box-switch {
+    display: inline-flex;
+
+    li {
+        display: inline-block;
+
+        &:first-child {
+            span {
+                border-right: none;
+                border-bottom-left-radius: 5px;
+                border-top-left-radius: 5px;
+            }
+        }
+
+        &:last-child {
+            span {
+                border-bottom-right-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+        }
+    }
+
+    input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        appearance: none;
+
+        &:checked + span {
+            background-color: $teal;
+            color: $white;
+        }
+
+        &:not(:checked) + span {
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+
+    span {
+        display: block;
+        border: 1px solid $teal;
+        width: 90px;
+        height: 36px;
+
+        font: 12px $arial;
+        text-align: center;
+        line-height: 36px;
+        text-transform: uppercase;
+        color: $light-gray;
+    }
+}
