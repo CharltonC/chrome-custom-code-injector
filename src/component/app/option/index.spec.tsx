@@ -28,9 +28,9 @@ describe('Component - Option App (UI/E2E)', () => {
         const tag = isTh ? 'th' : 'td';
         return {
             $select: $row.querySelector(`${tag}:nth-child(1) input`) as HTMLInputElement,
-            $expd: $row.querySelector('td:nth-child(3) button') as HTMLButtonElement,
-            $badge: $row.querySelector('td:nth-child(3) .badge') as HTMLElement,
-            $del: $row.querySelector(`${tag}:nth-child(11) button`) as HTMLButtonElement,
+            $expd: $row.querySelector('td:nth-child(2) button') as HTMLButtonElement,
+            $badge: $row.querySelector('td:nth-child(2) .badge') as HTMLElement,
+            $del: $row.querySelector(`${tag}:nth-child(10) button`) as HTMLButtonElement,
         };
     }
 
