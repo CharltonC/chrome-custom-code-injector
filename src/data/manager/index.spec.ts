@@ -322,6 +322,13 @@ describe('Data Crud Handle', () => {
             });
 
             it('Method - toggleLibAsyncSwitch: should toggle Library Async switch', () => {
+                const mockVal = 'css';
+                expect(mockLib.type).toBe('js');
+                dataManager.setLibType(mockRules, mockIdCtx, mockVal);
+                expect(mockLib.type).toBe(mockVal);
+            });
+
+            it('Method - toggleLibAsyncSwitch: should toggle Library Async switch', () => {
                 const val = mockLib.isAsync;
                 dataManager.toggleLibAsyncSwitch(mockRules, mockIdCtx);
                 expect(mockLib.isAsync).toBe(!val);

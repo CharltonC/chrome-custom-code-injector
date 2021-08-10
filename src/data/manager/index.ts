@@ -160,6 +160,11 @@ export class DataManager {
         item.cssCode = val;
     }
 
+    setLibType(rules: HostRuleConfig[], idCtx: IRuleIdCtx, type: TRuleConfig.ALibType = 'js') {
+        const item = this.getRuleFromIdCtx(rules, idCtx) as LibRuleConfig;
+        item.type = type;
+    }
+
     toggleLibAsyncSwitch(rules: HostRuleConfig[], idCtx: IRuleIdCtx): void {
         const item = this.getRuleFromIdCtx(rules, idCtx) as LibRuleConfig;
         item.isAsync = !item.isAsync;
