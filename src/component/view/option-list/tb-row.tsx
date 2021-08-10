@@ -3,6 +3,7 @@ import { codeExecStageList } from '../../../constant/code-exec-stage-list';
 
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
+import { IconSwitch } from '../../base/checkbox-icon-switch';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
 import { Dropdown } from '../../base/select-dropdown';
 import { NumBadge } from '../../base/num-badge';
@@ -32,7 +33,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     } = appStateManager;
 
     // Item
-    const { isHost, id, isHttps, title, value, codeExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
+    const { isHost, id, isHttps, isExact, title, value, codeExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;
     const parentItem = parentItemCtx?.item;
     const hostId = isHost ? id : parentItem?.id;
     const pathId = isHost ? null : id;
@@ -62,13 +63,6 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         checked={isSelected}
                         onChange={() => onRowSelectToggle({ dataSrc, hostId })}
                         />}
-                </td><td>{ isHost &&
-                    <SliderSwitch
-                        id={`https-${ID_SUFFIX}`}
-                        checked={isHttps}
-                        disabled={isDelDisabled}
-                        onChange={() => onHttpsToggle({ hostId })}
-                        />}
                 </td><td>
                     <div>{ isHost &&
                         <>
@@ -82,7 +76,22 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         </>}
                         <span className="datagrid__cell datagrid__cell--id">{title}</span>
                     </div>
-                </td><td>
+                </td><td>{ isHost &&
+                    <IconSwitch
+                        icon
+                        id={`http-${ID_SUFFIX}`}
+                        label="lock-close"
+                        checked={isHttps}
+                        disabled={isDelDisabled}
+                        onChange={() => onHttpsToggle({ hostId })}
+                        />}
+                    <IconSwitch
+                        id={`exact-${ID_SUFFIX}`}
+                        label="="
+                        checked={isExact}
+                        disabled={isDelDisabled}
+                        // TODO: onChange={() => toggleExactSwitch(ruleIdCtx)}
+                        />
                     <span className="datagrid__cell datagrid__cell--addr">
                         {value}
                     </span>

@@ -105,7 +105,6 @@ export class OptionListView extends MemoComponent<IProps> {
                 }}
                 header={[
                     { title: $selectAll },
-                    { title: 'HTTPS' },
                     { title: $title, sortKey: 'title' },
                     { title: $address, sortKey: 'value' },
                     { title: 'CODE EXECUTION' },
