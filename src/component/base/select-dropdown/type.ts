@@ -16,5 +16,6 @@ export interface IState {
 
 export interface IOnSelectArg {
     evt: React.ChangeEvent<HTMLSelectElement>;
+    selectValue: string;
     selectValueAttrVal: number;
 }

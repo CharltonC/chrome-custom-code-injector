@@ -109,7 +109,7 @@ describe('Component - Dropdown', () => {
         });
 
         describe('Method - onSelect', () => {
-            const mockOptionIdx: number = 0;
+            const mockOptionIdx = 0;
             const mockEvt: any = { target: {value: mockOptionIdx}};
             let mockOnSelect: jest.Mock;
 
@@ -125,11 +125,12 @@ describe('Component - Dropdown', () => {
             });
 
             it('should call the callback if provided', () => {
-                cmp = new Dropdown({...mockBareProps, onSelect: mockOnSelect});
+                cmp = new Dropdown({...mockDefProps, onSelect: mockOnSelect});
                 cmp.onSelect(mockEvt);
 
                 expect(mockOnSelect).toHaveBeenCalledWith({
                     evt: mockEvt,
+                    selectValue: mockDefProps.list[mockOptionIdx],
                     selectValueAttrVal: mockOptionIdx
                 });
             });
