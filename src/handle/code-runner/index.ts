@@ -1,6 +1,6 @@
 import { LibRuleConfig, HostRuleConfig, PathRuleConfig } from "../../data/model/rule-config";
 
-export class RuleRunnerHandle {
+export class CodeRunnerHandle {
     //// RUNNER (CONSOLIDATE ALL INJECTORS)
     init(rules: HostRuleConfig[]): void {
         const { protocol, host, pathname } = document.location;
@@ -113,4 +113,4 @@ export class RuleRunnerHandle {
     }
 }
 
-export const ruleRunnerHandle = new RuleRunnerHandle();
+export const codeRunnerHandle = new CodeRunnerHandle();
