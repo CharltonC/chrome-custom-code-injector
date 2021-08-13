@@ -13,7 +13,7 @@ const rowSelectHandle = new RowSelectHandle();
 
 export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
     //// HEADER
-    onListView({ localState }: IAppState) {
+    onListView({ localState }: IAppState): Partial<IAppState> {
         // Not required to reset Edit View state as already covered by `onEditView`
         return {
             localState: {
@@ -55,7 +55,7 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
     }
 
     //// TEXT INPUTS
-    onActiveTitleInput({ rules, localState }: IAppState, payload: TTextInput.IOnInputChangeArg) {
+    onActiveTitleInput({ rules, localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
         const { isValid, val, errMsg } = payload;
         const { editView } = localState;
         const { ruleIdCtx } = editView;
@@ -84,7 +84,7 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
         }
     }
 
-    onActiveValueInput({ rules, localState }: IAppState, payload: TTextInput.IOnInputChangeArg) {
+    onActiveValueInput({ rules, localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
         const { isValid, val, errMsg } = payload;
         const { editView } = localState;
         const { ruleIdCtx } = editView;
@@ -114,14 +114,14 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
     }
 
     //// TABS
-    onActiveTabChange({ rules }: IAppState, payload) {
+    onActiveTabChange({ rules }: IAppState, payload): Partial<IAppState> {
         const { ruleIdCtx, idx } = payload;
         const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
         item.activeTabIdx = idx;
         return {};
     }
 
-    onTabToggle({ rules }: IAppState, payload) {
+    onTabToggle({ rules }: IAppState, payload): Partial<IAppState> {
         const { ruleIdCtx, tab } = payload;
         const id = `is${tab.id}On`;
         const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
@@ -129,7 +129,7 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
         return {};
     }
 
-    onCodeChange({ rules }: IAppState, payload) {
+    onCodeChange({ rules }: IAppState, payload): Partial<IAppState> {
         const { ruleIdCtx, codeKey, codeMirrorArgs } = payload;
         const [,,value] = codeMirrorArgs;
         const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as AHostPathRule;
@@ -138,7 +138,7 @@ export class OptionEditViewStateManager extends StateHandle.BaseStateManager {
     }
 
     //// DATA GRID FOR LIBRARIES
-    onLibSort({ localState }: IAppState, payload) {
+    onLibSort({ localState }: IAppState, payload): Partial<IAppState> {
         const { sortOption } = payload;
         const { editView } = localState;
         return {
