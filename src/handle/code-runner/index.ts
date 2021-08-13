@@ -1,4 +1,5 @@
 import { LibRuleConfig, HostRuleConfig, PathRuleConfig } from "../../data/model/rule-config";
+import { IAddToDomArg } from "./type";
 
 export class CodeRunnerHandle {
     //// RUNNER (CONSOLIDATE ALL INJECTORS)
@@ -80,9 +81,8 @@ export class CodeRunnerHandle {
         libs.forEach(lib => {
             const { isOn, type, value, isAsync } = lib;
             if (!isOn) return;
-            type === 'js'
-                ? this.injectJsLib($jsLibs, value, isAsync)
-                : this.injectCssLib($cssLibs, value);
+            type === 'js' && this.injectJsLib($jsLibs, value, isAsync);
+            type === 'css' && this.injectCssLib($cssLibs, value);
         });
         $jsLibs.childElementCount && this.addToDom({
             $code: $jsLibs,
@@ -115,7 +115,7 @@ export class CodeRunnerHandle {
         $wrapper.appendChild($css);
     }
 
-    addToDom({ $code, isHost, id, injectType, lang }) {
+    addToDom({ $code, isHost, id, injectType, lang }: IAddToDomArg) {
         try {
             lang === 'js' && document.body.appendChild($code);
             lang === 'css' && document.head.appendChild($code);
@@ -144,13 +144,17 @@ export class CodeRunnerHandle {
     isMatchHost(protocol: string, host: string, hostRule: HostRuleConfig): boolean {
         const { isHttps, value, isExactMatch } = hostRule;
         const isHostMatch = isExactMatch ? host === value : host.includes(value);
-        const isProtocolMatch = isHttps ? protocol === 'https' : true;
+        const isProtocolMatch = this.isMatchProtocol(protocol, isHttps);
         return isHostMatch && isProtocolMatch;
     }
 
     isMatchPath(pathname: string, pathRule: PathRuleConfig): boolean {
         const { value, isExactMatch } = pathRule;
         return isExactMatch ? pathname === value : pathname.includes(value);
+    }
+
+    isMatchProtocol(protocol: string, isHttps: boolean): boolean {
+        return isHttps ? protocol === 'https' : true;
     }
 }
 
