@@ -40,3 +40,33 @@ export const createMockRules = () => {
         return host;
     });
 };
+
+
+// Mock with actual working data
+const path = new PathRuleConfig('6park-path', '/au.shtml');
+const pathLib = new LibRuleConfig('6park-path-lib', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+pathLib.type = 'css';
+pathLib.isOn = true;
+Object.assign(path, {
+    jsCode: 'console.log("6park-path");',
+    cssCode: '* { border: 1px solid blue !important; }',
+    isCssOn: true,
+    isJsOn: true,
+    isLibOn: true,
+    libs: [ pathLib ]
+});
+
+const host = new HostRuleConfig('6park-host', '6park.com');
+const hostLib =  new LibRuleConfig('6park-host-lib', 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js');
+hostLib.isOn = true;
+Object.assign(host, {
+    jsCode: 'console.log("6park-host");',
+    cssCode: 'body { background-color: red !important; }',
+    isCssOn: true,
+    isJsOn: true,
+    isLibOn: true,
+    paths: [ path ],
+    libs: [hostLib]
+});
+
+export const mockRules = [host];
