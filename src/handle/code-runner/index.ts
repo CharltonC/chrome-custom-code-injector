@@ -32,11 +32,12 @@ export class CodeRunnerHandle {
             isJsOn, jsCode,
             isCssOn, cssCode,
             isLibOn, libs,
+            id, isHost
         } = rule;
 
-        isJsOn && this.injectJsCode(jsCode);
-        isCssOn && this.injectCssCode(cssCode);
-        isLibOn && this.injectLibs(libs);
+        isJsOn && this.injectJsCode(jsCode, id, isHost);
+        isCssOn && this.injectCssCode(cssCode, id, isHost);
+        isLibOn && this.injectLibs(libs, id, isHost);
     }
 
     applyRuleAtLoaded(rule: HostRuleConfig | PathRuleConfig): void {
@@ -45,22 +46,34 @@ export class CodeRunnerHandle {
     }
 
     //// INJECTOR
-    injectJsCode(code: string): void {
+    injectJsCode(code: string, id: string, isHost: boolean): void {
         const $js = document.createElement('script');
         $js.setAttribute('type', 'text/javascript')
         $js.innerHTML = code;
-        document.body.appendChild($js);
+        this.addToDom({
+            $code: $js,
+            isHost,
+            id,
+            injectType: 'code',
+            lang: 'js'
+        });
     }
 
-    injectCssCode(code: string): void {
+    injectCssCode(code: string, id: string, isHost: boolean): void {
         const $css = document.createElement('style');
         $css.setAttribute('type', 'text/css');
         $css.innerHTML = code;
-        document.head.appendChild($css);
+        this.addToDom({
+            $code: $css,
+            isHost,
+            id,
+            injectType: 'code',
+            lang: 'css'
+        });
     }
 
-    injectLibs(libs: LibRuleConfig[]): void {
-        const { body } = document;
+    injectLibs(libs: LibRuleConfig[], id: string, isHost: boolean): void {
+        const injectType = 'library';
         const $jsLibs = document.createDocumentFragment();
         const $cssLibs = document.createDocumentFragment();
 
@@ -71,9 +84,20 @@ export class CodeRunnerHandle {
                 ? this.injectJsLib($jsLibs, value, isAsync)
                 : this.injectCssLib($cssLibs, value);
         });
-
-        if ($jsLibs.childElementCount) body.appendChild($jsLibs);
-        if ($cssLibs.childElementCount) body.appendChild($cssLibs);
+        $jsLibs.childElementCount && this.addToDom({
+            $code: $jsLibs,
+            isHost,
+            id,
+            injectType,
+            lang: 'js'
+        });
+        $cssLibs.childElementCount && this.addToDom({
+            $code: $cssLibs,
+            isHost,
+            id,
+            injectType,
+            lang: 'css'
+        });
     }
 
     injectJsLib($wrapper: DocumentFragment, url: string, isAsync?: boolean): void {
@@ -89,6 +113,23 @@ export class CodeRunnerHandle {
         $css.setAttribute('type', 'text/stylesheet')
         $css.setAttribute('href', url);
         $wrapper.appendChild($css);
+    }
+
+    addToDom({ $code, isHost, id, injectType, lang }) {
+        try {
+            lang === 'js' && document.body.appendChild($code);
+            lang === 'css' && document.head.appendChild($code);
+        } catch (err) {
+            const ruleType = isHost ? 'host' : 'path';
+            const ERR_MSG = [
+                `Rule Type: ${ruleType}`,
+                `Rule ID: ${id}`,
+                `Inject Type: ${injectType}`,
+                `Language: ${lang}`,
+                err
+            ].join('\n')
+            console.error(ERR_MSG);
+        }
     }
 
     //// HELPER
