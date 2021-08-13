@@ -33,11 +33,5 @@
             "32": "asset/icon/icon_32.png"
         }
     },
-    "options_page": "popup/index.html",
-    "background": {
-        "persistent": false,
-        "scripts": [
-            "bt-script/main.min.js"
-        ]
-    }
+    "options_page": "popup/index.html"
 }
