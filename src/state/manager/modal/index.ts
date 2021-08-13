@@ -13,7 +13,7 @@ import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
 import * as TTextInput from '../../../component/base/input-text/type';
 import { IAppState } from '../../model/type';
-import { IOnDelHostsModalPayload } from '../type';
+import { IOnDelHostsModalPayload } from './type';
 import { TextInputState } from '../../model/text-input-state';
 
 const fileHandle = new FileHandle();

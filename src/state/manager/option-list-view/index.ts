@@ -5,7 +5,7 @@ import { dataManager } from '../../../data/manager';
 import { TextInputState } from '../../model/text-input-state';
 import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import { IAppState } from '../../model/type';
-import { IOnPaginatePayload, IOnSortPayload, IOnRowSelectTogglePayload, IOnJsExecStepChangePayload } from '../type';
+import { IOnPaginatePayload, IOnSortPayload, IOnRowSelectTogglePayload, IOnJsExecStepChangePayload } from './type';
 
 const rowSelectHandle = new RowSelectHandle();
 
