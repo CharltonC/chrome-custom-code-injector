@@ -102,6 +102,11 @@ export class CodeRunnerHandle {
 
     injectJsLib($wrapper: DocumentFragment, url: string, isAsync?: boolean): void {
         const $js = document.createElement('script');
+        // const onLoad = () => {
+        //     console.log(`Js Inject Success for ${url}`);
+        //     $js.removeEventListener('load', onLoad);
+        // };
+        // $js.addEventListener('load', onLoad);
         $js.setAttribute('type', 'text/javascript')
         $js.setAttribute('src', url);
         $js.async = isAsync;
@@ -110,7 +115,12 @@ export class CodeRunnerHandle {
 
     injectCssLib($wrapper: DocumentFragment, url: string): void {
         const $css = document.createElement('link');
-        $css.setAttribute('type', 'text/stylesheet')
+        // const onLoad = () => {
+        //     console.log(`Css Inject Success for ${url}`);
+        //     $css.removeEventListener('load', onLoad);
+        // };
+        // $css.addEventListener('load', onLoad);
+        $css.setAttribute('rel', 'stylesheet')
         $css.setAttribute('href', url);
         $wrapper.appendChild($css);
     }
