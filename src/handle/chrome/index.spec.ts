@@ -4,23 +4,27 @@ import { chromeHandle, ChromeHandle } from './';
 
 describe('Chrome Handle', () => {
     let handleSpy: AMethodSpy<ChromeHandle>;
+    let isInChromeCtxSpy: jest.SpyInstance;
     let chromeStoreGetSpy: jest.SpyInstance;
     let chromeStoreSetSpy: jest.SpyInstance;
 
-    // Mock Global Chrome API
-    Object.assign(globalThis, {
-        chrome: {
-            storage: {
-                sync: {
-                    get() {},
-                    set() {}
+    beforeEach(() => {
+        // Mock Global Chrome API
+        Object.assign(globalThis, {
+            chrome: {
+                storage: {
+                    sync: {
+                        get() {},
+                        set() {}
+                    }
                 }
             }
-        }
-    })
+        });
 
-    beforeEach(() => {
         handleSpy = TestUtil.spyMethods(chromeHandle);
+        isInChromeCtxSpy = jest.spyOn(chromeHandle, 'isInChromeCtx', 'get');
+        isInChromeCtxSpy.mockReturnValue(true);
+
         chromeStoreGetSpy = jest.spyOn(chrome.storage.sync, 'get');
         chromeStoreSetSpy = jest.spyOn(chrome.storage.sync, 'set');
         chromeStoreSetSpy.mockImplementation(() => {});
@@ -31,54 +35,89 @@ describe('Chrome Handle', () => {
         jest.restoreAllMocks();
     });
 
-    it('constructor: should set optional store key', () => {
-        expect((new ChromeHandle()).storeKey).toBe(chromeHandle.storeKey);
-        expect((new ChromeHandle('lorem')).storeKey).toBe('lorem');
-    });
-
-    it('Method - getState: should retrieve state', async () => {
-        const mockData = 'lorem';
-        const mockResolveFn = resolve => resolve(mockData);
-        handleSpy.getResolveCallback.mockReturnValue(mockResolveFn);
-        const data = await chromeHandle.getState();
-
-        expect(data).toBe(mockData);
-    });
-
-    it('Method - saveState', async () => {
-        const mockExistState = { a: 1 };
-        const mockMergeState: any = { b: 2 };
-        handleSpy.getState.mockReturnValue(Promise.resolve(mockExistState));
-        await chromeHandle.saveState(mockMergeState);
-
-        expect(chromeStoreSetSpy).toHaveBeenCalledWith({
-            [chromeHandle.storeKey]: {
-                ...mockExistState,
-                ...mockMergeState
-            }
+    describe('constructor', () => {
+        it('should set optional store key', () => {
+            expect((new ChromeHandle()).storeKey).toBe(chromeHandle.storeKey);
+            expect((new ChromeHandle('lorem')).storeKey).toBe('lorem');
         });
     });
 
-    it('Method - getResolveCallback: should return resolve callback function', () => {
-        const mockResolveFn = () => {};
-        const mockFn = () => 'fn';
-        handleSpy.getStorageCallback.mockReturnValue(mockFn);
-        const resolveCallback = chromeHandle.getResolveCallback();
-        resolveCallback(mockResolveFn);
+    describe('Method - getState: ', () => {
+        it('should retrieve state', async () => {
+            const mockData = 'lorem';
+            const mockResolveFn = resolve => resolve(mockData);
+            handleSpy.getResolveCallback.mockReturnValue(mockResolveFn);
+            const data = await chromeHandle.getState();
 
-        expect(handleSpy.getStorageCallback).toHaveBeenCalledWith(mockResolveFn);
-        expect(chromeStoreGetSpy).toHaveBeenCalledWith(
-            chromeHandle.storeKey,
-            mockFn,
-        );
+            expect(data).toBe(mockData);
+        });
     });
 
-    it('Method - getStorageCallback: should return storage callback function', () => {
-        const mockResolveFn = jest.fn();
-        const mockStorage = { [chromeHandle.storeKey]: 'lorem' };
-        const storageCallback = chromeHandle.getStorageCallback(mockResolveFn);
-        storageCallback(mockStorage);
+    describe('Method - saveState', () => {
+        it('should save state if chrome exists', async () => {
+            const mockExistState = { a: 1 };
+            const mockMergeState: any = { b: 2 };
+            handleSpy.getState.mockReturnValue(Promise.resolve(mockExistState));
+            await chromeHandle.saveState(mockMergeState);
 
-        expect(mockResolveFn).toHaveBeenCalledWith('lorem');
+            expect(chromeStoreSetSpy).toHaveBeenCalledWith({
+                [chromeHandle.storeKey]: {
+                    ...mockExistState,
+                    ...mockMergeState
+                }
+            });
+        });
+
+        it('should exit if chrome doesnt exist', async () => {
+            isInChromeCtxSpy.mockReturnValue(false);
+            await chromeHandle.saveState({});
+
+            expect(handleSpy.getState).not.toHaveBeenCalled();
+        });
     });
+
+    describe('Method - getResolveCallback', () => {
+        it('should return resolve callback function', () => {
+            const mockResolveFn = () => {};
+            const mockFn = () => 'fn';
+            handleSpy.getStorageCallback.mockReturnValue(mockFn);
+            const resolveCallback = chromeHandle.getResolveCallback();
+            resolveCallback(mockResolveFn);
+
+            expect(handleSpy.getStorageCallback).toHaveBeenCalledWith(mockResolveFn);
+            expect(chromeStoreGetSpy).toHaveBeenCalledWith(
+                chromeHandle.storeKey,
+                mockFn,
+            );
+        });
+    });
+
+    describe('Method - getStorageCallback', () => {
+        it('should return storage callback function', () => {
+            const mockResolveFn = jest.fn();
+            const mockStorage = { [chromeHandle.storeKey]: 'lorem' };
+            const storageCallback = chromeHandle.getStorageCallback(mockResolveFn);
+            storageCallback(mockStorage);
+
+            expect(mockResolveFn).toHaveBeenCalledWith('lorem');
+        });
+    });
+
+    describe('Getter - isInChromeCtx', () => {
+        beforeEach(() => {
+            isInChromeCtxSpy.mockRestore();
+        });
+
+        it('should return true if chrome is defined', () => {
+            expect(chromeHandle.isInChromeCtx).toBeTruthy();
+        });
+
+        it('should return true if chrome is not defined', () => {
+            globalThis.chrome = undefined;
+            expect(chromeHandle.isInChromeCtx).toBeFalsy();
+        });
+    });
+
+
+
 });

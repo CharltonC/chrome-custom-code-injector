@@ -16,6 +16,7 @@ export class ChromeHandle {
     }
 
     async saveState(stateToMerge: Partial<IState>): Promise<void>  {
+        if (!this.isInChromeCtx) return;
         const existState = await this.getState();
         const state = Object.assign(existState, stateToMerge);
         chrome.storage.sync.set({
@@ -33,6 +34,10 @@ export class ChromeHandle {
 
     getStorageCallback(resolveFn: AFn): TStorageCallack {
         return (storage: AObj) => resolveFn(storage[this.storeKey]);
+    }
+
+    get isInChromeCtx() {
+        return typeof chrome !== 'undefined';
     }
 }
 
