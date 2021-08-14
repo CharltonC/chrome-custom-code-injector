@@ -2,7 +2,7 @@ import { TestUtil } from '../../asset/ts/test-util';
 import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { chromeHandle, ChromeHandle } from './';
 
-fdescribe('Chrome Handle', () => {
+describe('Chrome Handle', () => {
     let handleSpy: AMethodSpy<ChromeHandle>;
     let chromeStoreGetSpy: jest.SpyInstance;
     let chromeStoreSetSpy: jest.SpyInstance;

@@ -3,7 +3,7 @@ import { HostRule } from '../../model/rule';
 
 export interface IState {
     rules: HostRule[];
-    settings: SettingState;
+    setting: SettingState;
 }
 
 export type TStorageCallack = (arg: AObj) => IState;
