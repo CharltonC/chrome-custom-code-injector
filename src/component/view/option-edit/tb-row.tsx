@@ -6,12 +6,12 @@ import { Checkbox } from '../../base/checkbox';
 import { SliderSwitch } from '../../base/checkbox-slider-switch';
 import { Dropdown } from '../../base/select-dropdown';
 
-import { IAppState } from '../../../state/model/type';
+import { AppState } from '../../../model/app-state';
 
 // TODO: Type for props
 export const TbRow: React.FC<any> = memo((props) => {
     const { dataSrc, idx, itemLvl, item, classNames, commonProps } = props;
-    const { appState, appStateManager } = commonProps;
+    const { appState, appStateHandle } = commonProps;
     const { REG_ROW } = classNames;
 
     const {
@@ -21,14 +21,14 @@ export const TbRow: React.FC<any> = memo((props) => {
         onLibIsOnToggle,
         onEditLibModal,
         onDelLibModal,
-    } = appStateManager;
+    } = appStateHandle;
 
     // Item
     const { id, title, type, value, isOn, isAsync } = item;
     const ID_SUFFIX = `${itemLvl}-${idx}`;
 
     //// STATE
-    const { localState } = appState as IAppState;
+    const { localState } = appState as AppState;
 
     // Data Grid State
     const { selectState } = localState.editView.dataGrid;

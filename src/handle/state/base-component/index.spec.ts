@@ -29,12 +29,12 @@ describe('Base State Component', () => {
             class MockStateHandler extends BaseStateManager {
                 sayHello() { return 'hello'; }
             }
-            const { appState, appStateManager } = cmp.transformStateConfigs({
+            const { appState, appStateHandle } = cmp.transformStateConfigs({
                 root: [ mockState, new MockStateHandler() ]
             });
 
             expect(appState).toBe(mockState);
-            expect(appStateManager).toBe(getProxyStateHandler);
+            expect(appStateHandle).toBe(getProxyStateHandler);
         });
 
         it('should return transformed config if multiple non-root state and state handlers are provied', () => {
@@ -46,15 +46,15 @@ describe('Base State Component', () => {
             class MockStateHandler2 extends BaseStateManager {
                 sayHello2() { return 'hello2'; }
             }
-            const { appState, appStateManager } = cmp.transformStateConfigs({
+            const { appState, appStateHandle } = cmp.transformStateConfigs({
                 one: [ mockState1, new MockStateHandler1() ],
                 two: [ mockState2, new MockStateHandler2() ]
             });
 
             expect(appState.one).toBe(mockState1);
             expect(appState.two).toBe(mockState2);
-            expect(appStateManager['one']).toBe(getProxyStateHandler);
-            expect(appStateManager['two']).toBe(getProxyStateHandler);
+            expect(appStateHandle['one']).toBe(getProxyStateHandler);
+            expect(appStateHandle['two']).toBe(getProxyStateHandler);
         });
     });
 

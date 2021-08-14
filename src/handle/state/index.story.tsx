@@ -56,9 +56,9 @@ export const SingleState = () => {
     const sampleStateHandler = new SampleStateHandler();
 
     // 3. Root Component which reference state and state hanlder
-    const SampleComponent = ({ appState, appStateManager }) => {
+    const SampleComponent = ({ appState, appStateHandle }) => {
         const { name, age, gender, address } = appState;
-        const { onNameChange, onAgeChange, onAllChange, onAddressChange } = appStateManager;
+        const { onNameChange, onAgeChange, onAllChange, onAddressChange } = appStateHandle;
         return (
             <div>
                 <p>name: {name}</p>
@@ -115,11 +115,11 @@ export const MultipleStates = () => {
     const sampleStateHandler2 = new SampleStateHandler2();
 
     // 3. Root Component which references state and state hanlder
-    const SampleComponent = ({ appState, appStateManager }) => {
+    const SampleComponent = ({ appState, appStateHandle }) => {
         const { name } = appState.stateOne;
         const { project } = appState.stateTwo;
-        const { onNameChange } = appStateManager.stateOne;
-        const { onProjectChange } = appStateManager.stateTwo;
+        const { onNameChange } = appStateHandle.stateOne;
+        const { onProjectChange } = appStateHandle.stateTwo;
 
         return (
             <div>
@@ -180,9 +180,9 @@ export const SingleStateeWithPartialHandlers = () => {
     const sampleStateHandler = new SampleStateHandler()
 
     // 3. Root componennt
-    const SampleComponent = ({ appState, appStateManager }) => {
+    const SampleComponent = ({ appState, appStateHandle }) => {
         const { name, age } = appState;
-        const { onH1Click, onH2Click } = appStateManager;
+        const { onH1Click, onH2Click } = appStateHandle;
         return (
             <div>
                 <h1 onClick={onH1Click}>{name}</h1>

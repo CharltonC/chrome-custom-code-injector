@@ -1,4 +1,4 @@
-import { DataGridState } from './';
+import { DataGridState } from '.';
 
 describe('Data Grid State', () => {
     it('should instantiate with pagination option and state when a valid total record is provided', () => {

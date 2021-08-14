@@ -15,7 +15,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     // - is full set of data (i.e. unpaginated)
     // - can be 1) unaltered results  OR  2) filterd results based on search text  OR  3) Sorted + Unaltered/Filtered
     const { dataSrc, idx, itemLvl, item, nestedItems, classNames, parentItemCtx, commonProps } = props;
-    const { appState, appStateManager } = commonProps;
+    const { appState, appStateHandle } = commonProps;
     const { localState } = appState;
     const {
         onRowExpand,
@@ -31,7 +31,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
         onAddPathModal,
         onEditView,
         onDelHostOrPathModal,
-    } = appStateManager;
+    } = appStateHandle;
 
     // Item
     const { isHost, id, isHttps, isExactMatch, title, value, codeExecPhase, isJsOn, isCssOn, isLibOn, paths } = item;

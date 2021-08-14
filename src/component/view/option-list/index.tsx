@@ -21,7 +21,7 @@ export class OptionListView extends MemoComponent<IProps> {
 
             onAddHostModal,
             onDelHostsModal,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         const { rules, localState } = this.appState;
         const { pgnOption, pgnState, sortOption, selectState } = this.dataGridState;
@@ -129,8 +129,8 @@ export class OptionListView extends MemoComponent<IProps> {
         return this.props.appState;
     }
 
-    get appStateManager() {
-        return this.props.appStateManager;
+    get appStateHandle() {
+        return this.props.appStateHandle;
     }
 
     get dataGridState() {

@@ -1,14 +1,14 @@
 import { TestUtil } from '../../../asset/ts/test-util';
-import { AppStateManager } from '../../../state/manager';
+import { AppStateHandle } from '../../../handle/app-state';
 import { StateHandle } from '../../../handle/state';
-import { IAppState } from '../../../state/model/type';
-import { createMockAppState } from '../../../state/mock';
+import { AppState } from '../../../model/app-state';
+import { createMockAppState } from '../../../mock/state';
 import { OptionApp } from '.';
 import PgnHandle from '../../../handle/pagination';
 
 describe('Component - Option App (UI/E2E)', () => {
     let $elem: HTMLElement;
-    let mockAppState: IAppState;
+    let mockAppState: AppState;
 
     function getElem() {
         const pgnRecordTxt = $elem.querySelector('.paginate__record').textContent;
@@ -80,7 +80,7 @@ describe('Component - Option App (UI/E2E)', () => {
             describe('Non-searched + Non-paginated', () => {
                 beforeEach(() => {
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateManager() ],
+                        root: [ mockAppState, new AppStateHandle() ],
                     }));
                 });
 
@@ -151,7 +151,7 @@ describe('Component - Option App (UI/E2E)', () => {
                     dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
 
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateManager() ],
+                        root: [ mockAppState, new AppStateHandle() ],
                     }));
                 });
 
@@ -213,7 +213,7 @@ describe('Component - Option App (UI/E2E)', () => {
             describe('Searched + Non-paginated', () => {
                 beforeEach(() => {
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateManager() ],
+                        root: [ mockAppState, new AppStateHandle() ],
                     }));
 
                     mockSearch('ebay');
@@ -247,7 +247,7 @@ describe('Component - Option App (UI/E2E)', () => {
                     dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
 
                     TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateManager() ],
+                        root: [ mockAppState, new AppStateHandle() ],
                     }));
 
                     mockSearch('ebay');

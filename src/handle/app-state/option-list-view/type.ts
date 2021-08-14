@@ -1,6 +1,6 @@
 import { HostRule } from '../../../model/rule';
-import * as TPgn from '../../../handle/pagination/type';
-import * as TSort from '../../../handle/sort/type';
+import * as TPgn from '../../pagination/type';
+import * as TSort from '../../sort/type';
 
 export interface IOnPaginatePayload {
     pgnOption: TPgn.IOption;

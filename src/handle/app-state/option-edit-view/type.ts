@@ -1,6 +1,6 @@
 import { LibRule, HostRule, PathRule } from "../../../model/rule";
 import { ALibType, AActiveTabIdx } from "../../../model/rule/type";
-import { RuleIdCtxState } from "../../model/rule-id-ctx-state";
+import { RuleIdCtxState } from "../../../model/rule-id-ctx-state";
 
 export interface IOnLibRowSelectTogglePayload {
     id: string;

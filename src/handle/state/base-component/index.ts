@@ -9,10 +9,10 @@ export class BaseStateComponent extends Component<any, AObj> {
         // For single state and state handler
         const { root } = stateConfigs;
         if (root) {
-            const [ appState, appStateManager ] = root;
+            const [ appState, appStateHandle ] = root;
             return {
                 appState,
-                appStateManager: this.getProxyStateHandler(appStateManager)
+                appStateHandle: this.getProxyStateHandler(appStateHandle)
             };
         }
 
@@ -20,25 +20,25 @@ export class BaseStateComponent extends Component<any, AObj> {
         return Object
             .entries(stateConfigs)
             .reduce((container, [ name, subStateConfig ]) => {
-                const { appState, appStateManager } = container;
-                this.checkStateName(name, appState, appStateManager);
+                const { appState, appStateHandle } = container;
+                this.checkStateName(name, appState, appStateHandle);
 
                 const [ subState, subStateHandler ] = subStateConfig;
                 appState[name] = subState;
-                appStateManager[name] = this.getProxyStateHandler(subStateHandler, name);
+                appStateHandle[name] = this.getProxyStateHandler(subStateHandler, name);
                 return container;
             }, {
                 appState: {},
-                appStateManager: {}
+                appStateHandle: {}
             });
     }
 
-    getProxyStateHandler(appStateManager: BaseStateManager, name?: string): BaseStateManager {
-        const allowedMethodNames: string[] = this.getAllowedMethodNames(appStateManager);
+    getProxyStateHandler(appStateHandle: BaseStateManager, name?: string): BaseStateManager {
+        const allowedMethodNames: string[] = this.getAllowedMethodNames(appStateHandle);
         const getModPartialState = this.getModPartialState.bind(this);
         const updateState = this.updateState.bind(this);
 
-        return new Proxy(appStateManager, {
+        return new Proxy(appStateHandle, {
             get: (target: BaseStateManager, key: string, proxy: BaseStateManager) => {
                 const method: any = target[key];
 
@@ -57,11 +57,11 @@ export class BaseStateComponent extends Component<any, AObj> {
                     // If contains promise or async/await logic
                     if (modPartialState instanceof Promise) {
                         const partialState = await modPartialState;
-                        updateState(partialState, appStateManager, name);
+                        updateState(partialState, appStateHandle, name);
 
                     } else {
                         // MAYBE - Check type if its not object, throw error
-                        updateState(modPartialState, appStateManager, name);
+                        updateState(modPartialState, appStateHandle, name);
                     }
 
                 };
@@ -83,18 +83,18 @@ export class BaseStateComponent extends Component<any, AObj> {
         return fn.apply(proxy, [this.state, ...args]);
     }
 
-    updateState(modPartialState: AObj, appStateManager: BaseStateManager, name?: string): void {
+    updateState(modPartialState: AObj, appStateHandle: BaseStateManager, name?: string): void {
         const { state } = this;
         const modState = name ?
             { ...state, [name]: { ...state[name] , ...modPartialState } } :
             { ...state, ...modPartialState };
         const diffState = { prev: state, curr: modState };
-        this.setState(modState, () => appStateManager.pub(diffState, name));
+        this.setState(modState, () => appStateHandle.pub(diffState, name));
     }
 
-    checkStateName(name: string, appState: AObj, appStateManager: AObj): void {
+    checkStateName(name: string, appState: AObj, appStateHandle: AObj): void {
         const isInState: boolean = name in appState;
-        const isInHandler: boolean = name in appStateManager;
+        const isInHandler: boolean = name in appStateHandle;
         if (isInState || isInHandler) throw new Error(`${name} ${this.STATE_NAME_ERR}`);
     }
 }

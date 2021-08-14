@@ -15,7 +15,7 @@ describe('State Handle', () => {
     });
 
     describe('Single State and State Handler', () => {
-        const MockCmp = ({ appState, appStateManager }) => <h1 onClick={appStateManager.onClick}>{appState.name}</h1>;
+        const MockCmp = ({ appState, appStateHandle }) => <h1 onClick={appStateHandle.onClick}>{appState.name}</h1>;
         const mockState = { name: 'john' };
         class MockStateHandler extends BaseStateManager {
             onClick() {
@@ -47,10 +47,10 @@ describe('State Handle', () => {
             new(...args: any[]): IMockStateManager;
         };
 
-        const MockCmp = ({ appState, appStateManager }) => (
+        const MockCmp = ({ appState, appStateHandle }) => (
             <>
-                <h1 onClick={appStateManager.onH1Click}>{appState.name}</h1>
-                <h2 onClick={appStateManager.onH2Click}>{appState.name}</h2>
+                <h1 onClick={appStateHandle.onH1Click}>{appState.name}</h1>
+                <h2 onClick={appStateHandle.onH2Click}>{appState.name}</h2>
             </>
         );
 
@@ -99,10 +99,10 @@ describe('State Handle', () => {
     describe('Multiple States and State Handlers', () => {
         const MOCK_STATE_ONE = 'STATE1';
         const MOCK_STATE_TWO = 'STATE2';
-        const MockCmp = ({ appState, appStateManager }) => (
+        const MockCmp = ({ appState, appStateHandle }) => (
             <>
-                <h1 onClick={appStateManager[MOCK_STATE_ONE].onClick}>{appState[MOCK_STATE_ONE].name}</h1>
-                <h2 onClick={appStateManager[MOCK_STATE_TWO].onClick}>{appState[MOCK_STATE_TWO].name}</h2>
+                <h1 onClick={appStateHandle[MOCK_STATE_ONE].onClick}>{appState[MOCK_STATE_ONE].name}</h1>
+                <h2 onClick={appStateHandle[MOCK_STATE_TWO].onClick}>{appState[MOCK_STATE_TWO].name}</h2>
             </>
         );
         const mockState1 = { name: 'john1' };

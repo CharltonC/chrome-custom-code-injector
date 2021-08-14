@@ -1,28 +1,28 @@
-import { StateHandle } from '../../../handle/state';
-import { FileHandle } from '../../../handle/file';
-import { PgnHandle } from '../../../handle/pagination';
-import { dataHandle } from '../../../handle/data';
+import { StateHandle } from '../../state';
+import { FileHandle } from '../../file';
+import { PgnHandle } from '../../pagination';
+import { dataHandle } from '../../data';
 import { modalSet } from '../../../constant/modal-set';
 
 import { HostRule, PathRule, LibRule } from '../../../model/rule';
-import { SettingState } from '../../model/setting-state';
-import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
-import { DataGridState } from '../../model/data-grid-state';
-import { ModalState } from '../../model/modal-state';
+import { SettingState } from '../../../model/setting-state';
+import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
+import { DataGridState } from '../../../model/data-grid-state';
+import { ModalState } from '../../../model/modal-state';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
 import * as TTextInput from '../../../component/base/input-text/type';
-import { IAppState } from '../../model/type';
+import { AppState } from '../../../model/app-state';
 import { IOnDelHostsModalPayload } from './type';
-import { TextInputState } from '../../model/text-input-state';
+import { TextInputState } from '../../../model/text-input-state';
 
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
 
-export class ModalStateManager extends StateHandle.BaseStateManager {
+export class ModalStateHandle extends StateHandle.BaseStateManager {
     //// BASE
     // used ONLY WHEN setting modal Id is the only thing required to be altered
-    onModal({ localState }: IAppState, payload: {id: string}): Partial<IAppState> {
+    onModal({ localState }: AppState, payload: {id: string}): Partial<AppState> {
         const { id } = payload;
         const { modal } = localState;
         return {
@@ -36,7 +36,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onModalCancel({ localState }: IAppState): Partial<IAppState> {
+    onModalCancel({ localState }: AppState): Partial<AppState> {
         // Reset modal state
         const modal = new ModalState();
         return {
@@ -48,13 +48,13 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     }
 
     //// DATA IMPORT/EXPORT
-    onImportDataModal(state: IAppState): Partial<IAppState> {
+    onImportDataModal(state: AppState): Partial<AppState> {
         return this.reflect.onModal(state, {
             id: modalSet.importConfig.id
         });
     }
 
-    async onImportDataModalOk(state: IAppState): Promise<Partial<IAppState>> {
+    async onImportDataModalOk(state: AppState): Promise<Partial<AppState>> {
         const { modal } = state.localState;
         const { importFileInput } = modal;
 
@@ -68,13 +68,13 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         }
     }
 
-    onExportDataModal(state: IAppState): Partial<IAppState> {
+    onExportDataModal(state: AppState): Partial<AppState> {
         return this.reflect.onModal(state, {
             id: modalSet.exportConfig.id
         });
     }
 
-    onExportDataModalOk(state: IAppState): Partial<IAppState> {
+    onExportDataModalOk(state: AppState): Partial<AppState> {
         const { rules, localState } = state;
         const { value } = localState.modal.exportFileInput;
         fileHandle.saveJson(rules, value, true);
@@ -92,7 +92,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onExportInputChange({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
+    onExportInputChange({ localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState> {
         const { errMsg, isValid, val } = payload;
         const { modal } = localState;
 
@@ -113,13 +113,13 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     }
 
     //// SETTINGS
-    onSettingModal(state: IAppState): Partial<IAppState> {
+    onSettingModal(state: AppState): Partial<AppState> {
         return this.reflect.onModal(state, {
             id: modalSet.defSetting.id
         });
     }
 
-    onResultsPerPageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg): Partial<IAppState> {
+    onResultsPerPageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg): Partial<AppState> {
         const { selectValueAttrVal } = payload;
         return {
             setting: {
@@ -129,13 +129,13 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onResetAll(): Partial<IAppState> {
+    onResetAll(): Partial<AppState> {
         return {
             setting: new SettingState()
         };
     }
 
-    onDefHttpsToggle({ setting }: IAppState): Partial<IAppState> {
+    onDefHttpsToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isHttps } = defRuleConfig;
         return {
@@ -149,7 +149,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDefJsToggle({ setting }: IAppState): Partial<IAppState> {
+    onDefJsToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isJsOn } = defRuleConfig;
         return {
@@ -163,7 +163,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDefCssToggle({ setting }: IAppState): Partial<IAppState> {
+    onDefCssToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isCssOn } = defRuleConfig;
         return {
@@ -177,7 +177,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDefLibToggle({ setting }: IAppState): Partial<IAppState> {
+    onDefLibToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isLibOn } = defRuleConfig;
         return {
@@ -191,7 +191,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDefJsExecStageChange({ setting }: IAppState, payload: TSelectDropdown.IOnSelectArg): Partial<IAppState> {
+    onDefJsExecStageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg): Partial<AppState> {
         const { selectValueAttrVal } = payload;
         const { defRuleConfig } = setting;
         return {
@@ -205,7 +205,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDelConfirmDialogToggle({ setting }: IAppState): Partial<IAppState> {
+    onDelConfirmDialogToggle({ setting }: AppState): Partial<AppState> {
         return {
             setting: {
                 ...setting,
@@ -216,13 +216,13 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
 
     //// RULE CRUD
     // Add
-    onAddHostModal(state: IAppState) {
+    onAddHostModal(state: AppState) {
         return this.reflect.onModal(state, {
             id: modalSet.addHost.id
         });
     }
 
-    onAddHostModalOk(state: IAppState): Partial<IAppState> {
+    onAddHostModalOk(state: AppState): Partial<AppState> {
         const { localState, rules, setting } = state;
         const { titleInput, valueInput } = localState.modal;
 
@@ -240,7 +240,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onAddPathModal({ localState }: IAppState, payload?: RuleIdCtxState): Partial<IAppState> {
+    onAddPathModal({ localState }: AppState, payload?: RuleIdCtxState): Partial<AppState> {
         const { isListView, listView, modal } = localState;
         const baseLocalState = {
             ...localState,
@@ -266,7 +266,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
             };
     }
 
-    onAddPathModalOk({ localState, rules, setting }: IAppState): Partial<IAppState> {
+    onAddPathModalOk({ localState, rules, setting }: AppState): Partial<AppState> {
         const { modal, isListView, listView, editView } = localState;
         const { ruleIdCtx } = isListView ? listView : editView;
         const { titleInput, valueInput } = modal;
@@ -309,7 +309,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         }
     }
 
-    onAddLibModal({ localState }: IAppState) {
+    onAddLibModal({ localState }: AppState) {
         const { modal } = localState;
         return {
             localState: {
@@ -322,7 +322,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onAddLibModalOk({ rules, localState }: IAppState) {
+    onAddLibModalOk({ rules, localState }: AppState) {
         const { modal, editView } = localState;
         const { titleInput, valueInput } = modal;
         const { ruleIdCtx } = editView;
@@ -340,7 +340,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     }
 
     // Delete
-    onDelHostOrPathModal(state: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onDelHostOrPathModal(state: AppState, payload: RuleIdCtxState): Partial<AppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { isListView, listView, editView, modal } = localState;
@@ -351,7 +351,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
                 currentId: modalSet.delHostOrPath.id
             },
         };
-        const newState: Partial<IAppState> = isListView
+        const newState: Partial<AppState> = isListView
             ? {
                 localState: {
                     ...baseLocalState,
@@ -380,7 +380,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
             });
     }
 
-    onDelHostOrPathModalOk(state: IAppState): Partial<IAppState> {
+    onDelHostOrPathModalOk(state: AppState): Partial<AppState> {
         const { rules, localState } = state;
         const { isListView, listView, editView, modal } = localState;
 
@@ -466,7 +466,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         }
     }
 
-    onDelHostsModal(state: IAppState, payload: IOnDelHostsModalPayload): Partial<IAppState> {
+    onDelHostsModal(state: AppState, payload: IOnDelHostsModalPayload): Partial<AppState> {
         const { reflect } = this;
         const { localState, setting } = state;
         const { modal, listView } = localState;
@@ -497,7 +497,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
             });
     }
 
-    onDelHostsModalOk(state: IAppState): Partial<IAppState> {
+    onDelHostsModalOk(state: AppState): Partial<AppState> {
         const { rules, localState } = state;
         const { listView, modal } = localState;
         const { dataGrid, searchText: currSearchText } = listView;
@@ -542,7 +542,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDelLibModal(state: IAppState, payload: {id: string}): Partial<IAppState> {
+    onDelLibModal(state: AppState, payload: {id: string}): Partial<AppState> {
         const { localState, setting } = state;
         const { editView } = localState;
         const baseState = {
@@ -570,7 +570,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
             });
     }
 
-    onDelLibModalOk({ rules, localState }: IAppState): Partial<IAppState> {
+    onDelLibModalOk({ rules, localState }: AppState): Partial<AppState> {
         const { editView } = localState;
         const { libRuleIdCtx } = editView;
         dataHandle.rmvLib(rules, libRuleIdCtx);
@@ -587,7 +587,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDelLibsModal({ localState }: IAppState, payload): Partial<IAppState> {
+    onDelLibsModal({ localState }: AppState, payload): Partial<AppState> {
         return {
             localState: {
                 ...localState,
@@ -599,7 +599,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onDelLibsModalOk({ rules, localState }: IAppState): Partial<IAppState> {
+    onDelLibsModalOk({ rules, localState }: AppState): Partial<AppState> {
         const { editView } = localState;
         const { ruleIdCtx, dataGrid } = editView;
         const { areAllRowsSelected, selectedRowKeyCtx } = dataGrid.selectState;
@@ -621,7 +621,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     }
 
     // Edit
-    onEditLibModal({ rules, localState }: IAppState, payload: {id: string}): Partial<IAppState> {
+    onEditLibModal({ rules, localState }: AppState, payload: {id: string}): Partial<AppState> {
         const { id } = payload;
         const { editView, modal } = localState;
 
@@ -649,7 +649,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onEditLibModalOk({ rules, localState }: IAppState) {
+    onEditLibModalOk({ rules, localState }: AppState) {
         const { modal, editView } = localState;
         const { titleInput, valueInput } = modal;
         const { libRuleIdCtx } = editView;
@@ -673,7 +673,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
     }
 
     // Text Input change
-    onModalTitleInput({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState> {
+    onModalTitleInput({ localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState> {
         const { val, isValid, errMsg } = payload;
         const { modal } = localState;
         const isValueValid = modal.valueInput.isValid;
@@ -693,7 +693,7 @@ export class ModalStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onModalValueInput({ localState }: IAppState, payload: TTextInput.IOnInputChangeArg): Partial<IAppState>  {
+    onModalValueInput({ localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState>  {
         const { val, isValid, errMsg } = payload;
         const { modal } = localState;
         const isTitleValid = modal.titleInput.isValid;

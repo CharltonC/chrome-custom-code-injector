@@ -69,7 +69,7 @@ export class OptionApp extends MemoComponent<IProps> {
 
             onSearchTextChange,
             onSearchTextClear,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         //// ListView
         const { searchText } = listView;
@@ -152,7 +152,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onDefCssToggle,
             onDefLibToggle,
             onDefJsExecStageChange,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         return (
             <Modal
@@ -257,7 +257,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onModalCancel,
             onImportDataModalOk,
             onImportFileInputChange,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         return (
             <Modal
@@ -289,7 +289,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onModalCancel,
             onExportDataModalOk,
             onExportInputChange,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         return (
             <Modal
@@ -328,7 +328,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onAddHostModalOk,
             onModalTitleInput,
             onModalValueInput,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         return (
             <Modal
@@ -380,7 +380,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onAddPathModalOk,
             onModalTitleInput,
             onModalValueInput,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         return (
             <Modal
@@ -432,7 +432,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onAddLibModalOk,
             onModalTitleInput,
             onModalValueInput,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         return (
             <Modal
@@ -484,7 +484,7 @@ export class OptionApp extends MemoComponent<IProps> {
             onModalTitleInput,
             onModalValueInput,
             onEditLibModalOk,
-        } = this.appStateManager;
+        } = this.appStateHandle;
         return (
             <Modal
                 activeModalId={currentId}
@@ -530,7 +530,7 @@ export class OptionApp extends MemoComponent<IProps> {
     get $delHostOrPathModal() {
         const { id, txt } = modalSet.delHostOrPath;
         const { currentId } = this.modalState;
-        const { onModalCancel, onDelHostOrPathModalOk } = this.appStateManager;
+        const { onModalCancel, onDelHostOrPathModalOk } = this.appStateHandle;
 
         return (
             <Modal
@@ -555,7 +555,7 @@ export class OptionApp extends MemoComponent<IProps> {
         const {
             onModalCancel,
             onDelHostsModalOk,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         return (
             <Modal
@@ -577,7 +577,7 @@ export class OptionApp extends MemoComponent<IProps> {
     get $delLibModal() {
         const { id, txt } = modalSet.delLib;
         const { currentId } = this.modalState;
-        const { onModalCancel, onDelLibModalOk } = this.appStateManager;
+        const { onModalCancel, onDelLibModalOk } = this.appStateHandle;
         return (
             <Modal
                 activeModalId={currentId}
@@ -598,7 +598,7 @@ export class OptionApp extends MemoComponent<IProps> {
     get $delLibsModal() {
         const { id, txt } = modalSet.delLibs;
         const { currentId } = this.modalState;
-        const { onModalCancel, onDelLibsModalOk } = this.appStateManager;
+        const { onModalCancel, onDelLibsModalOk } = this.appStateHandle;
         return (
             <Modal
                 activeModalId={currentId}
@@ -617,7 +617,7 @@ export class OptionApp extends MemoComponent<IProps> {
     }
 
     get $showDelDialogCheckbox() {
-        const { onDelConfirmDialogToggle } = this.appStateManager;
+        const { onDelConfirmDialogToggle } = this.appStateHandle;
         return (
             <Checkbox
                 id="setting-delete-confirm"
@@ -627,8 +627,8 @@ export class OptionApp extends MemoComponent<IProps> {
         );
     }
 
-    get appStateManager() {
-        return this.props.appStateManager;
+    get appStateHandle() {
+        return this.props.appStateHandle;
     }
 
     get appState() {

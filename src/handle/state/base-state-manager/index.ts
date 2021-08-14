@@ -1,13 +1,13 @@
 import PubSub from 'pubsub-js';
-import { IStateHandlerClass } from '../type';
+import { IStateHandleClass } from '../type';
 
 export class BaseStateManager {
     readonly CHANGE_EVT: string = 'CHANGE';
     readonly PubSub: PubSub = PubSub;
 
-    static join<T extends BaseStateManager>(Handlers: IStateHandlerClass[]): T {
+    static join<T extends BaseStateManager>(Handlers: IStateHandleClass[]): T {
         class BaseClass extends BaseStateManager {}
-        Handlers.forEach((Handler: IStateHandlerClass) => {
+        Handlers.forEach((Handler: IStateHandleClass) => {
             const { prototype: baseProto } = BaseClass;
             const { prototype } = Handler;
 

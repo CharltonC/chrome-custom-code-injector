@@ -7,14 +7,14 @@ export interface IStateConfigs {
 
 export interface ITransfmStateConfigs {
     appState: AObj;
-    appStateManager: BaseStateManager | Record<string, BaseStateManager>;
+    appStateHandle: BaseStateManager | Record<string, BaseStateManager>;
 }
 
-export interface IStateHandlerClass<T = BaseStateManager> {
+export interface IStateHandleClass<T = BaseStateManager> {
     new(...args: any[]): T;
 }
 
 export interface IAppProps<T, U> {
     appState: T;
-    appStateManager: Record<keyof U, (...args: any[]) => any>;
+    appStateHandle: Record<keyof U, (...args: any[]) => any>;
 }

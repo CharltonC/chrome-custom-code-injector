@@ -1,5 +1,5 @@
 import { IAppProps } from '../../../handle/state/type';
-import { IAppState } from '../../../state/model/type';
-import { IStateHandler } from '../../../state/manager/type';
+import { AppState } from '../../../model/app-state';
+import { IStateHandle } from '../../../handle/app-state/type';
 
-export interface IProps extends IAppProps<IAppState, IStateHandler> {}
+export interface IProps extends IAppProps<AppState, IStateHandle> {}

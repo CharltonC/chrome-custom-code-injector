@@ -1,10 +1,10 @@
-import { resultsPerPageList } from '../../../constant/result-per-page-list';
+import { resultsPerPageList } from '../../constant/result-per-page-list';
 import { SettingState } from '../setting-state';
-import { HostRule } from '../../../model/rule';
-import { PgnHandle } from '../../../handle/pagination';
-import * as TSort from '../../../handle/sort/type';
-import * as TPgn from '../../../handle/pagination/type';
-import * as TRowSelect from '../../../handle/row-select/type';
+import { HostRule } from '../rule';
+import { PgnHandle } from '../../handle/pagination';
+import * as TSort from '../../handle/sort/type';
+import * as TPgn from '../../handle/pagination/type';
+import * as TRowSelect from '../../handle/row-select/type';
 
 const { resultsPerPageIdx } = new SettingState();
 const pgnHandle = new PgnHandle();

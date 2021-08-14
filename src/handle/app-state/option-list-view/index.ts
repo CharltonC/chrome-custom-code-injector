@@ -1,17 +1,17 @@
-import { StateHandle } from '../../../handle/state';
-import { RowSelectHandle } from '../../../handle/row-select';
-import { dataHandle } from '../../../handle/data';
+import { StateHandle } from '../../state';
+import { RowSelectHandle } from '../../row-select';
+import { dataHandle } from '../../data';
 
-import { TextInputState } from '../../model/text-input-state';
-import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
-import { IAppState } from '../../model/type';
+import { TextInputState } from '../../../model/text-input-state';
+import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
+import { AppState } from '../../../model/app-state';
 import { IOnPaginatePayload, IOnSortPayload, IOnRowSelectTogglePayload, IOnJsExecStepChangePayload } from './type';
 
 const rowSelectHandle = new RowSelectHandle();
 
-export class OptionListViewStateManager extends StateHandle.BaseStateManager {
+export class OptionListViewStateHandle extends StateHandle.BaseStateManager {
     //// DATA GRID
-    onSearchTextChange({ localState }: IAppState, payload: {value: string}): Partial<IAppState> {
+    onSearchTextChange({ localState }: AppState, payload: {value: string}): Partial<AppState> {
         const { value } = payload;
         return {
             localState: {
@@ -24,7 +24,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onSearchTextClear({ localState }: IAppState): Partial<IAppState> {
+    onSearchTextClear({ localState }: AppState): Partial<AppState> {
         return {
             localState: {
                 ...localState,
@@ -36,7 +36,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onPaginate({ localState}: IAppState, payload: IOnPaginatePayload): Partial<IAppState> {
+    onPaginate({ localState}: AppState, payload: IOnPaginatePayload): Partial<AppState> {
         return {
             localState: {
                 ...localState,
@@ -59,7 +59,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onSort({ localState }: IAppState, payload: IOnSortPayload): Partial<IAppState> {
+    onSort({ localState }: AppState, payload: IOnSortPayload): Partial<AppState> {
         const { sortOption } = payload;
         return {
             localState: {
@@ -75,7 +75,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onRowSelectToggle({ localState }: IAppState, payload: IOnRowSelectTogglePayload): Partial<IAppState> {
+    onRowSelectToggle({ localState }: AppState, payload: IOnRowSelectTogglePayload): Partial<AppState> {
         const { dataSrc, hostId } = payload;
         const { dataGrid } = localState.listView;
         const {
@@ -110,7 +110,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onRowsSelectToggle({ localState }: IAppState): Partial<IAppState> {
+    onRowsSelectToggle({ localState }: AppState): Partial<AppState> {
         const { dataGrid } = localState.listView;
         const { selectState } = dataGrid;
         const rowSelectState = rowSelectHandle.getState({
@@ -131,7 +131,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onRowExpand({ localState }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onRowExpand({ localState }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         const { hostId } = payload;
         const { dataGrid } = localState.listView;
         const { expdRowId } = dataGrid;
@@ -150,7 +150,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         };
     }
 
-    onEditView({ rules, localState }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onEditView({ rules, localState }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         const { editView } = localState;
 
         // Get the title and value of the item to be used in input placeholders
@@ -176,35 +176,35 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
     }
 
     // Shared btw List & Edit View
-    onHttpsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onHttpsToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleHttpsSwitch(rules, payload);
         return {};
     }
 
     // Shared btw List & Edit View
-    onExactMatchToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onExactMatchToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleExactSwitch(rules, payload);
         return {};
     }
 
     // Shared btw List & Edit View
-    onJsExecStepChange({ rules }: IAppState, payload: IOnJsExecStepChangePayload): Partial<IAppState> {
+    onJsExecStepChange({ rules }: AppState, payload: IOnJsExecStepChangePayload): Partial<AppState> {
         const { selectValueAttrVal, ...ruleIdCtx } = payload;
         dataHandle.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
         return {};
     }
 
-    onJsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onJsToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleJsSwitch(rules, payload);
         return {};
     }
 
-    onCssToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onCssToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleCssSwitch(rules, payload);
         return {};
     }
 
-    onLibToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onLibToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleLibSwitch(rules, payload);
         return {};
     }

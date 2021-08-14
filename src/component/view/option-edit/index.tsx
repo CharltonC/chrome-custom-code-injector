@@ -41,7 +41,7 @@ export class OptionEditView extends MemoComponent<IProps> {
 
             onAddLibModal,
             onDelLibsModal,
-        } = this.appStateManager;
+        } = this.appStateHandle;
 
         const { rules } = this.appState;
         const { ruleIdCtx, titleInput, valueInput, dataGrid } = this.editViewState;
@@ -238,8 +238,8 @@ export class OptionEditView extends MemoComponent<IProps> {
         return this.props.appState;
     }
 
-    get appStateManager() {
-        return this.props.appStateManager;
+    get appStateHandle() {
+        return this.props.appStateHandle;
     }
 
     get editViewState() {

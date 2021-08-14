@@ -18,19 +18,19 @@ export const StateHandle = {
 
     init(Cmp: ACmp, stateConfigs: IStateConfigs): ComponentClass {
         return class extends BaseStateComponent {
-            appStateManager: AObj;
+            appStateHandle: AObj;
 
             constructor(props: AObj) {
                 super(props);
-                const { appState, appStateManager } = this.transformStateConfigs(stateConfigs);
+                const { appState, appStateHandle } = this.transformStateConfigs(stateConfigs);
                 this.state = appState;
-                this.appStateManager = appStateManager;
+                this.appStateHandle = appStateHandle;
             }
 
             render() {
                 return <Cmp
                     appState={this.state}
-                    appStateManager={this.appStateManager}
+                    appStateHandle={this.appStateHandle}
                     />;
             }
         }
