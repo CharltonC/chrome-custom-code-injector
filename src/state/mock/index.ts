@@ -1,4 +1,4 @@
-import { createMockRules } from '../../data/mock';
+import { createMockRules } from '../../mock/data';
 import { LocalState } from '../model/local-state';
 import { SettingState } from '../model/setting-state';
 import { IAppState } from '../model/type';

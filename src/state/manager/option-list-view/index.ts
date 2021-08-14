@@ -1,6 +1,6 @@
 import { StateHandle } from '../../../handle/state';
 import { RowSelectHandle } from '../../../handle/row-select';
-import { dataManager } from '../../../data/manager';
+import { dataHandle } from '../../../handle/data';
 
 import { TextInputState } from '../../model/text-input-state';
 import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
@@ -154,7 +154,7 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
         const { editView } = localState;
 
         // Get the title and value of the item to be used in input placeholders
-        const { title, value } = dataManager.getRuleFromIdCtx(rules, payload);
+        const { title, value } = dataHandle.getRuleFromIdCtx(rules, payload);
         const titleInput = new TextInputState({ value: title });
         const valueInput = new TextInputState({ value });
 
@@ -177,35 +177,35 @@ export class OptionListViewStateManager extends StateHandle.BaseStateManager {
 
     // Shared btw List & Edit View
     onHttpsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        dataManager.toggleHttpsSwitch(rules, payload);
+        dataHandle.toggleHttpsSwitch(rules, payload);
         return {};
     }
 
     // Shared btw List & Edit View
     onExactMatchToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        dataManager.toggleExactSwitch(rules, payload);
+        dataHandle.toggleExactSwitch(rules, payload);
         return {};
     }
 
     // Shared btw List & Edit View
     onJsExecStepChange({ rules }: IAppState, payload: IOnJsExecStepChangePayload): Partial<IAppState> {
         const { selectValueAttrVal, ...ruleIdCtx } = payload;
-        dataManager.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
+        dataHandle.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
         return {};
     }
 
     onJsToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        dataManager.toggleJsSwitch(rules, payload);
+        dataHandle.toggleJsSwitch(rules, payload);
         return {};
     }
 
     onCssToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        dataManager.toggleCssSwitch(rules, payload);
+        dataHandle.toggleCssSwitch(rules, payload);
         return {};
     }
 
     onLibToggle({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
-        dataManager.toggleLibSwitch(rules, payload);
+        dataHandle.toggleLibSwitch(rules, payload);
         return {};
     }
 }

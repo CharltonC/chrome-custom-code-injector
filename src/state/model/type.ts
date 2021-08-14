@@ -1,5 +1,5 @@
 import { SettingState } from './setting-state';
-import { HostRuleConfig } from '../../data/model/rule-config';
+import { HostRule } from '../../model/rule';
 import { LocalState } from './local-state';
 
 export interface IAppState {
@@ -7,7 +7,7 @@ export interface IAppState {
     setting: SettingState;
 
     // Persistant: host/path rules
-    rules: HostRuleConfig[];
+    rules: HostRule[];
 
     // Non-Persistant (in-memory): local state
     localState: LocalState;

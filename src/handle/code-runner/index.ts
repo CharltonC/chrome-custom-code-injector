@@ -1,9 +1,9 @@
-import { LibRuleConfig, HostRuleConfig, PathRuleConfig } from "../../data/model/rule-config";
+import { LibRule, HostRule, PathRule } from "../../model/rule";
 import { IAddToDomArg } from "./type";
 
 export class CodeRunnerHandle {
     //// RUNNER (CONSOLIDATE ALL INJECTORS)
-    init(rules: HostRuleConfig[]): void {
+    init(rules: HostRule[]): void {
         const { protocol, host, pathname } = document.location;
         rules.forEach(hostRule => {
             // Check & Run Host rule
@@ -22,13 +22,13 @@ export class CodeRunnerHandle {
         });
     }
 
-    applyRule(rule: HostRuleConfig | PathRuleConfig, codeExecPhase: 0 | 1): void {
+    applyRule(rule: HostRule | PathRule, codeExecPhase: 0 | 1): void {
         codeExecPhase === 0
             ? this.applyRuleNow(rule)
             : this.applyRuleAtLoaded(rule);
     }
 
-    applyRuleNow(rule: HostRuleConfig | PathRuleConfig): void {
+    applyRuleNow(rule: HostRule | PathRule): void {
         const {
             isJsOn, jsCode,
             isCssOn, cssCode,
@@ -41,7 +41,7 @@ export class CodeRunnerHandle {
         isLibOn && this.injectLibs(libs, id, isHost);
     }
 
-    applyRuleAtLoaded(rule: HostRuleConfig | PathRuleConfig): void {
+    applyRuleAtLoaded(rule: HostRule | PathRule): void {
         const callback = this.getOnWindowLoadCallback(rule);
         window.addEventListener('load', callback);
     }
@@ -73,7 +73,7 @@ export class CodeRunnerHandle {
         });
     }
 
-    injectLibs(libs: LibRuleConfig[], id: string, isHost: boolean): void {
+    injectLibs(libs: LibRule[], id: string, isHost: boolean): void {
         const injectType = 'library';
         const $jsLibs = document.createDocumentFragment();
         const $cssLibs = document.createDocumentFragment();
@@ -143,7 +143,7 @@ export class CodeRunnerHandle {
     }
 
     //// HELPER
-    getOnWindowLoadCallback(rule: HostRuleConfig | PathRuleConfig): () => void {
+    getOnWindowLoadCallback(rule: HostRule | PathRule): () => void {
         const onLoadCallback = () => {
             this.applyRuleNow(rule);
             window.removeEventListener('load', onLoadCallback);
@@ -151,14 +151,14 @@ export class CodeRunnerHandle {
         return onLoadCallback;
     }
 
-    isMatchHost(protocol: string, host: string, hostRule: HostRuleConfig): boolean {
+    isMatchHost(protocol: string, host: string, hostRule: HostRule): boolean {
         const { isHttps, value, isExactMatch } = hostRule;
         const isHostMatch = isExactMatch ? host === value : host.includes(value);
         const isProtocolMatch = this.isMatchProtocol(protocol, isHttps);
         return isHostMatch && isProtocolMatch;
     }
 
-    isMatchPath(pathname: string, pathRule: PathRuleConfig): boolean {
+    isMatchPath(pathname: string, pathRule: PathRule): boolean {
         const { value, isExactMatch } = pathRule;
         return isExactMatch ? pathname === value : pathname.includes(value);
     }

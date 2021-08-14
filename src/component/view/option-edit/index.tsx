@@ -2,7 +2,7 @@ import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationSet } from '../../../constant/validation-set';
 import { codeExecStageList } from '../../../constant/code-exec-stage-list';
-import { dataManager } from '../../../data/manager';
+import { dataHandle } from '../../../handle/data';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { TextInput } from '../../base/input-text';
@@ -16,9 +16,9 @@ import { Checkbox } from '../../base/checkbox';
 import { DataGrid } from '../../widget/data-grid';
 import { TbRow } from './tb-row';
 
-import { LibRuleConfig } from '../../../data/model/rule-config';
+import { LibRule } from '../../../model/rule';
 import * as TSortHandle from '../../../handle/sort/type';
-import * as TDataHandler from '../../../data/manager/type';
+import * as TDataHandler from '../../../handle/data/type';
 import { IProps } from './type';
 
 export class OptionEditView extends MemoComponent<IProps> {
@@ -47,8 +47,8 @@ export class OptionEditView extends MemoComponent<IProps> {
         const { ruleIdCtx, titleInput, valueInput, dataGrid } = this.editViewState;
 
         // Item
-        const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
-        const { hostIdx, pathIdx } = dataManager.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
+        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandler.AHostPathRule;
+        const { hostIdx, pathIdx } = dataHandle.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
         const { isHost, isExactMatch, activeTabIdx, libs, jsCode, cssCode, codeExecPhase } = item;
 
         // Text Input
@@ -86,19 +86,19 @@ export class OptionEditView extends MemoComponent<IProps> {
                 onChange={onLibRowsSelectToggle}
                 />
         );
-        const $title = (data: LibRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+        const $title = (data: LibRule[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>TITLE</span>
                 <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
             </>
         );
-        const $addr = (data: LibRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+        const $addr = (data: LibRule[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>URL</span>
                 <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
             </>
         );
-        const $delAll = (dataSrc: LibRuleConfig[]) => (
+        const $delAll = (dataSrc: LibRule[]) => (
             <IconBtn
                 icon="delete"
                 theme="gray"

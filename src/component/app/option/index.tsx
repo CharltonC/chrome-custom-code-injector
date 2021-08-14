@@ -1,5 +1,5 @@
 import React from 'react';
-import { dataManager } from '../../../data/manager';
+import { dataHandle } from '../../../handle/data';
 import { modalSet } from '../../../constant/modal-set';
 import { urlSet } from '../../../constant/url-set';
 import { resultsPerPageList } from '../../../constant/result-per-page-list';
@@ -19,7 +19,7 @@ import { OptionListView } from '../../view/option-list';
 import { OptionEditView } from '../../view/option-edit';
 import { inclStaticIcon } from '../../static/icon';
 
-import { AHostPathRule } from '../../../data/manager/type';
+import { AHostPathRule } from '../../../handle/data/type';
 import { IProps } from './type';
 
 const $docIcon = inclStaticIcon('doc', 'white');
@@ -77,7 +77,7 @@ export class OptionApp extends MemoComponent<IProps> {
 
         //// Edit View
         const { ruleIdCtx } = isListView ? listView : editView;
-        const item = dataManager.getRuleFromIdCtx(rules, ruleIdCtx);
+        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx);
         const isHost = (item as AHostPathRule)?.isHost;
 
         return (

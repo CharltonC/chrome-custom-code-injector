@@ -1,5 +1,5 @@
 import React from 'react';
-import { dataManager } from '../../../data/manager';
+import { dataHandle } from '../../../handle/data';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
@@ -9,7 +9,7 @@ import { SortBtn } from '../../base/btn-sort';
 import { TbRow } from './tb-row';
 
 import * as TSortHandle from '../../../handle/sort/type';
-import { HostRuleConfig } from '../../../data/model/rule-config';
+import { HostRule } from '../../../model/rule';
 import { IProps } from './type';
 
 export class OptionListView extends MemoComponent<IProps> {
@@ -28,7 +28,7 @@ export class OptionListView extends MemoComponent<IProps> {
 
         // Data
         const { searchText } = localState.listView;
-        const data = dataManager.getFilteredRules(rules, searchText);
+        const data = dataHandle.getFilteredRules(rules, searchText);
 
         // Pagination
         const { increment, incrementIdx } = pgnOption;
@@ -53,13 +53,13 @@ export class OptionListView extends MemoComponent<IProps> {
                 onChange={onRowsSelectToggle}
                 />
         );
-        const $title = (data: HostRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+        const $title = (data: HostRule[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>TITLE</span>
                 <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
             </>
         );
-        const $address = (data: HostRuleConfig[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
+        const $address = (data: HostRule[], sortBtnProps: TSortHandle.ICmpSortBtnAttr) => (
             <>
                 <span>ADDRESS</span>
                 <SortBtn {...sortBtnProps} disabled={isSortDisabled} />
@@ -74,7 +74,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 onClick={onAddHostModal}
                 />
         );
-        const $delHosts = (srcRules: HostRuleConfig[], btnProps, pgnState) => {
+        const $delHosts = (srcRules: HostRule[], btnProps, pgnState) => {
             const { startIdx, endIdx } = pgnState;
             const sliceIdxCtx = { startIdx, endIdx };
             return (

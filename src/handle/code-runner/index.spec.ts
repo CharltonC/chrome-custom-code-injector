@@ -1,22 +1,22 @@
 import { TestUtil } from '../../asset/ts/test-util';
 import { codeRunnerHandle as handle, CodeRunnerHandle } from './';
 import { AMethodSpy } from '../../asset/ts/test-util/type';
-import { HostRuleConfig, PathRuleConfig, LibRuleConfig } from '../../data/model/rule-config';
+import { HostRule, PathRule, LibRule } from '../../model/rule';
 
 describe('Code Runner Handle', () => {
     let mockFn;
     let handleSpy: AMethodSpy<CodeRunnerHandle>;
-    let mockHost: HostRuleConfig;
-    let mockPath: PathRuleConfig;
-    let mockRules: HostRuleConfig[];
+    let mockHost: HostRule;
+    let mockPath: PathRule;
+    let mockRules: HostRule[];
 
     beforeEach(() => {
         handleSpy = TestUtil.spyMethods(handle);
 
         mockFn = () => {};
 
-        mockHost = new HostRuleConfig('lorem', 'sum');
-        mockPath = new PathRuleConfig('lorem-path', 'sum-path');
+        mockHost = new HostRule('lorem', 'sum');
+        mockPath = new PathRule('lorem-path', 'sum-path');
         mockHost.paths.push(mockPath);
         mockRules = [ mockHost ];
     });
@@ -181,11 +181,11 @@ describe('Code Runner Handle', () => {
         $mockFragment.appendChild($mockElem);
 
         // Mock libraries
-        let mockLib: LibRuleConfig;
-        let mockLibs: LibRuleConfig[];
+        let mockLib: LibRule;
+        let mockLibs: LibRule[];
 
         beforeEach(() => {
-            mockLib = new LibRuleConfig('lorem', 'sum');
+            mockLib = new LibRule('lorem', 'sum');
             mockLibs = [mockLib];
 
             handleSpy.injectJsLib.mockImplementation(mockFn);
@@ -325,7 +325,7 @@ describe('Code Runner Handle', () => {
         const mockHost = 'host';
         const mockInclHost = `some${mockHost}`;
         const mockIncorrectHost = '1234';
-        const mockHostRule = new HostRuleConfig('lorem', mockHost);
+        const mockHostRule = new HostRule('lorem', mockHost);
         const mockProtocol = 'https';
 
         beforeEach(() => {
@@ -378,7 +378,7 @@ describe('Code Runner Handle', () => {
         const mockExactPath = mockPath;
         const mockInclPath = `some${mockPath}`;
         const mockIncorrectPath = '1234';
-        const mockPathRule = new PathRuleConfig('lorem', mockPath);
+        const mockPathRule = new PathRule('lorem', mockPath);
 
         describe('When exact match is required', () => {
             it('should return true if it matches', () => {

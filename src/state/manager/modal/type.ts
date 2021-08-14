@@ -1,7 +1,7 @@
-import { HostRuleConfig } from '../../../data/model/rule-config';
+import { HostRule } from '../../../model/rule';
 
 export interface IOnDelHostsModalPayload {
-    srcRules: HostRuleConfig[];
+    srcRules: HostRule[];
     sliceIdxCtx: {
         startIdx: number;
         endIdx: number;

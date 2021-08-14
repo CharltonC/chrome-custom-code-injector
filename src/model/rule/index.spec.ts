@@ -1,7 +1,7 @@
-import { BaseRuleConfig, PathRuleConfig, HostRuleConfig, LibRuleConfig } from '.';
+import { BaseRule, PathRule, HostRule, LibRule } from '.';
 
 const mockId = '';
-jest.mock('../../../handle/util', () => ({
+jest.mock('../../handle/util', () => ({
     UtilHandle: {
         createId: () => mockId
     }
@@ -12,7 +12,7 @@ describe('Rule Config Model', () => {
     const mockValue = 'value';
 
     it('should return default values for `BaseRuleCofig`', () => {
-        expect(new BaseRuleConfig()).toEqual({
+        expect(new BaseRule()).toEqual({
             isJsOn: false,
             isCssOn: false,
             isLibOn: false,
@@ -20,9 +20,9 @@ describe('Rule Config Model', () => {
         });
     });
 
-    it('should return default values for `PathRuleConfig`', () => {
-        expect(new PathRuleConfig(mockTitle, mockValue)).toEqual({
-            ...(new BaseRuleConfig()),
+    it('should return default values for `PathRule`', () => {
+        expect(new PathRule(mockTitle, mockValue)).toEqual({
+            ...(new BaseRule()),
             id: '',
             isExactMatch: false,
             title: mockTitle,
@@ -35,10 +35,10 @@ describe('Rule Config Model', () => {
 
     });
 
-    it('should return default values for `HostRuleConfig`', () => {
-        expect(new HostRuleConfig(mockTitle, mockValue)).toEqual({
-            ...(new BaseRuleConfig()),
-            ...(new PathRuleConfig(mockTitle, mockValue)),
+    it('should return default values for `HostRule`', () => {
+        expect(new HostRule(mockTitle, mockValue)).toEqual({
+            ...(new BaseRule()),
+            ...(new PathRule(mockTitle, mockValue)),
             id: '',
             isHost: true,
             isHttps: false,
@@ -46,8 +46,8 @@ describe('Rule Config Model', () => {
         });
     });
 
-    it('should return default values for `LibRuleConfig`', () => {
-        expect(new LibRuleConfig(mockTitle, mockValue)).toEqual({
+    it('should return default values for `LibRule`', () => {
+        expect(new LibRule(mockTitle, mockValue)).toEqual({
             id: '',
             type: 'js',
             title: mockTitle,

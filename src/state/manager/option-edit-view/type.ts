@@ -1,10 +1,10 @@
-import { LibRuleConfig, HostRuleConfig, PathRuleConfig } from "../../../data/model/rule-config";
-import { ALibType, AActiveTabIdx } from "../../../data/model/rule-config/type";
+import { LibRule, HostRule, PathRule } from "../../../model/rule";
+import { ALibType, AActiveTabIdx } from "../../../model/rule/type";
 import { RuleIdCtxState } from "../../model/rule-id-ctx-state";
 
 export interface IOnLibRowSelectTogglePayload {
     id: string;
-    libs: LibRuleConfig[];
+    libs: LibRule[];
 }
 
 export interface IOnActiveTabChangePayload {
@@ -29,7 +29,7 @@ export interface IOnLibTypeChangePayload {
 }
 
 export interface IOnActiveRuleChangePayload {
-    item: HostRuleConfig | PathRuleConfig;
+    item: HostRule | PathRule;
     parentIdx?: number;
     isChild?: boolean;
 }

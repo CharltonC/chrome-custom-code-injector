@@ -1,4 +1,4 @@
-import { HostRuleConfig, LibRuleConfig, PathRuleConfig } from '../model/rule-config';
+import { HostRule, LibRule, PathRule } from '../../model/rule';
 
 export interface IRuleIdCtx {
     hostId: string;
@@ -17,5 +17,5 @@ export interface ISliceIdxCtx {
     endIdx?: number;  // exclusive of itself
 }
 
-export type AAnyRule = HostRuleConfig | PathRuleConfig | LibRuleConfig;
-export type AHostPathRule = HostRuleConfig | PathRuleConfig;
+export type AAnyRule = HostRule | PathRule | LibRule;
+export type AHostPathRule = HostRule | PathRule;

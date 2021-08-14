@@ -1,4 +1,4 @@
-import { HostRuleConfig } from '../../../data/model/rule-config';
+import { HostRule } from '../../../model/rule';
 import * as TPgn from '../../../handle/pagination/type';
 import * as TSort from '../../../handle/sort/type';
 
@@ -13,7 +13,7 @@ export interface IOnSortPayload {
 }
 
 export interface IOnRowSelectTogglePayload {
-    dataSrc: HostRuleConfig[];
+    dataSrc: HostRule[];
     hostId: string
 }
 

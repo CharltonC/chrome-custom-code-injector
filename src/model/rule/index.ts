@@ -2,17 +2,17 @@
  * Since JS doesnt allow multiple inheritance, some properties are inevitably repeated
  * e.g. id, value, isHttps, isExactMatch
  */
-import { UtilHandle } from '../../../handle/util';
+import { UtilHandle } from '../../handle/util';
 import { ACodeExecPhase, AActiveTabIdx, ALibType } from './type';
 
-export class BaseRuleConfig {
+export class BaseRule {
     isJsOn = false;
     isCssOn = false;
     isLibOn = false;
     codeExecPhase: ACodeExecPhase = 0;
 }
 
-export class PathRuleConfig extends BaseRuleConfig {
+export class PathRule extends BaseRule {
     id: string;
     isHost: boolean;
     isExactMatch = false;
@@ -20,7 +20,7 @@ export class PathRuleConfig extends BaseRuleConfig {
     value = '';
     jsCode = '';
     cssCode = '';
-    libs: LibRuleConfig[] = [];
+    libs: LibRule[] = [];
     activeTabIdx: AActiveTabIdx = 0;
 
     constructor(title: string, value: string) {
@@ -31,13 +31,13 @@ export class PathRuleConfig extends BaseRuleConfig {
     }
 }
 
-export class HostRuleConfig extends PathRuleConfig {
+export class HostRule extends PathRule {
     isHost = true;
     isHttps = false;
-    paths: PathRuleConfig[] = [];
+    paths: PathRule[] = [];
 }
 
-export class LibRuleConfig {
+export class LibRule {
     id: string;
     type: ALibType = 'js';
     title = '';
