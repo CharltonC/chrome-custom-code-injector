@@ -15,7 +15,7 @@ export class ChromeHandle {
         return data;
     }
 
-    async saveState(stateToMerge: IState): Promise<void>  {
+    async saveState(stateToMerge: Partial<IState>): Promise<void>  {
         const existState = await this.getState();
         const state = Object.assign(existState, stateToMerge);
         chrome.storage.sync.set({
