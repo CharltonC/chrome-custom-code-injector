@@ -4,7 +4,6 @@ import { chromeHandle, ChromeHandle } from './';
 
 describe('Chrome Handle', () => {
     let handleSpy: AMethodSpy<ChromeHandle>;
-    let isInChromeCtxSpy: jest.SpyInstance;
     let chromeStoreGetSpy: jest.SpyInstance;
     let chromeStoreSetSpy: jest.SpyInstance;
 
@@ -20,11 +19,9 @@ describe('Chrome Handle', () => {
                 }
             }
         });
+        chromeHandle.isInChromeCtx = true;
 
         handleSpy = TestUtil.spyMethods(chromeHandle);
-        isInChromeCtxSpy = jest.spyOn(chromeHandle, 'isInChromeCtx', 'get');
-        isInChromeCtxSpy.mockReturnValue(true);
-
         chromeStoreGetSpy = jest.spyOn(chrome.storage.sync, 'get');
         chromeStoreSetSpy = jest.spyOn(chrome.storage.sync, 'set');
         chromeStoreSetSpy.mockImplementation(() => {});
@@ -69,7 +66,7 @@ describe('Chrome Handle', () => {
         });
 
         it('should exit if chrome doesnt exist', async () => {
-            isInChromeCtxSpy.mockReturnValue(false);
+            chromeHandle.isInChromeCtx = false;
             await chromeHandle.saveState({});
 
             expect(handleSpy.getState).not.toHaveBeenCalled();
@@ -102,22 +99,4 @@ describe('Chrome Handle', () => {
             expect(mockResolveFn).toHaveBeenCalledWith('lorem');
         });
     });
-
-    describe('Getter - isInChromeCtx', () => {
-        beforeEach(() => {
-            isInChromeCtxSpy.mockRestore();
-        });
-
-        it('should return true if chrome is defined', () => {
-            expect(chromeHandle.isInChromeCtx).toBeTruthy();
-        });
-
-        it('should return true if chrome is not defined', () => {
-            globalThis.chrome = undefined;
-            expect(chromeHandle.isInChromeCtx).toBeFalsy();
-        });
-    });
-
-
-
 });

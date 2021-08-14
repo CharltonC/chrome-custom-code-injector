@@ -2,6 +2,7 @@ import { IState, TStorageCallack } from './type';
 
 export class ChromeHandle {
     storeKey = 'chrome-code-injector';
+    isInChromeCtx = typeof chrome !== 'undefined';
 
     constructor(storeKey?: string) {
         if (!storeKey) return;
@@ -34,10 +35,6 @@ export class ChromeHandle {
 
     getStorageCallback(resolveFn: AFn): TStorageCallack {
         return (storage: AObj) => resolveFn(storage[this.storeKey]);
-    }
-
-    get isInChromeCtx() {
-        return typeof chrome !== 'undefined';
     }
 }
 
