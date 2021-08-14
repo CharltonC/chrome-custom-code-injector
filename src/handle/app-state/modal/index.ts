@@ -88,8 +88,11 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         return {
             localState: {
                 ...localState,
-                modalImportFileInput: evt.target.files.item(0),
-                isModalConfirmBtnEnabled: isValid
+                modal: {
+                    ...localState.modal,
+                    isConfirmBtnEnabled: isValid,
+                    importFileInput: evt.target.files.item(0)
+                }
             }
         };
     }
