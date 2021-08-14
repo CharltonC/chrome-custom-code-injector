@@ -1,6 +1,7 @@
 import { StateHandle } from '../../state';
 import { RowSelectHandle } from '../../row-select';
 import { dataHandle } from '../../data';
+import { chromeHandle } from '../../chrome';
 
 import { TextInputState } from '../../../model/text-input-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
@@ -178,12 +179,14 @@ export class OptionListViewStateHandle extends StateHandle.BaseStateManager {
     // Shared btw List & Edit View
     onHttpsToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleHttpsSwitch(rules, payload);
+        chromeHandle.saveState({rules});
         return {};
     }
 
     // Shared btw List & Edit View
     onExactMatchToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleExactSwitch(rules, payload);
+        chromeHandle.saveState({rules});
         return {};
     }
 
@@ -191,21 +194,25 @@ export class OptionListViewStateHandle extends StateHandle.BaseStateManager {
     onJsExecStepChange({ rules }: AppState, payload: IOnJsExecStepChangePayload): Partial<AppState> {
         const { selectValueAttrVal, ...ruleIdCtx } = payload;
         dataHandle.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
+        chromeHandle.saveState({rules});
         return {};
     }
 
     onJsToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleJsSwitch(rules, payload);
+        chromeHandle.saveState({rules});
         return {};
     }
 
     onCssToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleCssSwitch(rules, payload);
+        chromeHandle.saveState({rules});
         return {};
     }
 
     onLibToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleLibSwitch(rules, payload);
+        chromeHandle.saveState({rules});
         return {};
     }
 }

@@ -2,6 +2,7 @@ import { StateHandle } from '../../state';
 import { FileHandle } from '../../file';
 import { PgnHandle } from '../../pagination';
 import { dataHandle } from '../../data';
+import { chromeHandle } from '../../chrome';
 import { modalSet } from '../../../constant/modal-set';
 
 import { HostRule, PathRule, LibRule } from '../../../model/rule';
@@ -61,6 +62,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         try {
             const rules = (await fileHandle.readJson(importFileInput)) as HostRule[];
             const { localState } = this.reflect.onModalCancel(state);
+            chromeHandle.saveState({rules});
             return { rules, localState };
         } catch (e) {
             // TODO: show error state and dont close the modal
@@ -121,24 +123,28 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
     onResultsPerPageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg): Partial<AppState> {
         const { selectValueAttrVal } = payload;
-        return {
+        const state = {
             setting: {
                 ...setting,
                 resultsPerPageIdx: selectValueAttrVal
             }
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     onResetAll(): Partial<AppState> {
-        return {
+        const state = {
             setting: new SettingState()
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     onDefHttpsToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isHttps } = defRuleConfig;
-        return {
+        const state = {
             setting: {
                 ...setting,
                 defRuleConfig: {
@@ -147,12 +153,14 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     onDefJsToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isJsOn } = defRuleConfig;
-        return {
+        const state = {
             setting: {
                 ...setting,
                 defRuleConfig: {
@@ -161,12 +169,14 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     onDefCssToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isCssOn } = defRuleConfig;
-        return {
+        const state = {
             setting: {
                 ...setting,
                 defRuleConfig: {
@@ -175,12 +185,14 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     onDefLibToggle({ setting }: AppState): Partial<AppState> {
         const { defRuleConfig } = setting;
         const { isLibOn } = defRuleConfig;
-        return {
+        const state = {
             setting: {
                 ...setting,
                 defRuleConfig: {
@@ -189,12 +201,14 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     onDefJsExecStageChange({ setting }: AppState, payload: TSelectDropdown.IOnSelectArg): Partial<AppState> {
         const { selectValueAttrVal } = payload;
         const { defRuleConfig } = setting;
-        return {
+        const state = {
             setting: {
                 ...setting,
                 defRuleConfig: {
@@ -203,15 +217,19 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     onDelConfirmDialogToggle({ setting }: AppState): Partial<AppState> {
-        return {
+        const state = {
             setting: {
                 ...setting,
                 showDeleteModal: !setting.showDeleteModal
             }
         };
+        chromeHandle.saveState(state);
+        return state;
     }
 
     //// RULE CRUD
@@ -231,6 +249,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const host = new HostRule(title, url);
         Object.assign(host, setting.defRuleConfig);
         dataHandle.addHost(rules, host);
+        chromeHandle.saveState({ rules });
 
         return {
             localState: {
@@ -277,6 +296,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const path = new PathRule(title, urlPath);
         Object.assign(path, setting.defRuleConfig);
         dataHandle.addPath(rules, ruleIdCtx, path);
+        chromeHandle.saveState({ rules });
 
         const resetLocalState = {
             ...localState,
@@ -330,6 +350,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const { value } = valueInput;
         const lib = new LibRule(title, value);
         dataHandle.addLib(rules, ruleIdCtx, lib);
+        chromeHandle.saveState({ rules });
 
         return {
             localState: {
@@ -393,6 +414,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         ruleIdCtx.pathId
             ? dataHandle.rmvPath(rules, ruleIdCtx)
             : dataHandle.rmvHost(rules, ruleIdCtx);
+        chromeHandle.saveState({ rules });
 
         const hasRules = !!rules.length;
         const resetLocalState = {
@@ -510,6 +532,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         areAllRowsSelected
             ? dataHandle.rmvHostsFromIds(rules, delIds)
             : dataHandle.rmvPartialHosts(rules, selectedRowKeyCtx);
+        chromeHandle.saveState({ rules });
 
         // Clear the Search after rules are altered (List view only)
         const { length: totalRecord } = rules;
@@ -574,6 +597,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const { editView } = localState;
         const { libRuleIdCtx } = editView;
         dataHandle.rmvLib(rules, libRuleIdCtx);
+        chromeHandle.saveState({ rules });
 
         return {
             localState: {
@@ -587,7 +611,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onDelLibsModal({ localState }: AppState, payload): Partial<AppState> {
+    onDelLibsModal({ localState }: AppState): Partial<AppState> {
         return {
             localState: {
                 ...localState,
@@ -607,6 +631,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         areAllRowsSelected
             ? dataHandle.rmvAllLibs(rules, ruleIdCtx)
             : dataHandle.rmvPartialLibs(rules, selectedRowKeyCtx, ruleIdCtx);
+        chromeHandle.saveState({ rules });
 
         return {
             localState: {
@@ -659,6 +684,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             title,
             value
         });
+        chromeHandle.saveState({ rules });
 
         return {
             localState: {

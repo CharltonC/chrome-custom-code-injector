@@ -1,6 +1,7 @@
 import { dataHandle } from '../../data';
 import { StateHandle } from '../../state';
 import { RowSelectHandle } from '../../row-select';
+import { chromeHandle } from '../../chrome';
 
 import * as TTextInput from '../../../component/base/input-text/type';
 import * as TSortHandle from '../../sort/type';
@@ -87,6 +88,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
 
         // If valid value, set/sync the item title
         dataHandle.setTitle(rules, ruleIdCtx, val);
+        chromeHandle.saveState({rules});
         return {
             ...baseState,
             rules: [...rules], // force rerender for Side Nav
@@ -116,6 +118,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
 
         // If valid value, set/sync the item value
         dataHandle.setValue(rules, ruleIdCtx, val);
+        chromeHandle.saveState({rules});
         return {
             ...baseState,
             rules: [...rules], // force rerender for Side Nav
@@ -127,6 +130,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
         const { ruleIdCtx, idx } = payload;
         const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandle.AHostPathRule;
         item.activeTabIdx = idx;
+        chromeHandle.saveState({rules});
         return {};
     }
 
@@ -135,6 +139,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
         const id = `is${tab.id}On`;
         const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandle.AHostPathRule;
         item[id] = !item[id];
+        chromeHandle.saveState({rules});
         return {};
     }
 
@@ -143,6 +148,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
         const [,,value] = codeMirrorArgs;
         const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandle.AHostPathRule;
         item[codeKey] = value;
+        chromeHandle.saveState({rules});
         return {};
     }
 
@@ -219,6 +225,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
             ...localState.editView.ruleIdCtx,
             libId: id
         }, selectValue);
+        chromeHandle.saveState({rules});
         return {};
     }
 
@@ -227,6 +234,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
             ...localState.editView.ruleIdCtx,
             libId: payload.id
         });
+        chromeHandle.saveState({rules});
         return {};
     }
 
@@ -235,6 +243,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
             ...localState.editView.ruleIdCtx,
             libId: payload.id
         });
+        chromeHandle.saveState({rules});
         return {};
     }
 }
