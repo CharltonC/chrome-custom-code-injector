@@ -10,12 +10,12 @@ import { SettingState } from '../../../model/setting-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { DataGridState } from '../../../model/data-grid-state';
 import { ModalState } from '../../../model/modal-state';
-import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
-import * as TFileInput from  '../../../component/base/input-file/type';
-import * as TTextInput from '../../../component/base/input-text/type';
 import { AppState } from '../../../model/app-state';
 import { IOnDelHostsModalPayload } from './type';
 import { TextInputState } from '../../../model/text-input-state';
+import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
+import * as TFileInput from  '../../../component/base/input-file/type';
+import * as TTextInput from '../../../component/base/input-text/type';
 
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();

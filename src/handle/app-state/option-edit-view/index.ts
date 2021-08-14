@@ -3,13 +3,13 @@ import { StateHandle } from '../../state';
 import { RowSelectHandle } from '../../row-select';
 import { chromeHandle } from '../../chrome';
 
-import * as TTextInput from '../../../component/base/input-text/type';
-import * as TSortHandle from '../../sort/type';
-import * as TDataHandle from '../../data/type';
 import { TextInputState } from '../../../model/text-input-state';
 import { DataGridState } from '../../../model/data-grid-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { AppState } from '../../../model/app-state';
+import * as TTextInput from '../../../component/base/input-text/type';
+import * as TSortHandle from '../../sort/type';
+import * as TDataHandle from '../../data/type';
 import {
     IOnActiveRuleChangePayload,
     IOnActiveTabChangePayload,
