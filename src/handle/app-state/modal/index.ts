@@ -402,7 +402,6 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         // Get the ID context (host, path) depending on the view
         const { ruleIdCtx } = isListView ? listView : editView;
         const isHost = !ruleIdCtx.pathId;
-        const { hostIdx, pathIdx } = dataHandle.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
 
         // Delete Host or Path
         ruleIdCtx.pathId
