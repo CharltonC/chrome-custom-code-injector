@@ -330,17 +330,10 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         }
     }
 
-    onAddLibModal({ localState }: AppState): Partial<AppState> {
-        const { modal } = localState;
-        return {
-            localState: {
-                ...localState,
-                modal: {
-                    ...modal,
-                    currentId: modalSet.addLib.id
-                }
-            }
-        };
+    onAddLibModal(state: AppState): Partial<AppState> {
+        return this.reflect.onModal(state, {
+            id: modalSet.addLib.id
+        });
     }
 
     onAddLibModalOk({ rules, localState }: AppState): Partial<AppState> {
@@ -467,22 +460,13 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
         // If Edit view but has rules remained
         } else {
-            // If a host is deleted, set the active host back to the 1st, else use the existing active host (if path is deleted)
-            const nextHostIdx = isHost ? 0 : hostIdx;
-            const nextHost = rules[nextHostIdx];
-            const hostId = nextHost.id;
-
-            // Get the next path Id, if paths remain in the next host
-            const nextPaths = nextHost.paths;
-            const nextPathIdx = isHost ? pathIdx : (nextPaths.length ? 0 : null);
-            const pathId = nextPaths[nextPathIdx]?.id;
-
+            const newRuleIdCtx = dataHandle.getNextAvailRuleIdCtx(rules, ruleIdCtx);
             return {
                 localState: {
                     ...resetLocalState,
                     editView: {
                         ...editView,
-                        ruleIdCtx: new RuleIdCtxState({ hostId, pathId })
+                        ruleIdCtx: new RuleIdCtxState(newRuleIdCtx)
                     }
                 }
             };
