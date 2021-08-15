@@ -99,6 +99,24 @@ export class DataHandle {
         return libs;
     }
 
+    // Get the Next available def/active Rule id context when a host/path is removed
+    getNextAvailRuleIdCtx(rules: HostRule[], ruleIdCtx: IRuleIdCtx): IRuleIdCtx {
+        const isHost = !ruleIdCtx.pathId;
+        const { hostIdx, pathIdx } = this.getRuleIdxCtxFromIdCtx(rules, ruleIdCtx);
+
+        // If a host is deleted, set the active host back to the 1st, else use the existing active host (if path is deleted)
+        const nextHostIdx = isHost ? 0 : hostIdx;
+        const nextHost = rules[nextHostIdx];
+        const hostId = nextHost?.id;
+
+        // Get the next path Id, if paths remain in the next host
+        const nextPaths = nextHost.paths;
+        const nextPathIdx = isHost ? pathIdx : (nextPaths.length ? 0 : null);
+        const pathId = nextPaths[nextPathIdx]?.id;
+
+        return { hostId, pathId };
+    }
+
     //// TOGGLE/SET
     setProps<T = AAnyRule>(rules: HostRule[], idCtx: IRuleIdCtx, props: Partial<T>) {
         const item = this.getRuleFromIdCtx(rules, idCtx);

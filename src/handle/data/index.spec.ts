@@ -213,6 +213,50 @@ describe('Data Crud Handle', () => {
                 expect(libs[0].id).toBe('lib-c-0');
             });
         });
+
+        describe('Method - getNextAvailRuleIdCtx: Get the next available def/active rule id context when a host/path is removed', () => {
+            let getRuleIdxCtxFromIdCtxSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                getRuleIdxCtxFromIdCtxSpy = jest.spyOn(dataHandle, 'getRuleIdxCtxFromIdCtx');
+            });
+
+            it('should return id context of the 1st host when a host is removed', () => {
+                const mockIdCtx = { hostId: 'host' };
+                const mockIdxCtx = { hostIdx: 1 };
+                getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockIdxCtx);
+
+                const idCtx = dataHandle.getNextAvailRuleIdCtx(mockRules, mockIdCtx);
+                expect(idCtx).toEqual({
+                    hostId: mockRules[0].id,
+                    pathId: undefined
+                });
+            });
+
+            it('should return id context of the 1st path when not the only path is removed', () => {
+                const mockIdCtx = { hostId: 'host', pathId: 'path' };
+                const mockIdxCtx = { hostIdx: 1, pathIdx: 1 };
+                getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockIdxCtx);
+
+                const idCtx = dataHandle.getNextAvailRuleIdCtx(mockRules, mockIdCtx);
+                expect(idCtx).toEqual({
+                    hostId: mockRules[mockIdxCtx.hostIdx].id,
+                    pathId: mockRules[mockIdxCtx.hostIdx].paths[0].id,
+                });
+            });
+
+            it('should return id context of the 1st host when a only path is removed', () => {
+                const mockIdCtx = { hostId: 'host', pathId: 'path' };
+                const mockIdxCtx = { hostIdx: 0, pathIdx: 0 };
+                getRuleIdxCtxFromIdCtxSpy.mockReturnValue(mockIdxCtx);
+
+                const idCtx = dataHandle.getNextAvailRuleIdCtx(mockRules, mockIdCtx);
+                expect(idCtx).toEqual({
+                    hostId: mockRules[mockIdxCtx.hostIdx].id,
+                    pathId: undefined
+                });
+            });
+        });
     });
 
     describe('Toggle/Set', () => {
