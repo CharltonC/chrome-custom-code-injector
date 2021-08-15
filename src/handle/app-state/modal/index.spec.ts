@@ -31,12 +31,7 @@ describe('Modal State Handle', () => {
 
     beforeEach(() => {
         fileHandleSpy = TestUtil.spyProtoMethods(FileHandle);
-
         dataHandleSpy = TestUtil.spyProtoMethods(DataHandle);
-        dataHandleSpy.addHost.mockImplementation(mockFn);
-        dataHandleSpy.addPath.mockImplementation(mockFn);
-        dataHandleSpy.addLib.mockImplementation(mockFn);
-
         chromeHandleSpy = TestUtil.spyProtoMethods(ChromeHandle);
         chromeHandleSpy.saveState.mockImplementation(mockFn);
 
@@ -279,7 +274,9 @@ describe('Modal State Handle', () => {
 
         describe('Method - onAddHostModalOk', () => {
             it('should add host, close modal and save to chrome', () => {
+                dataHandleSpy.addHost.mockImplementation(mockFn);
                 const { modal } = handle.onAddHostModalOk(mockState).localState;
+
                 expect(dataHandleSpy.addHost).toHaveBeenCalled();
                 expect(chromeHandleSpy.saveState).toHaveBeenCalled();
                 expect(modal).toEqual(resetModalState);
@@ -306,6 +303,7 @@ describe('Modal State Handle', () => {
         describe('Method - onAddPathModalOk: Addd Path', () => {
             beforeEach(() => {
                 pgnHandleSpy = TestUtil.spyProtoMethods(PgnHandle);
+                dataHandleSpy.addPath.mockImplementation(mockFn);
             });
 
             it('List View: should add path, close modal, reset pagination state and save to chrome', () => {
@@ -342,7 +340,9 @@ describe('Modal State Handle', () => {
 
         describe('Method - onAddLibModalOk', () => {
             it('should add library, close modal and save to chrome', () => {
+                dataHandleSpy.addLib.mockImplementation(mockFn);
                 const { modal } = handle.onAddLibModalOk(mockState).localState;
+
                 expect(dataHandleSpy.addLib).toHaveBeenCalled();
                 expect(chromeHandleSpy.saveState).toHaveBeenCalled();
                 expect(modal).toEqual(resetModalState);
@@ -421,25 +421,16 @@ describe('Modal State Handle', () => {
             });
 
             describe('List View', () => {
-                const mockText = 'lorem';
+                it('should update search text and reset rule ID context', () => {
+                    const mockSearchText = 'sum';
+                    handleSpy.getUpdatedSearchText.mockReturnValue(mockSearchText);
+                    const {
+                        ruleIdCtx,
+                        searchText
+                    } = handle.onDelHostOrPathModalOk(mockState).localState.listView;
 
-                it('should reset rule ID context', () => {
-                    const { ruleIdCtx } = handle.onDelHostOrPathModalOk(mockState).localState.listView;
                     expect(ruleIdCtx).toEqual(resetRuleIdCtxState);
-                });
-
-                it('should maintain search text if search text exists and hosts exist if a host is deleted', () => {
-                    mockState.localState.listView.searchText = mockText;
-                    mockState.rules.push(mockHost);
-
-                    const { searchText } = handle.onDelHostOrPathModalOk(mockState).localState.listView;
-                    expect(searchText).toBe(mockText);
-                });
-
-                it('should clear search text if search text exists and all hosts are removed if a host is deleted', () => {
-                    mockState.localState.listView.searchText = mockText;
-                    const { searchText } = handle.onDelHostOrPathModalOk(mockState).localState.listView;
-                    expect(searchText).toBeFalsy();
+                    expect(searchText).toEqual(mockSearchText);
                 });
 
                 it('should maintain data grid state if a path is deleted', () => {
@@ -479,6 +470,168 @@ describe('Modal State Handle', () => {
                     const { ruleIdCtx } = handle.onDelHostOrPathModalOk(mockState).localState.editView;
                     expect(ruleIdCtx).toEqual(mockRuleIdCtx);
                 });
+            });
+        });
+
+        describe('Method - onDelHostsModal', () => {
+            const mockPayload = {
+                srcRules: [],
+                sliceIdxCtx: {
+                    startIdx: 0,
+                    endIdx: 2
+                }
+            };
+
+            beforeEach(() => {
+                handleSpy.onDelHostsModalOk.mockImplementation(mockFn);
+            });
+
+            it('should open delete all hosts modal at current page', () => {
+                const { listView, modal } = handle.onDelHostsModal(mockState, mockPayload).localState;
+
+                expect(listView.dataGrid).toEqual({
+                    ...mockState.localState.listView.dataGrid,
+                    ...mockPayload
+                });
+                expect(modal.currentId).toBe(modalSet.delHosts.id);
+                expect(handleSpy.onDelHostsModalOk).not.toHaveBeenCalled();
+            });
+
+            it('should proceed to delete all hosts if delete modal is set not to be shown', () => {
+                mockState.setting.showDeleteModal = false;
+                handle.onDelHostsModal(mockState, mockPayload);
+                expect(handleSpy.onDelHostsModalOk).toHaveBeenCalled();
+            });
+        });
+
+        describe('Method - onDelHostsModalOk', () => {
+            const mockSearchText = 'lorem';
+            const mockSliceIdxCtx = { startIdx: 0, endIdx: 2 };
+            const mockSrcRules = [];
+
+            beforeEach(() => {
+                dataHandleSpy.rmvHostsFromIds.mockImplementation(mockFn);
+                dataHandleSpy.rmvPartialHosts.mockImplementation(mockFn);
+                handleSpy.getUpdatedSearchText.mockReturnValue(mockSearchText);
+
+                // Mock the cache data set by `onDelHostsModal`
+                Object.assign( mockState.localState.listView.dataGrid, {
+                    srcRules: mockSrcRules,
+                    sliceIdxCtx: mockSliceIdxCtx
+                });
+            });
+
+            it('should close modal and save to Chrome', () => {
+                const { listView, modal } = handle.onDelHostsModalOk(mockState).localState;
+                const { searchText, dataGrid } = listView;
+
+                expect(chromeHandleSpy.saveState).toHaveBeenCalled();
+                expect(modal).toEqual(resetModalState);
+                expect(searchText).toBe(mockSearchText);
+                expect(dataGrid).toEqual(new DataGridState({
+                    totalRecord: mockState.rules.length,
+                    pgnOption: mockState.localState.listView.dataGrid.pgnOption
+                }));
+            });
+
+            it('should remove all selected hosts', () => {
+                mockState.localState.listView.dataGrid.selectState.areAllRowsSelected = true;
+                handle.onDelHostsModalOk(mockState);
+
+                expect(dataHandleSpy.rmvHostsFromIds).toHaveBeenCalled();
+                expect(dataHandleSpy.rmvPartialHosts).not.toHaveBeenCalled();
+            });
+
+            it('should remove partially selected hosts', () => {
+                handle.onDelHostsModalOk(mockState);
+
+                expect(dataHandleSpy.rmvHostsFromIds).not.toHaveBeenCalled();
+                expect(dataHandleSpy.rmvPartialHosts).toHaveBeenCalled();
+            });
+        });
+
+        describe('Method - onDelLibModal', () => {
+            const mockPayload = { id: 'lorem' };
+
+            beforeEach(() => {
+                handleSpy.onDelLibModalOk.mockImplementation(mockFn);
+            });
+
+            it('should open delete library modal and set the library rule id context in edit view', () => {
+                const { editView, modal } = handle.onDelLibModal(mockState, mockPayload).localState;
+
+                expect(modal.currentId).toBe(modalSet.delLib.id);
+                expect(editView.libRuleIdCtx).toEqual({
+                    ...editView.ruleIdCtx,
+                    libId: mockPayload.id
+                });
+                expect(handleSpy.onDelLibModalOk).not.toHaveBeenCalled();
+            });
+
+            it('should proceed to delete library if delete modal is set not to be shown', () => {
+                mockState.setting.showDeleteModal = false;
+                handle.onDelLibModal(mockState, mockPayload);
+                expect(handleSpy.onDelLibModalOk).toHaveBeenCalled();
+            });
+        });
+
+        describe('Method - onDelLibModalOk', () => {
+            it('should remove library, close modal and save to Chrome', () => {
+                dataHandleSpy.rmvLib.mockImplementation(mockFn);
+                const { modal, editView } = handle.onDelLibModalOk(mockState).localState;
+
+                expect(dataHandleSpy.rmvLib).toHaveBeenCalled();
+                expect(chromeHandleSpy.saveState).toHaveBeenCalled();
+                expect(editView.libRuleIdCtx).toEqual(resetRuleIdCtxState);
+                expect(modal).toEqual(resetModalState);
+            });
+        });
+
+        describe('Method - onDelLibsModal', () => {
+            beforeEach(() => {
+                handleSpy.onDelLibsModalOk.mockImplementation(mockFn);
+            });
+
+            it('should open delete libraries modal', () => {
+                const { modal } = handle.onDelLibsModal(mockState).localState;
+                expect(modal.currentId).toBe(modalSet.delLibs.id);
+                expect(handleSpy.onDelLibsModalOk).not.toHaveBeenCalled();
+            });
+
+            it('should proceed to delete libraries if delete modal is set not to be shown', () => {
+                mockState.setting.showDeleteModal = false;
+                handle.onDelLibsModal(mockState);
+                expect(handleSpy.onDelLibsModalOk).toHaveBeenCalled();
+            });
+        });
+
+        describe('Method - onDelLibsModalOk', () => {
+            beforeEach(() => {
+                dataHandleSpy.rmvAllLibs.mockImplementation(mockFn);
+                dataHandleSpy.rmvPartialLibs.mockImplementation(mockFn);
+            });
+
+            it('should close modal and save to Chrome', () => {
+                const { editView, modal } = handle.onDelLibsModalOk(mockState).localState;
+
+                expect(chromeHandleSpy.saveState).toHaveBeenCalled();
+                expect(modal).toEqual(resetModalState);
+                expect(editView.dataGrid).toEqual(new DataGridState());
+            });
+
+            it('should remove all selected libraries', () => {
+                mockState.localState.editView.dataGrid.selectState.areAllRowsSelected = true;
+                handle.onDelLibsModalOk(mockState);
+
+                expect(dataHandleSpy.rmvAllLibs).toHaveBeenCalled();
+                expect(dataHandleSpy.rmvPartialLibs).not.toHaveBeenCalled();
+            });
+
+            it('should remove partially selected libraries', () => {
+                handle.onDelLibsModalOk(mockState);
+
+                expect(dataHandleSpy.rmvAllLibs).not.toHaveBeenCalled();
+                expect(dataHandleSpy.rmvPartialLibs).toHaveBeenCalled();
             });
         });
     });
