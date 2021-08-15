@@ -83,7 +83,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         return this.reflect.onModalCancel(state);
     }
 
-    onImportFileInputChange({ localState }, payload: TFileInput.IOnFileChange) {
+    onImportFileInputChange({ localState }, payload: TFileInput.IOnFileChange): Partial<AppState> {
         const { evt, isValid } = payload;
         return {
             localState: {
@@ -237,7 +237,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
     //// RULE CRUD
     // Add
-    onAddHostModal(state: AppState) {
+    onAddHostModal(state: AppState): Partial<AppState> {
         return this.reflect.onModal(state, {
             id: modalSet.addHost.id
         });
@@ -332,7 +332,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         }
     }
 
-    onAddLibModal({ localState }: AppState) {
+    onAddLibModal({ localState }: AppState): Partial<AppState> {
         const { modal } = localState;
         return {
             localState: {
@@ -345,7 +345,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onAddLibModalOk({ rules, localState }: AppState) {
+    onAddLibModalOk({ rules, localState }: AppState): Partial<AppState> {
         const { modal, editView } = localState;
         const { titleInput, valueInput } = modal;
         const { ruleIdCtx } = editView;
@@ -677,7 +677,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onEditLibModalOk({ rules, localState }: AppState) {
+    onEditLibModalOk({ rules, localState }: AppState): Partial<AppState> {
         const { modal, editView } = localState;
         const { titleInput, valueInput } = modal;
         const { libRuleIdCtx } = editView;
