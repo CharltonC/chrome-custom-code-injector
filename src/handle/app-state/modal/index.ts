@@ -260,20 +260,16 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onAddPathModal({ localState }: AppState, payload?: RuleIdCtxState): Partial<AppState> {
-        const { isListView, listView, modal } = localState;
-        const baseLocalState = {
-            ...localState,
-            modal: {
-                ...modal,
-                currentId: modalSet.addPath.id
-            },
-        };
+    onAddPathModal(state: AppState, payload?: RuleIdCtxState): Partial<AppState> {
+        const { isListView, listView } = state.localState;
+        const baseState = this.reflect.onModal(state, {
+            id: modalSet.addPath.id
+        });
 
         return isListView
             ? {
                 localState: {
-                    ...baseLocalState,
+                    ...baseState.localState,
                     listView: {
                         ...listView,
                         ruleIdCtx: payload
@@ -281,9 +277,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
             // Edit View already has a relative context via `ruleIdCtx` hence empty
-            : {
-                localState: baseLocalState
-            };
+            : baseState;
     }
 
     onAddPathModalOk({ localState, rules, setting }: AppState): Partial<AppState> {
@@ -358,14 +352,12 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     onDelHostOrPathModal(state: AppState, payload: RuleIdCtxState): Partial<AppState> {
         const { reflect } = this;
         const { localState, setting } = state;
-        const { isListView, listView, editView, modal } = localState;
-        const baseLocalState = {
-            ...localState,
-            modal: {
-                ...modal,
-                currentId: modalSet.delHostOrPath.id
-            },
-        };
+        const { isListView, listView, editView } = localState;
+
+        const baseLocalState = this.reflect.onModal(state, {
+            id: modalSet.delHostOrPath.id
+        }).localState;
+
         const newState: Partial<AppState> = isListView
             ? {
                 localState: {
@@ -397,7 +389,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
     onDelHostOrPathModalOk(state: AppState): Partial<AppState> {
         const { rules, localState } = state;
-        const { isListView, listView, editView, modal } = localState;
+        const { isListView, listView, editView } = localState;
 
         // Get the ID context (host, path) depending on the view
         const { ruleIdCtx } = isListView ? listView : editView;
@@ -412,10 +404,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const hasRules = !!rules.length;
         const resetLocalState = {
             ...localState,
-            modal: {
-                ...modal,
-                currentId: null
-            }
+            modal: new ModalState()
         };
 
         // If delete from List view
@@ -424,12 +413,8 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             const { pgnOption } = dataGrid;
 
             // Clear the Search only if text exists + all hosts are removed
-            const { length: totalRecord } = rules;
-            const searchText = currSearchText
-                ? totalRecord
-                    ? currSearchText
-                    : ''
-                : currSearchText ;
+            const totalRecord = rules.length;
+            const searchText = this.getUpdatedSearchText(currSearchText, totalRecord);
 
             // If a host is removed, Update new pagination state after rules removal (depends on total no. of hosts)
             const dataGridState = isHost
@@ -473,10 +458,9 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     }
 
     onDelHostsModal(state: AppState, payload: IOnDelHostsModalPayload): Partial<AppState> {
-        const { reflect } = this;
+        const { srcRules, sliceIdxCtx } = payload;
         const { localState, setting } = state;
         const { modal, listView } = localState;
-        const { srcRules, sliceIdxCtx } = payload;
 
         const newState = {
             localState: {
@@ -497,7 +481,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         };
         return setting.showDeleteModal
             ? newState
-            : reflect.onDelHostsModalOk({
+            : this.reflect.onDelHostsModalOk({
                 ...state,
                 ...newState
             });
@@ -505,7 +489,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
     onDelHostsModalOk(state: AppState): Partial<AppState> {
         const { rules, localState } = state;
-        const { listView, modal } = localState;
+        const { listView } = localState;
         const { dataGrid, searchText: currSearchText } = listView;
 
         // Remove based on specifid IDs
@@ -519,12 +503,8 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         chromeHandle.saveState({ rules });
 
         // Clear the Search after rules are altered (List view only)
-        const { length: totalRecord } = rules;
-        const searchText = currSearchText
-            ? totalRecord
-                ? currSearchText
-                : ''
-            : currSearchText ;
+        const totalRecord = rules.length;
+        const searchText = this.getUpdatedSearchText(currSearchText, totalRecord);
 
         // Update new pagination state after rules removal (depends on total no. of hosts)
         const dataGridState = new DataGridState({
@@ -536,10 +516,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             ...state,
             localState: {
                 ...localState,
-                modal: {
-                    ...modal,
-                    currentId: null
-                },
+                modal: new ModalState(),
                 listView: {
                     ...listView,
                     searchText,
@@ -595,8 +572,10 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onDelLibsModal({ localState }: AppState): Partial<AppState> {
-        return {
+    onDelLibsModal(state: AppState): Partial<AppState> {
+        const { localState, setting } = state;
+        // TODO: refelect.onModal
+        const baseState = {
             localState: {
                 ...localState,
                 modal: {
@@ -605,6 +584,12 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
         };
+        return setting.showDeleteModal
+            ? baseState
+            : this.reflect.onDelLibsModalOk({
+                ...state,
+                ...baseState
+            });
     }
 
     onDelLibsModalOk({ rules, localState }: AppState): Partial<AppState> {
@@ -721,5 +706,14 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 }
             }
         };
+    }
+
+    //// HELPER
+    getUpdatedSearchText(searchText: string, totalRecord: number) {
+        return searchText
+            ? totalRecord
+                ? searchText
+                : ''
+            : searchText;
     }
 }
