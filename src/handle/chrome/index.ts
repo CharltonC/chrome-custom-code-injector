@@ -2,7 +2,7 @@ import { IState, TStorageCallack } from './type';
 
 export class ChromeHandle {
     storeKey = 'chrome-code-injector';
-    isInChromeCtx = typeof chrome !== 'undefined';
+    isInChromeCtx = typeof chrome !== 'undefined' && !!chrome?.storage?.sync;
 
     constructor(storeKey?: string) {
         if (!storeKey) return;
