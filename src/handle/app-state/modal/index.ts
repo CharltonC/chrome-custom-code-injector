@@ -573,17 +573,11 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     }
 
     onDelLibsModal(state: AppState): Partial<AppState> {
-        const { localState, setting } = state;
-        // TODO: refelect.onModal
-        const baseState = {
-            localState: {
-                ...localState,
-                modal: {
-                    ...localState.modal,
-                    currentId: modalSet.delLibs.id
-                }
-            }
-        };
+        const { setting } = state;
+        const baseState = this.reflect.onModal(state, {
+            id: modalSet.delLibs.id
+        })
+
         return setting.showDeleteModal
             ? baseState
             : this.reflect.onDelLibsModalOk({
