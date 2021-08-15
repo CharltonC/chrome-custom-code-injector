@@ -83,7 +83,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         return this.reflect.onModalCancel(state);
     }
 
-    onImportFileInputChange({ localState }, payload: TFileInput.IOnFileChange): Partial<AppState> {
+    onImportFileInputChange({ localState }: AppState, payload: TFileInput.IOnFileChange): Partial<AppState> {
         const { evt, isValid } = payload;
         return {
             localState: {
@@ -137,11 +137,9 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     }
 
     onResetAll(): Partial<AppState> {
-        const state = {
-            setting: new SettingState()
-        };
-        chromeHandle.saveState(state);
-        return state;
+        const setting = new SettingState();
+        chromeHandle.saveState({ setting });
+        return { setting };
     }
 
     onDefHttpsToggle({ setting }: AppState): Partial<AppState> {
