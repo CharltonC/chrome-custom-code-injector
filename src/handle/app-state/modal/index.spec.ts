@@ -634,5 +634,94 @@ describe('Modal State Handle', () => {
                 expect(dataHandleSpy.rmvPartialLibs).toHaveBeenCalled();
             });
         });
+
+        describe('Method - onEditLibModal', () => {
+            it('should open edit library modal with enabled confirmed button and set library rule id context in edit view', () => {
+                dataHandleSpy.getRuleFromIdCtx.mockReturnValue({});
+                const mockPayload = { id: 'lib' };
+                const { editView, modal } = handle.onEditLibModal(mockState, mockPayload).localState;
+                const { currentId, isConfirmBtnEnabled } = modal;
+
+                expect(currentId).toBe(modalSet.editLib.id);
+                expect(isConfirmBtnEnabled).toBeTruthy();
+                expect(editView.libRuleIdCtx).toEqual({
+                    ...mockState.localState.editView.ruleIdCtx,
+                    libId: mockPayload.id
+                });
+            });
+        });
+
+        describe('Method - onEditLibModalOk', () => {
+            it('should should update library title/url, clear library rule id context, close modal and save to Chrome', () => {
+                dataHandleSpy.setProps.mockImplementation(mockFn);
+                const { editView, modal } = handle.onEditLibModalOk(mockState).localState;
+
+                expect(dataHandleSpy.setProps).toHaveBeenCalled();
+                expect(chromeHandleSpy.saveState).toHaveBeenCalled();
+                expect(editView.libRuleIdCtx).toEqual(new RuleIdCtxState());
+                expect(modal).toEqual(resetModalState);
+            });
+        });
+
+        describe('Method - onModalTitleInput', () => {
+            it('should update title input in modal and enable state of confirm button', () => {
+                const mockPayload: any = {
+                    val: 'lorem',
+                    isValid: true,
+                    errMsg: []
+                };
+                const { modal } = handle.onModalTitleInput(mockState, mockPayload).localState;
+                const { titleInput, isConfirmBtnEnabled } = modal;
+                const { value, isValid, errMsg } = titleInput;
+
+                expect(value).toBe(mockPayload.val);
+                expect(isValid).toBe(mockPayload.isValid);
+                expect(errMsg).toEqual(mockPayload.errMsg);
+                expect(isConfirmBtnEnabled).toBe(mockPayload.isValid && modal.valueInput.isValid);
+            });
+        });
+
+        describe('Method - onModalValueInput', () => {
+            it('should update value input in modal and enable state of confirm button', () => {
+                const mockPayload: any = {
+                    val: 'lorem',
+                    isValid: true,
+                    errMsg: []
+                };
+                const { modal } = handle.onModalValueInput(mockState, mockPayload).localState;
+                const { valueInput, isConfirmBtnEnabled } = modal;
+                const { value, isValid, errMsg } = valueInput;
+
+                expect(value).toBe(mockPayload.val);
+                expect(isValid).toBe(mockPayload.isValid);
+                expect(errMsg).toEqual(mockPayload.errMsg);
+                expect(isConfirmBtnEnabled).toBe(mockPayload.isValid && modal.titleInput.isValid);
+            });
+        });
+    });
+
+    describe('Helper', () => {
+        describe('Method - getUpdatedSearchText', () => {
+            it('should return existing text if search text exists and records exist', () => {
+                const mockText = 'lorem';
+                const mockTotalRecord = 1;
+                const text = handle.getUpdatedSearchText(mockText, mockTotalRecord);
+                expect(text).toBe(mockText);
+            });
+
+            it('should return cleared/empty text if search text exists and records dont exist ', () => {
+                const mockText = 'lorem';
+                const mockTotalRecord = 0;
+                const text = handle.getUpdatedSearchText(mockText, mockTotalRecord);
+                expect(text).toBeFalsy();
+            });
+
+            it('should return existing text (empty) if search text doesnt exist', () => {
+                const mockText = '';
+                const mockTotalRecord = 1;
+                const text = handle.getUpdatedSearchText(mockText, mockTotalRecord);
+                expect(text).toBe(mockText);
+            });
+        });
     });
 });
