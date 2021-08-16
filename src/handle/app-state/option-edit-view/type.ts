@@ -19,7 +19,7 @@ export interface IOnTabTogglePayload {
 
 export interface IOnCodeChangePayload {
     ruleIdCtx: RuleIdCtxState;
-    codeKey: 'jsCode' | 'cssCode';
+    codeMode: 'js' | 'css';
     codeMirrorArgs: [unknown, unknown, string];
 }
 

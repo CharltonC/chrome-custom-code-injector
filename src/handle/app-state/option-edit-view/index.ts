@@ -9,7 +9,6 @@ import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { AppState } from '../../../model/app-state';
 import * as TTextInput from '../../../component/base/input-text/type';
 import * as TSortHandle from '../../sort/type';
-import * as TDataHandle from '../../data/type';
 import {
     IOnActiveRuleChangePayload,
     IOnActiveTabChangePayload,
@@ -128,26 +127,43 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
     //// TABS
     onActiveTabChange({ rules }: AppState, payload: IOnActiveTabChangePayload): Partial<AppState> {
         const { ruleIdCtx, idx } = payload;
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandle.AHostPathRule;
-        item.activeTabIdx = idx;
+        dataHandle.setLastActiveTab(rules, ruleIdCtx, idx);
         chromeHandle.saveState({rules});
         return {};
     }
 
     onTabToggle({ rules }: AppState, payload: IOnTabTogglePayload): Partial<AppState> {
         const { ruleIdCtx, tab } = payload;
-        const id = `is${tab.id}On`;
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandle.AHostPathRule;
-        item[id] = !item[id];
+        switch (tab.id) {
+            case 'js':
+                dataHandle.toggleJsSwitch(rules, ruleIdCtx);
+                break;
+            case 'css':
+                dataHandle.toggleCssSwitch(rules, ruleIdCtx);
+                break;
+            case 'lib':
+                dataHandle.toggleLibSwitch(rules, ruleIdCtx);
+                break;
+            default:
+                return {};
+        }
         chromeHandle.saveState({rules});
         return {};
     }
 
     onCodeChange({ rules }: AppState, payload: IOnCodeChangePayload): Partial<AppState> {
-        const { ruleIdCtx, codeKey, codeMirrorArgs } = payload;
+        const { ruleIdCtx, codeMode, codeMirrorArgs } = payload;
         const [,,value] = codeMirrorArgs;
-        const item = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx) as TDataHandle.AHostPathRule;
-        item[codeKey] = value;
+        switch (codeMode) {
+            case 'js':
+                dataHandle.setJsCode(rules, ruleIdCtx, value);
+                break;
+            case 'css':
+                dataHandle.setCssCode(rules, ruleIdCtx, value);
+                break;
+            default:
+                return {};
+        }
         chromeHandle.saveState({rules});
         return {};
     }
