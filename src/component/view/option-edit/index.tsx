@@ -61,7 +61,6 @@ export class OptionEditView extends MemoComponent<IProps> {
         const isLibTab = activeTabIdx === 2;
         const isCodeTab = isJsTab || isCssTab;
         const codeMode = isJsTab ? 'js' : 'css';
-        const codeKey = isJsTab ? 'jsCode' : 'cssCode';
         const codeContent = isCodeTab ? (isJsTab ? jsCode : cssCode) : '';
 
         // Data grid
@@ -184,9 +183,9 @@ export class OptionEditView extends MemoComponent<IProps> {
                     id="tab-switch"
                     data={item}
                     dataKeyMap={[
-                        ['Js', 'isJsOn'],
-                        ['Css', 'isCssOn'],
-                        ['Lib', 'isLibOn'],
+                        ['js', 'isJsOn'],
+                        ['css', 'isCssOn'],
+                        ['lib', 'isLibOn'],
                     ]}
                     activeTabIdx={activeTabIdx}
                     onTabActive={arg => onActiveTabChange({...arg, ruleIdCtx})}
@@ -201,7 +200,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                     }}
                     onChange={(...codeMirrorArgs) => onCodeChange({
                         codeMirrorArgs,
-                        codeKey,
+                        codeMode,
                         ruleIdCtx
                     })}
                     />}{ isLibTab &&
