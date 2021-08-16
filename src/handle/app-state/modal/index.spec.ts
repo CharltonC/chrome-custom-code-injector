@@ -10,9 +10,9 @@ import { LocalState } from '../../../model/local-state';
 import { ModalState } from '../../../model/modal-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { TestUtil } from '../../../asset/ts/test-util';
-import { AMethodSpy } from '../../../asset/ts/test-util/type';
 import { HostRule } from '../../../model/rule';
 import { DataGridState } from '../../../model/data-grid-state';
+import { AMethodSpy } from '../../../asset/ts/test-util/type';
 import { ModalStateHandle } from '.';
 
 const handle = new ModalStateHandle();
@@ -26,8 +26,8 @@ describe('Modal State Handle', () => {
     let fileHandleSpy: AMethodSpy<FileHandle>;
     let chromeHandleSpy: AMethodSpy<ChromeHandle>;
     let dataHandleSpy: AMethodSpy<DataHandle>;
-    let pgnHandleSpy: AMethodSpy<PgnHandle>
-    let handleSpy: AMethodSpy<ModalStateHandle>
+    let pgnHandleSpy: AMethodSpy<PgnHandle>;
+    let handleSpy: AMethodSpy<ModalStateHandle>;
 
     beforeEach(() => {
         fileHandleSpy = TestUtil.spyProtoMethods(FileHandle);
