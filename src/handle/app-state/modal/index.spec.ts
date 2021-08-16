@@ -1,19 +1,19 @@
-import { FileHandle } from "../../file";
-import { ChromeHandle } from "../../chrome";
-import { DataHandle } from "../../data";
-import PgnHandle from "../../pagination";
+import { FileHandle } from '../../file';
+import { ChromeHandle } from '../../chrome';
+import { DataHandle } from '../../data';
+import PgnHandle from '../../pagination';
 
-import { modalSet } from "../../../constant/modal-set";
-import { AppState } from "../../../model/app-state";
-import { SettingState } from "../../../model/setting-state";
-import { LocalState } from "../../../model/local-state";
-import { ModalState } from "../../../model/modal-state";
-import { RuleIdCtxState } from "../../../model/rule-id-ctx-state";
-import { TestUtil } from "../../../asset/ts/test-util";
-import { AMethodSpy } from "../../../asset/ts/test-util/type";
-import { ModalStateHandle } from ".";
-import { HostRule } from "../../../model/rule";
-import { DataGridState } from "../../../model/data-grid-state";
+import { modalSet } from '../../../constant/modal-set';
+import { AppState } from '../../../model/app-state';
+import { SettingState } from '../../../model/setting-state';
+import { LocalState } from '../../../model/local-state';
+import { ModalState } from '../../../model/modal-state';
+import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
+import { TestUtil } from '../../../asset/ts/test-util';
+import { AMethodSpy } from '../../../asset/ts/test-util/type';
+import { HostRule } from '../../../model/rule';
+import { DataGridState } from '../../../model/data-grid-state';
+import { ModalStateHandle } from '.';
 
 const handle = new ModalStateHandle();
 
