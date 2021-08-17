@@ -1,5 +1,6 @@
 import { ChromeHandle } from '../../chrome';
 import { DataHandle } from '../../data';
+import { RowSelectHandle } from '../../row-select';
 
 import { AppState } from '../../../model/app-state';
 import { SettingState } from '../../../model/setting-state';
@@ -10,6 +11,7 @@ import { AMethodSpy } from '../../../asset/ts/test-util/type';
 
 import { OptionEditViewStateHandle } from '.';
 
+
 const handle = new OptionEditViewStateHandle();
 
 describe('Option Edit View State Handle', () => {
@@ -18,8 +20,10 @@ describe('Option Edit View State Handle', () => {
     let mockState: AppState;
     let chromeHandleSpy: AMethodSpy<ChromeHandle>;
     let dataHandleSpy: AMethodSpy<DataHandle>;
+    let rowSelectHandleSpy: AMethodSpy<RowSelectHandle>;
 
     beforeEach(() => {
+        rowSelectHandleSpy = TestUtil.spyProtoMethods(RowSelectHandle);
         dataHandleSpy = TestUtil.spyProtoMethods(DataHandle);
         chromeHandleSpy = TestUtil.spyProtoMethods(ChromeHandle);
         chromeHandleSpy.saveState.mockImplementation(mockFn);
@@ -262,37 +266,63 @@ describe('Option Edit View State Handle', () => {
 
     describe('Method - onLibSort', () => {
         it('should set the sort option for the grid', () => {
-
+            const mockPayload: any = { sortOption: 'option' };
+            const { sortOption } = handle.onLibSort(mockState, mockPayload).localState.editView.dataGrid;
+            expect(sortOption).toEqual(mockPayload.sortOption);
         });
     });
 
     describe('Method - onLibRowSelectToggle', () => {
         it('should update the select state when a row is selected/unselected', () => {
+            const mockPayload = { libs: [], id: 'id' };
+            const mockSelectState = 'select-state';
+            rowSelectHandleSpy.getState.mockReturnValue(mockSelectState);
+            const { selectState } = handle.onLibRowSelectToggle(mockState, mockPayload).localState.editView.dataGrid;
 
+            expect(selectState).toBe(mockSelectState);
         });
     });
 
     describe('Method - onLibRowsSelectToggle', () => {
         it('should update the select state when rows are selected/unselected', () => {
+            const mockSelectState = 'select-state';
+            rowSelectHandleSpy.getState.mockReturnValue(mockSelectState);
+            const { selectState } = handle.onLibRowsSelectToggle(mockState).localState.editView.dataGrid;
 
+            expect(selectState).toBe(mockSelectState);
         });
     });
 
     describe('Method - onLibTypeChange ', () => {
         it('should set the library type', () => {
+            const mockPayload: any = { selectValue: 'val', id: 'id' };
+            dataHandleSpy.setLibType.mockImplementation(mockFn);
+            handle.onLibTypeChange(mockState, mockPayload);
 
+            expect(dataHandleSpy.setLibType).toHaveBeenCalled();
+            expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
     });
 
     describe('Method - onLibAsyncToggle ', () => {
         it('should enable/disable the async switch of library', () => {
+            const mockPayload: any = {  id: 'id' };
+            dataHandleSpy.toggleLibAsyncSwitch.mockImplementation(mockFn);
+            handle.onLibAsyncToggle(mockState, mockPayload);
 
+            expect(dataHandleSpy.toggleLibAsyncSwitch).toHaveBeenCalled();
+            expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
     });
 
     describe('Method - onLibIsOnToggle ', () => {
         it('should enable/disable the library', () => {
+            const mockPayload: any = {  id: 'id' };
+            dataHandleSpy.toggleLibIsOnSwitch.mockImplementation(mockFn);
+            handle.onLibIsOnToggle(mockState, mockPayload);
 
+            expect(dataHandleSpy.toggleLibIsOnSwitch).toHaveBeenCalled();
+            expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
     });
 });
