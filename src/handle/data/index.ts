@@ -8,7 +8,7 @@ export class DataHandle {
         const { hostId, pathId, libId } = idCtx;
         const hostIdx = rules.findIndex(({ id }) => id === hostId);
         const host = rules[hostIdx];
-        const paths = host.paths;
+        const paths = host?.paths;
 
         const pathIdx = pathId
             ? paths.findIndex(({ id }) => id === pathId)
