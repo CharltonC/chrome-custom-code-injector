@@ -1,16 +1,14 @@
 import { TestUtil } from '../../../asset/ts/test-util';
 import { AppStateHandle } from '../../../handle/app-state';
 import { StateHandle } from '../../../handle/state';
+import PgnHandle from '../../../handle/pagination';
 import { AppState } from '../../../model/app-state';
 import { createMockAppState } from '../../../mock/state';
 import { OptionApp } from '.';
-import PgnHandle from '../../../handle/pagination';
 
 // Mock the CodeMirror Edit component to prevent errors thrown during test due to the test is not within exact browser cotnext
 jest.mock('react-codemirror2', () => ({
-    UnControlled() {
-        return '<div />'
-    }
+    UnControlled: () => '<div />'
 }));
 
 describe('Component - Option App (E2E)', () => {
@@ -81,52 +79,75 @@ describe('Component - Option App (E2E)', () => {
     describe('List View - Row CRUD', () => {
         const { listView, modal } = selector;
 
+        function getElem() {
+            const pgnRecordTxt = $elem.querySelector(listView.PGN_RECORD).textContent;
+            const pgnRecordTxtTotal = pgnRecordTxt.length;
+
+            return {
+                totalRows: Number(pgnRecordTxt.slice(pgnRecordTxtTotal - 1, pgnRecordTxtTotal)),
+                $searchInput: $elem.querySelector(listView.SEARCH_INPUT) as HTMLInputElement,
+                $searchClear: $elem.querySelector(listView.SEARCH_CLEAR_BTN) as HTMLButtonElement,
+                $header: $elem.querySelector(listView.HEAD_ROW) as HTMLElement,
+                $rows: $elem.querySelectorAll(listView.ROWS) as NodeListOf<HTMLElement>,
+                $subRows: $elem.querySelectorAll(listView.SUB_ROWS) as NodeListOf<HTMLElement>
+            };
+        }
+
+        function getCellElem($row: HTMLElement, isTh: boolean = false) {
+            return {
+                $select: $row.querySelector(
+                    isTh ? listView.SELECT_ALL : listView.SELECT
+                ) as HTMLInputElement,
+                $expd: $row.querySelector(listView.EXPD_BTN) as HTMLButtonElement,
+                $badge: $row.querySelector(listView.HOST_BADGE) as HTMLElement,
+                $del: $row.querySelector(
+                    isTh ? listView.DEL_ALL_BTN : listView.DEL_BTN
+                ) as HTMLButtonElement,
+            };
+        }
+
+        function getRowCol(rowIdx: number, isPrimaryRow: boolean = true) {
+            const $rows = $elem.querySelectorAll(listView.ROWS) as NodeListOf<HTMLElement>;
+            const $subRows = $elem.querySelectorAll(listView.SUB_ROWS) as NodeListOf<HTMLElement>
+            const $row = isPrimaryRow ? $rows[rowIdx] : $subRows[rowIdx];
+
+            return {
+                $rows,
+                $subRows,
+                $row,
+                title: $row.querySelector(listView.TITLE).textContent,
+                address: $row.querySelector(listView.ADDRESS).textContent,
+                $expdToggle: $row.querySelector(listView.EXPD_BTN) as HTMLButtonElement,
+                $httpsToggle: $row.querySelector(listView.HTTPS_SWITCH) as HTMLInputElement,
+                $exactToggle: $row.querySelector(listView.EXACT_MATCH_SWITCH) as HTMLInputElement,
+                $codeExecDropdown: $row.querySelector(listView.CODE_EXEC_SELECT) as HTMLSelectElement,
+                $jsToggle: $row.querySelector(listView.JS_SWITCH) as HTMLInputElement,
+                $cssToggle: $row.querySelector(listView.CSS_SWITCH) as HTMLInputElement,
+                $libToggle: $row.querySelector(listView.LIB_SWITCH) as HTMLInputElement,
+                $add: $row.querySelector(listView.ADD_BTN) as HTMLButtonElement,
+                $edit: $row.querySelector(listView.EDIT_BTN) as HTMLButtonElement,
+            };
+        }
+
+        function hsTargetRow($rows: NodeListOf<HTMLElement>, $targetRows: HTMLElement | HTMLElement[]): boolean {
+            return !![].some.call($rows, ($row, i) => {
+                return Array.isArray($targetRows) ?
+                    $targetRows.some(($targetRow, j) => $row === $targetRow) :
+                    $row === $targetRows;
+            });
+        }
+
+        function mockSearch(searchText: string) {
+            const { $searchInput } = getElem();
+            TestUtil.setInputVal($searchInput, searchText);
+            TestUtil.triggerEvt($searchInput, 'change');
+
+            // Mocking debounce fn causes inconsistent testing issue compared to the UI
+            // therefore we use timer to deal with `setTimeout` in debounce involved in search
+            // jest.runAllTimers();
+        }
+
         describe('Delete Rule(s)', () => {
-            function getElem() {
-                const pgnRecordTxt = $elem.querySelector(listView.PGN_RECORD).textContent;
-                const pgnRecordTxtTotal = pgnRecordTxt.length;
-
-                return {
-                    totalRows: Number(pgnRecordTxt.slice(pgnRecordTxtTotal - 1, pgnRecordTxtTotal)),
-                    $searchInput: $elem.querySelector(listView.SEARCH_INPUT) as HTMLInputElement,
-                    $searchClear: $elem.querySelector(listView.SEARCH_CLEAR_BTN) as HTMLButtonElement,
-                    $header: $elem.querySelector(listView.HEAD_ROW) as HTMLElement,
-                    $rows: $elem.querySelectorAll(listView.ROWS) as NodeListOf<HTMLElement>,
-                    $subRows: $elem.querySelectorAll(listView.SUB_ROWS) as NodeListOf<HTMLElement>
-                };
-            }
-
-            function getCellElem($row: HTMLElement, isTh: boolean = false) {
-                return {
-                    $select: $row.querySelector(
-                        isTh ? listView.SELECT_ALL : listView.SELECT
-                    ) as HTMLInputElement,
-                    $expd: $row.querySelector(listView.EXPD_BTN) as HTMLButtonElement,
-                    $badge: $row.querySelector(listView.HOST_BADGE) as HTMLElement,
-                    $del: $row.querySelector(
-                        isTh ? listView.DEL_ALL_BTN : listView.DEL_BTN
-                    ) as HTMLButtonElement,
-                };
-            }
-
-            function hsTargetRow($rows: NodeListOf<HTMLElement>, $targetRows: HTMLElement | HTMLElement[]): boolean {
-                return !![].some.call($rows, ($row, i) => {
-                    return Array.isArray($targetRows) ?
-                        $targetRows.some(($targetRow, j) => $row === $targetRow) :
-                        $row === $targetRows;
-                });
-            }
-
-            function mockSearch(searchText: string) {
-                const { $searchInput } = getElem();
-                TestUtil.setInputVal($searchInput, searchText);
-                TestUtil.triggerEvt($searchInput, 'change');
-
-                // Mocking debounce fn causes inconsistent testing issue compared to the UI
-                // therefore we use timer to deal with `setTimeout` in debounce involved in search
-                // jest.runAllTimers();
-            }
-
             jest.useFakeTimers();
 
             beforeEach(() => {
@@ -374,29 +395,6 @@ describe('Component - Option App (E2E)', () => {
         });
 
         describe('Modify Rule', () => {
-            function getRowCol(rowIdx: number, isPrimaryRow: boolean = true) {
-                const $rows = $elem.querySelectorAll(listView.ROWS) as NodeListOf<HTMLElement>;
-                const $subRows = $elem.querySelectorAll(listView.SUB_ROWS) as NodeListOf<HTMLElement>
-                const $row = isPrimaryRow ? $rows[rowIdx] : $subRows[rowIdx];
-
-                return {
-                    $rows,
-                    $subRows,
-                    $row,
-                    title: $row.querySelector(listView.TITLE).textContent,
-                    address: $row.querySelector(listView.ADDRESS).textContent,
-                    $expdToggle: $row.querySelector(listView.EXPD_BTN) as HTMLButtonElement,
-                    $httpsToggle: $row.querySelector(listView.HTTPS_SWITCH) as HTMLInputElement,
-                    $exactToggle: $row.querySelector(listView.EXACT_MATCH_SWITCH) as HTMLInputElement,
-                    $codeExecDropdown: $row.querySelector(listView.CODE_EXEC_SELECT) as HTMLSelectElement,
-                    $jsToggle: $row.querySelector(listView.JS_SWITCH) as HTMLInputElement,
-                    $cssToggle: $row.querySelector(listView.CSS_SWITCH) as HTMLInputElement,
-                    $libToggle: $row.querySelector(listView.LIB_SWITCH) as HTMLInputElement,
-                    $add: $row.querySelector(listView.ADD_BTN) as HTMLButtonElement,
-                    $edit: $row.querySelector(listView.EDIT_BTN) as HTMLButtonElement,
-                };
-            }
-
             let firstRowCol;
 
             beforeEach(() => {
@@ -498,5 +496,25 @@ describe('Component - Option App (E2E)', () => {
                 expect($elem.querySelector('.main--edit')).toBeTruthy();
             });
         });
+    });
+
+    describe('Edit View', () => {
+        beforeEach(() => {
+            TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
+                root: [ mockAppState, new AppStateHandle() ],
+            }));
+
+            // simulateRowEdit();
+        });
+
+        // TODO: set target rule as current editable
+        // TODO: tab active change
+        // TODO: tab on, last active tab (if switch rule)
+        // TODO: dropdown
+        // TODO: inputs (invalid + valid), https, exact match
+        // TODO: Delete Host, Path, all
+        // TODO: Back
+        // TODO: Add path
+        // TODO: Library select, select all, delete all, add library, async/active toggle, set lib type, edit lib
     });
 });
