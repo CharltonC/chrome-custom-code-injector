@@ -91,7 +91,6 @@ describe('Modal State Handle', () => {
 
             beforeEach(() => {
                 fileHandleSpy.readJson.mockResolvedValue(mockRules);
-                chromeHandleSpy.saveState.mockImplementation(mockFn);
             });
 
             it('should import data and close modal', async () => {
