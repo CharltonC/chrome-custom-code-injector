@@ -80,7 +80,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td><td>{ isHost &&
                     <IconSwitch
                         icon
-                        id={`http-${ID_SUFFIX}`}
+                        id={`https-${ID_SUFFIX}`}
                         label="lock-close"
                         checked={isHttps}
                         disabled={isDelDisabled}

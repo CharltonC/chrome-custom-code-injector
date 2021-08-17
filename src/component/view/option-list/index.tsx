@@ -93,7 +93,7 @@ export class OptionListView extends MemoComponent<IProps> {
         return (
             <DataGrid
                 type="table"
-                rowKey="title"
+                rowKey="id"
                 expand={{ onePerLevel: true }}
                 data={data}
                 component={{

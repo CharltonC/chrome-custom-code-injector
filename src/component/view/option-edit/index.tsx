@@ -206,7 +206,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                     />}{ isLibTab &&
                 <DataGrid
                     type="table"
-                    rowKey="title"
+                    rowKey="id"
                     data={libs}
                     component={{
                         rows: [
