@@ -101,19 +101,19 @@ describe('Component - Option App (E2E)', () => {
         const totalRows = Number(pgnRecordTxt.slice(pgnRecordTxtTotal - 1, pgnRecordTxtTotal));
 
         return {
-            $rows,
-            $subRows,
-            $row,
-
             $searchInput: $elem.querySelector(listView.SEARCH_INPUT) as HTMLInputElement,
             $searchClear: $elem.querySelector(listView.SEARCH_CLEAR_BTN) as HTMLButtonElement,
 
-            $header,
+            $rows,
+            $subRows,
             totalRows,
+
+            $header,
             $selectAll: $header.querySelector(listView.SELECT_ALL) as HTMLInputElement,
             $addHost: $header.querySelector(listView.ADD_HOST_BTN) as HTMLButtonElement,
             $delAll: $header.querySelector(listView.DEL_ALL_BTN) as HTMLButtonElement,
 
+            $row,
             $select: $row?.querySelector(listView.SELECT) as HTMLInputElement,
             title: $row?.querySelector(listView.TITLE).textContent,
             badge: $row?.querySelector(listView.HOST_BADGE)?.textContent,
@@ -145,7 +145,6 @@ describe('Component - Option App (E2E)', () => {
 
             $titleInput: $elem.querySelector(editView.TITLE_INPUT) as HTMLInputElement,
             $valueInput: $elem.querySelector(editView.VALUE_INPUT) as HTMLInputElement,
-
             $httpsSwitch: $elem.querySelector(editView.HTTPS_SWITCH) as HTMLInputElement,
             $exactSwitch: $elem.querySelector(editView.EXACT_SWITCH) as HTMLInputElement,
             $jsExecSelect: $elem.querySelector(editView.JS_EXEC_SELECT) as HTMLSelectElement,
@@ -365,7 +364,6 @@ describe('Component - Option App (E2E)', () => {
             describe('Searched + Non-paginated', () => {
                 beforeEach(() => {
                     initApp();
-
                     mockSearch('ebay');
                 });
 
@@ -396,7 +394,6 @@ describe('Component - Option App (E2E)', () => {
                     dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
 
                     initApp();
-
                     mockSearch('ebay');
                 });
 
@@ -458,9 +455,7 @@ describe('Component - Option App (E2E)', () => {
 
         describe('Modify Rule', () => {
             beforeEach(() => {
-                TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                    root: [ mockAppState, new AppStateHandle() ],
-                }));
+                initApp();
             });
 
             it('should expand/unexpand row', () => {
@@ -555,9 +550,7 @@ describe('Component - Option App (E2E)', () => {
 
     describe('Edit View', () => {
         beforeEach(() => {
-            TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                root: [ mockAppState, new AppStateHandle() ],
-            }));
+            initApp();
 
             // // simulateRowEdit();
             // TestUtil.triggerEvt($edit, 'click');
