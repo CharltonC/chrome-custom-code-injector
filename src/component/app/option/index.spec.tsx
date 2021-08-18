@@ -14,8 +14,12 @@ jest.mock('react-codemirror2', () => ({
 describe('Component - Option App (E2E)', () => {
     const modal = {
         CONFIRM_BTN: '.modal__footer button[type="submit"]',
+        HOST_TITLE_INPUT: '#host-title',
+        HOST_VALUE_INPUT: '#host-value',
         PATH_TITLE_INPUT: '#path-title',
-        PATH_VALUE_INPUT: '#path-url'
+        PATH_VALUE_INPUT: '#path-url',
+        LIB_TITLE_INPUT: '#lib-add-title',
+        LIB_VALUE_INPUT: '#lib-add-value'
     };
     const listView = {
         MAIN: '.main--list',
@@ -39,7 +43,7 @@ describe('Component - Option App (E2E)', () => {
         EXPD_BTN: 'td:nth-child(2) .icon-btn',
         HTTPS_SWITCH: 'td:nth-child(3) .icon-switch[for*="https"] input',
         EXACT_MATCH_SWITCH: 'td:nth-child(3) .icon-switch[for*="exact"] input',
-        CODE_EXEC_SELECT: 'td:nth-child(4) .dropdown__select--cell',
+        CODE_EXEC_SELECT: 'td:nth-child(4) select',
         JS_SWITCH: 'td:nth-child(5) input',
         CSS_SWITCH: 'td:nth-child(6) input',
         LIB_SWITCH: 'td:nth-child(7) input',
@@ -49,6 +53,7 @@ describe('Component - Option App (E2E)', () => {
     };
     const editView = {
         MAIN: '.main--edit',
+
         ACTIVE_HOST: `.side-nav__item--parent.side-nav__item--atv .side-nav__item-header .side-nav__title`,
         ACTIVE_HOST_BADGE: `.side-nav__item--parent.side-nav__item--atv .side-nav__item-header .badge`,
         ACTIVE_PATH: '.side-nav__item--child.side-nav__item--atv .side-nav__title',
@@ -63,6 +68,23 @@ describe('Component - Option App (E2E)', () => {
         CSS_SWITCH: '@checkbox-tab-switch-1',
         LIB_TAB: '#rdo-tab-switch-2',
         LIB_SWITCH: '@checkbox-tab-switch-2',
+
+        LIB_ROWS: '.datagrid__body--root > tr',
+        LIB_HEAD_ROW: '.datagrid__head tr',
+        LIB_SELECT_ALL: `th:nth-child(1) input`,
+        LIB_SORT_TITLE_BTN: `th:nth-child(2) button`,
+        LIB_SORT_URL_BTN: `th:nth-child(3) button`,
+        LIB_ADD_LIB_BTN: 'th:nth-child(7) button',
+        LIB_DEL_ALL_BTN: 'th:nth-child(8) button',
+
+        LIB_SELECT: `td:nth-child(1) input`,
+        LIB_TITLE: 'td:nth-child(2) .datagrid__cell--title',
+        LIB_URL: 'td:nth-child(3) .datagrid__cell--url',
+        LIB_TYPE: 'td:nth-child(4) select',
+        LIB_ASYNC_SWITCH: 'td:nth-child(5) input',
+        LIB_ACTIVE_SWITCH: 'td:nth-child(6) input',
+        LIB_EDIT_BTN: 'td:nth-child(7) button',
+        LIB_DEL_BTN: 'td:nth-child(8) button',
     };
 
     let $elem: HTMLElement;
@@ -109,11 +131,59 @@ describe('Component - Option App (E2E)', () => {
         };
     }
 
+    function getEditViewElem(rowIdx: number = 0) {
+        const $libHeaderRow = $elem.querySelector(editView.LIB_HEAD_ROW) as HTMLElement;
+        const $libRows = $elem.querySelectorAll(editView.LIB_ROWS) as NodeListOf<HTMLElement>;
+        const $libRow = $libRows[rowIdx];
+
+        return {
+            $main: $elem.querySelector(editView.MAIN),
+
+            activeHost: $elem.querySelector(editView.ACTIVE_HOST)?.textContent,
+            activeHostBadge: $elem.querySelector(editView.ACTIVE_HOST_BADGE)?.textContent,
+            activePath: $elem.querySelector(editView.ACTIVE_PATH)?.textContent,
+
+            $titleInput: $elem.querySelector(editView.TITLE_INPUT) as HTMLInputElement,
+            $valueInput: $elem.querySelector(editView.VALUE_INPUT) as HTMLInputElement,
+
+            $httpsSwitch: $elem.querySelector(editView.HTTPS_SWITCH) as HTMLInputElement,
+            $exactSwitch: $elem.querySelector(editView.EXACT_SWITCH) as HTMLInputElement,
+            $jsExecSelect: $elem.querySelector(editView.JS_EXEC_SELECT) as HTMLSelectElement,
+            $jsTab: $elem.querySelector(editView.JS_TAB) as HTMLInputElement,
+            $cssTab: $elem.querySelector(editView.CSS_TAB) as HTMLInputElement,
+            $libTab: $elem.querySelector(editView.LIB_TAB) as HTMLInputElement,
+            $jsSwitch: $elem.querySelector(editView.JS_SWITCH) as HTMLInputElement,
+            $cssSwitch: $elem.querySelector(editView.CSS_SWITCH) as HTMLInputElement,
+            $libSwitch: $elem.querySelector(editView.LIB_SWITCH) as HTMLInputElement,
+
+            $libRows,
+            $libHeaderRow,
+            $libSelectAll: $libHeaderRow?.querySelector(editView.LIB_SELECT_ALL) as HTMLInputElement,
+            $libTitleSort: $libHeaderRow?.querySelector(editView.LIB_SORT_TITLE_BTN) as HTMLButtonElement,
+            $libUrlSort: $libHeaderRow?.querySelector(editView.LIB_SORT_URL_BTN) as HTMLButtonElement,
+            $libAddLib: $libHeaderRow?.querySelector(editView.LIB_ADD_LIB_BTN) as HTMLButtonElement,
+            $libDelAll: $libHeaderRow?.querySelector(editView.LIB_DEL_ALL_BTN) as HTMLButtonElement,
+            $libRow,
+            $libSelect: $libRow?.querySelector(editView.LIB_SELECT) as HTMLInputElement,
+            libTitle: $libRow?.querySelector(editView.LIB_TITLE)?.textContent,
+            libUrl: $libRow?.querySelector(editView.LIB_URL)?.textContent,
+            $libTypeSelect: $libRow?.querySelector(editView.LIB_TYPE) as HTMLSelectElement,
+            $libAsyncSwitch: $libRow?.querySelector(editView.LIB_ASYNC_SWITCH) as HTMLInputElement,
+            $libActiveSwitch: $libRow?.querySelector(editView.LIB_ACTIVE_SWITCH) as HTMLInputElement,
+            $libEdit: $libRow?.querySelector(editView.LIB_EDIT_BTN) as HTMLButtonElement,
+            $libDel: $libRow?.querySelector(editView.LIB_DEL_BTN) as HTMLButtonElement,
+        };
+    }
+
     function getModalElem() {
         return {
             $confirm: $elem.querySelector(modal.CONFIRM_BTN) as HTMLButtonElement,
+            $hostTitleInput: $elem.querySelector(modal.HOST_TITLE_INPUT) as HTMLInputElement,
+            $hostValueInput: $elem.querySelector(modal.HOST_TITLE_INPUT) as HTMLInputElement,
             $pathTitleInput: $elem.querySelector(modal.PATH_TITLE_INPUT) as HTMLInputElement,
             $pathValueInput: $elem.querySelector(modal.PATH_VALUE_INPUT) as HTMLInputElement,
+            $libTitleInput: $elem.querySelector(modal.LIB_TITLE_INPUT) as HTMLInputElement,
+            $libValueInput: $elem.querySelector(modal.LIB_TITLE_INPUT) as HTMLInputElement,
         };
     }
 
@@ -135,6 +205,11 @@ describe('Component - Option App (E2E)', () => {
         // jest.runAllTimers();
     }
 
+    function initApp() {
+        TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
+            root: [ mockAppState, new AppStateHandle() ],
+        }));
+    }
 
     beforeEach(() => {
         $elem = TestUtil.setupElem();
@@ -163,9 +238,7 @@ describe('Component - Option App (E2E)', () => {
 
             describe('Non-searched + Non-paginated', () => {
                 beforeEach(() => {
-                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandle() ],
-                    }));
+                    initApp();
                 });
 
                 it('should have 4 displayed rows of total 4 rows', () => {
@@ -233,9 +306,7 @@ describe('Component - Option App (E2E)', () => {
                     dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
                     dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
 
-                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandle() ],
-                    }));
+                    initApp();
                 });
 
                 it('should have 2 displayed rows of total 4 rows', () => {
@@ -293,9 +364,7 @@ describe('Component - Option App (E2E)', () => {
 
             describe('Searched + Non-paginated', () => {
                 beforeEach(() => {
-                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandle() ],
-                    }));
+                    initApp();
 
                     mockSearch('ebay');
                 });
@@ -326,9 +395,7 @@ describe('Component - Option App (E2E)', () => {
                     dataGrid.pgnOption.increment = [ 2 ];    // 2 per page,
                     dataGrid.pgnState = new PgnHandle().getState(rules.length, dataGrid.pgnOption);
 
-                    TestUtil.renderPlain($elem, StateHandle.init(OptionApp, {
-                        root: [ mockAppState, new AppStateHandle() ],
-                    }));
+                    initApp();
 
                     mockSearch('ebay');
                 });
