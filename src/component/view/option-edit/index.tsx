@@ -61,7 +61,6 @@ export class OptionEditView extends MemoComponent<IProps> {
         const isLibTab = activeTabIdx === 2;
         const isCodeTab = isJsTab || isCssTab;
         const codeMode = isJsTab ? 'js' : 'css';
-        const codeContent = isCodeTab ? (isJsTab ? jsCode : cssCode) : '';
 
         // Data grid
         const { sortOption, selectState } = dataGrid;
@@ -192,7 +191,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                     onTabEnable={arg => onTabToggle({...arg, ruleIdCtx})}
                     />{ isCodeTab &&
                 <CodeMirror
-                    value={codeContent}
+                    value={isJsTab ? jsCode : cssCode}
                     options={{
                         mode: codeMode,
                         theme: 'darcula',
