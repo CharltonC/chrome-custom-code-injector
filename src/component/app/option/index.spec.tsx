@@ -1,3 +1,4 @@
+import React from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { AppStateHandle } from '../../../handle/app-state';
 import { StateHandle } from '../../../handle/state';
@@ -7,8 +8,18 @@ import { createMockAppState } from '../../../mock/state';
 import { OptionApp } from '.';
 
 // Mock the CodeMirror Edit component to prevent errors thrown during test due to the test is not within exact browser cotnext
+// - props API to align with CodeMirror component for testing
 jest.mock('react-codemirror2', () => ({
-    UnControlled: () => '<div />'
+    UnControlled: ({ value, onChange }) => (
+        <textarea
+            className="mock-textarea"
+            value={value}
+            onChange={({ target }) => {
+                const codeMirrorArgs = [null, null, target.value];
+                onChange(...codeMirrorArgs);
+            }}
+            />
+    )
 }));
 
 describe('Component - Option App (E2E)', () => {
