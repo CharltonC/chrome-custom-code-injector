@@ -65,20 +65,28 @@ describe('Component - Option App (E2E)', () => {
     const editView = {
         MAIN: '.main--edit',
 
+        BACK: '.header__ctrl--edit button:first-child',
+        DEL_RULE: '.header__ctrl--edit button:nth-child(2)',
+        ADD_PATH: '.header__ctrl--edit button:last-child',
+
         ACTIVE_HOST: `.side-nav__item--parent.side-nav__item--atv .side-nav__item-header .side-nav__title`,
+        ACTIVE_HOST_1ST_PATH: `.side-nav__item--parent.side-nav__item--atv .side-nav__list--child li:first-child`,
         ACTIVE_HOST_BADGE: `.side-nav__item--parent.side-nav__item--atv .side-nav__item-header .badge`,
         ACTIVE_PATH: '.side-nav__item--child.side-nav__item--atv .side-nav__title',
         TITLE_INPUT: '#edit-target-id',
+        TITLE_INPUT_ERR: '#edit-target-id + .text-ipt__err',
         VALUE_INPUT: '#edit-target-value',
+        VALUE_INPUT_ERR: '#edit-target-value + .text-ipt__err',
         HTTPS_SWITCH: '#https-switch',
         EXACT_SWITCH: '#regex-switch',
         JS_EXEC_SELECT: '#js-execution',
         JS_TAB: '#rdo-tab-switch-0',
-        JS_SWITCH: '@checkbox-tab-switch-0',
+        JS_SWITCH: '#checkbox-tab-switch-0',
         CSS_TAB: '#rdo-tab-switch-1',
-        CSS_SWITCH: '@checkbox-tab-switch-1',
+        CSS_SWITCH: '#checkbox-tab-switch-1',
         LIB_TAB: '#rdo-tab-switch-2',
-        LIB_SWITCH: '@checkbox-tab-switch-2',
+        LIB_SWITCH: '#checkbox-tab-switch-2',
+        CODE_MIRROR: '.mock-textarea',
 
         LIB_ROWS: '.datagrid__body--root > tr',
         LIB_HEAD_ROW: '.datagrid__head tr',
@@ -112,6 +120,8 @@ describe('Component - Option App (E2E)', () => {
         const totalRows = Number(pgnRecordTxt.slice(pgnRecordTxtTotal - 1, pgnRecordTxtTotal));
 
         return {
+            $main: $elem.querySelector(listView.MAIN),
+
             $searchInput: $elem.querySelector(listView.SEARCH_INPUT) as HTMLInputElement,
             $searchClear: $elem.querySelector(listView.SEARCH_CLEAR_BTN) as HTMLButtonElement,
 
@@ -150,12 +160,21 @@ describe('Component - Option App (E2E)', () => {
         return {
             $main: $elem.querySelector(editView.MAIN),
 
+            $back: $elem.querySelector(editView.BACK) as HTMLButtonElement,
+            $del: $elem.querySelector(editView.DEL_RULE) as HTMLButtonElement,
+            $addPath: $elem.querySelector(editView.ADD_PATH) as HTMLButtonElement,
+
+            $activeHost: $elem.querySelector(editView.ACTIVE_HOST) as HTMLElement,
+            $activeHost1stPath: $elem.querySelector(editView.ACTIVE_HOST_1ST_PATH) as HTMLElement,
+            $activeHostBadge: $elem.querySelector(editView.ACTIVE_HOST_BADGE),
             activeHost: $elem.querySelector(editView.ACTIVE_HOST)?.textContent,
             activeHostBadge: $elem.querySelector(editView.ACTIVE_HOST_BADGE)?.textContent,
             activePath: $elem.querySelector(editView.ACTIVE_PATH)?.textContent,
 
             $titleInput: $elem.querySelector(editView.TITLE_INPUT) as HTMLInputElement,
+            $titleInputErr: $elem.querySelector(editView.TITLE_INPUT_ERR) as HTMLElement,
             $valueInput: $elem.querySelector(editView.VALUE_INPUT) as HTMLInputElement,
+            $valueInputErr: $elem.querySelector(editView.VALUE_INPUT_ERR) as HTMLElement,
             $httpsSwitch: $elem.querySelector(editView.HTTPS_SWITCH) as HTMLInputElement,
             $exactSwitch: $elem.querySelector(editView.EXACT_SWITCH) as HTMLInputElement,
             $jsExecSelect: $elem.querySelector(editView.JS_EXEC_SELECT) as HTMLSelectElement,
@@ -165,6 +184,7 @@ describe('Component - Option App (E2E)', () => {
             $jsSwitch: $elem.querySelector(editView.JS_SWITCH) as HTMLInputElement,
             $cssSwitch: $elem.querySelector(editView.CSS_SWITCH) as HTMLInputElement,
             $libSwitch: $elem.querySelector(editView.LIB_SWITCH) as HTMLInputElement,
+            $codeMirror: $elem.querySelector(editView.CODE_MIRROR) as HTMLTextAreaElement,
 
             $libRows,
             $libHeaderRow,
@@ -561,20 +581,234 @@ describe('Component - Option App (E2E)', () => {
 
     describe('Edit View', () => {
         beforeEach(() => {
+            mockAppState.setting.showDeleteModal = false;
             initApp();
-
-            // // simulateRowEdit();
-            // TestUtil.triggerEvt($edit, 'click');
+            const { $edit } = getListViewElem();
+            TestUtil.triggerEvt($edit, 'click');
         });
 
-        // TODO: set target rule as current editable
-        // TODO: tab active change
-        // TODO: tab on, last active tab (if switch rule)
-        // TODO: dropdown
-        // TODO: inputs (invalid + valid), https, exact match
-        // TODO: Delete Host, Path, all
-        // TODO: Back
-        // TODO: Add path
-        // TODO: Library select, select all, delete all, add library, async/active toggle, set lib type, edit lib
+        describe('target editable', () => {
+            it('should set target rule as editable', () => {
+                const { activeHost, activePath, $titleInput, $valueInput } = getEditViewElem();
+
+                const { title, value } = mockAppState.rules[0];
+                expect(activeHost).toBe(title);
+                expect(activePath).toBeFalsy();
+                expect($titleInput.value).toBe(title);
+                expect($valueInput.value).toBe(value);
+            });
+
+            it('should update the editable when click another target rule', () => {
+                // CLick its 1st path
+                const { $activeHost1stPath } = getEditViewElem();
+                TestUtil.triggerEvt($activeHost1stPath, 'click');
+                const { activeHost, activePath, $titleInput, $valueInput } = getEditViewElem();
+
+                const { title: hostTitle, paths } = mockAppState.rules[0];
+                const { title, value } = paths[0];
+
+                expect(activeHost).toBe(hostTitle);
+                expect(activePath).toBe(title);
+                expect($titleInput.value).toBe(title);
+                expect($valueInput.value).toBe(value);
+            });
+
+            it('should go back to List view', () => {
+                const { $back } = getEditViewElem();
+                TestUtil.triggerEvt($back, 'click');
+
+                expect(getEditViewElem().$main).toBeFalsy();
+                expect(getListViewElem().$main).toBeTruthy();
+            });
+        });
+
+        describe('Delete editable and Add path', () => {
+            it('should set 1st host as editable if a host is deleted and there are remaining hosts', () => {
+                const nextHostTitle = mockAppState.rules[1].title;
+                const { $del, $activeHost } = getEditViewElem();
+                TestUtil.triggerEvt($del, 'click');
+
+                expect($activeHost.textContent).toBe(nextHostTitle);
+            });
+
+            it('should go back to list view if a host is deleted and no more host after a host is deleted', () => {
+                const { $del } = getEditViewElem();
+                TestUtil.triggerEvt($del, 'click');
+                TestUtil.triggerEvt($del, 'click');
+                TestUtil.triggerEvt($del, 'click');
+                TestUtil.triggerEvt($del, 'click');
+
+                expect(getEditViewElem().$main).toBeFalsy();
+                expect(getListViewElem().$main).toBeTruthy();
+            });
+
+            it('should set 1st path as editable if a path is deleted', () => {
+                // CLick its 1st path and delete it
+                const nextPathTitle = mockAppState.rules[0].paths[1].title;
+                const { $activeHost1stPath, $del } = getEditViewElem();
+                TestUtil.triggerEvt($activeHost1stPath, 'click');
+                TestUtil.triggerEvt($del, 'click');
+
+                expect($activeHost1stPath.textContent).toBe(nextPathTitle);
+            });
+
+            it('should add path', () => {
+                const mockTitle = 'lorem';
+                const mockValue = '/sum';
+
+                const { $addPath, $activeHostBadge } = getEditViewElem();
+                TestUtil.triggerEvt($addPath, 'click');
+
+                const { $pathTitleInput, $pathValueInput, $confirm } = getModalElem();
+                TestUtil.setInputVal($pathTitleInput, mockTitle);
+                TestUtil.triggerEvt($pathTitleInput, 'change');
+                TestUtil.setInputVal($pathValueInput, mockValue);
+                TestUtil.triggerEvt($pathValueInput, 'change');
+                TestUtil.triggerEvt($confirm, 'click');
+
+                expect($activeHostBadge.textContent).toBe('4');
+            });
+        });
+
+        describe('host text input', () => {
+            it('should validate/update the title text input and title at side bar only if it is valid', () => {
+                const mockValue = 'loremsum';
+                const { $activeHost, activeHost, $titleInput } = getEditViewElem();
+                TestUtil.setInputVal($titleInput, mockValue);
+                TestUtil.triggerEvt($titleInput, 'change');
+
+                const { $titleInputErr } = getEditViewElem();
+                expect($titleInput.value).toBe(mockValue);
+                expect($activeHost.textContent).toBe(mockValue);
+                expect($activeHost.textContent).not.toBe(activeHost);
+                expect($titleInputErr).toBeFalsy();
+            });
+
+            it('should validate/update the title text input and not set the title at side bar if it is not valid', () => {
+                const mockValue = 'lorem sum'; // space is invalid
+                const { $activeHost, activeHost, $titleInput } = getEditViewElem();
+                TestUtil.setInputVal($titleInput, mockValue);
+                TestUtil.triggerEvt($titleInput, 'change');
+
+                const { $titleInputErr } = getEditViewElem();
+                expect($titleInput.value).toBe(mockValue);
+                expect($titleInputErr).toBeTruthy();
+                expect($activeHost.textContent).not.toBe(mockValue);
+                expect($activeHost.textContent).toBe(activeHost);
+            });
+
+            it('should validate/update the value text input when it is valid', () => {
+                const mockValue = 'loremsum.com';
+                const { $valueInput } = getEditViewElem();
+                TestUtil.setInputVal($valueInput, mockValue);
+                TestUtil.triggerEvt($valueInput, 'change');
+
+                const { $valueInputErr } = getEditViewElem();
+                expect($valueInput.value).toBe(mockValue);
+                expect($valueInputErr).toBeFalsy();
+            });
+
+            it('should validate/update the value text input when it is not valid', () => {
+                const mockValue = 'lore msum';
+                const { $valueInput } = getEditViewElem();
+                TestUtil.setInputVal($valueInput, mockValue);
+                TestUtil.triggerEvt($valueInput, 'change');
+
+                const { $valueInputErr } = getEditViewElem();
+                expect($valueInput.value).toBe(mockValue);
+                expect($valueInputErr).toBeTruthy();
+            });
+
+            it('should toggle the https switch and exact match switch', () => {
+                const { $httpsSwitch, $exactSwitch } = getEditViewElem();
+                TestUtil.triggerEvt($httpsSwitch, 'click');
+                TestUtil.triggerEvt($httpsSwitch, 'change');
+                TestUtil.triggerEvt($exactSwitch, 'click');
+                TestUtil.triggerEvt($exactSwitch, 'change');
+
+                expect($httpsSwitch.checked).toBeTruthy();
+                expect($exactSwitch.checked).toBeTruthy();
+            });
+        });
+
+        describe('dropdown, tabs and code input', () => {
+            it('should set the code execution step', () => {
+                const mockOptioValue = '1';
+                const { $jsExecSelect } = getEditViewElem();
+                $jsExecSelect.value = mockOptioValue;
+                TestUtil.triggerEvt($jsExecSelect, 'change');
+                expect($jsExecSelect.value).toBe(mockOptioValue);
+            });
+
+            it('should update the active tab, tab switch and should remember when switch back from other active rule', () => {
+                const {  $cssSwitch, $cssTab, $activeHost, $activeHost1stPath } = getEditViewElem();
+
+                // Click the Css Switch and Css Tab
+                TestUtil.triggerEvt($cssSwitch, 'click');
+                TestUtil.triggerEvt($cssSwitch, 'change');
+                TestUtil.triggerEvt($cssTab, 'click');
+                TestUtil.triggerEvt($cssTab, 'change');
+
+                expect($cssSwitch.checked).toBeTruthy();
+                expect($cssTab.checked).toBeTruthy();
+
+                // Click its 1st path
+                TestUtil.triggerEvt($activeHost1stPath, 'click');
+
+                expect($cssSwitch.checked).toBeFalsy();
+                expect($cssTab.checked).toBeFalsy();
+
+                // Click back the host
+                TestUtil.triggerEvt($activeHost, 'click');
+
+                expect($cssSwitch.checked).toBeTruthy();
+                expect($cssTab.checked).toBeTruthy();
+            });
+
+            it('should set the code in code mirror component', () => {
+                const mockCode = 'ABC';
+                const { $codeMirror } = getEditViewElem();
+                TestUtil.setInputVal($codeMirror, mockCode, false);
+                TestUtil.triggerEvt($codeMirror, 'change');
+
+                expect($codeMirror.textContent).toBe(mockCode);
+            });
+        });
+
+        describe('Library data grid', () => {
+            beforeEach(() => {
+                const { $libTab } = getEditViewElem();
+                TestUtil.triggerEvt($libTab, 'click');
+                TestUtil.triggerEvt($libTab, 'change');
+            });
+
+            it('should sort', () => {
+                const ASC = 'asc';
+                const { $libTitleSort, $libUrlSort } = getEditViewElem();
+                expect($libTitleSort.className.includes(ASC)).toBeFalsy();
+
+                TestUtil.triggerEvt($libTitleSort, 'click');
+                expect($libTitleSort.className.includes(ASC)).toBeTruthy();
+
+                TestUtil.triggerEvt($libUrlSort, 'click');
+                expect($libTitleSort.className.includes(ASC)).toBeFalsy();
+                expect($libUrlSort.className.includes(ASC)).toBeTruthy();
+            });
+
+            // select, partially select class, select partial, select all
+            it('should select', () => {
+
+            });
+
+            // delete partial, all
+
+            // async/active toggle, set lib type
+
+            // add library (modal)
+
+            // edit lib (modal)
+        });
     });
+
+    // TODO: Modal validation
 });
