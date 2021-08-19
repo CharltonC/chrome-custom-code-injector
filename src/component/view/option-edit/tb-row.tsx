@@ -34,6 +34,7 @@ export const TbRow: React.FC<any> = memo((props) => {
     const { selectState } = localState.editView.dataGrid;
     const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
     const isSelected = areAllRowsSelected || id in selectedRowKeyCtx;
+    const hasSelected = areAllRowsSelected || !!Object.getOwnPropertyNames(selectedRowKeyCtx).length;
     const libTypeIdx = libTypeList.indexOf(type);
 
     return <>
@@ -58,6 +59,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                 <td>
                     <Dropdown
                         id="lib-type"
+                        disabled={hasSelected}
                         list={libTypeList}
                         selectIdx={libTypeIdx}
                         onSelect={arg => onLibTypeChange({ ...arg, id })}
@@ -67,7 +69,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <SliderSwitch
                         id={`lib-async-${ID_SUFFIX}`}
                         checked={isAsync}
-                        disabled={isSelected}
+                        disabled={hasSelected}
                         onChange={() => onLibAsyncToggle({ id })}
                         />
                 </td>
@@ -75,7 +77,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <SliderSwitch
                         id={`lib-active-${ID_SUFFIX}`}
                         checked={isOn}
-                        disabled={isSelected}
+                        disabled={hasSelected}
                         onChange={() => onLibIsOnToggle({ id })}
                         />
                 </td>
@@ -83,7 +85,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <IconBtn
                         icon="edit"
                         theme="gray"
-                        disabled={isSelected}
+                        disabled={hasSelected}
                         onClick={() => onEditLibModal({ id })}
                     />
                 </td>
@@ -91,7 +93,7 @@ export const TbRow: React.FC<any> = memo((props) => {
                     <IconBtn
                         icon="delete"
                         theme="gray"
-                        disabled={isSelected}
+                        disabled={hasSelected}
                         onClick={() => onDelLibModal({ id })}
                         />
                 </td>
