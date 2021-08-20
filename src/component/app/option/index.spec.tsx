@@ -29,8 +29,8 @@ describe('Component - Option App (E2E)', () => {
         HOST_VALUE_INPUT: '#host-value',
         PATH_TITLE_INPUT: '#path-title',
         PATH_VALUE_INPUT: '#path-url',
-        LIB_TITLE_INPUT: '#lib-add-title',
-        LIB_VALUE_INPUT: '#lib-add-value'
+        LIB_TITLE_INPUT: '#lib-title',
+        LIB_VALUE_INPUT: '#lib-value'
     };
     const listView = {
         MAIN: '.main--list',
@@ -41,6 +41,8 @@ describe('Component - Option App (E2E)', () => {
 
         HEAD_ROW: '.datagrid__head tr',
         SELECT_ALL: `th:nth-child(1) input`,
+        SORT_TITLE_BTN: `th:nth-child(2) button`,
+        SORT_ADDR_BTN: `th:nth-child(3) button`,
         ADD_HOST_BTN: 'th:nth-child(8) button',
         DEL_ALL_BTN: 'th:nth-child(10) button',
 
@@ -93,7 +95,7 @@ describe('Component - Option App (E2E)', () => {
         LIB_SELECT_ALL: `th:nth-child(1) input`,
         LIB_SORT_TITLE_BTN: `th:nth-child(2) button`,
         LIB_SORT_URL_BTN: `th:nth-child(3) button`,
-        LIB_ADD_LIB_BTN: 'th:nth-child(7) button',
+        LIB_ADD_BTN: 'th:nth-child(7) button',
         LIB_DEL_ALL_BTN: 'th:nth-child(8) button',
 
         LIB_SELECT: `td:nth-child(1) input`,
@@ -131,6 +133,8 @@ describe('Component - Option App (E2E)', () => {
 
             $header,
             $selectAll: $header.querySelector(listView.SELECT_ALL) as HTMLInputElement,
+            $titleSort: $header.querySelector(listView.SORT_TITLE_BTN) as HTMLButtonElement,
+            $addrSort: $header.querySelector(listView.SORT_ADDR_BTN) as HTMLButtonElement,
             $addHost: $header.querySelector(listView.ADD_HOST_BTN) as HTMLButtonElement,
             $delAll: $header.querySelector(listView.DEL_ALL_BTN) as HTMLButtonElement,
 
@@ -191,13 +195,13 @@ describe('Component - Option App (E2E)', () => {
             $libSelectAll: $libHeaderRow?.querySelector(editView.LIB_SELECT_ALL) as HTMLInputElement,
             $libTitleSort: $libHeaderRow?.querySelector(editView.LIB_SORT_TITLE_BTN) as HTMLButtonElement,
             $libUrlSort: $libHeaderRow?.querySelector(editView.LIB_SORT_URL_BTN) as HTMLButtonElement,
-            $libAddLib: $libHeaderRow?.querySelector(editView.LIB_ADD_LIB_BTN) as HTMLButtonElement,
+            $libAdd: $libHeaderRow?.querySelector(editView.LIB_ADD_BTN) as HTMLButtonElement,
             $libDelAll: $libHeaderRow?.querySelector(editView.LIB_DEL_ALL_BTN) as HTMLButtonElement,
             $libRow,
             $libSelect: $libRow?.querySelector(editView.LIB_SELECT) as HTMLInputElement,
             libTitle: $libRow?.querySelector(editView.LIB_TITLE)?.textContent,
             libUrl: $libRow?.querySelector(editView.LIB_URL)?.textContent,
-            $libTypeSelect: $libRow?.querySelector(editView.LIB_TYPE) as HTMLSelectElement,
+            $libTypeDropdown: $libRow?.querySelector(editView.LIB_TYPE) as HTMLSelectElement,
             $libAsyncSwitch: $libRow?.querySelector(editView.LIB_ASYNC_SWITCH) as HTMLInputElement,
             $libActiveSwitch: $libRow?.querySelector(editView.LIB_ACTIVE_SWITCH) as HTMLInputElement,
             $libEdit: $libRow?.querySelector(editView.LIB_EDIT_BTN) as HTMLButtonElement,
@@ -213,7 +217,7 @@ describe('Component - Option App (E2E)', () => {
             $pathTitleInput: $elem.querySelector(modal.PATH_TITLE_INPUT) as HTMLInputElement,
             $pathValueInput: $elem.querySelector(modal.PATH_VALUE_INPUT) as HTMLInputElement,
             $libTitleInput: $elem.querySelector(modal.LIB_TITLE_INPUT) as HTMLInputElement,
-            $libValueInput: $elem.querySelector(modal.LIB_TITLE_INPUT) as HTMLInputElement,
+            $libValueInput: $elem.querySelector(modal.LIB_VALUE_INPUT) as HTMLInputElement,
         };
     }
 
@@ -519,7 +523,8 @@ describe('Component - Option App (E2E)', () => {
                 $codeExecDropdown.value = '1';
                 TestUtil.triggerEvt($codeExecDropdown, 'change');
 
-                expect($codeExecDropdown.value).toBe('1');
+                const $2ndOption = $codeExecDropdown.children[1] as HTMLOptionElement;
+                expect($2ndOption.selected).toBeTruthy();
             });
 
             it('should toggle js', () => {
@@ -575,6 +580,39 @@ describe('Component - Option App (E2E)', () => {
                 TestUtil.triggerEvt($edit, 'click');
 
                 expect($elem.querySelector(editView.MAIN)).toBeTruthy();
+            });
+        });
+
+        describe('Select Row(s)', () => {
+            beforeEach(() => {
+                initApp();
+            });
+
+            it('should disable all form elements except other row selects and delete all button when a row is selected', () => {
+                const { $select, $selectAll, $rows, $addHost, $addPath, $del, $delAll, $titleSort, $addrSort } = getListViewElem();
+                TestUtil.triggerEvt($select, 'click');
+
+                expect($addHost.disabled).toBeTruthy();
+                expect($addPath.disabled).toBeTruthy();
+                expect($del.disabled).toBeTruthy();
+                expect($titleSort.disabled).toBeTruthy();
+                expect($addrSort.disabled).toBeTruthy();
+                expect($delAll.disabled).toBeFalsy();
+                expect($selectAll.disabled).toBeFalsy();
+                expect($rows[1].querySelector<HTMLInputElement>(listView.SELECT).disabled).toBeFalsy();
+            });
+
+            it('should disable all form elements except other row selects and delete all button when all rows are selected', () => {
+                const { $select, $selectAll, $addHost, $addPath, $del, $delAll, $titleSort, $addrSort } = getListViewElem();
+                TestUtil.triggerEvt($selectAll, 'click');
+
+                expect($addHost.disabled).toBeTruthy();
+                expect($addPath.disabled).toBeTruthy();
+                expect($del.disabled).toBeTruthy();
+                expect($titleSort.disabled).toBeTruthy();
+                expect($addrSort.disabled).toBeTruthy();
+                expect($delAll.disabled).toBeFalsy();
+                expect($select.disabled).toBeFalsy();
             });
         });
     });
@@ -638,8 +676,10 @@ describe('Component - Option App (E2E)', () => {
                 TestUtil.triggerEvt($del, 'click');
                 TestUtil.triggerEvt($del, 'click');
 
+                const { $main, $rows } = getListViewElem();
                 expect(getEditViewElem().$main).toBeFalsy();
-                expect(getListViewElem().$main).toBeTruthy();
+                expect($main).toBeTruthy();
+                expect($rows).toBeTruthy();
             });
 
             it('should set 1st path as editable if a path is deleted', () => {
@@ -737,7 +777,9 @@ describe('Component - Option App (E2E)', () => {
                 const { $jsExecSelect } = getEditViewElem();
                 $jsExecSelect.value = mockOptioValue;
                 TestUtil.triggerEvt($jsExecSelect, 'change');
-                expect($jsExecSelect.value).toBe(mockOptioValue);
+
+                const $2ndOption = $jsExecSelect.children[1] as HTMLOptionElement;
+                expect($2ndOption.selected).toBeTruthy();
             });
 
             it('should update the active tab, tab switch and should remember when switch back from other active rule', () => {
@@ -782,31 +824,153 @@ describe('Component - Option App (E2E)', () => {
                 TestUtil.triggerEvt($libTab, 'change');
             });
 
-            it('should sort', () => {
-                const ASC = 'asc';
-                const { $libTitleSort, $libUrlSort } = getEditViewElem();
-                expect($libTitleSort.className.includes(ASC)).toBeFalsy();
+            describe('Sort', () => {
+                it('should sort', () => {
+                    const ASC = 'asc';
+                    const { $libTitleSort, $libUrlSort } = getEditViewElem();
+                    expect($libTitleSort.className.includes(ASC)).toBeFalsy();
 
-                TestUtil.triggerEvt($libTitleSort, 'click');
-                expect($libTitleSort.className.includes(ASC)).toBeTruthy();
+                    TestUtil.triggerEvt($libTitleSort, 'click');
+                    expect($libTitleSort.className.includes(ASC)).toBeTruthy();
 
-                TestUtil.triggerEvt($libUrlSort, 'click');
-                expect($libTitleSort.className.includes(ASC)).toBeFalsy();
-                expect($libUrlSort.className.includes(ASC)).toBeTruthy();
+                    TestUtil.triggerEvt($libUrlSort, 'click');
+                    expect($libTitleSort.className.includes(ASC)).toBeFalsy();
+                    expect($libUrlSort.className.includes(ASC)).toBeTruthy();
+                });
             });
 
-            // select, partially select class, select partial, select all
-            it('should select', () => {
+            describe('Select', () => {
+                it('should disable specific form elements when a row is selected', () => {
+                    const { $libSelect, $libRows, $libAdd, $libDel, $libTitleSort, $libUrlSort, $libDelAll, $libSelectAll } = getEditViewElem();
+                    TestUtil.triggerEvt($libSelect, 'click');
 
+                    expect($libTitleSort.disabled).toBeTruthy();
+                    expect($libUrlSort.disabled).toBeTruthy();
+                    expect($libAdd.disabled).toBeTruthy();
+                    expect($libDel.disabled).toBeTruthy();
+
+                    expect($libDelAll.disabled).toBeFalsy();
+                    expect($libSelectAll.disabled).toBeFalsy();
+                    expect($libRows[1].querySelector<HTMLInputElement>(editView.LIB_SELECT).disabled).toBeFalsy();
+                });
+
+                it('should disable specific form elements when all rows are selected', () => {
+                    const { $libSelect, $libAdd, $libDel, $libTitleSort, $libUrlSort, $libDelAll, $libSelectAll } = getEditViewElem();
+                    TestUtil.triggerEvt($libSelectAll, 'click');
+
+                    expect($libTitleSort.disabled).toBeTruthy();
+                    expect($libUrlSort.disabled).toBeTruthy();
+                    expect($libAdd.disabled).toBeTruthy();
+                    expect($libDel.disabled).toBeTruthy();
+
+                    expect($libDelAll.disabled).toBeFalsy();
+                    expect($libSelect.disabled).toBeFalsy();
+                });
             });
 
-            // delete partial, all
+            describe('Delete', () => {
+                it('should delete single row', () => {
+                    const { $libDel, libTitle: oldTItle, libUrl: oldUrl } = getEditViewElem();
+                    TestUtil.triggerEvt($libDel, 'click');
 
-            // async/active toggle, set lib type
+                    const { libTitle, libUrl } = getEditViewElem();
+                    expect(libTitle).not.toBe(oldTItle);
+                    expect(libUrl).not.toBe(oldUrl);
+                });
 
-            // add library (modal)
+                it('should delete selected multiple rows', () => {
+                    const { $libSelect, $libRows, $libDelAll } = getEditViewElem();
+                    const $2ndRowSelect = $libRows[1].querySelector<HTMLInputElement>(editView.LIB_SELECT);
+                    const thirdRowTitle = $libRows[2].querySelector(editView.LIB_TITLE).textContent;
+                    const thirdRowUrl = $libRows[2].querySelector(editView.LIB_URL).textContent;
+                    TestUtil.triggerEvt($libSelect, 'click');
+                    TestUtil.triggerEvt($2ndRowSelect, 'click');
+                    TestUtil.triggerEvt($libDelAll, 'click');
 
-            // edit lib (modal)
+                    const { libTitle, libUrl } = getEditViewElem();
+                    expect(libTitle).toBe(thirdRowTitle);
+                    expect(libUrl).toBe(thirdRowUrl);
+                });
+
+                it('should delete all rows', () => {
+                    const { $libSelectAll, $libDelAll } = getEditViewElem();
+                    TestUtil.triggerEvt($libSelectAll, 'click');
+                    TestUtil.triggerEvt($libDelAll, 'click');
+
+                    const { $libRows } = getEditViewElem();
+                    expect($libRows.length).toBeFalsy();
+                });
+            });
+
+            describe('Add', () => {
+                it('should add library via modal', () => {
+                    // Modal
+                    const { $libAdd } = getEditViewElem();
+                    TestUtil.triggerEvt($libAdd, 'click');
+
+                    // Input
+                    const mockTitle = 'loremsum';
+                    const mockUrl = 'http://abc.com';
+                    const { $libTitleInput, $libValueInput, $confirm } = getModalElem();
+                    TestUtil.setInputVal($libTitleInput, mockTitle);
+                    TestUtil.triggerEvt($libTitleInput, 'change');
+                    TestUtil.setInputVal($libValueInput, mockUrl);
+                    TestUtil.triggerEvt($libValueInput, 'change');
+                    TestUtil.triggerEvt($confirm, 'click');
+
+                    const { $libRows } = getEditViewElem();
+                    const $4thRowTitle = $libRows[3].querySelector(editView.LIB_TITLE).textContent;
+                    const $4thRowUrl = $libRows[3].querySelector(editView.LIB_URL).textContent;
+                    expect($libRows.length).toBe(4);
+                    expect($4thRowTitle).toBe(mockTitle);
+                    expect($4thRowUrl).toBe(mockUrl);
+                });
+            });
+
+            describe('Modify', () => {
+                it('should set library type', () => {
+                    const { $libTypeDropdown } = getEditViewElem();
+                    $libTypeDropdown.value = '1';
+                    TestUtil.triggerEvt($libTypeDropdown, 'change');
+
+                    const $2ndOption = $libTypeDropdown.children[1] as HTMLOptionElement;
+                    expect($2ndOption.selected).toBeTruthy();
+                });
+
+                it('should toggle async switch', () => {
+                    const { $libAsyncSwitch } = getEditViewElem();
+                    TestUtil.triggerEvt($libAsyncSwitch, 'click');
+                    TestUtil.triggerEvt($libAsyncSwitch, 'change');
+
+                    expect($libAsyncSwitch.checked).toBeFalsy();
+                });
+
+                it('should toggle active switch', () => {
+                    const { $libActiveSwitch } = getEditViewElem();
+                    TestUtil.triggerEvt($libActiveSwitch, 'click');
+                    TestUtil.triggerEvt($libActiveSwitch, 'change');
+
+                    expect($libActiveSwitch.checked).toBeTruthy();
+                });
+
+                it('should edit title/url via modal', () => {
+                    const { $libEdit } = getEditViewElem();
+                    TestUtil.triggerEvt($libEdit, 'click');
+
+                    const mockTitle = 'loremsum';
+                    const mockUrl = 'http://abc.com';
+                    const { $libTitleInput, $libValueInput, $confirm } = getModalElem();
+                    TestUtil.setInputVal($libTitleInput, mockTitle);
+                    TestUtil.triggerEvt($libTitleInput, 'change');
+                    TestUtil.setInputVal($libValueInput, mockUrl);
+                    TestUtil.triggerEvt($libValueInput, 'change');
+                    TestUtil.triggerEvt($confirm, 'click');
+
+                    const { libTitle, libUrl } = getEditViewElem();
+                    expect(libTitle).toBe(mockTitle);
+                    expect(libUrl).toBe(mockUrl);
+                });
+            });
         });
     });
 
