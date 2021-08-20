@@ -426,13 +426,8 @@ export class OptionApp extends MemoComponent<IProps> {
 
     get $addLibModal() {
         const { id, txt } = modalSet.addLib;
-        const { currentId, isConfirmBtnEnabled, titleInput, valueInput} = this.modalState;
-        const {
-            onModalCancel,
-            onAddLibModalOk,
-            onModalTitleInput,
-            onModalValueInput,
-        } = this.appStateHandle;
+        const { currentId, isConfirmBtnEnabled } = this.modalState;
+        const { onModalCancel, onAddLibModalOk } = this.appStateHandle;
 
         return (
             <Modal
@@ -446,45 +441,15 @@ export class OptionApp extends MemoComponent<IProps> {
                 onCancel={onModalCancel}
                 onConfirm={onAddLibModalOk}
                 >
-                <TextInput
-                    id="lib-add-title"
-                    label="Title"
-                    required
-                    value={titleInput?.value}
-                    validation={{
-                        rules: validationSet.ruleId,
-                        isValid: titleInput.isValid,
-                        errMsg: titleInput.errMsg
-                    }}
-                    onInputChange={onModalTitleInput}
-                    onInputBlur={onModalTitleInput}
-                    />
-                <TextInput
-                    id="lib-add-value"
-                    label="Url"
-                    required
-                    value={valueInput?.value}
-                    validation={{
-                        rules: validationSet.libUrl,
-                        isValid: valueInput.isValid,
-                        errMsg: valueInput.errMsg
-                    }}
-                    onInputChange={onModalValueInput}
-                    onInputBlur={onModalValueInput}
-                    />
+                {this.$libTextInputs}
             </Modal>
         );
     }
 
     get $editLibModal() {
         const { id, txt } = modalSet.editLib;
-        const { currentId, isConfirmBtnEnabled, titleInput, valueInput} = this.modalState;
-        const {
-            onModalCancel,
-            onModalTitleInput,
-            onModalValueInput,
-            onEditLibModalOk,
-        } = this.appStateHandle;
+        const { currentId, isConfirmBtnEnabled } = this.modalState;
+        const { onModalCancel, onEditLibModalOk } = this.appStateHandle;
         return (
             <Modal
                 activeModalId={currentId}
@@ -497,32 +462,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 onCancel={onModalCancel}
                 onConfirm={onEditLibModalOk}
                 >
-                <TextInput
-                    id="lib-edit-title"
-                    label="Title"
-                    required
-                    value={titleInput?.value}
-                    validation={{
-                        rules: validationSet.ruleId,
-                        isValid: titleInput.isValid,
-                        errMsg: titleInput.errMsg
-                    }}
-                    onInputChange={onModalTitleInput}
-                    onInputBlur={onModalTitleInput}
-                    />
-                <TextInput
-                    id="lib-edit-value"
-                    label="Url"
-                    required
-                    value={valueInput?.value}
-                    validation={{
-                        rules: validationSet.libUrl,
-                        isValid: valueInput.isValid,
-                        errMsg: valueInput.errMsg
-                    }}
-                    onInputChange={onModalValueInput}
-                    onInputBlur={onModalValueInput}
-                    />
+                {this.$libTextInputs}
             </Modal>
         );
     }
@@ -625,6 +565,40 @@ export class OptionApp extends MemoComponent<IProps> {
                 onChange={onDelConfirmDialogToggle}
                 />
         );
+    }
+
+    get $libTextInputs() {
+        const { titleInput, valueInput} = this.modalState;
+        const { onModalTitleInput, onModalValueInput } = this.appStateHandle;
+
+        return (<>
+            <TextInput
+                id="lib-title"
+                label="Title"
+                required
+                value={titleInput?.value}
+                validation={{
+                    rules: validationSet.ruleId,
+                    isValid: titleInput.isValid,
+                    errMsg: titleInput.errMsg
+                }}
+                onInputChange={onModalTitleInput}
+                onInputBlur={onModalTitleInput}
+                />
+            <TextInput
+                id="lib-value"
+                label="Url"
+                required
+                value={valueInput?.value}
+                validation={{
+                    rules: validationSet.libUrl,
+                    isValid: valueInput.isValid,
+                    errMsg: valueInput.errMsg
+                }}
+                onInputChange={onModalValueInput}
+                onInputBlur={onModalValueInput}
+                />
+        </>);
     }
 
     get appStateHandle() {
