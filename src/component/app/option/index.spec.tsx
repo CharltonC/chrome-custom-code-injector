@@ -30,7 +30,8 @@ describe('Component - Option App (E2E)', () => {
         PATH_TITLE_INPUT: '#path-title',
         PATH_VALUE_INPUT: '#path-url',
         LIB_TITLE_INPUT: '#lib-title',
-        LIB_VALUE_INPUT: '#lib-value'
+        LIB_VALUE_INPUT: '#lib-value',
+        ERR_MSG: '.text-ipt__err'
     };
     const listView = {
         MAIN: '.main--list',
@@ -213,7 +214,7 @@ describe('Component - Option App (E2E)', () => {
         return {
             $confirm: $elem.querySelector(modal.CONFIRM_BTN) as HTMLButtonElement,
             $hostTitleInput: $elem.querySelector(modal.HOST_TITLE_INPUT) as HTMLInputElement,
-            $hostValueInput: $elem.querySelector(modal.HOST_TITLE_INPUT) as HTMLInputElement,
+            $hostValueInput: $elem.querySelector(modal.HOST_VALUE_INPUT) as HTMLInputElement,
             $pathTitleInput: $elem.querySelector(modal.PATH_TITLE_INPUT) as HTMLInputElement,
             $pathValueInput: $elem.querySelector(modal.PATH_VALUE_INPUT) as HTMLInputElement,
             $libTitleInput: $elem.querySelector(modal.LIB_TITLE_INPUT) as HTMLInputElement,
@@ -548,11 +549,54 @@ describe('Component - Option App (E2E)', () => {
                 expect($libToggle.checked).toBeTruthy();
             });
 
-            it('should add host', () => {
-                // TODO:
+            it('should switch to edit mode', () => {
+                const { $edit } = getListViewElem();
+                TestUtil.triggerEvt($edit, 'click');
+
+                expect($elem.querySelector(editView.MAIN)).toBeTruthy();
+            });
+        });
+
+        describe('Add Host/Path', () => {
+            beforeEach(() => {
+                initApp();
             });
 
-            it('should add path', () => {
+            it('should add valid host', () => {
+                const { $addHost } = getListViewElem();
+                TestUtil.triggerEvt($addHost, 'click');
+
+                const mockTitle = 'lorem';
+                const mockValue = 'sum.com';
+                const { $confirm, $hostTitleInput, $hostValueInput } = getModalElem();
+                TestUtil.setInputVal($hostTitleInput, mockTitle);
+                TestUtil.triggerEvt($hostTitleInput, 'change');
+                TestUtil.setInputVal($hostValueInput, mockValue);
+                TestUtil.triggerEvt($hostValueInput, 'change');
+                TestUtil.triggerEvt($confirm, 'click');
+
+                const { totalRows } = getListViewElem();
+                expect(totalRows).toBe(5);
+            });
+
+            it('should not add invalid host', () => {
+                const { $addHost } = getListViewElem();
+                TestUtil.triggerEvt($addHost, 'click');
+
+                const mockTitle = 'a b';
+                const mockValue = 'sum';
+                const { $confirm, $hostTitleInput, $hostValueInput } = getModalElem();
+                TestUtil.setInputVal($hostTitleInput, mockTitle);
+                TestUtil.triggerEvt($hostTitleInput, 'change');
+                TestUtil.setInputVal($hostValueInput, mockValue);
+                TestUtil.triggerEvt($hostValueInput, 'change');
+
+                expect($confirm.disabled).toBeTruthy();
+                expect($elem.querySelector(`${modal.HOST_TITLE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
+                expect($elem.querySelector(`${modal.HOST_VALUE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
+            });
+
+            it('should add valid path', () => {
                 const mockTitle = 'title';
                 const mockPath = '/loremsum';
 
@@ -575,11 +619,21 @@ describe('Component - Option App (E2E)', () => {
                 expect(address).toBe(mockPath);
             });
 
-            it('should switch to edit mode', () => {
-                const { $edit } = getListViewElem();
-                TestUtil.triggerEvt($edit, 'click');
+            it('should not add invalid path', () => {
+                const { $addPath } = getListViewElem();
+                TestUtil.triggerEvt($addPath, 'click');
 
-                expect($elem.querySelector(editView.MAIN)).toBeTruthy();
+                const mockTitle = 'a b';
+                const mockValue = 'sum';
+                const { $confirm, $pathTitleInput, $pathValueInput } = getModalElem();
+                TestUtil.setInputVal($pathTitleInput, mockTitle);
+                TestUtil.triggerEvt($pathTitleInput, 'change');
+                TestUtil.setInputVal($pathValueInput, mockValue);
+                TestUtil.triggerEvt($pathValueInput, 'change');
+
+                expect($confirm.disabled).toBeTruthy();
+                expect($elem.querySelector(`${modal.PATH_TITLE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
+                expect($elem.querySelector(`${modal.PATH_VALUE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
             });
         });
 
@@ -660,7 +714,7 @@ describe('Component - Option App (E2E)', () => {
             });
         });
 
-        describe('Delete editable and Add path', () => {
+        describe('Delete editable', () => {
             it('should set 1st host as editable if a host is deleted and there are remaining hosts', () => {
                 const nextHostTitle = mockAppState.rules[1].title;
                 const { $del, $activeHost } = getEditViewElem();
@@ -691,8 +745,10 @@ describe('Component - Option App (E2E)', () => {
 
                 expect($activeHost1stPath.textContent).toBe(nextPathTitle);
             });
+        });
 
-            it('should add path', () => {
+        describe('Add Path', () => {
+            it('should add valid path', () => {
                 const mockTitle = 'lorem';
                 const mockValue = '/sum';
 
@@ -707,6 +763,23 @@ describe('Component - Option App (E2E)', () => {
                 TestUtil.triggerEvt($confirm, 'click');
 
                 expect($activeHostBadge.textContent).toBe('4');
+            });
+
+            it('should not add invalid path', () => {
+                const { $addPath } = getEditViewElem();
+                TestUtil.triggerEvt($addPath, 'click');
+
+                const mockTitle = 'a b';
+                const mockValue = 'sum';
+                const { $confirm, $pathTitleInput, $pathValueInput } = getModalElem();
+                TestUtil.setInputVal($pathTitleInput, mockTitle);
+                TestUtil.triggerEvt($pathTitleInput, 'change');
+                TestUtil.setInputVal($pathValueInput, mockValue);
+                TestUtil.triggerEvt($pathValueInput, 'change');
+
+                expect($confirm.disabled).toBeTruthy();
+                expect($elem.querySelector(`${modal.PATH_TITLE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
+                expect($elem.querySelector(`${modal.PATH_VALUE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
             });
         });
 
@@ -902,8 +975,8 @@ describe('Component - Option App (E2E)', () => {
                 });
             });
 
-            describe('Add', () => {
-                it('should add library via modal', () => {
+            describe('Add Library', () => {
+                it('should add valid library', () => {
                     // Modal
                     const { $libAdd } = getEditViewElem();
                     TestUtil.triggerEvt($libAdd, 'click');
@@ -924,6 +997,23 @@ describe('Component - Option App (E2E)', () => {
                     expect($libRows.length).toBe(4);
                     expect($4thRowTitle).toBe(mockTitle);
                     expect($4thRowUrl).toBe(mockUrl);
+                });
+
+                it('should not add invalid library', () => {
+                    const { $libAdd } = getEditViewElem();
+                    TestUtil.triggerEvt($libAdd, 'click');
+
+                    const mockTitle = 'a b';
+                    const mockValue = 'sum';
+                    const { $confirm, $libTitleInput, $libValueInput } = getModalElem();
+                    TestUtil.setInputVal($libTitleInput, mockTitle);
+                    TestUtil.triggerEvt($libTitleInput, 'change');
+                    TestUtil.setInputVal($libValueInput, mockValue);
+                    TestUtil.triggerEvt($libValueInput, 'change');
+
+                    expect($confirm.disabled).toBeTruthy();
+                    expect($elem.querySelector(`${modal.LIB_TITLE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
+                    expect($elem.querySelector(`${modal.LIB_VALUE_INPUT} + ${modal.ERR_MSG}`)).toBeTruthy();
                 });
             });
 
@@ -973,6 +1063,4 @@ describe('Component - Option App (E2E)', () => {
             });
         });
     });
-
-    // TODO: Modal validation
 });
