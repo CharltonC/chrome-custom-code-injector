@@ -30,6 +30,26 @@ module.exports = {
             outputPath: 'dist/build/asset/img'
         },
 
+        // Demo Asset only
+        demoIcon: {
+            inputFiles: [
+                'src/asset/icon/*.*'
+            ],
+            outputPath: 'dist/demo/icon'
+        },
+        demoFont: {
+            inputFiles: [
+                'src/asset/font/*.*'
+            ],
+            outputPath: 'dist/demo/font'
+        },
+        demoImg: {
+            inputFiles: [
+                'src/asset/img/*.*'
+            ],
+            outputPath: 'dist/demo/img'
+        },
+
         // Chrome
         manifest: {
             inputFiles: [
