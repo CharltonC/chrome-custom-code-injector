@@ -45,12 +45,12 @@ module.exports = {
     '../node_modules/angular/angular.js',
     */
     tasks: {
-        // bgScript: {
-        //     inputFiles: [
-        //         'page/bg-script/main.ts'
-        //     ],
-        //     outputFile: 'dist/build/bg-script/main.min.js',
-        // },
+        demo: {
+            inputFiles: [
+                'page/demo/main.tsx'
+            ],
+            outputFile: 'dist/demo/main.min.js',
+        },
         contentScript: {
             inputFiles: [
                 'page/ct-script/main.ts'

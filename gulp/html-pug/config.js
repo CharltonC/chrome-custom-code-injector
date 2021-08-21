@@ -10,6 +10,10 @@ module.exports = {
         optionPage: {
             inputFiles: [ 'src/page/option/index.pug' ],
             outputPath: 'dist/build/option'
+        },
+        demoPage: {
+            inputFiles: [ 'src/page/demo/index.pug' ],
+            outputPath: 'dist/demo'
         }
     }
 };

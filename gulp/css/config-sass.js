@@ -17,6 +17,11 @@ module.exports = {
             inputFiles: 'src/page/popup/style.scss',
             rename: 'style.min.css',
             outputPath: 'dist/build/popup/'
+        },
+        demoPage: {
+            inputFiles: 'src/page/demo/style.scss',
+            rename: 'style.min.css',
+            outputPath: 'dist/demo/'
         }
     }
 };
