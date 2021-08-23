@@ -24,7 +24,7 @@
   },
   "private": true,
   "dependencies": {
-    "ajv": "8.6.2",
+    "ajv": "7.2.4",
     "codemirror": "5.58.2",
     "pubsub-js": "1.9.0",
     "react": "16.13.1",
