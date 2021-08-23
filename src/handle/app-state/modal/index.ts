@@ -414,7 +414,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
             // Clear the Search only if text exists + all hosts are removed
             const totalRecord = rules.length;
-            const searchText = this.getUpdatedSearchText(currSearchText, totalRecord);
+            const searchText = this.reflect.getUpdatedSearchText(currSearchText, totalRecord);
 
             // If a host is removed, Update new pagination state after rules removal (depends on total no. of hosts)
             const dataGridState = isHost
@@ -504,7 +504,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
         // Clear the Search after rules are altered (List view only)
         const totalRecord = rules.length;
-        const searchText = this.getUpdatedSearchText(currSearchText, totalRecord);
+        const searchText = this.reflect.getUpdatedSearchText(currSearchText, totalRecord);
 
         // Update new pagination state after rules removal (depends on total no. of hosts)
         const dataGridState = new DataGridState({
