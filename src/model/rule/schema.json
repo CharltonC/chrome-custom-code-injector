@@ -87,6 +87,23 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "activeTabIdx",
+                "codeExecPhase",
+                "cssCode",
+                "id",
+                "isCssOn",
+                "isExactMatch",
+                "isHost",
+                "isHttps",
+                "isJsOn",
+                "isLibOn",
+                "jsCode",
+                "libs",
+                "paths",
+                "title",
+                "value"
+            ],
             "type": "object"
         },
         "LibRule": {
@@ -115,6 +132,14 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "id",
+                "isAsync",
+                "isOn",
+                "title",
+                "type",
+                "value"
+            ],
             "type": "object"
         },
         "PathRule": {
@@ -183,6 +208,21 @@
                     "type": "string"
                 }
             },
+            "required": [
+                "activeTabIdx",
+                "codeExecPhase",
+                "cssCode",
+                "id",
+                "isCssOn",
+                "isExactMatch",
+                "isHost",
+                "isJsOn",
+                "isLibOn",
+                "jsCode",
+                "libs",
+                "title",
+                "value"
+            ],
             "type": "object"
         }
     },
