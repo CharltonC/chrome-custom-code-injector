@@ -51,3 +51,6 @@ export class LibRule {
         this.value = value;
     }
 }
+
+// JSON Schema generation only
+type Rules = HostRule[];

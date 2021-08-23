@@ -1,0 +1,194 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ALibType": {
+            "enum": [
+                "css",
+                "js"
+            ],
+            "type": "string"
+        },
+        "HostRule": {
+            "properties": {
+                "activeTabIdx": {
+                    "default": 0,
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "type": "number"
+                },
+                "codeExecPhase": {
+                    "default": 0,
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "type": "number"
+                },
+                "cssCode": {
+                    "default": "",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isCssOn": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "isExactMatch": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "isHost": {
+                    "default": true,
+                    "type": "boolean"
+                },
+                "isHttps": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "isJsOn": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "isLibOn": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "jsCode": {
+                    "default": "",
+                    "type": "string"
+                },
+                "libs": {
+                    "default": [
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/LibRule"
+                    },
+                    "type": "array"
+                },
+                "paths": {
+                    "default": [
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/PathRule"
+                    },
+                    "type": "array"
+                },
+                "title": {
+                    "default": "",
+                    "type": "string"
+                },
+                "value": {
+                    "default": "",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "LibRule": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "isAsync": {
+                    "default": true,
+                    "type": "boolean"
+                },
+                "isOn": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "title": {
+                    "default": "",
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/ALibType",
+                    "default": "js"
+                },
+                "value": {
+                    "default": "",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "PathRule": {
+            "properties": {
+                "activeTabIdx": {
+                    "default": 0,
+                    "enum": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "type": "number"
+                },
+                "codeExecPhase": {
+                    "default": 0,
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "type": "number"
+                },
+                "cssCode": {
+                    "default": "",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isCssOn": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "isExactMatch": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "isHost": {
+                    "type": "boolean"
+                },
+                "isJsOn": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "isLibOn": {
+                    "default": false,
+                    "type": "boolean"
+                },
+                "jsCode": {
+                    "default": "",
+                    "type": "string"
+                },
+                "libs": {
+                    "default": [
+                    ],
+                    "items": {
+                        "$ref": "#/definitions/LibRule"
+                    },
+                    "type": "array"
+                },
+                "title": {
+                    "default": "",
+                    "type": "string"
+                },
+                "value": {
+                    "default": "",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "items": {
+        "$ref": "#/definitions/HostRule"
+    },
+    "type": "array"
+}
+
