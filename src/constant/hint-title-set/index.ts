@@ -1,4 +1,4 @@
-export const HintTitleSet = {
+export const hintTitleSet = {
     DOC_LINK: 'User Guide',
 
     EXPAND_BTN: 'on: show the path rules',
