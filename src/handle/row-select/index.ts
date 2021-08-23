@@ -71,3 +71,5 @@ export class RowSelectHandle {
         };
     }
 }
+
+export const rowHandle = new RowSelectHandle();
