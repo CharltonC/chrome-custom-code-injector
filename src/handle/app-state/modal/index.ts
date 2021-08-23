@@ -58,16 +58,10 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     async onImportDataModalOk(state: AppState): Promise<Partial<AppState>> {
         const { modal } = state.localState;
         const { importFileInput } = modal;
-
-        try {
-            const rules = (await fileHandle.readJson(importFileInput)) as HostRule[];
-            const { localState } = this.reflect.onModalCancel(state);
-            chromeHandle.saveState({rules});
-            return { rules, localState };
-        } catch (e) {
-            // TODO: show error state and dont close the modal
-            return {};
-        }
+        const rules = (await fileHandle.readJson(importFileInput)) as HostRule[];
+        const { localState } = this.reflect.onModalCancel(state);
+        chromeHandle.saveState({rules});
+        return { rules, localState };
     }
 
     onExportDataModal(state: AppState): Partial<AppState> {
@@ -84,14 +78,15 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     }
 
     onImportFileInputChange({ localState }: AppState, payload: TFileInput.IOnFileChange): Partial<AppState> {
-        const { evt, isValid } = payload;
+        const { file, isValid } = payload;
         return {
             localState: {
                 ...localState,
                 modal: {
                     ...localState.modal,
                     isConfirmBtnEnabled: isValid,
-                    importFileInput: evt.target.files.item(0)
+                    // Even though it might be invalid, we still showing the file name to user hence setting file
+                    importFileInput: file
                 }
             }
         };
