@@ -215,7 +215,6 @@
                 "id",
                 "isCssOn",
                 "isExactMatch",
-                "isHost",
                 "isJsOn",
                 "isLibOn",
                 "jsCode",

@@ -14,7 +14,7 @@ export class BaseRule {
 
 export class PathRule extends BaseRule {
     id: string;
-    isHost: boolean;
+    isHost?: boolean;
     isExactMatch = false;
     title = '';
     value = '';
