@@ -12,10 +12,10 @@ export interface IState {
 }
 
 export interface IValidationConfig {
-    rule: ((val: File) => boolean);
-    msg: string;
+    rule: ((val: File) => boolean) | ((val: File) => Promise<boolean | string[]>);
+    msg?: string;
 }
 
 export interface IOnFileChange extends IState {
-    evt: React.ChangeEvent<HTMLInputElement>;
+    file: File;
 }

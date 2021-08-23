@@ -39,24 +39,32 @@ export class FileInput extends MemoComponent<IProps, IState> {
         );
     }
 
-    onChange(evt: ChangeEvent<HTMLInputElement & FileList>): void {
+    async onChange(evt: ChangeEvent<HTMLInputElement & FileList>): Promise<void> {
         const { validate, onFileChange } = this.props;
         if (!validate?.length) return;
 
+        // File is also a Blob (specific type)
+        // - File interface is based on Blob
         const file: File = evt.target.files.item(0);
-        const errMsg: string[] = [];
+        let errMsg: string[] = [];
 
         if (!file) {
             errMsg.push(MSG_NO_FILE);
 
         } else {
-            validate.forEach(({ rule, msg }: IValidationConfig) => {
-                if (!rule(file)) errMsg.push(msg);
-            });
+            for (let i=0; i < validate.length; i++) {
+                const { rule, msg } = validate[i];
+                const result = await rule(file);
+                if (typeof result === 'boolean') {
+                    if (!result) errMsg.push(msg);
+                } else {
+                    errMsg = errMsg.concat(result as string[]);
+                }
+            }
         }
 
         const validState: IState = { errMsg, isValid: !errMsg.length };
         this.setState(validState);
-        onFileChange?.({ ...validState, evt });
+        onFileChange?.({ ...validState, file });
     }
 }
