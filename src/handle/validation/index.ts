@@ -1,3 +1,5 @@
+import { jsonSchemaHandle } from '../json-schema';
+
 export class ValidationHandle {
     readonly url = {
         rule: /^(https?:\/\/)?(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+(\/([^?/]+))*$/i,
@@ -27,6 +29,34 @@ export class ValidationHandle {
     readonly fileName = {
         rule: /^\w+(.*\w+)?$/,
         msg: 'file name must start/end with a character'
+    };
+
+    readonly jsonFileSchema = {
+        rule: (file: File): Promise<true | string[]> => {
+            const PARSE_ERR_MSG = 'JSON parse error, check if json is correct';
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                const onFileLoad = ({ target }) => {
+                    try {
+                        // Try parsing (possible error)
+                        const data = JSON.parse(target.result);
+
+                        // Check json format (graceful error)
+                        const isValid = jsonSchemaHandle.isValid(data);
+                        if (isValid) resolve(true);
+                        resolve(jsonSchemaHandle.errors.map(err => {
+                            return `Import file data error: ${err['message']}`;
+                        }));
+                    } catch (e) {
+                        resolve([PARSE_ERR_MSG]);
+                    }
+
+                    reader.removeEventListener('load', onFileLoad);
+                }
+                reader.addEventListener('load', onFileLoad);
+                reader.readAsText(file);
+            });
+        }
     };
 
     gteChar(minChar: number) {
