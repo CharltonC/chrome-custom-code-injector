@@ -123,14 +123,14 @@ export class OptionApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="download"
                         theme="white"
-                        onClick={onExportDataModal}
+                        onClick={onImportDataModal}
                         />
                     <IconBtn
                         icon="download"
                         theme="white"
                         clsSuffix="upload"
                         disabled={!rules.length}
-                        onClick={onImportDataModal}
+                        onClick={onExportDataModal}
                         />
                 </div>
             </header>
