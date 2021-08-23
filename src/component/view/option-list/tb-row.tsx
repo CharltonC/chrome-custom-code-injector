@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { codeExecStageList } from '../../../constant/code-exec-stage-list';
-import { hintTitleSet } from '../../../constant/hint-title-set';
+import { hintMsgSet } from '../../../constant/hint-msg-set';
 
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
@@ -69,7 +69,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         <>
                             <IconBtn
                                 icon="arrow-rt"
-                                title={hintTitleSet.EXPAND_BTN}
+                                title={hintMsgSet.EXPAND_BTN}
                                 clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
                                 disabled={!paths?.length}
                                 onClick={() => onRowExpand({ hostId })}
@@ -81,7 +81,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td><td>{ isHost &&
                     <IconSwitch
                         icon
-                        title={hintTitleSet.HTTPS_SWITCH}
+                        title={hintMsgSet.HTTPS_SWITCH}
                         id={`https-${ID_SUFFIX}`}
                         label="lock-close"
                         checked={isHttps}
@@ -90,7 +90,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />}
                     <IconSwitch
                         label="="
-                        title={hintTitleSet.EXACT_MATCH_SWITCH}
+                        title={hintMsgSet.EXACT_MATCH_SWITCH}
                         id={`exact-${ID_SUFFIX}`}
                         checked={isExactMatch}
                         disabled={isDelDisabled}
@@ -101,7 +101,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                     </span>
                 </td><td>
                     <Dropdown
-                        title={hintTitleSet.CODE_EXEC_STEP_SELECT}
+                        title={hintMsgSet.CODE_EXEC_STEP_SELECT}
                         id={`select-${ID_SUFFIX}`}
                         list={codeExecStageList}
                         selectIdx={codeExecPhase}
@@ -111,7 +111,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>
                     <SliderSwitch
-                        title={hintTitleSet.JS_SWITCH}
+                        title={hintMsgSet.JS_SWITCH}
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
@@ -119,7 +119,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>
                     <SliderSwitch
-                        title={hintTitleSet.CSS_SWITCH}
+                        title={hintMsgSet.CSS_SWITCH}
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
@@ -127,7 +127,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>
                     <SliderSwitch
-                        title={hintTitleSet.LIB_SWITCH}
+                        title={hintMsgSet.LIB_SWITCH}
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
@@ -135,7 +135,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>{ isHost &&
                     <IconBtn
-                        title={hintTitleSet.ADD_PATH_BTN}
+                        title={hintMsgSet.ADD_PATH_BTN}
                         icon="add"
                         theme="gray"
                         disabled={isDelDisabled}

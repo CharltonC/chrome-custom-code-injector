@@ -1,6 +1,6 @@
 import React from 'react';
 import { dataHandle } from '../../../handle/data';
-import { hintTitleSet } from '../../../constant/hint-title-set';
+import { hintMsgSet } from '../../../constant/hint-msg-set';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { DataGrid } from '../../widget/data-grid';
@@ -68,7 +68,7 @@ export class OptionListView extends MemoComponent<IProps> {
         );
         const $addHost = (
             <IconBtn
-                title={hintTitleSet.ADD_HOST_BTN}
+                title={hintMsgSet.ADD_HOST_BTN}
                 icon="add-outline"
                 theme="gray"
                 disabled={hasSelected}

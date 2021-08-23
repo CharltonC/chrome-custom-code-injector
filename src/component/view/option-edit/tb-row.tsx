@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { libTypeList } from '../../../constant/lib-type-list';
-import { hintTitleSet } from '../../../constant/hint-title-set';
+import { hintMsgSet } from '../../../constant/hint-msg-set';
 
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
@@ -60,7 +60,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td>
                 <td>
                     <Dropdown
-                        title={hintTitleSet.LIB_TYPE_SELECT}
+                        title={hintMsgSet.LIB_TYPE_SELECT}
                         id="lib-type"
                         disabled={hasSelected}
                         list={libTypeList}
@@ -70,7 +70,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td>
                 <td>
                     <SliderSwitch
-                        title={hintTitleSet.LIB_ASYNC_SWITCH}
+                        title={hintMsgSet.LIB_ASYNC_SWITCH}
                         id={`lib-async-${ID_SUFFIX}`}
                         checked={isAsync}
                         disabled={hasSelected}
@@ -79,7 +79,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td>
                 <td>
                     <SliderSwitch
-                        title={hintTitleSet.LIB_ACTIVE_SWITCH}
+                        title={hintMsgSet.LIB_ACTIVE_SWITCH}
                         id={`lib-active-${ID_SUFFIX}`}
                         checked={isOn}
                         disabled={hasSelected}
