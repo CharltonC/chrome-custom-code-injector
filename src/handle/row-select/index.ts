@@ -1,9 +1,16 @@
-import { IOption, IState, ISelectedRowKeyCtx, IRowCtx } from './type';
+import { IOption, IState, ISelectedRowKeyCtx, IRowCtx, IDistillState } from './type';
 
 export class RowSelectHandle {
     getState(option: Partial<IOption> = {}): IState {
         const { isAll, rowsCtx, currState } = Object.assign(this.defOption, option);
         return isAll ? this.toggleSelectAll(currState) : this.toggleSelectOne(currState, rowsCtx);
+    }
+
+    distillState(state: IState): IDistillState {
+        const { areAllRowsSelected, selectedRowKeyCtx } = state;
+        const isPartiallySelected = !areAllRowsSelected && !!Object.entries(selectedRowKeyCtx).length;
+        const hasSelected = areAllRowsSelected || isPartiallySelected;
+        return { isPartiallySelected, hasSelected };
     }
 
     /**

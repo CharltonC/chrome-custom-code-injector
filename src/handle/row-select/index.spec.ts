@@ -35,6 +35,48 @@ describe('Row Select Handle', () => {
         });
     });
 
+    describe('Method - distillState: get a more detailed state to differentiate single selected or all selected', () => {
+        it('should return the distilled state when all rows are selected', () => {
+            expect(handle.distillState({
+                areAllRowsSelected: true,
+                selectedRowKeyCtx: {}
+            })).toEqual({
+                isPartiallySelected: false,
+                hasSelected: true,
+            });
+        });
+
+        it('should return the distilled state when single row is selected', () => {
+            expect(handle.distillState({
+                areAllRowsSelected: false,
+                selectedRowKeyCtx: { lorem: true }
+            })).toEqual({
+                isPartiallySelected: true,
+                hasSelected: true,
+            });
+        });
+
+        it('should return the distilled state when multiple rows are selected', () => {
+            expect(handle.distillState({
+                areAllRowsSelected: false,
+                selectedRowKeyCtx: { lorem: true, sum: true }
+            })).toEqual({
+                isPartiallySelected: true,
+                hasSelected: true,
+            });
+        });
+
+        it('should return the distilled state when no rows are selected', () => {
+            expect(handle.distillState({
+                areAllRowsSelected: false,
+                selectedRowKeyCtx: {}
+            })).toEqual({
+                isPartiallySelected: false,
+                hasSelected: false,
+            });
+        });
+    });
+
     describe('Method - toggleSelectAll: Select/Unselect all rows', () => {
         it('should return all selected if no rows are currently selected', () => {
             expect(handle.toggleSelectAll({ areAllRowsSelected: false } as IState)).toEqual({

@@ -9,6 +9,14 @@ export interface IState {
     selectedRowKeyCtx: ISelectedRowKeyCtx;
 }
 
+export interface IDistillState {
+    // single/multiple selected (not all)
+    isPartiallySelected: boolean;
+
+    // single/multiple/all selected
+    hasSelected: boolean;
+}
+
 export interface ISelectedRowKeyCtx {
     [s: string]: boolean;
 }
