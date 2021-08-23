@@ -7,9 +7,9 @@ import { SliderSwitch } from '../../base/checkbox-slider-switch';
 import { Dropdown } from '../../base/select-dropdown';
 
 import { AppState } from '../../../model/app-state';
+import { ITbRowProps } from './type';
 
-// TODO: Type for props
-export const TbRow: React.FC<any> = memo((props) => {
+export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
     const { dataSrc, idx, itemLvl, item, classNames, commonProps } = props;
     const { appState, appStateHandle } = commonProps;
     const { REG_ROW } = classNames;
@@ -33,6 +33,7 @@ export const TbRow: React.FC<any> = memo((props) => {
     // Data Grid State
     const { selectState } = localState.editView.dataGrid;
     const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
+    // TODO: Move these two lines to select handle
     const isSelected = areAllRowsSelected || id in selectedRowKeyCtx;
     const hasSelected = areAllRowsSelected || !!Object.getOwnPropertyNames(selectedRowKeyCtx).length;
     const libTypeIdx = libTypeList.indexOf(type);
