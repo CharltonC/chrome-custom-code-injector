@@ -2,6 +2,7 @@ import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { validationSet } from '../../../constant/validation-set';
 import { codeExecStageList } from '../../../constant/code-exec-stage-list';
+import { hintTitleSet } from '../../../constant/hint-title-set';
 import { dataHandle } from '../../../handle/data';
 
 import { MemoComponent } from '../../extendable/memo-component';
@@ -106,6 +107,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         );
         const $addLib = (
             <IconBtn
+                title={hintTitleSet.ADD_LIB_BTN}
                 icon="add-outline"
                 theme="gray"
                 disabled={hasSelected}

@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { codeExecStageList } from '../../../constant/code-exec-stage-list';
+import { hintTitleSet } from '../../../constant/hint-title-set';
 
 import { IconBtn } from '../../base/btn-icon';
 import { Checkbox } from '../../base/checkbox';
@@ -60,7 +61,6 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                     { isHost &&
                     <Checkbox
                         id={`check-${ID_SUFFIX}`}
-                        clsSuffix=""
                         checked={isSelected}
                         onChange={() => onRowSelectToggle({ dataSrc, hostId })}
                         />}
@@ -69,6 +69,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         <>
                             <IconBtn
                                 icon="arrow-rt"
+                                title={hintTitleSet.EXPAND_BTN}
                                 clsSuffix={`arrow-rt ${isRowExp ? 'open': ''}`}
                                 disabled={!paths?.length}
                                 onClick={() => onRowExpand({ hostId })}
@@ -80,6 +81,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                 </td><td>{ isHost &&
                     <IconSwitch
                         icon
+                        title={hintTitleSet.HTTPS_SWITCH}
                         id={`https-${ID_SUFFIX}`}
                         label="lock-close"
                         checked={isHttps}
@@ -87,8 +89,9 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         onChange={() => onHttpsToggle({ hostId })}
                         />}
                     <IconSwitch
-                        id={`exact-${ID_SUFFIX}`}
                         label="="
+                        title={hintTitleSet.EXACT_MATCH_SWITCH}
+                        id={`exact-${ID_SUFFIX}`}
                         checked={isExactMatch}
                         disabled={isDelDisabled}
                         onChange={() => onExactMatchToggle(ruleIdCtx)}
@@ -98,6 +101,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                     </span>
                 </td><td>
                     <Dropdown
+                        title={hintTitleSet.CODE_EXEC_STEP_SELECT}
                         id={`select-${ID_SUFFIX}`}
                         list={codeExecStageList}
                         selectIdx={codeExecPhase}
@@ -107,6 +111,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>
                     <SliderSwitch
+                        title={hintTitleSet.JS_SWITCH}
                         id={`js-${ID_SUFFIX}`}
                         defaultChecked={isJsOn}
                         disabled={isDelDisabled}
@@ -114,6 +119,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>
                     <SliderSwitch
+                        title={hintTitleSet.CSS_SWITCH}
                         id={`css-${ID_SUFFIX}`}
                         defaultChecked={isCssOn}
                         disabled={isDelDisabled}
@@ -121,6 +127,7 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>
                     <SliderSwitch
+                        title={hintTitleSet.LIB_SWITCH}
                         id={`lib-${ID_SUFFIX}`}
                         defaultChecked={isLibOn}
                         disabled={isDelDisabled}
@@ -128,9 +135,9 @@ export const TbRow: React.FC<any> = memo((props: ITbRowProps) => {
                         />
                 </td><td>{ isHost &&
                     <IconBtn
+                        title={hintTitleSet.ADD_PATH_BTN}
                         icon="add"
                         theme="gray"
-                        title="add path rule"
                         disabled={isDelDisabled}
                         onClick={() => onAddPathModal(ruleIdCtx)}
                         />}
