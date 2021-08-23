@@ -37,6 +37,7 @@ export class ValidationHandle {
             return new Promise(resolve => {
                 const reader = new FileReader();
                 const onFileLoad = ({ target }) => {
+                    reader.removeEventListener('load', onFileLoad);
                     try {
                         // Try parsing (possible error)
                         const data = JSON.parse(target.result);
@@ -50,8 +51,6 @@ export class ValidationHandle {
                     } catch (e) {
                         resolve([PARSE_ERR_MSG]);
                     }
-
-                    reader.removeEventListener('load', onFileLoad);
                 }
                 reader.addEventListener('load', onFileLoad);
                 reader.readAsText(file);
