@@ -14,7 +14,7 @@
     "serve-index-popup": "gulp serve --startIdxPage=popup",
     "serve-index-option": "gulp serve --startIdxPage=option",
     "serve-styleguide": "gulp build-copy && gulp build-css; gulp watch --files=css & npx start-storybook --ci -p 9001 -s ./dist/build/",
-    "json-schema": "./node_modules/.bin/typescript-json-schema 'src/model/rule/index.ts' Rules --out src/model/rule/schema.json",
+    "json-schema": "./node_modules/.bin/typescript-json-schema 'src/model/rule/index.ts' Rules --required --out src/model/rule/schema.json",
     "doc": "./node_modules/.bin/esdoc",
     "typedoc": "./node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, doc, coverage'",
@@ -24,6 +24,7 @@
   },
   "private": true,
   "dependencies": {
+    "ajv": "8.6.2",
     "codemirror": "5.58.2",
     "pubsub-js": "1.9.0",
     "react": "16.13.1",
