@@ -101,14 +101,6 @@ describe('Modal State Handle', () => {
                     localState: mockState.localState
                 });
             });
-
-            it('should not import data if error is encounted', async () => {
-                handleSpy.onModalCancel.mockImplementation(() => {
-                    throw new Error();
-                });
-                const state = await handle.onImportDataModalOk(mockState);
-                expect(state).toEqual({});
-            });
         });
 
         describe('Method - onExportDataModal', () => {
@@ -145,13 +137,7 @@ describe('Modal State Handle', () => {
             const mockImportFileInput = 'file';
             const mockPayload: any = {
                 isValid: true,
-                evt: {
-                    target: {
-                        files: {
-                            item: () => mockImportFileInput
-                        }
-                    }
-                }
+                file: mockImportFileInput
             };
 
             it('should set the updated file', () => {
