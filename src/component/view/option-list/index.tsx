@@ -1,5 +1,6 @@
 import React from 'react';
 import { dataHandle } from '../../../handle/data';
+import { rowHandle } from '../../../handle/row-select';
 import { hintMsgSet } from '../../../constant/hint-msg-set';
 
 import { MemoComponent } from '../../extendable/memo-component';
@@ -10,6 +11,7 @@ import { SortBtn } from '../../base/btn-sort';
 import { TbRow } from './tb-row';
 
 import * as TSortHandle from '../../../handle/sort/type';
+import * as TPgn from '../../../handle/pagination/type';
 import { HostRule } from '../../../model/rule';
 import { IProps } from './type';
 
@@ -36,10 +38,7 @@ export class OptionListView extends MemoComponent<IProps> {
         const { curr: page } = pgnState;
 
         // Select
-        const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
-        const partiallySelected = !!Object.entries(selectedRowKeyCtx).length;
-        const isPartiallySelected = !areAllRowsSelected && partiallySelected;
-        const hasSelected = areAllRowsSelected || partiallySelected;
+        const { isPartiallySelected, hasSelected } = rowHandle.distillState(selectState);
 
         // Sort
         const isSortDisabled = hasSelected || data.length <= 1;
@@ -75,7 +74,7 @@ export class OptionListView extends MemoComponent<IProps> {
                 onClick={onAddHostModal}
                 />
         );
-        const $delHosts = (srcRules: HostRule[], btnProps, pgnState) => {
+        const $delHosts = (srcRules: HostRule[], btnProps, pgnState: TPgn.IState) => {
             const { startIdx, endIdx } = pgnState;
             const sliceIdxCtx = { startIdx, endIdx };
             return (

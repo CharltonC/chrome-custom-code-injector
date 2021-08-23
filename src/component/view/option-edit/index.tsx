@@ -4,6 +4,7 @@ import { validationSet } from '../../../constant/validation-set';
 import { codeExecStageList } from '../../../constant/code-exec-stage-list';
 import { hintMsgSet } from '../../../constant/hint-msg-set';
 import { dataHandle } from '../../../handle/data';
+import { rowHandle } from '../../../handle/row-select';
 
 import { MemoComponent } from '../../extendable/memo-component';
 import { TextInput } from '../../base/input-text';
@@ -68,9 +69,7 @@ export class OptionEditView extends MemoComponent<IProps> {
         const hsDataSrc = !!libs.length;
 
         // - Select
-        const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
-        const isPartiallySelected = !areAllRowsSelected && !!Object.entries(selectedRowKeyCtx).length;
-        const hasSelected = areAllRowsSelected || isPartiallySelected;
+        const { isPartiallySelected, hasSelected } = rowHandle.distillState(selectState);
 
         // - Sort
         const isSortDisabled = hasSelected || libs.length <= 1;
