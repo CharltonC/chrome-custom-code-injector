@@ -9,11 +9,15 @@ const { cssCls } = UtilHandle;
 const BASE_CLS = 'icon-switch';
 
 export const IconSwitch: React.FC<IProps> = memo((props: IProps) => {
-    const { id, icon, label, clsSuffix, ...inputProps } = props;
+    const { id, icon, label, clsSuffix, title, ...inputProps } = props;
     const ROOT_CLS = cssCls(BASE_CLS, clsSuffix);
 
     return (
-        <label className={ROOT_CLS} htmlFor={id}>
+        <label
+            title={title}
+            className={ROOT_CLS}
+            htmlFor={id}
+            >
             <input
                 type="checkbox"
                 id={id}
