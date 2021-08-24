@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
-import { IProps, IState, IValidationConfig } from './type';
+import { IProps, IState, AValidationConfig } from './type';
 
 const BASE_CLS = 'file-input';
 const MSG_NO_FILE = 'no file was selected';
@@ -53,18 +53,32 @@ export class FileInput extends MemoComponent<IProps, IState> {
 
         } else {
             for (let i=0; i < validate.length; i++) {
-                const { rule, msg } = validate[i];
-                const result = await rule(file);
-                if (typeof result === 'boolean') {
-                    if (!result) errMsg.push(msg);
-                } else {
-                    errMsg = errMsg.concat(result as string[]);
-                }
+                const validator = validate[i];
+                errMsg = await this.getErrMsg(file, validator);;
             }
         }
 
         const validState: IState = { errMsg, isValid: !errMsg.length };
         this.setState(validState);
         onFileChange?.({ ...validState, file });
+    }
+
+    async getErrMsg(file: File, validator: AValidationConfig) {
+        let errMsg: string[] = [];
+
+        // a custom function which return error messages
+        if (typeof validator === 'function') {
+            const msgs = await validator(file);
+            const isValid = msgs === true;
+            errMsg = isValid ? errMsg : errMsg.concat(msgs as string[]);
+
+        // a single rule/msg config
+        } else {
+            const { rule, msg } = validator;
+            const isValid = rule(file);
+            if (!isValid) errMsg.push(msg);
+        }
+
+        return errMsg;
     }
 }

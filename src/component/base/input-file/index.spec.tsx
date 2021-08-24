@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { FileInput } from '.';
-import { IProps } from './type';
+import { IProps, ACustomValidator, AValidationConfig } from './type';
 
 describe('Component - File Input', () => {
     const mockProps: IProps = {
@@ -49,20 +49,22 @@ describe('Component - File Input', () => {
         });
 
         describe('Method - onChange', () => {
-            it('should not set state if validation rules are not provided', () => {
+            it('should not set state if validation rules are not provided', async () => {
                 cmp = new FileInput(mockProps);
-                cmp.onChange(mockEvt);
+                await cmp.onChange(mockEvt);
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
 
-            it('should not set state if validation rules are empty', () => {
+            it('should not set state if validation rules are empty', async () => {
                 cmp = new FileInput({...mockProps, validate: []});
-                cmp.onChange(mockEvt);
+                await cmp.onChange(mockEvt);
                 expect(setStateSpy).not.toHaveBeenCalled();
             });
 
-            it('should set state and trigger callback if validation rules are provided & file is selected', () => {
+            it('should set state and trigger callback if validation rules are provided & file is selected', async () => {
                 const mockOnFileChange = jest.fn();
+                const mockErrMsg = Promise.resolve([mockValidation[0].msg]);
+                jest.spyOn(FileInput.prototype, 'getErrMsg').mockReturnValue(mockErrMsg);
                 const validState = {
                     errMsg: [ mockValidation[0].msg ],
                     isValid: false
@@ -72,19 +74,69 @@ describe('Component - File Input', () => {
                     validate: mockValidation,
                     onFileChange: mockOnFileChange,
                 });
-                cmp.onChange(mockEvt);
+                await cmp.onChange(mockEvt);
 
                 expect(setStateSpy.mock.calls[0][0]).toEqual(validState);
                 expect(mockOnFileChange).toHaveBeenCalledWith({
-                    evt: mockEvt,
+                    file: true,
                     ...validState
                 });
             });
 
-            it('should set state and trigger callback if validation rules are provided & no file is selected', () => {
+            it('should set state and trigger callback if validation rules are provided & no file is selected', async() => {
                 mockFileItem.mockReturnValue(false);
-                new FileInput({ ...mockProps, validate: mockValidation }).onChange(mockEvt);
+                cmp = new FileInput({ ...mockProps, validate: mockValidation });
+                await cmp.onChange(mockEvt);
                 expect(setStateSpy.mock.calls[0][0].errMsg).toEqual(['no file was selected']);
+            });
+        });
+
+        describe('Method = getErrMsg', () => {
+            const mockFile: any = {};
+            let mockValidator;
+
+            beforeEach(() => {
+                cmp = new FileInput(mockProps);
+            });
+
+            describe('when validator is a Custom Validator function', () => {
+                beforeEach(() => {
+                    mockValidator = jest.fn() as AValidationConfig;
+                });
+
+                it('should return empty error msg when valid', async () => {
+                    mockValidator.mockReturnValue(Promise.resolve(true));
+                    const errMsg = await cmp.getErrMsg(mockFile, mockValidator);
+                    expect(errMsg).toEqual([]);
+                });
+
+                it('should return error msg when invalid', async () => {
+                    const mockErrMsg = ['lorem'];
+                    mockValidator.mockReturnValue(Promise.resolve(mockErrMsg));
+                    const errMsg = await cmp.getErrMsg(mockFile, mockValidator)
+                    expect(errMsg).toEqual(mockErrMsg);
+                });
+            });
+
+            describe('when validator is a config object', () => {
+                beforeEach(() => {
+                    mockValidator = {
+                        rule: jest.fn(),
+                        msg: 'lorem'
+                    };
+                });
+
+                it('should return empty error msg when valid', async () => {
+                    mockValidator.rule.mockReturnValue(true);
+                    const errMsg = await cmp.getErrMsg(mockFile, mockValidator);
+                    expect(errMsg).toEqual([]);
+                });
+
+                it('should return error msg when invalid', async () => {
+                    mockValidator.rule.mockReturnValue(false);
+                    const errMsg = await cmp.getErrMsg(mockFile, mockValidator);
+                    expect(errMsg).toEqual([mockValidator.msg]);
+                });
             });
         });
     });
