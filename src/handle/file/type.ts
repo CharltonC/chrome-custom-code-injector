@@ -1,1 +1,2 @@
-export type ASuccessFn = (data: AObj) => any;
+export type ASuccessFn = (data: AReadData) => any;
+type AReadData = string | ArrayBuffer;

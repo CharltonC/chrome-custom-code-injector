@@ -1,11 +1,15 @@
 import { ASuccessFn } from './type';
 
 export class FileHandle {
-    async readJson(file: File, onError?: AFn) {
+    PARSE_ERR_MSG = 'JSON parse error, check if json is correct';
+
+    async readJson(file: File) {
+        const content = await new Promise((res) => this.readFile(file, res));
         try {
-            return await new Promise((resolve) => this.readFile(file, resolve));
+            return JSON.parse(content as string);
         } catch (e) {
-            onError?.(e);
+            const PARSE_ERR_MSG = 'JSON parse error, check if json is correct';
+            throw new Error(`${PARSE_ERR_MSG}: ${e.message}`);
         }
     }
 
@@ -28,9 +32,9 @@ export class FileHandle {
 
     onFileLoad(callback: ASuccessFn): AFn {
         const evtHandler = ({ target }: ProgressEvent<FileReader>) => {
-            const parsedData = JSON.parse(target.result as string);
-            callback(parsedData);
+            // No JSON parsing is involved here, only passing whatever read from the file
             target.removeEventListener('load', evtHandler);
+            callback(target.result);
         };
         return evtHandler;
     }

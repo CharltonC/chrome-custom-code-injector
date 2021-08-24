@@ -23,27 +23,28 @@ describe('File Handle', () => {
     });
 
     describe('Method - readJson: Read json file content (as object)', () => {
+        const mockData = {lorem: 'sum'};
         const mockFile = {} as File;
-        let mockOnError: jest.Mock;
+        const mockJsonData = {lorem: 'sum'};
+        let jsonParseSpy: jest.SpyInstance;
+
 
         beforeEach(() => {
-            mockOnError = jest.fn();
-        });
-
-        it('should trigger `onError` callback when there is error', async () => {
-            spy.readFile.mockImplementation(() => {
-                throw new Error('error');
-            });
-            await handle.readJson(mockFile, mockOnError);
-            expect(mockOnError).toHaveBeenCalled();
+            jsonParseSpy = jest.spyOn(JSON, 'parse');
+            spy.readFile.mockImplementation((file, resolve) => resolve(mockData));
         });
 
         it('should return resolve promise when there is no error', async () => {
-            const mockData = {lorem: 'sum'};
-            spy.readFile.mockImplementation((file, resolve) => resolve(mockData));
-            const data = await handle.readJson(mockFile, mockOnError);
-            expect(data).toEqual(mockData);
-            expect(mockOnError).not.toHaveBeenCalled();
+            jsonParseSpy.mockReturnValue(mockJsonData);
+            const data = await handle.readJson(mockFile);
+            expect(data).toEqual(mockJsonData);
+        });
+
+        it('should trigger throw when there is error', async () => {
+            jsonParseSpy.mockImplementation(() => {
+                throw new Error('error');
+            });
+            await expect(() => handle.readJson(mockFile)).rejects.toThrowError();
         });
     });
 
@@ -78,7 +79,7 @@ describe('File Handle', () => {
 
     describe('Method - readFile: Read a file', () => {
         const mockFile = {};
-        const mockCallback = () => {};
+        // const mockCallback = () => {};
         let addEvtSpy: jest.SpyInstance;
         let readAsTextSpy: jest.SpyInstance;
 
@@ -93,7 +94,7 @@ describe('File Handle', () => {
         });
 
         it('should read file', () => {
-            handle.readJson(mockFile as File, mockCallback);
+            handle.readJson(mockFile as File);
 
             expect(spy.onFileLoad).toHaveBeenCalled();
             expect(addEvtSpy).toHaveBeenCalledTimes(2);
@@ -103,20 +104,19 @@ describe('File Handle', () => {
 
     describe('Method - onFileLoad: file loaded handler', () => {
         it('should return a on file load handler function', () => {
-            const mockJsonData = { lorem: 123 };
+            const mockReadResult = { lorem: 123 };
             const mockCallback = jest.fn();
             const mockEvt = {
                 target: {
-                    result: { lorem: 'sum' },
+                    result: mockReadResult,
                     removeEventListener: jest.fn()
                 }
             };
-            jest.spyOn(JSON, 'parse').mockReturnValue(mockJsonData);
 
             const onFileLoad = handle.onFileLoad(mockCallback)
             onFileLoad(mockEvt);
 
-            expect(mockCallback).toHaveBeenCalledWith(mockJsonData);
+            expect(mockCallback).toHaveBeenCalledWith(mockReadResult);
             expect(mockEvt.target.removeEventListener).toHaveBeenCalledWith('load', onFileLoad);
         });
     });
