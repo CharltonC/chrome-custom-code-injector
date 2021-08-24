@@ -1,6 +1,11 @@
-import { jsonSchemaHandle } from '../json-schema';
+import { JsonSchemaHandle } from '../json-schema';
+import { FileHandle } from '../file';
+import { HostRule } from '../../model/rule';
 
 export class ValidationHandle {
+    fileHandle = new FileHandle();
+    jsonSchemaHandle = new JsonSchemaHandle();
+
     readonly url = {
         rule: /^(https?:\/\/)?(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+(\/([^?/]+))*$/i,
         msg: 'must be a url, e.g. www.xzy.com, www.xyz.com/file.ext'
@@ -31,31 +36,22 @@ export class ValidationHandle {
         msg: 'file name must start/end with a character'
     };
 
-    readonly jsonFileSchema = {
-        rule: (file: File): Promise<true | string[]> => {
-            const PARSE_ERR_MSG = 'JSON parse error, check if json is correct';
-            return new Promise(resolve => {
-                const reader = new FileReader();
-                const onFileLoad = ({ target }) => {
-                    reader.removeEventListener('load', onFileLoad);
-                    try {
-                        // Try parsing (possible error)
-                        const data = JSON.parse(target.result);
-
-                        // Check json format (graceful error)
-                        const isValid = jsonSchemaHandle.isValid(data);
-                        if (isValid) resolve(true);
-                        resolve(jsonSchemaHandle.errors.map(err => {
-                            return `Import file data error: ${err['message']}`;
-                        }));
-                    } catch (e) {
-                        resolve([PARSE_ERR_MSG]);
-                    }
-                }
-                reader.addEventListener('load', onFileLoad);
-                reader.readAsText(file);
-            });
+    readonly jsonFileSchema = async (file: File): Promise<true | string[]> => {
+        // Try get the parsed JSON
+        let jsonData: HostRule[];
+        try {
+            jsonData = await this.fileHandle.readJson(file);
+        } catch (e) {
+            return [`${e.message}`];
         }
+
+        // Check json format (graceful error)
+        const isValid = this.jsonSchemaHandle.isValid(jsonData);
+        return isValid
+            ? true
+            : this.jsonSchemaHandle.errors.map(err => {
+                return `Import file data error: ${err['message']}`;
+            });
     };
 
     gteChar(minChar: number) {
