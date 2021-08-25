@@ -1,9 +1,9 @@
 import { ValidationHandle } from '../../handle/validation';
 
-const { gteChar, nonEmptyFile, maxFileSize, fileName, jsonFileSchema, urlHost, urlPath, url } = new ValidationHandle();
+const { ruleTitle, nonEmptyFile, maxFileSize, fileName, jsonFileSchema, urlHost, urlPath, url } = new ValidationHandle();
 
 export const validationSet = {
-    ruleId: [ gteChar(2) ],
+    ruleId: [ ruleTitle ],
     ruleUrlHost: [ urlHost ],
     ruleUrlPath: [ urlPath ],
     libUrl: [ url ],
