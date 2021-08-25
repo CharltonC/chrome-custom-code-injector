@@ -36,6 +36,11 @@ export class ValidationHandle {
         msg: 'file name must start/end with a character'
     };
 
+    readonly ruleTitle = {
+        rule: /^[a-z0-9]+(-|[a-z0-9])*[a-z0-9]+$/i,
+        msg: `must be at least 2 characters of letter/number with optional dash in between and without whitespace, e.g. site-name`
+    };
+
     readonly jsonFileSchema = async (file: File): Promise<true | string[]> => {
         // Try get the parsed JSON
         let jsonData: HostRule[];

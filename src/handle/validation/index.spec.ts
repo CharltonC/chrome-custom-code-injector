@@ -114,6 +114,23 @@ describe('Validation Rules', () => {
         });
     });
 
+    describe('Rule Title', () => {
+        beforeEach(() => {
+            ({ rule } = validationHandle.ruleTitle);
+        });
+
+        it('should return true if valid', () => {
+            expect(rule.test('abc')).toBeTruthy();
+            expect(rule.test('abc-de')).toBeTruthy();
+            expect(rule.test('abc-de-fgh')).toBeTruthy();
+        });
+
+        it('should return false if invalid', () => {
+            expect(rule.test('abc-')).toBeFalsy();
+            expect(rule.test('abc ')).toBeFalsy();
+        });
+    });
+
     describe('file name', () => {
         beforeEach(() => {
             ({ rule } = validationHandle.fileName);
