@@ -149,7 +149,7 @@ describe('Validation Rules', () => {
         });
     });
 
-    describe('Json Schema', () => {
+/*     describe('Json Schema', () => {
         const mockFile: any = {};
         let fileHandleSpy: AMethodSpy<FileHandle>;
         let jsonSchemaHandleSpy: AMethodSpy<JsonSchemaHandle>;
@@ -188,5 +188,5 @@ describe('Validation Rules', () => {
                 `Import file data error: ${mockErrors[0].message}`
             ]);
         });
-    });
+    }); */
 });
