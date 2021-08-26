@@ -1,6 +1,11 @@
+import schema from '../../model/rule/schema.json';
+import { Validator } from 'jsonschema';
+import { HostRule } from '../../model/rule';
 import { ASuccessFn } from './type';
 
 export class FileHandle {
+    validator = new Validator();
+
     PARSE_ERR_MSG = 'JSON parse error, check if json is correct';
 
     async readJson(file: File) {
@@ -20,6 +25,10 @@ export class FileHandle {
         const blobUrl: string = Url.createObjectURL(blobData);
         this.createAnchorElem(blobUrl, fileName, timeStamp).click();
         Url.revokeObjectURL(blobUrl);
+    }
+
+    checkJson(data: HostRule[]) {
+        return this.validator.validate(data, schema);
     }
 
     //// Helper Fn

@@ -28,7 +28,6 @@ describe('File Handle', () => {
         const mockJsonData = {lorem: 'sum'};
         let jsonParseSpy: jest.SpyInstance;
 
-
         beforeEach(() => {
             jsonParseSpy = jest.spyOn(JSON, 'parse');
             spy.readFile.mockImplementation((file, resolve) => resolve(mockData));
@@ -74,6 +73,16 @@ describe('File Handle', () => {
             expect(mockClick).toHaveBeenCalled();
             expect(Url.createObjectURL).toHaveBeenCalledWith(mockBlobData);
             expect(Url.revokeObjectURL).toHaveBeenCalledWith(mockBlobDataUrl);
+        });
+    });
+
+    describe('Method - checkJson: Check if a parsed json object is valid on based schema', () => {
+        it('should return result based on the schema validator', () => {
+            const mockData = [];
+            const mockResult: any = { valid: true };
+            jest.spyOn(handle.validator, 'validate').mockReturnValue(mockResult);
+
+            expect(handle.checkJson(mockData)).toBe(mockResult);
         });
     });
 
