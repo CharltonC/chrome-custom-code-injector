@@ -99,6 +99,24 @@ export class DataHandle {
         return libs;
     }
 
+    getHostFromUrl(rules: HostRule[], url: Partial<URL>): HostRule {
+        const { protocol, host } = url;
+        for (let i = 0; i < rules?.length; i++) {
+            const hostRule = rules[i];
+            const isMatchHost = this.isMatchHost(protocol, host, hostRule);
+            if (isMatchHost) return hostRule;
+        }
+    }
+
+    getPathFromUrl(paths: PathRule[], url: Partial<URL>): PathRule {
+        const { pathname } = url;
+        for (let j = 0; j < paths?.length; j++) {
+            const pathRule = paths[j];
+            const isMatchPath = this.isMatchPath(pathname, pathRule);
+            if (isMatchPath) return pathRule;
+        }
+    }
+
     // Get the Next available def/active Rule id context when a host/path is removed
     getNextAvailRuleIdCtx(rules: HostRule[], ruleIdCtx: IRuleIdCtx): IRuleIdCtx {
         const isHost = !ruleIdCtx.pathId;
@@ -271,6 +289,23 @@ export class DataHandle {
         // Since there will be no pagination in libraries table, we dont need the pattern like in `rmvAllHosts`
         const { libs } = this.getRuleFromIdCtx(rules, idCtx) as AHostPathRule;
         libs.length = 0;
+    }
+
+    //// HELPER
+    isMatchHost(protocol: string, host: string, hostRule: HostRule): boolean {
+        const { isHttps, value, isExactMatch } = hostRule;
+        const isHostMatch = isExactMatch ? host === value : host.includes(value);
+        const isProtocolMatch = this.isMatchProtocol(protocol, isHttps);
+        return isHostMatch && isProtocolMatch;
+    }
+
+    isMatchPath(pathname: string, pathRule: PathRule): boolean {
+        const { value, isExactMatch } = pathRule;
+        return isExactMatch ? pathname === value : pathname.includes(value);
+    }
+
+    isMatchProtocol(protocol: string, isHttps: boolean): boolean {
+        return isHttps ? protocol.includes('https') : true;
     }
 }
 

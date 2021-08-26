@@ -1,9 +1,12 @@
-import { dataHandle } from '.';
-import { HostRule, LibRule } from '../../model/rule';
+import { dataHandle, DataHandle } from '.';
+import { HostRule, LibRule, PathRule } from '../../model/rule';
+import { AMethodSpy } from '../../asset/ts/test-util/type';
+import { TestUtil } from '../../asset/ts/test-util';
 
 describe('Data Crud Handle', () => {
     let mockRules: HostRule[];
     let mockLibs: LibRule[];
+    let spy: AMethodSpy<DataHandle>
 
     beforeEach(() => {
         mockLibs = [
@@ -40,6 +43,8 @@ describe('Data Crud Handle', () => {
                 ]
             },
         ] as HostRule[];
+
+        spy = TestUtil.spyMethods(dataHandle);
     });
 
     afterEach(() => {
@@ -255,6 +260,76 @@ describe('Data Crud Handle', () => {
                     hostId: mockRules[mockIdxCtx.hostIdx].id,
                     pathId: undefined
                 });
+            });
+        });
+
+        describe('Method - getHostFromUrl', () => {
+            const mockRules = [
+                new HostRule('lorem', 'sum')
+            ];
+            const mockUrl = {
+                host: 'host',
+                protocol: 'proto',
+                pathname: 'path'
+            } as URL;
+
+            it('should return match host if found', () => {
+                spy.isMatchHost.mockReturnValue(true);
+
+                const host = dataHandle.getHostFromUrl(mockRules, mockUrl);
+                expect(host).toBe(mockRules[0]);
+            });
+
+            it('should return null if not found', () => {
+                spy.isMatchHost.mockReturnValue(false);
+
+                const host = dataHandle.getHostFromUrl(mockRules, mockUrl);
+                expect(host).toBeFalsy();
+            });
+
+            it('should return null if no rules are available', () => {
+                expect(
+                    dataHandle.getHostFromUrl([], mockUrl)
+                ).toBeFalsy();
+
+                expect(
+                    dataHandle.getHostFromUrl(null, mockUrl)
+                ).toBeFalsy();
+            });
+        });
+
+        describe('Method - getPathFromUrl', () => {
+            const mockPaths = [
+                new PathRule('lorem', 'sum')
+            ];
+            const mockUrl = {
+                host: 'host',
+                protocol: 'proto',
+                pathname: 'path'
+            } as URL;
+
+            it('should return match path if found', () => {
+                spy.isMatchPath.mockReturnValue(true);
+
+                const host = dataHandle.getPathFromUrl(mockPaths, mockUrl);
+                expect(host).toBe(mockPaths[0]);
+            });
+
+            it('should return null if not found', () => {
+                spy.isMatchPath.mockReturnValue(false);
+
+                const path = dataHandle.getPathFromUrl(mockPaths, mockUrl);
+                expect(path).toBeFalsy();
+            });
+
+            it('should return null if no paths are available', () => {
+                expect(
+                    dataHandle.getPathFromUrl([], mockUrl)
+                ).toBeFalsy();
+
+                expect(
+                    dataHandle.getPathFromUrl(null, mockUrl)
+                ).toBeFalsy();
             });
         });
     });
@@ -531,6 +606,128 @@ describe('Data Crud Handle', () => {
                     mockIdCtx
                 );
                 expect(mockLibs.length).toBe(0);
+            });
+        });
+    });
+
+    describe('Helper', () => {
+        describe('Method - isMatchHost', () => {
+            const mockHost = 'host';
+            const mockInclHost = `some${mockHost}`;
+            const mockIncorrectHost = '1234';
+            const mockHostRule = new HostRule('lorem', mockHost);
+            const mockProtocol = 'https';
+
+            beforeEach(() => {
+                spy.isMatchProtocol.mockReturnValue(true);
+            });
+
+            describe('When exact match is required', () => {
+                it('should return true if it matches', () => {
+                    expect(
+                        dataHandle.isMatchHost(mockProtocol, mockHost, {
+                            ...mockHostRule,
+                            isExactMatch: true
+                        })
+                    ).toBeTruthy();
+                });
+
+                it('should return false if it doesnt matches', () => {
+                    expect(
+                        dataHandle.isMatchHost(mockProtocol, mockInclHost, {
+                            ...mockHostRule,
+                            isExactMatch: true
+                        })
+                    ).toBeFalsy();
+                });
+            });
+
+            describe('When exact match is not required', () => {
+                it('should return true if it matches', () => {
+                    expect(
+                        dataHandle.isMatchHost(mockProtocol, mockInclHost, {
+                            ...mockHostRule,
+                            isExactMatch: false,
+                        })
+                    ).toBeTruthy();
+                });
+
+                it('should return false if it doesnt matches', () => {
+                    expect(
+                        dataHandle.isMatchHost(mockProtocol, mockIncorrectHost, {
+                            ...mockHostRule,
+                            isExactMatch: false,
+                        })
+                    ).toBeFalsy();
+                });
+            });
+        });
+
+        describe('Method - isMatchPath', () => {
+            const mockPath = 'path';
+            const mockExactPath = mockPath;
+            const mockInclPath = `some${mockPath}`;
+            const mockIncorrectPath = '1234';
+            const mockPathRule = new PathRule('lorem', mockPath);
+
+            describe('When exact match is required', () => {
+                it('should return true if it matches', () => {
+                    expect(
+                        dataHandle.isMatchPath(mockExactPath, {
+                            ...mockPathRule,
+                            isExactMatch: true
+                        })
+                    ).toBeTruthy();
+                });
+
+                it('should return false if it doesnt match', () => {
+                    expect(
+                        dataHandle.isMatchPath(mockInclPath, {
+                            ...mockPathRule,
+                            isExactMatch: true
+                        })
+                    ).toBeFalsy();
+                });
+            });
+
+            describe('When exact match is not required', () => {
+                it('should return true it matches', () => {
+                    expect(
+                        dataHandle.isMatchPath(mockInclPath, {
+                            ...mockPathRule,
+                            isExactMatch: false
+                        })
+                    ).toBeTruthy();
+                });
+
+                it('should return false it doesnt match', () => {
+                    expect(
+                        dataHandle.isMatchPath(mockIncorrectPath, {
+                            ...mockPathRule,
+                            isExactMatch: false
+                        })
+                    ).toBeFalsy();
+                });
+            });
+        });
+
+        describe('Method - isMatchProtocol', () => {
+            it('should check protocol if https is specified', () => {
+                const isHttps = true;
+
+                expect(
+                    dataHandle.isMatchProtocol('https', isHttps)
+                ).toBeTruthy();
+
+                expect(
+                    dataHandle.isMatchProtocol('ftp', isHttps)
+                ).toBeFalsy();
+            });
+
+            it('should return true if https is not specified', () => {
+                expect(
+                    dataHandle.isMatchProtocol('ftp', false)
+                ).toBeTruthy();
             });
         });
     });
