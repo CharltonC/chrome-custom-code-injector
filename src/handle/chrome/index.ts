@@ -13,7 +13,7 @@ export class ChromeHandle {
 
     //// STATE
     async getState(): Promise<IState> {
-        const resolveFn = this.getResolveCallback();
+        const resolveFn = this.getGetStateResolveFn();
         const state: string = await new Promise(resolveFn);
         return state
             ? JSON.parse(state)
@@ -39,16 +39,36 @@ export class ChromeHandle {
         });
     }
 
+    //// URL
+    async getTabUrl(): Promise<URL> {
+        const resolveCallback = this.getGetCurrentResolveFn();
+        return new Promise(resolveCallback);
+    }
+
     //// HELPER
-    getResolveCallback(): AFn {
+    getGetStateResolveFn(): AFn {
         return resolve => {
             const storageCallback = this.getStorageCallback(resolve);
             chrome.storage.sync.get(this.storeKey, storageCallback);
         };
     }
 
+    getGetCurrentResolveFn(): AFn {
+        return resolve => {
+            const callback = this.getUrlCallback(resolve);
+            chrome.tabs.getCurrent(callback);
+        };
+    }
+
     getStorageCallback(resolveFn: AFn): AStorageCallack {
         return (storage: AObj) => resolveFn(storage[this.storeKey]);
+    }
+
+    getUrlCallback(resolveFn: AFn) {
+        return tab => {
+            const url = new URL(tab.url);
+            resolveFn(url);
+        };
     }
 }
 
