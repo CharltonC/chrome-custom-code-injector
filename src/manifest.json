@@ -2,11 +2,12 @@
     "manifest_version": 2,
     "name": "Custom Code Insertion",
     "version": "1.0.0",
-    "minimum_chrome_version":  "68",
+    "minimum_chrome_version": "68",
     "description": "Run custom code in a webpage",
     "author": "Charlton Cheng",
     "permissions": [
         "storage",
+        "unlimitedStorage",
         "<all_urls>"
     ],
     "icons": {
@@ -15,6 +16,7 @@
         "48": "asset/icon/icon_48.png",
         "128": "asset/icon/icon_128.png"
     },
+    "options_page": "option/index.html",
     "content_scripts": [
         {
             "run_at": "document_end",
@@ -32,6 +34,5 @@
             "24": "asset/icon/icon_24.png",
             "32": "asset/icon/icon_32.png"
         }
-    },
-    "options_page": "popup/index.html"
+    }
 }
