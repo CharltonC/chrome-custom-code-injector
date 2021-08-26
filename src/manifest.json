@@ -8,7 +8,8 @@
     "permissions": [
         "storage",
         "unlimitedStorage",
-        "<all_urls>"
+        "<all_urls>",
+        "tabs"
     ],
     "icons": {
         "16": "asset/icon/icon_16.png",
