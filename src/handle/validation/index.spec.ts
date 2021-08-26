@@ -1,8 +1,7 @@
-import { TestUtil } from '../../asset/ts/test-util';
 import { FileHandle } from '../file';
-import { JsonSchemaHandle } from '../json-schema';
-import { ValidationHandle } from '.';
 import { AMethodSpy } from '../../asset/ts/test-util/type';
+import { ValidationHandle } from '.';
+import { TestUtil } from '../../asset/ts/test-util';
 
 describe('Validation Rules', () => {
     let validationHandle: ValidationHandle;
@@ -149,14 +148,12 @@ describe('Validation Rules', () => {
         });
     });
 
-/*     describe('Json Schema', () => {
+    describe('Json Schema', () => {
         const mockFile: any = {};
         let fileHandleSpy: AMethodSpy<FileHandle>;
-        let jsonSchemaHandleSpy: AMethodSpy<JsonSchemaHandle>;
 
         beforeEach(() => {
             fileHandleSpy = TestUtil.spyProtoMethods(FileHandle);
-            jsonSchemaHandleSpy = TestUtil.spyProtoMethods(JsonSchemaHandle);
         });
 
         it('should return error messages if json read error is encounted', async () => {
@@ -169,24 +166,28 @@ describe('Validation Rules', () => {
         });
 
         it('should return true if json schema validation is true', async () => {
-            fileHandleSpy.readJson.mockResolvedValue({});
-            jsonSchemaHandleSpy.isValid.mockReturnValue(true);
-            const errMsg = await validationHandle.jsonFileSchema(mockFile);
-            expect(errMsg).toBe(true);
+            const mockResult = { valid: true, errors: [] };
+            fileHandleSpy.checkJson.mockReturnValue(mockResult);
+            fileHandleSpy.readJson.mockResolvedValue([]);
+
+            const result = await validationHandle.jsonFileSchema(mockFile);
+            expect(result).toBe(true);
         });
 
         it('should return error messages if json schema validation is false', async () => {
-            const mockErrors = [{ message: 'lorem' }];
-            const errorsSpy = jest.spyOn(validationHandle.jsonSchemaHandle, 'errors', 'get');
-            errorsSpy.mockReturnValue(mockErrors as any);
+            const mockResult = {
+                valid: false,
+                errors: [
+                    { message: 'lorem' }
+                ]
+            };
+            fileHandleSpy.checkJson.mockReturnValue(mockResult);
+            fileHandleSpy.readJson.mockResolvedValue([]);
 
-            fileHandleSpy.readJson.mockResolvedValue({});
-            jsonSchemaHandleSpy.isValid.mockReturnValue(false);
-
-            const errMsg = await validationHandle.jsonFileSchema(mockFile);
-            expect(errMsg).toEqual([
-                `Import file data error: ${mockErrors[0].message}`
+            const result = await validationHandle.jsonFileSchema(mockFile);
+            expect(result).toEqual([
+                `Import file data error: ${mockResult.errors[0].message}`
             ]);
         });
-    }); */
+    });
 });

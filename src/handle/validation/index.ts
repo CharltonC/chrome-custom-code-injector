@@ -1,10 +1,8 @@
-// import { JsonSchemaHandle } from '../json-schema';
 import { FileHandle } from '../file';
 import { HostRule } from '../../model/rule';
 
 export class ValidationHandle {
     fileHandle = new FileHandle();
-    // jsonSchemaHandle = new JsonSchemaHandle();
 
     readonly url = {
         rule: /^(https?:\/\/)?(www\.)?(([a-z0-9]+(-|_)?)+\.)+[a-z0-9]+(\/([^?/]+))*$/i,
@@ -40,7 +38,7 @@ export class ValidationHandle {
         rule: /^[a-z0-9]+(-|[a-z0-9])*[a-z0-9]+$/i,
         msg: `must be at least 2 characters of letter/number with optional dash in between and without whitespace, e.g. site-name`
     };
-/*
+
     readonly jsonFileSchema = async (file: File): Promise<true | string[]> => {
         // Try get the parsed JSON
         let jsonData: HostRule[];
@@ -51,14 +49,14 @@ export class ValidationHandle {
         }
 
         // Check json format (graceful error)
-        const isValid = this.jsonSchemaHandle.isValid(jsonData);
-        return isValid
+        const { valid, errors } = this.fileHandle.checkJson(jsonData);
+        return valid
             ? true
-            : this.jsonSchemaHandle.errors.map(err => {
+            : errors.map(err => {
                 return `Import file data error: ${err['message']}`;
             });
     };
- */
+
     gteChar(minChar: number) {
         if (!Number.isInteger(minChar) || minChar < 1) {
             throw new Error('`minChar` must be an positive integer larger or equal than 1');
