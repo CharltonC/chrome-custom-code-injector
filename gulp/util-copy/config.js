@@ -37,6 +37,12 @@ module.exports = {
             ],
             outputPath: 'dist/demo/font'
         },
+        demoImg: {
+            inputFiles: [
+                'src/asset/img/*.*'
+            ],
+            outputPath: 'dist/build/asset/img'
+        },
 
         // Chrome
         manifest: {

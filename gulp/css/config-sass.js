@@ -8,16 +8,6 @@ module.exports = {
             rename: 'main.min.css',
             outputPath: 'dist/build/asset/'
         },
-        popupPage: {
-            inputFiles: 'src/page/option/style.scss',              // NOTE: wildcard "*" is not allowed
-            rename: 'style.min.css',
-            outputPath: 'dist/build/option/'
-        },
-        optionPage: {
-            inputFiles: 'src/page/popup/style.scss',
-            rename: 'style.min.css',
-            outputPath: 'dist/build/popup/'
-        },
         demoPage: {
             inputFiles: 'src/page/demo/style.scss',
             rename: 'style.min.css',
