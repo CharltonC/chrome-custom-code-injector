@@ -41,7 +41,7 @@ module.exports = {
             inputFiles: [
                 'src/asset/img/*.*'
             ],
-            outputPath: 'dist/build/asset/img'
+            outputPath: 'dist/demo/img'
         },
 
         // Chrome
