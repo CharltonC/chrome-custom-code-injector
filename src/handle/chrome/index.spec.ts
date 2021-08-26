@@ -16,7 +16,7 @@ describe('Chrome Handle', () => {
     let handleSpy: AMethodSpy<ChromeHandle>;
     let chromeStoreGetSpy: jest.SpyInstance;
     let chromeStoreSetSpy: jest.SpyInstance;
-    let chromeGetCurrentTabSpy: jest.SpyInstance;
+    let chromeTabQuerySpy: jest.SpyInstance;
     let jsonParseSpy: jest.SpyInstance;
     let jsonStringifySpy: jest.SpyInstance;
 
@@ -25,7 +25,7 @@ describe('Chrome Handle', () => {
         Object.assign(globalThis, {
             chrome: {
                 tabs: {
-                    getCurrent(){}
+                    query(){}
                 },
                 storage: {
                     sync: {
@@ -38,7 +38,7 @@ describe('Chrome Handle', () => {
         chromeHandle.isInChromeCtx = true;
 
         handleSpy = TestUtil.spyMethods(chromeHandle);
-        chromeGetCurrentTabSpy = jest.spyOn(chrome.tabs, 'getCurrent');
+        chromeTabQuerySpy = jest.spyOn(chrome.tabs, 'query');
         chromeStoreGetSpy = jest.spyOn(chrome.storage.sync, 'get');
         chromeStoreSetSpy = jest.spyOn(chrome.storage.sync, 'set');
         chromeStoreSetSpy.mockImplementation(() => {});
@@ -169,11 +169,14 @@ describe('Chrome Handle', () => {
             it('should return resolve callback function', () => {
                 const mockFn = () => {};
                 handleSpy.getUrlCallback.mockReturnValue(mockFn);
-                chromeGetCurrentTabSpy.mockImplementation(() => {});
+                chromeTabQuerySpy.mockImplementation(() => {});
 
                 const resolveFn = chromeHandle.getGetCurrentResolveFn();
                 resolveFn();
-                expect(chromeGetCurrentTabSpy).toHaveBeenCalledWith(mockFn);
+                expect(chromeTabQuerySpy).toHaveBeenCalledWith(
+                    {"active": true, "currentWindow": true},
+                    mockFn
+                );
             });
         });
 

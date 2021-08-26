@@ -56,7 +56,10 @@ export class ChromeHandle {
     getGetCurrentResolveFn(): AFn {
         return resolve => {
             const callback = this.getUrlCallback(resolve);
-            chrome.tabs.getCurrent(callback);
+            chrome.tabs.query({
+                active: true,
+                currentWindow: true
+            }, callback);
         };
     }
 
