@@ -164,7 +164,7 @@ export class CodeRunnerHandle {
     }
 
     isMatchProtocol(protocol: string, isHttps: boolean): boolean {
-        return isHttps ? protocol === 'https' : true;
+        return isHttps ? protocol.includes('https') : true;
     }
 }
 
