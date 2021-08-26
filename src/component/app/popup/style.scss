@@ -2,7 +2,7 @@
     --offset-x: 10px;
     --offset-y: 8px;
 
-    width: 300px;
+    width: 280px;
 
     .icon {
         width: 24px;
@@ -33,7 +33,7 @@
     }
 
     main {
-        padding: 25px var(--offset-x);
+        padding: 15px var(--offset-x);
 
         section {
             display: flex;
