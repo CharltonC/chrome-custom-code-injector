@@ -6,4 +6,4 @@ export interface IState {
     setting: SettingState;
 }
 
-export type TStorageCallack = (arg: AObj) => IState;
+export type AStorageCallack = (arg: AObj) => IState;

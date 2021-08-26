@@ -1,4 +1,6 @@
-import { IState, TStorageCallack } from './type';
+import { SettingState } from '../../model/setting-state';
+import { getDefRules } from '../../model/rule/default';
+import { IState, AStorageCallack } from './type';
 
 export class ChromeHandle {
     storeKey = 'chrome-code-injector';
@@ -12,16 +14,28 @@ export class ChromeHandle {
     //// STATE
     async getState(): Promise<IState> {
         const resolveFn = this.getResolveCallback();
-        const data: IState = await new Promise(resolveFn);
-        return data;
+        const state: string = await new Promise(resolveFn);
+        return state
+            ? JSON.parse(state)
+            : await this.getDefState();
     }
 
-    async saveState(stateToMerge: Partial<IState>): Promise<void>  {
+    async getDefState(): Promise<IState> {
+        const state = {
+            rules: getDefRules(),
+            setting: new SettingState(),
+        };
+        await chromeHandle.saveState(state);
+        return state;
+    }
+
+    async saveState(state: Partial<IState>): Promise<void>  {
         if (!this.isInChromeCtx) return;
         const existState = await this.getState();
-        const state = Object.assign(existState, stateToMerge);
-        chrome.storage.sync.set({
-            [this.storeKey]: state
+        const newstate = Object.assign(existState, state);
+        const value = JSON.stringify(newstate);
+        await chrome.storage.sync.set({
+            [this.storeKey]: value
         });
     }
 
@@ -33,7 +47,7 @@ export class ChromeHandle {
         };
     }
 
-    getStorageCallback(resolveFn: AFn): TStorageCallack {
+    getStorageCallback(resolveFn: AFn): AStorageCallack {
         return (storage: AObj) => resolveFn(storage[this.storeKey]);
     }
 }
