@@ -4,13 +4,17 @@ import { AppStateHandle } from '../../handle/app-state';
 import { StateHandle } from '../../handle/state';
 import { chromeHandle } from '../../handle/chrome';
 import { LocalState } from '../../model/local-state';
+import { SettingState } from '../../model/setting-state';
 import { OptionApp } from '../../component/app/option';
 
 (async () => {
     let { rules, setting } = await chromeHandle.getState();
 
-    const localState = new LocalState(rules.length);
-    const appState = { localState, setting, rules };
+    const appState = {
+        localState: new LocalState(rules.length),
+        setting: setting || new SettingState(),
+        rules
+    };
     const appStateHandle = new AppStateHandle();
     const App = StateHandle.init(OptionApp, {
         root: [ appState, appStateHandle ],
