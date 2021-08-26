@@ -5,5 +5,3 @@ export interface IState {
     rules: HostRule[];
     setting: SettingState;
 }
-
-export type AStorageCallack = (arg: AObj) => IState;

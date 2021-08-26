@@ -1,6 +1,6 @@
 import { SettingState } from '../../model/setting-state';
 import { getDefRules } from '../../model/rule/default';
-import { IState, AStorageCallack } from './type';
+import { IState } from './type';
 
 export class ChromeHandle {
     storeKey = 'chrome-code-injector';
@@ -60,11 +60,11 @@ export class ChromeHandle {
         };
     }
 
-    getStorageCallback(resolveFn: AFn): AStorageCallack {
+    getStorageCallback(resolveFn: AFn): AFn {
         return (storage: AObj) => resolveFn(storage[this.storeKey]);
     }
 
-    getUrlCallback(resolveFn: AFn) {
+    getUrlCallback(resolveFn: AFn): AFn {
         return tab => {
             const url = new URL(tab.url);
             resolveFn(url);
