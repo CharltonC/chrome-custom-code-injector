@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { TestUtil } from '../../../asset/ts/test-util';
 import { FileInput } from '.';
-import { IProps, ACustomValidator, AValidationConfig } from './type';
+import { IProps, AValidationConfig } from './type';
 
 describe('Component - File Input', () => {
     const mockProps: IProps = {
