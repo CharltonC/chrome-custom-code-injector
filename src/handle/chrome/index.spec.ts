@@ -182,12 +182,14 @@ describe('Chrome Handle', () => {
 
         describe('Method - getUrlCallback', () => {
             it('should return url callback', () => {
-                const mockTab = { url: 'http://abc.com/' };
-                const mockUrl = new URL(mockTab.url);
+                const mockTabs = [
+                    { url: 'http://abc.com/' }
+                ];
+                const mockUrl = new URL(mockTabs[0].url);
                 const mockResolveFn = jest.fn();
                 const callback = chromeHandle.getUrlCallback(mockResolveFn);
 
-                callback(mockTab);
+                callback(mockTabs);
                 expect(mockResolveFn).toHaveBeenCalledWith(mockUrl);
             });
         });

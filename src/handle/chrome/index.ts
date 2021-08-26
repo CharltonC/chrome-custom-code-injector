@@ -68,7 +68,8 @@ export class ChromeHandle {
     }
 
     getUrlCallback(resolveFn: AFn): AFn {
-        return tab => {
+        // Arrays of tabs
+        return ([tab]) => {
             const url = new URL(tab.url);
             resolveFn(url);
         };
