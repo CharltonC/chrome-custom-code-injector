@@ -1,17 +1,21 @@
 import { TestUtil } from '../../asset/ts/test-util';
-import { codeRunnerHandle as handle, CodeRunnerHandle } from './';
+import { DataHandle } from '../data';
 import { AMethodSpy } from '../../asset/ts/test-util/type';
 import { HostRule, PathRule, LibRule } from '../../model/rule';
+import { codeRunnerHandle as handle, CodeRunnerHandle } from './';
+
 
 describe('Code Runner Handle', () => {
     let mockFn;
     let handleSpy: AMethodSpy<CodeRunnerHandle>;
+    let dataHandleSpy: AMethodSpy<DataHandle>;
     let mockHost: HostRule;
     let mockPath: PathRule;
     let mockRules: HostRule[];
 
     beforeEach(() => {
         handleSpy = TestUtil.spyMethods(handle);
+        dataHandleSpy = TestUtil.spyMethods(handle.dataHandle);
 
         mockFn = () => {};
 
@@ -32,23 +36,23 @@ describe('Code Runner Handle', () => {
         });
 
         it('should apply host rule only if matches host only', () => {
-            handleSpy.isMatchHost.mockReturnValue(true);
-            handleSpy.isMatchPath.mockReturnValue(false);
+            dataHandleSpy.isMatchHost.mockReturnValue(true);
+            dataHandleSpy.isMatchPath.mockReturnValue(false);
             handle.init(mockRules);
 
             expect(handleSpy.applyRule).toHaveBeenCalledWith(mockHost, mockHost.codeExecPhase);
         });
 
         it('should apply both host and path rules if matches host and path', () => {
-            handleSpy.isMatchHost.mockReturnValue(true);
-            handleSpy.isMatchPath.mockReturnValue(true);
+            dataHandleSpy.isMatchHost.mockReturnValue(true);
+            dataHandleSpy.isMatchPath.mockReturnValue(true);
             handle.init(mockRules);
 
             expect(handleSpy.applyRule).toHaveBeenCalledTimes(2);
         });
 
         it('should not apply host rule if not match host', () => {
-            handleSpy.isMatchHost.mockReturnValue(false);
+            dataHandleSpy.isMatchHost.mockReturnValue(false);
             handle.init(mockRules);
 
             expect(handleSpy.applyRule).not.toHaveBeenCalled();
@@ -318,126 +322,6 @@ describe('Code Runner Handle', () => {
             fn();
             expect(handleSpy.applyRuleNow).toHaveBeenCalled();
             expect(windowRmvListenerSpy).toHaveBeenCalledWith('load', fn);
-        });
-    });
-
-    describe('Method - isMatchHost', () => {
-        const mockHost = 'host';
-        const mockInclHost = `some${mockHost}`;
-        const mockIncorrectHost = '1234';
-        const mockHostRule = new HostRule('lorem', mockHost);
-        const mockProtocol = 'https';
-
-        beforeEach(() => {
-            handleSpy.isMatchProtocol.mockReturnValue(true);
-        });
-
-        describe('When exact match is required', () => {
-            it('should return true if it matches', () => {
-                expect(
-                    handle.isMatchHost(mockProtocol, mockHost, {
-                        ...mockHostRule,
-                        isExactMatch: true
-                    })
-                ).toBeTruthy();
-            });
-
-            it('should return false if it doesnt matches', () => {
-                expect(
-                    handle.isMatchHost(mockProtocol, mockInclHost, {
-                        ...mockHostRule,
-                        isExactMatch: true
-                    })
-                ).toBeFalsy();
-            });
-        });
-
-        describe('When exact match is not required', () => {
-            it('should return true if it matches', () => {
-                expect(
-                    handle.isMatchHost(mockProtocol, mockInclHost, {
-                        ...mockHostRule,
-                        isExactMatch: false,
-                    })
-                ).toBeTruthy();
-            });
-
-            it('should return false if it doesnt matches', () => {
-                expect(
-                    handle.isMatchHost(mockProtocol, mockIncorrectHost, {
-                        ...mockHostRule,
-                        isExactMatch: false,
-                    })
-                ).toBeFalsy();
-            });
-        });
-    });
-
-    describe('Method - isMatchPath', () => {
-        const mockPath = 'path';
-        const mockExactPath = mockPath;
-        const mockInclPath = `some${mockPath}`;
-        const mockIncorrectPath = '1234';
-        const mockPathRule = new PathRule('lorem', mockPath);
-
-        describe('When exact match is required', () => {
-            it('should return true if it matches', () => {
-                expect(
-                    handle.isMatchPath(mockExactPath, {
-                        ...mockPathRule,
-                        isExactMatch: true
-                    })
-                ).toBeTruthy();
-            });
-
-            it('should return false if it doesnt match', () => {
-                expect(
-                    handle.isMatchPath(mockInclPath, {
-                        ...mockPathRule,
-                        isExactMatch: true
-                    })
-                ).toBeFalsy();
-            });
-        });
-
-        describe('When exact match is not required', () => {
-            it('should return true it matches', () => {
-                expect(
-                    handle.isMatchPath(mockInclPath, {
-                        ...mockPathRule,
-                        isExactMatch: false
-                    })
-                ).toBeTruthy();
-            });
-
-            it('should return false it doesnt match', () => {
-                expect(
-                    handle.isMatchPath(mockIncorrectPath, {
-                        ...mockPathRule,
-                        isExactMatch: false
-                    })
-                ).toBeFalsy();
-            });
-        });
-    });
-
-    describe('Method - isMatchProtocol', () => {
-        it('should check protocol if https is specified', () => {
-            const isHttps = true;
-
-            expect(
-                handle.isMatchProtocol('https', isHttps)
-            ).toBeTruthy();
-
-            expect(
-                handle.isMatchProtocol('ftp', isHttps)
-            ).toBeFalsy();
-        });
-
-        it('should return true if https is not specified', () => {
-            expect(
-                handle.isMatchProtocol('ftp', false)
-            ).toBeTruthy();
         });
     });
 });

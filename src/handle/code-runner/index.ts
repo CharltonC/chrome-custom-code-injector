@@ -1,21 +1,24 @@
 import { LibRule, HostRule, PathRule } from "../../model/rule";
 import { IAddToDomArg } from "./type";
+import { DataHandle } from "../data";
 
 export class CodeRunnerHandle {
+    dataHandle = new DataHandle();
+
     //// RUNNER (CONSOLIDATE ALL INJECTORS)
     init(rules: HostRule[]): void {
         const { protocol, host, pathname } = document.location;
         rules.forEach(hostRule => {
             // Check & Run Host rule
             const { codeExecPhase, paths } = hostRule;
-            const isMatchHost = this.isMatchHost(protocol, host, hostRule);
+            const isMatchHost = this.dataHandle.isMatchHost(protocol, host, hostRule);
             if (!isMatchHost) return;
             this.applyRule(hostRule, codeExecPhase);
 
             // Check & Run path rules
             paths.forEach(pathRule => {
                 const { codeExecPhase } = pathRule;
-                const isMatchPath = this.isMatchPath(pathname, pathRule);
+                const isMatchPath = this.dataHandle.isMatchPath(pathname, pathRule);
                 if (!isMatchPath) return;
                 this.applyRule(pathRule, codeExecPhase);
             });
@@ -102,11 +105,6 @@ export class CodeRunnerHandle {
 
     injectJsLib($wrapper: DocumentFragment, url: string, isAsync?: boolean): void {
         const $js = document.createElement('script');
-        // const onLoad = () => {
-        //     console.log(`Js Inject Success for ${url}`);
-        //     $js.removeEventListener('load', onLoad);
-        // };
-        // $js.addEventListener('load', onLoad);
         $js.setAttribute('type', 'text/javascript')
         $js.setAttribute('src', url);
         $js.async = isAsync;
@@ -115,11 +113,6 @@ export class CodeRunnerHandle {
 
     injectCssLib($wrapper: DocumentFragment, url: string): void {
         const $css = document.createElement('link');
-        // const onLoad = () => {
-        //     console.log(`Css Inject Success for ${url}`);
-        //     $css.removeEventListener('load', onLoad);
-        // };
-        // $css.addEventListener('load', onLoad);
         $css.setAttribute('rel', 'stylesheet')
         $css.setAttribute('href', url);
         $wrapper.appendChild($css);
@@ -149,22 +142,6 @@ export class CodeRunnerHandle {
             window.removeEventListener('load', onLoadCallback);
         };
         return onLoadCallback;
-    }
-
-    isMatchHost(protocol: string, host: string, hostRule: HostRule): boolean {
-        const { isHttps, value, isExactMatch } = hostRule;
-        const isHostMatch = isExactMatch ? host === value : host.includes(value);
-        const isProtocolMatch = this.isMatchProtocol(protocol, isHttps);
-        return isHostMatch && isProtocolMatch;
-    }
-
-    isMatchPath(pathname: string, pathRule: PathRule): boolean {
-        const { value, isExactMatch } = pathRule;
-        return isExactMatch ? pathname === value : pathname.includes(value);
-    }
-
-    isMatchProtocol(protocol: string, isHttps: boolean): boolean {
-        return isHttps ? protocol.includes('https') : true;
     }
 }
 
