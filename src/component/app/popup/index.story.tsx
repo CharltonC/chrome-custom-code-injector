@@ -1,4 +1,7 @@
 import React from 'react';
+import { AppStateHandle } from '../../../handle/app-state';
+import { StateHandle } from '../../../handle/state';
+import { createMockAppState } from '../../../mock/state';
 import { PopupApp } from '.';
 
 export default {
@@ -6,13 +9,7 @@ export default {
     component: PopupApp
 };
 
-const defStyle = {
-};
-
-export const Default = () => {
-    return (
-        <div style={defStyle} >
-            <PopupApp />
-        </div>
-    )
-};
+const App = StateHandle.init(PopupApp, {
+    root: [ createMockAppState(), new AppStateHandle() ],
+});
+export const Default = () => <App />;
