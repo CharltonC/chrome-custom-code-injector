@@ -18,9 +18,11 @@
     "doc": "./node_modules/.bin/esdoc",
     "typedoc": "./node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, doc, coverage'",
-    "build": "npm run json-schema && gulp build --prod",
-    "build:dev": "npm run json-schema && gulp build",
-    "test": "gulp build-ts:test"
+    "build": "npm run json-schema && gulp build --prod && npm run compile",
+    "build:dev": "npm run json-schema && gulp build && npm run compile:dev",
+    "test": "gulp build-ts:test",
+    "compile": "npx webpack build --mode=production",
+    "compile:dev": "npx webpack build"
   },
   "private": true,
   "dependencies": {
@@ -29,7 +31,8 @@
     "pubsub-js": "1.9.0",
     "react": "16.13.1",
     "react-codemirror2": "7.2.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "webpack-cli": "^4.8.0"
   },
   "devDependencies": {
     "@babel/core": "7.10.2",
@@ -109,6 +112,7 @@
     "vinyl-buffer": "1.0.1",
     "vinyl-source-stream": "2.0.0",
     "watchify": "3.11.1",
+    "webpack": "^5.51.1",
     "yargs": "15.3.1"
   }
 }
