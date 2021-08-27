@@ -23,6 +23,7 @@
             "run_at": "document_end",
             "matches": [ "*://*/*" ],
             "js": [
+                "asset/common.min.js",
                 "ct-script/main.min.js"
             ]
         }
