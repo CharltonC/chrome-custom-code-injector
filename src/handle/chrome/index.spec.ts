@@ -225,7 +225,7 @@ describe('Chrome Handle', () => {
                     { name: 'Content-Security-Policy', value: 'csp' }
                 ];
                 const csp = chromeHandle.getCsp(mockRespHeaders);
-                expect(csp).toBe('csp');
+                expect(csp).toBe(mockRespHeaders[0]);
             });
 
             it('should return null if not found', () => {

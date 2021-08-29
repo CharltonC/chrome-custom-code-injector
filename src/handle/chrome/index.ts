@@ -86,9 +86,9 @@ export class ChromeHandle {
     /**
      * Get the full CSP value
      */
-    getCsp(responseHeaders: AObj): string {
+    getCsp(responseHeaders: AObj): { name: string; value: string } {
         const CSP_HEADER = 'Content-Security-Policy';
-        return responseHeaders.find(({ name }) => name === CSP_HEADER)?.value;
+        return responseHeaders.find(({ name }) => name === CSP_HEADER);
     }
 
     /**
