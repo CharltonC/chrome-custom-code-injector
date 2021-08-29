@@ -45,6 +45,14 @@ export class ChromeHandle {
         return new Promise(resolveCallback);
     }
 
+    isMainframeRequest(evt: AObj): boolean {
+        const { frameId, method, statusCode } = evt;
+        return frameId === 0
+            && method === 'GET'
+            && statusCode >= 200
+            && statusCode < 300;
+    }
+
     //// CSP
     /**
      * Update the CSP (if needed) to allow injection of inline Js/Css and 3rd Party JS/Stylesheets if the script/style injection calls originate from page itself (incl. from extension run within the page)

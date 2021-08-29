@@ -135,6 +135,44 @@ describe('Chrome Handle', () => {
                 expect(url).toEqual(mockUrl);
             });
         });
+
+        describe('Method - isMainframeRequest', () => {
+            it('should return true if it is a document request', () => {
+                expect(
+                    chromeHandle.isMainframeRequest({
+                        frameId: 0,
+                        method: 'GET',
+                        statusCode: 200
+                    })
+                ).toBeTruthy();
+            });
+
+            it('should return false if it is not document request', () => {
+                expect(
+                    chromeHandle.isMainframeRequest({
+                        frameId: 1,
+                        method: 'GET',
+                        statusCode: 200
+                    })
+                ).toBeFalsy();
+
+                expect(
+                    chromeHandle.isMainframeRequest({
+                        frameId: 1,
+                        method: 'GET',
+                        statusCode: 300
+                    })
+                ).toBeFalsy();
+
+                expect(
+                    chromeHandle.isMainframeRequest({
+                        frameId: 0,
+                        method: 'POST',
+                        statusCode: 200
+                    })
+                ).toBeFalsy();
+            });
+        });
     });
 
     describe('CSP (Content Security Policy)', () => {
