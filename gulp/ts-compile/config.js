@@ -51,23 +51,23 @@ module.exports = {
             ],
             outputFile: 'dist/demo/main.min.js',
         },
-        contentScript: {
-            inputFiles: [
-                'page/ct-script/main.ts'
-            ],
-            outputFile: 'dist/build/ct-script/main.min.js',
-        },
-        popup: {
-            inputFiles: [
-                'page/popup/main.tsx'
-            ],
-            outputFile: 'dist/build/popup/main.min.js',
-        },
-        option: {
-            inputFiles: [
-                'page/option/main.tsx'
-            ],
-            outputFile: 'dist/build/option/main.min.js',
-        }
+        // contentScript: {
+        //     inputFiles: [
+        //         'page/ct-script/main.ts'
+        //     ],
+        //     outputFile: 'dist/build/ct-script/main.min.js',
+        // },
+        // popup: {
+        //     inputFiles: [
+        //         'page/popup/main.tsx'
+        //     ],
+        //     outputFile: 'dist/build/popup/main.min.js',
+        // },
+        // option: {
+        //     inputFiles: [
+        //         'page/option/main.tsx'
+        //     ],
+        //     outputFile: 'dist/build/option/main.min.js',
+        // }
     }
 };
