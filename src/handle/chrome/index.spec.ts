@@ -142,6 +142,7 @@ describe('Chrome Handle', () => {
                     chromeHandle.isMainframeRequest({
                         frameId: 0,
                         method: 'GET',
+                        type: 'main_frame',
                         statusCode: 200
                     })
                 ).toBeTruthy();
@@ -152,6 +153,7 @@ describe('Chrome Handle', () => {
                     chromeHandle.isMainframeRequest({
                         frameId: 1,
                         method: 'GET',
+                        type: 'main_frame',
                         statusCode: 200
                     })
                 ).toBeFalsy();
@@ -160,6 +162,7 @@ describe('Chrome Handle', () => {
                     chromeHandle.isMainframeRequest({
                         frameId: 1,
                         method: 'GET',
+                        type: 'main_frame',
                         statusCode: 300
                     })
                 ).toBeFalsy();
@@ -168,6 +171,16 @@ describe('Chrome Handle', () => {
                     chromeHandle.isMainframeRequest({
                         frameId: 0,
                         method: 'POST',
+                        type: 'main_frame',
+                        statusCode: 200
+                    })
+                ).toBeFalsy();
+
+                expect(
+                    chromeHandle.isMainframeRequest({
+                        frameId: 0,
+                        method: 'POST',
+                        type: 'image',
                         statusCode: 200
                     })
                 ).toBeFalsy();

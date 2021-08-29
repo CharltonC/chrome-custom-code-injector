@@ -46,9 +46,10 @@ export class ChromeHandle {
     }
 
     isMainframeRequest(evt: AObj): boolean {
-        const { frameId, method, statusCode } = evt;
+        const { frameId, type, method, statusCode } = evt;
         return frameId === 0
             && method === 'GET'
+            && type === 'main_frame'
             && statusCode >= 200
             && statusCode < 300;
     }
