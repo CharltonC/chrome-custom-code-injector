@@ -13,7 +13,7 @@ jest.mock('../../model/rule/default', () => {
 });
 
 describe('Chrome Handle', () => {
-    let handleSpy: AMethodSpy<ChromeHandle>;
+    let spy: AMethodSpy<ChromeHandle>;
     let chromeStoreGetSpy: jest.SpyInstance;
     let chromeStoreSetSpy: jest.SpyInstance;
     let chromeTabQuerySpy: jest.SpyInstance;
@@ -37,7 +37,7 @@ describe('Chrome Handle', () => {
         });
         chromeHandle.isInChromeCtx = true;
 
-        handleSpy = TestUtil.spyMethods(chromeHandle);
+        spy = TestUtil.spyMethods(chromeHandle);
         chromeTabQuerySpy = jest.spyOn(chrome.tabs, 'query');
         chromeStoreGetSpy = jest.spyOn(chrome.storage.sync, 'get');
         chromeStoreSetSpy = jest.spyOn(chrome.storage.sync, 'set');
@@ -63,7 +63,7 @@ describe('Chrome Handle', () => {
             it('should return existing state if found in chrome storage', async () => {
                 const mockData = 'lorem';
                 const mockResolveFn = resolve => resolve(mockData);
-                handleSpy.getGetStateResolveFn.mockReturnValue(mockResolveFn);
+                spy.getOnGetStateResolved.mockReturnValue(mockResolveFn);
                 jsonParseSpy.mockReturnValue(mockData);
 
                 const data = await chromeHandle.getState();
@@ -72,12 +72,12 @@ describe('Chrome Handle', () => {
 
             it('should return default state if not found in chrome storage', async () => {
                 const mockResolveFn = resolve => resolve(null);
-                handleSpy.getGetStateResolveFn.mockReturnValue(mockResolveFn);
+                spy.getOnGetStateResolved.mockReturnValue(mockResolveFn);
                 const mockDefState: any = {
                     setting: 'settting',
                     rules: 'rules'
                 };
-                handleSpy.getDefState.mockResolvedValue(mockDefState);
+                spy.getDefState.mockResolvedValue(mockDefState);
 
                 const data = await chromeHandle.getState();
                 expect(data).toBe(mockDefState);
@@ -86,7 +86,7 @@ describe('Chrome Handle', () => {
 
         describe('Method - getDefState', () => {
             it('should return default state and save it to chrome', async () => {
-                handleSpy.saveState.mockImplementation(() => Promise.resolve(true));
+                spy.saveState.mockImplementation(() => Promise.resolve(true));
                 const state = await chromeHandle.getDefState();
 
                 expect(state).toEqual({
@@ -101,7 +101,7 @@ describe('Chrome Handle', () => {
             const mockSaveValue = {'a': 'b'};
 
             beforeEach(() => {
-                handleSpy.getState.mockResolvedValue({});
+                spy.getState.mockResolvedValue({});
                 jsonStringifySpy.mockReturnValue(mockSaveValue);
             });
 
@@ -116,7 +116,7 @@ describe('Chrome Handle', () => {
                 chromeHandle.isInChromeCtx = false;
 
                 await chromeHandle.saveState(mockState);
-                expect(handleSpy.getState).not.toHaveBeenCalled();
+                expect(spy.getState).not.toHaveBeenCalled();
                 expect(jsonStringifySpy).not.toHaveBeenCalled();
                 expect(chromeStoreSetSpy).not.toHaveBeenCalled();
             });
@@ -127,7 +127,7 @@ describe('Chrome Handle', () => {
         describe('Method - getTabUrl', () => {
             it('should return the current tab url', async () => {
                 const mockUrl = { host: 'host' };
-                handleSpy.getGetCurrentResolveFn.mockReturnValue(resolve => {
+                spy.getOnGetCurrentResolved.mockReturnValue(resolve => {
                     resolve(mockUrl);
                 });
 
@@ -137,16 +137,115 @@ describe('Chrome Handle', () => {
         });
     });
 
+    describe('CSP (Content Security Policy)', () => {
+        describe('Method - getAlteredCsp', () => {
+            it('should not alter CSP if partial CSP exists and contain `self`', () => {
+                const mockCsp = `script-src abc.com 'self'`;
+                const mockPolicies = [ 'script-src' ];
+
+                const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
+                expect(csp).toBe(mockCsp);
+                expect(spy.addCspSubPolicyValue).not.toHaveBeenCalled();
+                expect(spy.addCspSubPolicy).not.toHaveBeenCalled();
+            });
+
+            it('should alter CSP if partial CSP exists but doesnt contain `self`', () => {
+                const mockPartialCsp = 'script-src abc.com';
+                const mockCsp = `style-src 'self'; ${mockPartialCsp}`;
+                const mockPolicies = [ 'script-src' ];
+
+                const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
+                expect(csp).toBe(`${mockCsp} 'self'`);
+                expect(spy.addCspSubPolicyValue).toHaveBeenCalledWith(mockCsp, mockPartialCsp);
+                expect(spy.addCspSubPolicy).not.toHaveBeenCalled();
+            });
+
+            it('should not alter CSP if partial CSP doesnt exist while `default-src` contains `self`', () => {
+                const mockCsp = `default-src 'self'; style-src 'self'`;
+                const mockPolicies = [ 'script-src' ];
+
+                const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
+                expect(csp).toBe(mockCsp);
+                expect(spy.addCspSubPolicyValue).not.toHaveBeenCalled();
+                expect(spy.addCspSubPolicy).not.toHaveBeenCalled();
+            });
+
+            it('should alter CSP if partial CSP doesnt exist while `default-src` doesnt exist or `default-src` doesnt contain `self`', () => {
+                const mockCsp = `default-src: 'none'`;
+                const mockPolicies = [ 'script-src' ];
+
+                const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
+                expect(csp).toBe(`${mockCsp}; ${mockPolicies[0]} 'self'`);
+                expect(spy.addCspSubPolicyValue).not.toHaveBeenCalled();
+                expect(spy.addCspSubPolicy).toHaveBeenCalledWith(mockCsp, mockPolicies[0]);
+            });
+        });
+
+        describe('Method - getCsp', () => {
+            it('should return CSP value if found', () => {
+                const mockRespHeaders = [
+                    { name: 'Content-Security-Policy', value: 'csp' }
+                ];
+                const csp = chromeHandle.getCsp(mockRespHeaders);
+                expect(csp).toBe('csp');
+            });
+
+            it('should return null if not found', () => {
+                const mockRespHeaders = [];
+                const csp = chromeHandle.getCsp(mockRespHeaders);
+                expect(csp).toBeFalsy();
+            });
+        });
+
+        describe('Method - getCspSubPolicy', () => {
+            const mockCsp = `default-src 'none'; style-src 'self'; srcript-src 'self' google.com`;
+
+            it('should return partial CSP value if found', () => {
+                expect(
+                    chromeHandle.getCspSubPolicy(mockCsp, 'srcript-src')
+                ).toBe(`srcript-src 'self' google.com`);
+
+                expect(
+                    chromeHandle.getCspSubPolicy(mockCsp, 'style-src')
+                ).toBe(`style-src 'self'`);
+            });
+
+            it('should return null if not found', () => {
+                expect(
+                    chromeHandle.getCspSubPolicy(mockCsp, 'lorem')
+                ).toBeFalsy();
+            });
+        });
+
+        describe('Method - addCspSubPolicy', () => {
+            it('should add new policy with value `self` to CSP', () => {
+                const mockCsp = `default-src 'none'`;
+                const mockPolicy = `style-src`;
+                const csp = chromeHandle.addCspSubPolicy(mockCsp, mockPolicy);
+                expect(csp).toBe(`${mockCsp}; ${mockPolicy} 'self'`);
+            });
+        });
+
+        describe('Method - addCspSubPolicyValue', () => {
+            it('should add a partial value to the existing policy in the CSP', () => {
+                const mockPolicy = `style-src 'none' abc.com`;
+                const mockCsp = `default-src 'none'; ${mockPolicy}`;
+                const csp = chromeHandle.addCspSubPolicyValue(mockCsp, mockPolicy);
+                expect(csp).toBe(`${mockCsp} 'self'`);
+            });
+        });
+    });
+
     describe('Helper', () => {
-        describe('Method - getGetStateResolveFn', () => {
+        describe('Method - getOnGetStateResolved', () => {
             it('should return resolve callback function', () => {
                 const mockResolveFn = () => {};
                 const mockFn = () => 'fn';
-                handleSpy.getStorageCallback.mockReturnValue(mockFn);
-                const resolveCallback = chromeHandle.getGetStateResolveFn();
+                spy.getOnStorage.mockReturnValue(mockFn);
+                const resolveCallback = chromeHandle.getOnGetStateResolved();
                 resolveCallback(mockResolveFn);
 
-                expect(handleSpy.getStorageCallback).toHaveBeenCalledWith(mockResolveFn);
+                expect(spy.getOnStorage).toHaveBeenCalledWith(mockResolveFn);
                 expect(chromeStoreGetSpy).toHaveBeenCalledWith(
                     chromeHandle.storeKey,
                     mockFn,
@@ -154,24 +253,24 @@ describe('Chrome Handle', () => {
             });
         });
 
-        describe('Method - getStorageCallback', () => {
+        describe('Method - getOnStorage', () => {
             it('should return storage callback function', () => {
                 const mockResolveFn = jest.fn();
                 const mockStorage = { [chromeHandle.storeKey]: 'lorem' };
-                const storageCallback = chromeHandle.getStorageCallback(mockResolveFn);
+                const storageCallback = chromeHandle.getOnStorage(mockResolveFn);
                 storageCallback(mockStorage);
 
                 expect(mockResolveFn).toHaveBeenCalledWith('lorem');
             });
         });
 
-        describe('Method - getGetCurrentResolveFn', () => {
+        describe('Method - getOnGetCurrentResolved', () => {
             it('should return resolve callback function', () => {
                 const mockFn = () => {};
-                handleSpy.getUrlCallback.mockReturnValue(mockFn);
+                spy.getOnTabQuery.mockReturnValue(mockFn);
                 chromeTabQuerySpy.mockImplementation(() => {});
 
-                const resolveFn = chromeHandle.getGetCurrentResolveFn();
+                const resolveFn = chromeHandle.getOnGetCurrentResolved();
                 resolveFn();
                 expect(chromeTabQuerySpy).toHaveBeenCalledWith(
                     {"active": true, "currentWindow": true},
@@ -180,14 +279,14 @@ describe('Chrome Handle', () => {
             });
         });
 
-        describe('Method - getUrlCallback', () => {
+        describe('Method - getOnTabQuery', () => {
             it('should return url callback', () => {
                 const mockTabs = [
                     { url: 'http://abc.com/' }
                 ];
                 const mockUrl = new URL(mockTabs[0].url);
                 const mockResolveFn = jest.fn();
-                const callback = chromeHandle.getUrlCallback(mockResolveFn);
+                const callback = chromeHandle.getOnTabQuery(mockResolveFn);
 
                 callback(mockTabs);
                 expect(mockResolveFn).toHaveBeenCalledWith(mockUrl);
