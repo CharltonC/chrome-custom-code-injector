@@ -1,7 +1,5 @@
 # Add any directories, files, or patterns you don't want to be tracked by version control
-dist/build/**
-dist/*.zip
-!dist/demo/**
+dist/**
 node_modules/
 doc/design/
 doc/temp-file/
