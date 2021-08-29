@@ -35,7 +35,7 @@ gulp.task('watch', require('./gulp/util-browsersync/task'));
  */
 gulp.task(
     'build',
-    gulp.series('clean', 'build-html', 'build-css', 'build-ts', 'build-copy', 'ver-check', 'zip'),
+    gulp.series('clean', 'build-html', 'build-css', 'build-ts', 'build-copy', 'ver-check'),
     done => done()
 );
 

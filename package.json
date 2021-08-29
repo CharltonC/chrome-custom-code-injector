@@ -18,7 +18,7 @@
     "doc": "./node_modules/.bin/esdoc",
     "typedoc": "./node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, doc, coverage'",
-    "build": "npm run json-schema && gulp build --prod && npm run compile",
+    "build": "npm run json-schema && gulp build --prod && npm run compile && gulp zip",
     "build:dev": "npm run json-schema && gulp build && npm run compile:dev",
     "test": "gulp build-ts:test",
     "compile": "npx webpack build --mode=production",
