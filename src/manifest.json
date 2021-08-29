@@ -9,7 +9,9 @@
         "storage",
         "unlimitedStorage",
         "<all_urls>",
-        "tabs"
+        "tabs",
+        "webRequest",
+        "webRequestBlocking"
     ],
     "icons": {
         "16": "asset/icon/icon_16.png",
@@ -36,5 +38,11 @@
             "24": "asset/icon/icon_24.png",
             "32": "asset/icon/icon_32.png"
         }
+    },
+    "background": {
+        "scripts": [
+            "asset/common.min.js",
+            "bg/main.min.js"
+        ]
     }
 }
