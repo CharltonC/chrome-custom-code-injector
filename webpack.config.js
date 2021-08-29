@@ -10,6 +10,7 @@ module.exports = {
         'ct-script': './src/page/ct-script/main.ts',
         'option': './src/page/option/main.tsx',
         'popup': './src/page/popup/main.tsx',
+        'bg': './src/page/background/main.ts',
     },
 
     module: {
