@@ -10,14 +10,15 @@ chrome.webRequest.onHeadersReceived.addListener(
         if (!isMainDoc) return;
 
         // check if match url in rules
-        // - web request callback doesn't support async, hence `then` is used
+        // - webrequest callback doesn't support async, hence `then` is used
         const pageUrl = new URL(url);
         chromeHandle.getState().then(({ rules }) => {
             const host = rules?.length && dataHandle.getHostFromUrl(rules, pageUrl);
             if (!host) return;
 
             // Alter specific CSP policies if needed
-            let csp = chromeHandle.getCsp(responseHeaders);
+            const csp = chromeHandle.getCsp(responseHeaders);
+            if (!csp) return;
             csp.value = chromeHandle.getAlteredCsp(csp.value, [
                 'script-src',
                 'style-src',
