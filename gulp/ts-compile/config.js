@@ -49,7 +49,7 @@ module.exports = {
             inputFiles: [
                 'page/demo/main.tsx'
             ],
-            outputFile: 'dist/demo/main.min.js',
+            outputFile: 'demo/main.min.js',
         },
         // contentScript: {
         //     inputFiles: [

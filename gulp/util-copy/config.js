@@ -35,13 +35,13 @@ module.exports = {
             inputFiles: [
                 'src/asset/font/*.*'
             ],
-            outputPath: 'dist/demo/font'
+            outputPath: 'demo/font'
         },
         demoImg: {
             inputFiles: [
                 'src/asset/img/*.*'
             ],
-            outputPath: 'dist/demo/img'
+            outputPath: 'demo/img'
         },
 
         // Chrome
