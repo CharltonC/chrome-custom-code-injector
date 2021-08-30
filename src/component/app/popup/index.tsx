@@ -13,26 +13,33 @@ export class PopupApp extends MemoComponent<IProps> {
         const matchHost = dataHandle.getHostFromUrl(rules, url);
         const matchPath = dataHandle.getPathFromUrl(matchHost?.paths, url);
 
-        const hostIdCtx = {
-            hostId: matchHost?.id
-        };
-        const pathIdCtx = {
-            ...hostIdCtx,
-            pathId: matchPath?.id
-        };
+        const hostId = matchHost?.id;
+        const pathId = matchPath?.id;
+        const hostIdCtx = { hostId };
+        const pathIdCtx = { ...hostIdCtx, pathId };
 
         const {
             onJsToggle,
             onCssToggle,
             onLibToggle,
+
+            onOpenExtUserguide,
+            onOpenExtOption,
         } = appStateHandle;
 
         return (
             <div className="app app--popup">
                 <header>
-                    {/* TODO: chrome link open: doc, option page */}
-                    <IconBtn icon="doc" theme="white" />
-                    <IconBtn icon="option" theme="white" />
+                    <IconBtn
+                        icon="doc"
+                        theme="white"
+                        onClick={onOpenExtUserguide}
+                        />
+                    <IconBtn
+                        icon="option"
+                        theme="white"
+                        onClick={onOpenExtOption}
+                        />
                 </header>
                 <main>
                     <section>
@@ -59,10 +66,10 @@ export class PopupApp extends MemoComponent<IProps> {
                             onChange={() => onLibToggle(hostIdCtx)}
                             />
                         <IconBtn
-                            icon="add"
+                            icon="edit"
                             theme="gray"
-                            disabled={!!matchHost}
-                            /* TODO onClick={} Open List view */
+                            disabled={!matchPath}
+                            onClick={() => onOpenExtOption(hostIdCtx)}
                             />
                     </section>
                     <section>
@@ -92,7 +99,7 @@ export class PopupApp extends MemoComponent<IProps> {
                             icon="edit"
                             theme="gray"
                             disabled={!matchPath}
-                            /* TODO onClick={} Open Edit View */
+                            onClick={() => onOpenExtOption(pathIdCtx)}
                             />
                     </section>
                 </main>
