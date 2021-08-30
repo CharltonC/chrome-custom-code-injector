@@ -1,5 +1,5 @@
 import React from 'react';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import { Controlled as CodeMirror } from 'react-codemirror2';
 import { validationSet } from '../../../constant/validation-set';
 import { codeExecStageList } from '../../../constant/code-exec-stage-list';
 import { hintMsgSet } from '../../../constant/hint-msg-set';
@@ -198,7 +198,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         theme: 'darcula',
                         lineNumbers: true
                     }}
-                    onChange={(...codeMirrorArgs) => onCodeChange({
+                    onBeforeChange={(...codeMirrorArgs) => onCodeChange({
                         codeMirrorArgs,
                         codeMode,
                         ruleIdCtx
