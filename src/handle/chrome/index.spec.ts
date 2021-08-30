@@ -196,27 +196,35 @@ describe('Chrome Handle', () => {
         });
 
         describe('Method - openExtOptionTab', () => {
+            const baseUrl = `chrome-extension://${mockRuntimeId}/option/index.html`;
+
             it('should open option without query params', () => {
                 chromeHandle.openExtOptionTab();
                 expect(chromeTabCreateSpy).toHaveBeenCalledWith(
-                    { url: `chrome-extension://${mockRuntimeId}/option/index.html` }
+                    { url: baseUrl }
                 );
             });
 
             it('should open option with query params', () => {
-                const baseUrl = `chrome-extension://${mockRuntimeId}/option/index.html?hostId=`;
                 const mockHostIdCtx = { hostId: 'hostId' };
                 chromeHandle.openExtOptionTab(mockHostIdCtx);
                 expect(chromeTabCreateSpy).toHaveBeenCalledWith(
-                    { url: `${baseUrl}${mockHostIdCtx.hostId}` }
+                    { url: `${baseUrl}?hostId=${mockHostIdCtx.hostId}` }
                 );
 
                 const mockPathIdCtx = { ...mockHostIdCtx, pathId: 'pathId' };
                 chromeHandle.openExtOptionTab(mockPathIdCtx);
                 expect(chromeTabCreateSpy).toHaveBeenCalledWith(
-                    { url: `${baseUrl}${mockHostIdCtx.hostId}&pathId=${mockPathIdCtx.pathId}` }
+                    { url: `${baseUrl}?hostId=${mockHostIdCtx.hostId}&pathId=${mockPathIdCtx.pathId}` }
                 );
+            });
 
+            it('should open option without query params if query param not valid', () => {
+                const mockIdCtx: any = { pathId: 'pathId' };
+                chromeHandle.openExtOptionTab(mockIdCtx);
+                expect(chromeTabCreateSpy).toHaveBeenCalledWith(
+                    { url: baseUrl }
+                );
             });
         });
 
