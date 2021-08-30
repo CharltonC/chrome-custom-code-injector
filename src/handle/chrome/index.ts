@@ -13,28 +13,44 @@ export class ChromeHandle {
     }
 
     //// STATE
-    async getState(): Promise<IState> {
-        const resolveFn = this.getOnGetStateResolved();
-        const state: string = await new Promise(resolveFn);
-        return state
-            ? JSON.parse(state)
-            : await this.getDefState();
+    /**
+     * Initialize the app state storage (only executed once) for entire app
+     */
+    async initState() {
+        const state = await chromeHandle.getState();
+        if (!state) {
+            const defState = chromeHandle.getDefState();
+            await chromeHandle.saveState(defState, false);
+        }
     }
 
-    async getDefState(): Promise<IState> {
-        const state = {
+    async getState(): Promise<IState> {
+        const resolveFn = this.getOnGetStateResolved();
+        const existState: string = await new Promise(resolveFn);
+        return existState
+            ? JSON.parse(existState)
+            : existState;
+    }
+
+    getDefState(): IState {
+        return {
             rules: getDefRules(),
             setting: new SettingState(),
         };
-        await chromeHandle.saveState(state);
-        return state;
     }
 
-    async saveState(state: Partial<IState>): Promise<void>  {
+    async saveState(state: Partial<IState>, shouldMerge = true): Promise<void>  {
         if (!this.isInChromeCtx) return;
-        const existState = await this.getState();
-        const newstate = Object.assign(existState, state);
-        const value = JSON.stringify(newstate);
+
+        let value: string;
+        if (shouldMerge) {
+            const existState = await this.getState();
+            const newstate = Object.assign(existState, state);
+            value = JSON.stringify(newstate);
+        } else {
+            value = JSON.stringify(state);
+        }
+
         await chrome.storage.sync.set({
             [this.storeKey]: value
         });

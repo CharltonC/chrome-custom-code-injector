@@ -67,7 +67,31 @@ describe('Chrome Handle', () => {
     });
 
     describe('State storage', () => {
-        describe('Method - getState: ', () => {
+        describe('Method - initState', () => {
+            beforeEach(() => {
+                const mockDefState = { def: 'def' };
+                spy.getDefState.mockReturnValue(mockDefState);
+                spy.saveState.mockImplementation(() => Promise.resolve(true));
+            });
+
+            it('should initialize and save state for the extension if state doesnt exist', async () => {
+                spy.getState.mockResolvedValue(false);
+
+                await chromeHandle.initState();
+                expect(spy.getDefState).toHaveBeenCalled();
+                expect(spy.saveState).toHaveBeenCalled();
+            });
+
+            it('should not initialize and save state for the extension if state exists', async () => {
+                spy.getState.mockResolvedValue(true);
+
+                await chromeHandle.initState();
+                expect(spy.getDefState).not.toHaveBeenCalled();
+                expect(spy.saveState).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('Method - getState', () => {
             it('should return existing state if found in chrome storage', async () => {
                 const mockData = 'lorem';
                 const mockResolveFn = resolve => resolve(mockData);
@@ -88,14 +112,13 @@ describe('Chrome Handle', () => {
                 spy.getDefState.mockResolvedValue(mockDefState);
 
                 const data = await chromeHandle.getState();
-                expect(data).toBe(mockDefState);
+                expect(data).toBeFalsy();
             });
         });
 
         describe('Method - getDefState', () => {
-            it('should return default state and save it to chrome', async () => {
-                spy.saveState.mockImplementation(() => Promise.resolve(true));
-                const state = await chromeHandle.getDefState();
+            it('should return default state and save it to chrome', () => {
+                const state = chromeHandle.getDefState();
 
                 expect(state).toEqual({
                     rules: mockDefRules,
@@ -105,22 +128,36 @@ describe('Chrome Handle', () => {
         });
 
         describe('Method - saveState', () => {
+            const mockExistState = {lorem: 'sum'};
             const mockState: any = {};
             const mockSaveValue = {'a': 'b'};
 
             beforeEach(() => {
-                spy.getState.mockResolvedValue({});
                 jsonStringifySpy.mockReturnValue(mockSaveValue);
             });
 
-            it('should save state if chrome exists', async () => {
+            it('should save state with merged existing state when chrome exists', async () => {
+                spy.getState.mockResolvedValue(mockExistState);
                 await chromeHandle.saveState(mockState);
+
+                expect(spy.getState).toHaveBeenCalled();
+                expect(jsonStringifySpy).toHaveBeenCalledWith({ ...mockExistState, ...mockState});
                 expect(chromeStoreSetSpy).toHaveBeenCalledWith({
                     [chromeHandle.storeKey]: mockSaveValue
                 });
             });
 
-            it('should exit if chrome doesnt exist', async () => {
+            it('should save state without merged with existing state when chrome exists', async () => {
+                await chromeHandle.saveState(mockState, false);
+
+                expect(spy.getState).not.toHaveBeenCalled();
+                expect(jsonStringifySpy).toHaveBeenCalledWith(mockState);
+                expect(chromeStoreSetSpy).toHaveBeenCalledWith({
+                    [chromeHandle.storeKey]: mockSaveValue
+                });
+            });
+
+            it('should exit when chrome doesnt exist', async () => {
                 chromeHandle.isInChromeCtx = false;
 
                 await chromeHandle.saveState(mockState);
