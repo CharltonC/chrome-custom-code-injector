@@ -31,7 +31,7 @@
         }
     ],
     "browser_action": {
-        "default_title": "Custom Code Insertion",
+        "default_title": "Custom Code Injector",
         "default_popup": "popup/index.html",
         "default_icon": {
             "16": "asset/icon/icon_16.png",
