@@ -87,25 +87,25 @@ export class ChromeHandle {
      * Update the CSP (if needed) to allow injection of inline Js/Css and 3rd Party JS/Stylesheets if the script/style injection calls originate from page itself (incl. from extension run within the page)
      */
     getAlteredCsp(cspValue: string, policies: string[]): string {
-        const SELF = `'self'`;
+        const ALL = `*`;
         const DEF_SRC_POLICY = 'default-src';
         let csp: string = cspValue;
 
         policies.forEach(CSP_PARTIAL => {
             const cspPartial = this.getCspSubPolicy(cspValue, CSP_PARTIAL);
 
-            // Add `'self'` value to partial policy if exists but has no such value
+            // Add `*` value to partial policy if exists but has no such value
             if (cspPartial) {
-                if (cspPartial.includes(SELF)) return;
+                if (cspPartial.includes(ALL)) return;
                 csp = this.addCspSubPolicyValue(cspValue, cspPartial);
 
-            // Add a new policy value `<policy> 'self'` to existing policy if
+            // Add a new policy value `<policy> *` to existing policy if
             // - partial policy is not found and
-            // - fallback policy `default-self` is found but has no `'self'` value
+            // - fallback policy `default-self` is found but has no `*` value
             //   OR fallback policy `default-self` is not found
             } else {
                 const defSrcCspPartial = this.getCspSubPolicy(cspValue, DEF_SRC_POLICY);
-                if (defSrcCspPartial?.includes(SELF)) return;
+                if (defSrcCspPartial?.includes(ALL)) return;
                 csp = this.addCspSubPolicy(cspValue, CSP_PARTIAL);
             }
         });
@@ -129,18 +129,18 @@ export class ChromeHandle {
     }
 
     /**
-     * Add a new policy `<policy-name> 'self'` to the CSP value
+     * Add a new policy `<policy-name> *` to the CSP value
      */
     addCspSubPolicy(cspValue: string, policy: string): string {
-        const newPolicy = `; ${policy} 'self'`;
+        const newPolicy = `; ${policy} *`;
         return cspValue + newPolicy;
     }
 
     /**
-     * Add a new value `'self'` to existing policy in the CSP value
+     * Add a new value `*` to existing policy in the CSP value
      */
     addCspSubPolicyValue(cspValue: string, policyValue: string): string {
-        const updatedPolicy = policyValue + ` 'self'`;
+        const updatedPolicy = policyValue + ` *`;
         return cspValue.replace(policyValue, updatedPolicy);
     }
 

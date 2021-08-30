@@ -240,8 +240,8 @@ describe('Chrome Handle', () => {
 
     describe('CSP (Content Security Policy)', () => {
         describe('Method - getAlteredCsp', () => {
-            it('should not alter CSP if partial CSP exists and contain `self`', () => {
-                const mockCsp = `script-src abc.com 'self'`;
+            it('should not alter CSP if partial CSP exists and contain `*`', () => {
+                const mockCsp = `script-src abc.com *`;
                 const mockPolicies = [ 'script-src' ];
 
                 const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
@@ -250,19 +250,19 @@ describe('Chrome Handle', () => {
                 expect(spy.addCspSubPolicy).not.toHaveBeenCalled();
             });
 
-            it('should alter CSP if partial CSP exists but doesnt contain `self`', () => {
+            it('should alter CSP if partial CSP exists but doesnt contain `*`', () => {
                 const mockPartialCsp = 'script-src abc.com';
-                const mockCsp = `style-src 'self'; ${mockPartialCsp}`;
+                const mockCsp = `style-src *; ${mockPartialCsp}`;
                 const mockPolicies = [ 'script-src' ];
 
                 const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
-                expect(csp).toBe(`${mockCsp} 'self'`);
+                expect(csp).toBe(`${mockCsp} *`);
                 expect(spy.addCspSubPolicyValue).toHaveBeenCalledWith(mockCsp, mockPartialCsp);
                 expect(spy.addCspSubPolicy).not.toHaveBeenCalled();
             });
 
-            it('should not alter CSP if partial CSP doesnt exist while `default-src` contains `self`', () => {
-                const mockCsp = `default-src 'self'; style-src 'self'`;
+            it('should not alter CSP if partial CSP doesnt exist while `default-src` contains `*`', () => {
+                const mockCsp = `default-src *; style-src *`;
                 const mockPolicies = [ 'script-src' ];
 
                 const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
@@ -271,12 +271,12 @@ describe('Chrome Handle', () => {
                 expect(spy.addCspSubPolicy).not.toHaveBeenCalled();
             });
 
-            it('should alter CSP if partial CSP doesnt exist while `default-src` doesnt exist or `default-src` doesnt contain `self`', () => {
+            it('should alter CSP if partial CSP doesnt exist while `default-src` doesnt exist or `default-src` doesnt contain `*`', () => {
                 const mockCsp = `default-src: 'none'`;
                 const mockPolicies = [ 'script-src' ];
 
                 const csp = chromeHandle.getAlteredCsp(mockCsp, mockPolicies);
-                expect(csp).toBe(`${mockCsp}; ${mockPolicies[0]} 'self'`);
+                expect(csp).toBe(`${mockCsp}; ${mockPolicies[0]} *`);
                 expect(spy.addCspSubPolicyValue).not.toHaveBeenCalled();
                 expect(spy.addCspSubPolicy).toHaveBeenCalledWith(mockCsp, mockPolicies[0]);
             });
@@ -299,16 +299,16 @@ describe('Chrome Handle', () => {
         });
 
         describe('Method - getCspSubPolicy', () => {
-            const mockCsp = `default-src 'none'; style-src 'self'; srcript-src 'self' google.com`;
+            const mockCsp = `default-src 'none'; style-src *; srcript-src * google.com`;
 
             it('should return partial CSP value if found', () => {
                 expect(
                     chromeHandle.getCspSubPolicy(mockCsp, 'srcript-src')
-                ).toBe(`srcript-src 'self' google.com`);
+                ).toBe(`srcript-src * google.com`);
 
                 expect(
                     chromeHandle.getCspSubPolicy(mockCsp, 'style-src')
-                ).toBe(`style-src 'self'`);
+                ).toBe(`style-src *`);
             });
 
             it('should return null if not found', () => {
@@ -319,11 +319,11 @@ describe('Chrome Handle', () => {
         });
 
         describe('Method - addCspSubPolicy', () => {
-            it('should add new policy with value `self` to CSP', () => {
+            it('should add new policy with value `*` to CSP', () => {
                 const mockCsp = `default-src 'none'`;
                 const mockPolicy = `style-src`;
                 const csp = chromeHandle.addCspSubPolicy(mockCsp, mockPolicy);
-                expect(csp).toBe(`${mockCsp}; ${mockPolicy} 'self'`);
+                expect(csp).toBe(`${mockCsp}; ${mockPolicy} *`);
             });
         });
 
@@ -332,7 +332,7 @@ describe('Chrome Handle', () => {
                 const mockPolicy = `style-src 'none' abc.com`;
                 const mockCsp = `default-src 'none'; ${mockPolicy}`;
                 const csp = chromeHandle.addCspSubPolicyValue(mockCsp, mockPolicy);
-                expect(csp).toBe(`${mockCsp} 'self'`);
+                expect(csp).toBe(`${mockCsp} *`);
             });
         });
     });
