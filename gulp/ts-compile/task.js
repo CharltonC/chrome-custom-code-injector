@@ -47,19 +47,19 @@ module.exports = (done) => {
                 .plugin( $.packFlat );
         }
 
-        // Watch the files & Speed up the build by caching files which didnt change
-        // - for Development mode or Production mode by providing an extra `watchify` flag
-        if (isWatch) {
-            brsfInst
-                .plugin( $.watchify, defOption.watchify )
-                .on('update', (filePath) => {
-                    console.log(getBundleUpdateTxt(filePath));
-                    return bundle();
-                })
-                .on('time', (timeInMs) => {
-                    time = $.chalk.magenta(`${timeInMs/100}s`);
-                });
-        }
+        // // Watch the files & Speed up the build by caching files which didnt change
+        // // - for Development mode or Production mode by providing an extra `watchify` flag
+        // if (isWatch) {
+        //     brsfInst
+        //         .plugin( $.watchify, defOption.watchify )
+        //         .on('update', (filePath) => {
+        //             console.log(getBundleUpdateTxt(filePath));
+        //             return bundle();
+        //         })
+        //         .on('time', (timeInMs) => {
+        //             time = $.chalk.magenta(`${timeInMs/100}s`);
+        //         });
+        // }
 
         //// Start compile
         return bundle();
