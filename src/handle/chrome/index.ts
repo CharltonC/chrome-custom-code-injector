@@ -1,4 +1,5 @@
 import { SettingState } from '../../model/setting-state';
+import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import { getDefRules } from '../../model/rule/default';
 import { IState } from './type';
 
@@ -39,7 +40,7 @@ export class ChromeHandle {
         });
     }
 
-    //// URL
+    //// URL/TAB
     async getTabUrl(): Promise<URL> {
         const resolveCallback = this.getOnGetCurrentResolved();
         return new Promise(resolveCallback);
@@ -52,6 +53,31 @@ export class ChromeHandle {
             && type === 'main_frame'
             && statusCode >= 200
             && statusCode < 300;
+    }
+
+    openExtOptionTab(ruleIdCtx?: RuleIdCtxState): void {
+        const extId = chrome.runtime.id;
+        const baseUrl = `chrome-extension://${extId}/option/index.html`;
+        let urlParams = '';
+
+        if (ruleIdCtx) {
+            const { hostId, pathId } = ruleIdCtx;
+            const hostUrlParam = hostId && `?hostId=${hostId}`;
+            const pathUrlParam = pathId && `&pathId=${pathId}`;
+            urlParams = pathUrlParam
+                ? `${hostUrlParam}${pathUrlParam}`
+                : hostUrlParam;
+        }
+
+        chrome.tabs.create({
+            url: `${baseUrl}${urlParams}`
+        });
+    }
+
+    openUserguideTab(): void {
+        chrome.tabs.create({
+            url: `https://github.com/CharltonC/chrome-custom-code-injector-userguide`
+        });
     }
 
     //// CSP

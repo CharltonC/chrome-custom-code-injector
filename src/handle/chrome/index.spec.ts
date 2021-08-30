@@ -13,10 +13,12 @@ jest.mock('../../model/rule/default', () => {
 });
 
 describe('Chrome Handle', () => {
+    const mockRuntimeId = 'runtime-id';
     let spy: AMethodSpy<ChromeHandle>;
     let chromeStoreGetSpy: jest.SpyInstance;
     let chromeStoreSetSpy: jest.SpyInstance;
     let chromeTabQuerySpy: jest.SpyInstance;
+    let chromeTabCreateSpy: jest.SpyInstance;
     let jsonParseSpy: jest.SpyInstance;
     let jsonStringifySpy: jest.SpyInstance;
 
@@ -24,8 +26,12 @@ describe('Chrome Handle', () => {
         // Mock Global Chrome API
         Object.assign(globalThis, {
             chrome: {
+                runtime: {
+                    id: mockRuntimeId
+                },
                 tabs: {
-                    query(){}
+                    query(){},
+                    create(){}
                 },
                 storage: {
                     sync: {
@@ -39,9 +45,11 @@ describe('Chrome Handle', () => {
 
         spy = TestUtil.spyMethods(chromeHandle);
         chromeTabQuerySpy = jest.spyOn(chrome.tabs, 'query');
+        chromeTabCreateSpy = jest.spyOn(chrome.tabs, 'create');
         chromeStoreGetSpy = jest.spyOn(chrome.storage.sync, 'get');
         chromeStoreSetSpy = jest.spyOn(chrome.storage.sync, 'set');
         chromeStoreSetSpy.mockImplementation(() => {});
+        chromeTabCreateSpy.mockImplementation(() => {});
         jsonParseSpy = jest.spyOn(JSON, 'parse');
         jsonStringifySpy = jest.spyOn(JSON, 'stringify');
     });
@@ -123,7 +131,7 @@ describe('Chrome Handle', () => {
         });
     });
 
-    describe('Url', () => {
+    describe('Url/Tab', () => {
         describe('Method - getTabUrl', () => {
             it('should return the current tab url', async () => {
                 const mockUrl = { host: 'host' };
@@ -184,6 +192,40 @@ describe('Chrome Handle', () => {
                         statusCode: 200
                     })
                 ).toBeFalsy();
+            });
+        });
+
+        describe('Method - openExtOptionTab', () => {
+            it('should open option without query params', () => {
+                chromeHandle.openExtOptionTab();
+                expect(chromeTabCreateSpy).toHaveBeenCalledWith(
+                    { url: `chrome-extension://${mockRuntimeId}/option/index.html` }
+                );
+            });
+
+            it('should open option with query params', () => {
+                const baseUrl = `chrome-extension://${mockRuntimeId}/option/index.html?hostId=`;
+                const mockHostIdCtx = { hostId: 'hostId' };
+                chromeHandle.openExtOptionTab(mockHostIdCtx);
+                expect(chromeTabCreateSpy).toHaveBeenCalledWith(
+                    { url: `${baseUrl}${mockHostIdCtx.hostId}` }
+                );
+
+                const mockPathIdCtx = { ...mockHostIdCtx, pathId: 'pathId' };
+                chromeHandle.openExtOptionTab(mockPathIdCtx);
+                expect(chromeTabCreateSpy).toHaveBeenCalledWith(
+                    { url: `${baseUrl}${mockHostIdCtx.hostId}&pathId=${mockPathIdCtx.pathId}` }
+                );
+
+            });
+        });
+
+        describe('Method - openUserguideTab', () => {
+            it('should open user guide', () => {
+                chromeHandle.openUserguideTab();
+                expect(chromeTabCreateSpy).toHaveBeenCalledWith(
+                    { url: `https://github.com/CharltonC/chrome-custom-code-injector-userguide` }
+                );
             });
         });
     });
