@@ -4,6 +4,10 @@ const isProd = process.env.NODE_ENV === 'production';
 //// For root folder, `./` is recommeneded in `entry` and `output.path`
 // - e.g. `./` in `./src`
 module.exports = {
+    // Prevent eval error below thrown by Chrome:
+    // `Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: "script-src 'self' blob: filesystem:".`
+    devtool: 'inline-source-map',
+
     mode: isProd ? 'production' : 'development',
 
     entry: {
