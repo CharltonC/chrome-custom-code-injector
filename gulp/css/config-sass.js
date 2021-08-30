@@ -11,7 +11,7 @@ module.exports = {
         demoPage: {
             inputFiles: 'src/page/demo/style.scss',
             rename: 'style.min.css',
-            outputPath: 'dist/demo/'
+            outputPath: 'demo/'
         }
     }
 };

@@ -13,7 +13,7 @@ module.exports = {
         },
         demoPage: {
             inputFiles: [ 'src/page/demo/index.pug' ],
-            outputPath: 'dist/demo'
+            outputPath: 'demo'
         }
     }
 };
