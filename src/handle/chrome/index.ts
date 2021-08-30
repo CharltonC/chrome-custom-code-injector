@@ -64,9 +64,11 @@ export class ChromeHandle {
             const { hostId, pathId } = ruleIdCtx;
             const hostUrlParam = hostId && `?hostId=${hostId}`;
             const pathUrlParam = pathId && `&pathId=${pathId}`;
-            urlParams = pathUrlParam
+            urlParams = hostUrlParam && pathUrlParam
                 ? `${hostUrlParam}${pathUrlParam}`
-                : hostUrlParam;
+                : hostUrlParam
+                    ? hostUrlParam
+                    : '';
         }
 
         chrome.tabs.create({
