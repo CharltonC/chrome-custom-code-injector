@@ -68,7 +68,7 @@ export class PopupApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="edit"
                             theme="gray"
-                            disabled={!matchPath}
+                            disabled={!matchHost}
                             onClick={() => onOpenExtOption(hostIdCtx)}
                             />
                     </section>
