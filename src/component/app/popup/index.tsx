@@ -38,7 +38,7 @@ export class PopupApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="option"
                         theme="white"
-                        onClick={onOpenExtOption}
+                        onClick={() => onOpenExtOption()}
                         />
                 </header>
                 <main>
