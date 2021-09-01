@@ -3,41 +3,26 @@ import { render } from 'react-dom';
 import { AppStateHandle } from '../../handle/app-state';
 import { StateHandle } from '../../handle/state';
 import { chromeHandle } from '../../handle/chrome';
+import { UrlToAppStateHandle } from '../../handle/app-state/url-to-app-state';
 import { LocalState } from '../../model/local-state';
 import { SettingState } from '../../model/setting-state';
 import { OptionApp } from '../../component/app/option';
-import { dataHandle } from '../../handle/data';
 
 (async () => {
     let { rules, setting } = await chromeHandle.getState();
 
+    const urlToAppStateHandle = new UrlToAppStateHandle();
     const appStateHandle = new AppStateHandle();
-    const { onEditView } = appStateHandle;
     let appState = {
         localState: new LocalState(rules.length),
         setting: setting || new SettingState(),
         rules
     };
 
-    // check any query param passed from Popup page to be directly in Edit View/mode
+    // Merge the prefilled state (if any, based on the url query params) with default/initial state
     const url = document.location.href;
-    const params = new URL(url).searchParams.entries();
-    if (params) {
-        let hostId: string;
-        let pathId: string;
-        Array.from(params).forEach(([ key, value ]) => {
-            hostId = key === 'hostId' ? value : hostId;
-            pathId = key === 'pathId' ? value : pathId;
-        });
-
-        // Only pre-merge the staet if rule exists
-        const ruleIdCtx = { hostId, pathId };
-        const rule = dataHandle.getRuleFromIdCtx(rules, ruleIdCtx);
-        rule && Object.assign(
-            appState,
-            onEditView(appState, ruleIdCtx)
-        );
-    }
+    const prefilledState = urlToAppStateHandle.getState(appState, url);
+    Object.assign(appState, prefilledState);
 
     // Init the app
     const App = StateHandle.init(OptionApp, {
