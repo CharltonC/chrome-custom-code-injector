@@ -232,42 +232,28 @@ describe('Chrome Handle', () => {
             });
         });
 
-        describe('Method - openExtOptionTab', () => {
+        describe('Method - openExtOption', () => {
             const baseUrl = `chrome-extension://${mockRuntimeId}/option/index.html`;
 
             it('should open option without query params', () => {
-                chromeHandle.openExtOptionTab();
+                chromeHandle.openExtOption();
                 expect(chromeTabCreateSpy).toHaveBeenCalledWith(
                     { url: baseUrl }
                 );
             });
 
             it('should open option with query params', () => {
-                const mockHostIdCtx = { hostId: 'hostId' };
-                chromeHandle.openExtOptionTab(mockHostIdCtx);
+                const mockParams = '?lorem=sum';
+                chromeHandle.openExtOption(mockParams);
                 expect(chromeTabCreateSpy).toHaveBeenCalledWith(
-                    { url: `${baseUrl}?hostId=${mockHostIdCtx.hostId}` }
-                );
-
-                const mockPathIdCtx = { ...mockHostIdCtx, pathId: 'pathId' };
-                chromeHandle.openExtOptionTab(mockPathIdCtx);
-                expect(chromeTabCreateSpy).toHaveBeenCalledWith(
-                    { url: `${baseUrl}?hostId=${mockHostIdCtx.hostId}&pathId=${mockPathIdCtx.pathId}` }
-                );
-            });
-
-            it('should open option without query params if query param not valid', () => {
-                const mockIdCtx: any = { pathId: 'pathId' };
-                chromeHandle.openExtOptionTab(mockIdCtx);
-                expect(chromeTabCreateSpy).toHaveBeenCalledWith(
-                    { url: baseUrl }
+                    { url: `${baseUrl}${mockParams}` }
                 );
             });
         });
 
-        describe('Method - openUserguideTab', () => {
+        describe('Method - openUserguide', () => {
             it('should open user guide', () => {
-                chromeHandle.openUserguideTab();
+                chromeHandle.openUserguide();
                 expect(chromeTabCreateSpy).toHaveBeenCalledWith(
                     { url: `https://github.com/CharltonC/chrome-custom-code-injector-userguide` }
                 );

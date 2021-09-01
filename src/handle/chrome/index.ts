@@ -1,5 +1,4 @@
 import { SettingState } from '../../model/setting-state';
-import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
 import { getDefRules } from '../../model/rule/default';
 import { IState } from './type';
 
@@ -71,28 +70,14 @@ export class ChromeHandle {
             && statusCode < 300;
     }
 
-    openExtOptionTab(ruleIdCtx?: RuleIdCtxState): void {
-        const extId = chrome.runtime.id;
-        const baseUrl = `chrome-extension://${extId}/option/index.html`;
-        let urlParams = '';
-
-        if (ruleIdCtx) {
-            const { hostId, pathId } = ruleIdCtx;
-            const hostUrlParam = hostId && `?hostId=${hostId}`;
-            const pathUrlParam = pathId && `&pathId=${pathId}`;
-            urlParams = hostUrlParam && pathUrlParam
-                ? `${hostUrlParam}${pathUrlParam}`
-                : hostUrlParam
-                    ? hostUrlParam
-                    : '';
-        }
-
+    openExtOption(urlParams: string = ''): void {
+        const baseUrl = this.optionPageUrl;
         chrome.tabs.create({
             url: `${baseUrl}${urlParams}`
         });
     }
 
-    openUserguideTab(): void {
+    openUserguide(): void {
         chrome.tabs.create({
             url: `https://github.com/CharltonC/chrome-custom-code-injector-userguide`
         });
@@ -188,6 +173,11 @@ export class ChromeHandle {
             const url = new URL(tab.url);
             resolveFn(url);
         };
+    }
+
+    get optionPageUrl(): string {
+        const extId = chrome.runtime.id;
+        return `chrome-extension://${extId}/option/index.html`;
     }
 }
 
