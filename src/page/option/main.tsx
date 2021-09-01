@@ -20,9 +20,18 @@ import { OptionApp } from '../../component/app/option';
     };
 
     // Merge the prefilled state (if any, based on the url query params) with default/initial state
-    const url = document.location.href;
-    const prefilledState = urlToAppStateHandle.getState(appState, url);
+    const { href, protocol, host, pathname } = document.location;
+    const prefilledState = urlToAppStateHandle.getState(appState, href);
     Object.assign(appState, prefilledState);
+
+    // clear the query param after state is merged w/o reloading the page
+    // - ref: https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
+    const baseUrl = protocol + "//" + host + pathname;
+    window.history.pushState(
+        { path: baseUrl },
+        '',                     // no need to change the doc title
+        baseUrl
+    );
 
     // Init the app
     const App = StateHandle.init(OptionApp, {
