@@ -2,7 +2,7 @@ import { queryParamHandle as handle } from ".";
 import { EPrefillAction } from '../app-state-prefill/type';
 import { EQueryParam } from './type';
 
-fdescribe('Query Parameters Handle', () => {
+describe('Query Parameters Handle', () => {
     const { EDIT, ADD_HOST, ADD_PATH } = EPrefillAction;
     const { HOST_ID, HOST_URL, PATH_ID, PATH } = EQueryParam;
 
