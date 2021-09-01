@@ -3,20 +3,13 @@ import { render } from 'react-dom';
 import { AppStateHandle } from '../../handle/app-state';
 import { StateHandle } from '../../handle/state';
 import { chromeHandle } from '../../handle/chrome';
-import { LocalState } from '../../model/local-state';
-import { SettingState } from '../../model/setting-state';
 import { PopupApp } from '../../component/app/popup';
 
 (async () => {
     const url = await chromeHandle.getTabUrl();
-    let { rules, setting } = await chromeHandle.getState();
 
-    const appState = {
-        localState: new LocalState(rules.length),
-        setting: setting || new SettingState(),
-        rules,
-        url
-    };
+    let { rules } = await chromeHandle.getState();
+    const appState = { rules, url };
     const appStateHandle = new AppStateHandle();
     const App = StateHandle.init(PopupApp, {
         root: [ appState, appStateHandle ],
