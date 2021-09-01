@@ -136,7 +136,7 @@ describe('App State Prefill Handle', () => {
             expect(state).toEqual({
                 localState: {
                     modal: {
-                        valueInput: new TextInputState({ value: mockHostUrl })
+                        valueInput: new TextInputState({ value: mockHostUrl, isValid: true })
                     }
                 }
             });
@@ -178,7 +178,7 @@ describe('App State Prefill Handle', () => {
             expect(state).toEqual({
                 localState: {
                     modal: {
-                        valueInput: new TextInputState({ value: mockPath })
+                        valueInput: new TextInputState({ value: mockPath, isValid: true })
                     }
                 }
             });

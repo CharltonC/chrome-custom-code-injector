@@ -68,7 +68,7 @@ export class UrlToAppStateHandle {
         const hostUrl = params.get(HOST_URL);
         if (!hostUrl) return {};
 
-        const valueInput = new TextInputState({ value: hostUrl });
+        const valueInput = new TextInputState({ value: hostUrl, isValid: true });
         const { localState } = this.modalStateHandle.onAddHostModal(appState);
         return {
             localState: {
@@ -86,7 +86,7 @@ export class UrlToAppStateHandle {
         const path = params.get(PATH);
         if (!hostId || !path) return {};
 
-        const valueInput = new TextInputState({ value: path });
+        const valueInput = new TextInputState({ value: path, isValid: true });
         const ruleIdCtx = { hostId };
         const { localState } = this.modalStateHandle.onAddPathModal(appState, ruleIdCtx);
         return {
