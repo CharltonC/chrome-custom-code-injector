@@ -1,9 +1,13 @@
 import { IAppProps } from '../../../handle/state/type';
-import { AppState } from '../../../model/app-state';
 import { IStateHandle } from '../../../handle/app-state/type';
+import { HostRule } from '../../../model/rule';
 
-export interface IProps extends IAppProps<AExtendedAppState, IStateHandle> {}
+// This is slightyly different to the one in Option App
+// - the App State here is different containing less properties
+// - the State Handle is same
+export interface IProps extends IAppProps<IAppState, IStateHandle> {}
 
-export interface AExtendedAppState extends AppState {
+export interface IAppState {
+    rules: HostRule[];
     url: URL;
 }

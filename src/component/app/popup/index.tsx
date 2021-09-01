@@ -1,22 +1,24 @@
 import React from 'react';
 import { MemoComponent } from '../../extendable/memo-component';
+import { dataHandle } from '../../../handle/data';
 import { IconBtn } from '../../base/btn-icon';
 import { SymbolSwitch } from '../../base/checkbox-symbol-switch';
 import { IProps } from './type';
-import { dataHandle } from '../../../handle/data';
 
 export class PopupApp extends MemoComponent<IProps> {
     render() {
         const { appState, appStateHandle } = this.props;
-        const { rules, url, setting } = appState;
-        setting.showDeleteModal = false;
+        const { rules, url } = appState;
+
         const matchHost = dataHandle.getHostFromUrl(rules, url);
         const matchPath = dataHandle.getPathFromUrl(matchHost?.paths, url);
-
         const hostId = matchHost?.id;
         const pathId = matchPath?.id;
         const hostIdCtx = { hostId };
         const pathIdCtx = { ...hostIdCtx, pathId };
+
+        const { host: hostUrl, pathname } = url;
+        const isAddDisabled = hostUrl === 'newtab'; // Disable for adding host/path when Chrome opens a new blank tab
 
         const {
             onJsToggle,
@@ -25,6 +27,11 @@ export class PopupApp extends MemoComponent<IProps> {
 
             onOpenExtUserguide,
             onOpenExtOption,
+            onOpenExtOptionForEdit,
+            onOpenExtOptionForAddHost,
+            onOpenExtOptionForAddPath,
+
+            onDelHostOrPath,
         } = appStateHandle;
 
         return (
@@ -48,38 +55,39 @@ export class PopupApp extends MemoComponent<IProps> {
                             id="host-js"
                             label="Js"
                             disabled={!matchHost}
-                            checked={matchHost?.isJsOn}
+                            checked={!!matchHost?.isJsOn}
                             onChange={() => onJsToggle(hostIdCtx)}
                             />
                         <SymbolSwitch
                             id="host-css"
                             label="Css"
                             disabled={!matchHost}
-                            checked={matchHost?.isCssOn}
+                            checked={!!matchHost?.isCssOn}
                             onChange={() => onCssToggle(hostIdCtx)}
                             />
                         <SymbolSwitch
                             id="host-lib"
                             label="Lib"
                             disabled={!matchHost}
-                            checked={matchHost?.isLibOn}
+                            checked={!!matchHost?.isLibOn}
                             onChange={() => onLibToggle(hostIdCtx)}
                             />{ matchHost ?
                         <IconBtn
                             icon="edit"
                             theme="gray"
-                            onClick={() => onOpenExtOption(hostIdCtx)}
+                            onClick={() => onOpenExtOptionForEdit(hostIdCtx)}
                             /> :
                         <IconBtn
                             icon="add"
                             theme="gray"
-                            onClick={() => { /**TODO */}}
+                            disabled={isAddDisabled}
+                            onClick={() => onOpenExtOptionForAddHost({ hostUrl })}
                             />}
                         <IconBtn
                             icon="delete"
                             theme="gray"
                             disabled={!matchHost}
-                            onClick={() => { /**TODO */}}
+                            onClick={() => onDelHostOrPath(hostIdCtx)}
                             />
                     </section>
                     <section>
@@ -88,38 +96,39 @@ export class PopupApp extends MemoComponent<IProps> {
                             id="path-js"
                             label="Js"
                             disabled={!matchPath}
-                            checked={matchPath?.isJsOn}
+                            checked={!!matchPath?.isJsOn}
                             onChange={() => onJsToggle(pathIdCtx)}
                             />
                         <SymbolSwitch
                             id="path-css"
                             label="Css"
                             disabled={!matchPath}
-                            checked={matchPath?.isCssOn}
+                            checked={!!matchPath?.isCssOn}
                             onChange={() => onCssToggle(pathIdCtx)}
                             />
                         <SymbolSwitch
                             id="path-lib"
                             label="Lib"
                             disabled={!matchPath}
-                            checked={matchPath?.isLibOn}
+                            checked={!!matchPath?.isLibOn}
                             onChange={() => onLibToggle(pathIdCtx)}
                             />{ matchPath ?
                         <IconBtn
                             icon="edit"
                             theme="gray"
-                            onClick={() => onOpenExtOption(pathIdCtx)}
+                            onClick={() => onOpenExtOptionForEdit(pathIdCtx)}
                             /> :
                         <IconBtn
                             icon="add"
                             theme="gray"
-                            onClick={() => { /**TODO */}}
+                            disabled={isAddDisabled}
+                            onClick={() => onOpenExtOptionForAddPath({hostId, path :pathname})}
                             />}
                         <IconBtn
                             icon="delete"
                             theme="gray"
                             disabled={!matchPath}
-                            onClick={() => { /**TODO */}}
+                            onClick={() => onDelHostOrPath(pathIdCtx)}
                             />
                     </section>
                 </main>
