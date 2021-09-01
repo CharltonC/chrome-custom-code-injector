@@ -1,6 +1,5 @@
 import { RuleIdCtxState } from '../../model/rule-id-ctx-state';
-import { EPrefillAction } from '../app-state-prefill/type';
-import { EQueryParam } from './type';
+import { EQueryParam, EPrefillAction } from './type';
 
 const { EDIT, ADD_HOST, ADD_PATH } = EPrefillAction;
 const { HOST_ID, HOST_URL, PATH_ID, PATH } = EQueryParam;

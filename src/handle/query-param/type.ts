@@ -5,3 +5,9 @@ export enum EQueryParam {
     HOST_URL = 'host-url',
     PATH = 'path'
 }
+
+export enum EPrefillAction {
+    EDIT = 'edit',
+    ADD_HOST = 'add-host',
+    ADD_PATH = 'add-path',
+};
