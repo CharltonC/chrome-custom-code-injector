@@ -18,7 +18,8 @@ export class PopupApp extends MemoComponent<IProps> {
         const pathIdCtx = { ...hostIdCtx, pathId };
 
         const { host: hostUrl, pathname } = url;
-        const isAddDisabled = hostUrl === 'newtab'; // Disable for adding host/path when Chrome opens a new blank tab
+        const isAddHostDisabled = hostUrl === 'newtab'; // Disable for adding host/path when Chrome opens a new blank tab
+        const isAddPathDisabled = isAddHostDisabled || !matchHost || pathname === '/';
 
         const {
             onJsToggle,
@@ -51,6 +52,11 @@ export class PopupApp extends MemoComponent<IProps> {
                 <main>
                     <section>
                         <h3>Host</h3>
+                        {/*
+                            `!!` is used to prevent React controlled/uncontrolled error in checkbox (SymbolSwitch component)
+                            - when `matchHost` or `matchPath` is undefined, the e.g. `matchHost?.isJsOn` becomes undefined hence
+                            equivalent to not passing any value to the props
+                        */}
                         <SymbolSwitch
                             id="host-js"
                             label="Js"
@@ -80,7 +86,7 @@ export class PopupApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="add"
                             theme="gray"
-                            disabled={isAddDisabled}
+                            disabled={isAddHostDisabled}
                             onClick={() => onOpenExtOptionForAddHost({ hostUrl })}
                             />}
                         <IconBtn
@@ -121,7 +127,7 @@ export class PopupApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="add"
                             theme="gray"
-                            disabled={isAddDisabled}
+                            disabled={isAddPathDisabled}
                             onClick={() => onOpenExtOptionForAddPath({hostId, path :pathname})}
                             />}
                         <IconBtn
