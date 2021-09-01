@@ -64,12 +64,22 @@ export class PopupApp extends MemoComponent<IProps> {
                             disabled={!matchHost}
                             checked={matchHost?.isLibOn}
                             onChange={() => onLibToggle(hostIdCtx)}
-                            />
+                            />{ matchHost ?
                         <IconBtn
                             icon="edit"
                             theme="gray"
-                            disabled={!matchHost}
                             onClick={() => onOpenExtOption(hostIdCtx)}
+                            /> :
+                        <IconBtn
+                            icon="add"
+                            theme="gray"
+                            onClick={() => { /**TODO */}}
+                            />}
+                        <IconBtn
+                            icon="delete"
+                            theme="gray"
+                            disabled={!matchHost}
+                            onClick={() => { /**TODO */}}
                             />
                     </section>
                     <section>
@@ -94,12 +104,22 @@ export class PopupApp extends MemoComponent<IProps> {
                             disabled={!matchPath}
                             checked={matchPath?.isLibOn}
                             onChange={() => onLibToggle(pathIdCtx)}
-                            />
+                            />{ matchPath ?
                         <IconBtn
                             icon="edit"
                             theme="gray"
-                            disabled={!matchPath}
                             onClick={() => onOpenExtOption(pathIdCtx)}
+                            /> :
+                        <IconBtn
+                            icon="add"
+                            theme="gray"
+                            onClick={() => { /**TODO */}}
+                            />}
+                        <IconBtn
+                            icon="delete"
+                            theme="gray"
+                            disabled={!matchPath}
+                            onClick={() => { /**TODO */}}
                             />
                     </section>
                 </main>
