@@ -4,7 +4,7 @@ import { IState } from './type';
 
 export class ChromeHandle {
     storeKey = 'chrome-code-injector';
-    isInChromeCtx = typeof chrome !== 'undefined' && !!chrome?.storage?.sync;
+    isInChromeCtx = typeof chrome !== 'undefined' && !!chrome?.storage?.local;
 
     constructor(storeKey?: string) {
         if (!storeKey) return;
@@ -50,7 +50,7 @@ export class ChromeHandle {
             value = JSON.stringify(state);
         }
 
-        await chrome.storage.sync.set({
+        await chrome.storage.local.set({
             [this.storeKey]: value
         });
     }
@@ -149,7 +149,7 @@ export class ChromeHandle {
     getOnGetStateResolved(): AFn {
         return resolve => {
             const storageCallback = this.getOnStorage(resolve);
-            chrome.storage.sync.get(this.storeKey, storageCallback);
+            chrome.storage.local.get(this.storeKey, storageCallback);
         };
     }
 

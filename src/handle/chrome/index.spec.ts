@@ -34,7 +34,7 @@ describe('Chrome Handle', () => {
                     create(){}
                 },
                 storage: {
-                    sync: {
+                    local: {
                         get() {},
                         set() {}
                     }
@@ -46,8 +46,8 @@ describe('Chrome Handle', () => {
         spy = TestUtil.spyMethods(chromeHandle);
         chromeTabQuerySpy = jest.spyOn(chrome.tabs, 'query');
         chromeTabCreateSpy = jest.spyOn(chrome.tabs, 'create');
-        chromeStoreGetSpy = jest.spyOn(chrome.storage.sync, 'get');
-        chromeStoreSetSpy = jest.spyOn(chrome.storage.sync, 'set');
+        chromeStoreGetSpy = jest.spyOn(chrome.storage.local, 'get');
+        chromeStoreSetSpy = jest.spyOn(chrome.storage.local, 'set');
         chromeStoreSetSpy.mockImplementation(() => {});
         chromeTabCreateSpy.mockImplementation(() => {});
         jsonParseSpy = jest.spyOn(JSON, 'parse');
