@@ -697,7 +697,7 @@ describe('Component - Option App (E2E)', () => {
                 expect($valueInput.value).toBe(value);
             });
 
-            it('should update the editable when click another target rule', () => {
+            fit('should update the editable when click another target rule', () => {
                 // CLick its 1st path
                 const { $activeHost1stPath } = getEditViewElem();
                 TestUtil.triggerEvt($activeHost1stPath, 'click');

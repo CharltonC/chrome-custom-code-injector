@@ -1,4 +1,5 @@
 import React from 'react';
+import { debounce } from '../../../asset/ts/vendor/debounce';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps, IValidationRule, IValidationState } from './type';
@@ -15,7 +16,7 @@ export class TextInput extends MemoComponent<IProps> {
 
     constructor(props: IProps) {
         super(props);
-        this.onChange = this.onChange.bind(this);
+        this.onChange = debounce(this.onChange, 250).bind(this);
         this.onBlur = this.onBlur.bind(this);
     }
 
@@ -46,6 +47,7 @@ export class TextInput extends MemoComponent<IProps> {
                     <input
                         id={id}
                         type="text"
+                        defaultValue={defaultValue || ''}
                         ref={e => this.$input = e}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
