@@ -102,7 +102,8 @@ export class OptionApp extends MemoComponent<IProps> {
                 <div className="header__ctrl">{isListView &&
                     <SearchInput
                         id="search"
-                        value={searchText}
+                        // value={searchText}
+                        defaultValue={searchText}
                         disabled={rules.length <= 1}
                         onInputChange={onSearchTextChange}
                         onInputClear={onSearchTextClear}

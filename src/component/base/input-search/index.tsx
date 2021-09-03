@@ -28,7 +28,7 @@ export class SearchInput extends MemoComponent<IProps> {
     }
 
     render() {
-        const { id, value, disabled, onInputChange, onInputClear, ...props } = this.props;
+        const { id, defaultValue, disabled, onInputChange, onInputClear, ...props } = this.props;
         const ROOT_CLS = 'search' + (disabled ? ' search--disabled' : '');
 
         return (
@@ -38,15 +38,15 @@ export class SearchInput extends MemoComponent<IProps> {
                     className="search__input"
                     type="text"
                     placeholder="Search"
-                    value={value}
                     disabled={disabled}
                     ref={e => this.$input = e}
                     onChange={this.onChange}
+                    defaultValue={defaultValue || ''}
                     {...props}
                     >
                 </input>
                 {
-                    value ?
+                    defaultValue ?
                     <button
                         className="search__clear"
                         type="button"
