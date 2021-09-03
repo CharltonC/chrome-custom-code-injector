@@ -4,7 +4,8 @@
 	var selectorInside;
 
 	Prism.languages.css.selector = {
-		pattern: Prism.languages.css.selector,
+		pattern: Prism.languages.css.selector.pattern,
+		lookbehind: true,
 		inside: selectorInside = {
 			'pseudo-element': /:(?:after|before|first-letter|first-line|selection)|::[-\w]+/,
 			'pseudo-class': /:[-\w]+/,
@@ -21,20 +22,20 @@
 						alias: 'keyword'
 					},
 					'namespace': {
-						pattern: /^(\s*)[-*\w\xA0-\uFFFF]*\|(?!=)/,
+						pattern: /^(\s*)(?:(?!\s)[-*\w\xA0-\uFFFF])*\|(?!=)/,
 						lookbehind: true,
 						inside: {
 							'punctuation': /\|$/
 						}
 					},
 					'attr-name': {
-						pattern: /^(\s*)[-\w\xA0-\uFFFF]+/,
+						pattern: /^(\s*)(?:(?!\s)[-\w\xA0-\uFFFF])+/,
 						lookbehind: true
 					},
 					'attr-value': [
 						string,
 						{
-							pattern: /(=\s*)[-\w\xA0-\uFFFF]+(?=\s*$)/,
+							pattern: /(=\s*)(?:(?!\s)[-\w\xA0-\uFFFF])+(?=\s*$)/,
 							lookbehind: true
 						}
 					],
@@ -69,7 +70,7 @@
 
 	Prism.languages.insertBefore('css', 'property', {
 		'variable': {
-			pattern: /(^|[^-\w\xA0-\uFFFF])--[-_a-z\xA0-\uFFFF][-\w\xA0-\uFFFF]*/i,
+			pattern: /(^|[^-\w\xA0-\uFFFF])--(?!\s)[-_a-z\xA0-\uFFFF](?:(?!\s)[-\w\xA0-\uFFFF])*/i,
 			lookbehind: true
 		}
 	});
@@ -80,7 +81,7 @@
 	};
 	// 123 -123 .123 -.123 12.3 -12.3
 	var number = {
-		pattern: /(^|[^\w.-])-?\d*\.?\d+/,
+		pattern: /(^|[^\w.-])-?(?:\d+(?:\.\d+)?|\.\d+)/,
 		lookbehind: true
 	};
 
@@ -92,7 +93,7 @@
 		// CAREFUL!
 		// Previewers and Inline color use hexcode and color.
 		'hexcode': {
-			pattern: /\B#(?:[\da-f]{1,2}){3,4}\b/i,
+			pattern: /\B#[\da-f]{3,8}\b/i,
 			alias: 'color'
 		},
 		'color': [
@@ -113,4 +114,4 @@
 		'number': number
 	});
 
-})(Prism);
+}(Prism));

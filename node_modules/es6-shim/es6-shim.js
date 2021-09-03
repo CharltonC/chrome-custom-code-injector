@@ -11,7 +11,7 @@
 // UMD (Universal Module Definition)
 // see https://github.com/umdjs/umd/blob/master/returnExports.js
 (function (root, factory) {
-  /*global define, module, exports */
+  /*global define */
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(factory);
@@ -174,7 +174,7 @@
   };
 
   var getGlobal = function () {
-    /* global self, window, global */
+    /* global self, window */
     // the only reliable means to get the global object is
     // `Function('return this')()`
     // However, this causes CSP violations in Chrome apps.
@@ -193,6 +193,7 @@
   var _strSlice = Function.call.bind(String.prototype.slice);
   var _push = Function.call.bind(Array.prototype.push);
   var _pushApply = Function.apply.bind(Array.prototype.push);
+  var _join = Function.call.bind(Array.prototype.join);
   var _shift = Function.call.bind(Array.prototype.shift);
   var _max = Math.max;
   var _min = Math.min;
@@ -355,7 +356,7 @@
     },
 
     ToNumber: function (value) {
-      if (_toString(value) === '[object Symbol]') {
+      if (hasSymbols && _toString(value) === '[object Symbol]') {
         throw new TypeError('Cannot convert a Symbol value to a number');
       }
       return +value;
@@ -526,6 +527,9 @@
     },
 
     ToString: function ToString(string) {
+      if (hasSymbols && _toString(string) === '[object Symbol]') {
+        throw new TypeError('Cannot convert a Symbol value to a number');
+      }
       return $String(string);
     }
   };
@@ -741,26 +745,27 @@
           _push(result, String.fromCharCode((next % 0x400) + 0xDC00));
         }
       }
-      return result.join('');
+      return _join(result, '');
     },
 
-    raw: function raw(callSite) {
-      var cooked = ES.ToObject(callSite, 'bad callSite');
-      var rawString = ES.ToObject(cooked.raw, 'bad raw value');
-      var len = rawString.length;
-      var literalsegments = ES.ToLength(len);
-      if (literalsegments <= 0) {
+    raw: function raw(template) {
+      var numberOfSubstitutions = arguments.length - 1;
+      var cooked = ES.ToObject(template, 'bad template');
+      var raw = ES.ToObject(cooked.raw, 'bad raw value');
+      var len = raw.length;
+      var literalSegments = ES.ToLength(len);
+      if (literalSegments <= 0) {
         return '';
       }
 
       var stringElements = [];
       var nextIndex = 0;
       var nextKey, next, nextSeg, nextSub;
-      while (nextIndex < literalsegments) {
+      while (nextIndex < literalSegments) {
         nextKey = ES.ToString(nextIndex);
-        nextSeg = ES.ToString(rawString[nextKey]);
+        nextSeg = ES.ToString(raw[nextKey]);
         _push(stringElements, nextSeg);
-        if (nextIndex + 1 >= literalsegments) {
+        if (nextIndex + 1 >= literalSegments) {
           break;
         }
         next = nextIndex + 1 < arguments.length ? arguments[nextIndex + 1] : '';
@@ -768,7 +773,7 @@
         _push(stringElements, nextSub);
         nextIndex += 1;
       }
-      return stringElements.join('');
+      return _join(stringElements, '');
     }
   };
   if (String.raw && String.raw({ raw: { 0: 'x', 1: 'y', length: 2 } }) !== 'xy') {
@@ -1052,7 +1057,8 @@
       }
       if (typeof array !== 'undefined') {
         var len = ES.ToLength(array.length);
-        for (; i < len; i++) {
+        if (i < len) {
+        //for (; i < len; i++) {
           var kind = this.kind;
           var retval;
           if (kind === 'key') {
@@ -1316,43 +1322,43 @@
     var originalForEach = Array.prototype.forEach;
     overrideNative(Array.prototype, 'forEach', function forEach(callbackFn) {
       return ES.Call(originalForEach, this.length >= 0 ? this : [], arguments);
-    }, true);
+    });
   }
   if (!toLengthsCorrectly(Array.prototype.map)) {
     var originalMap = Array.prototype.map;
     overrideNative(Array.prototype, 'map', function map(callbackFn) {
       return ES.Call(originalMap, this.length >= 0 ? this : [], arguments);
-    }, true);
+    });
   }
   if (!toLengthsCorrectly(Array.prototype.filter)) {
     var originalFilter = Array.prototype.filter;
     overrideNative(Array.prototype, 'filter', function filter(callbackFn) {
       return ES.Call(originalFilter, this.length >= 0 ? this : [], arguments);
-    }, true);
+    });
   }
   if (!toLengthsCorrectly(Array.prototype.some)) {
     var originalSome = Array.prototype.some;
     overrideNative(Array.prototype, 'some', function some(callbackFn) {
       return ES.Call(originalSome, this.length >= 0 ? this : [], arguments);
-    }, true);
+    });
   }
   if (!toLengthsCorrectly(Array.prototype.every)) {
     var originalEvery = Array.prototype.every;
     overrideNative(Array.prototype, 'every', function every(callbackFn) {
       return ES.Call(originalEvery, this.length >= 0 ? this : [], arguments);
-    }, true);
+    });
   }
   if (!toLengthsCorrectly(Array.prototype.reduce)) {
     var originalReduce = Array.prototype.reduce;
     overrideNative(Array.prototype, 'reduce', function reduce(callbackFn) {
       return ES.Call(originalReduce, this.length >= 0 ? this : [], arguments);
-    }, true);
+    });
   }
   if (!toLengthsCorrectly(Array.prototype.reduceRight, true)) {
     var originalReduceRight = Array.prototype.reduceRight;
     overrideNative(Array.prototype, 'reduceRight', function reduceRight(callbackFn) {
       return ES.Call(originalReduceRight, this.length >= 0 ? this : [], arguments);
-    }, true);
+    });
   }
 
   var lacksOctalSupport = Number('0o10') !== 8;
@@ -1367,7 +1373,7 @@
     // Note that in IE 8, RegExp.prototype.test doesn't seem to exist: ie, "test" is an own property of regexes. wtf.
     var isBinary = binaryRegex.test.bind(binaryRegex);
     var isOctal = octalRegex.test.bind(octalRegex);
-    var toPrimitive = function (O) { // need to replace this with `es-to-primitive/es6`
+    var toPrimitive = function (O, hint) { // need to replace this with `es-to-primitive/es6`
       var result;
       if (typeof O.valueOf === 'function') {
         result = O.valueOf();
@@ -1425,12 +1431,10 @@
       NEGATIVE_INFINITY: OrigNumber.NEGATIVE_INFINITY,
       POSITIVE_INFINITY: OrigNumber.POSITIVE_INFINITY
     });
-    /* globals Number: true */
     /* eslint-disable no-undef, no-global-assign */
     Number = NumberShim;
     Value.redefine(globals, 'Number', NumberShim);
     /* eslint-enable no-undef, no-global-assign */
-    /* globals Number: false */
   }
 
   var maxSafeInteger = Math.pow(2, 53) - 1;
@@ -1829,12 +1833,10 @@
     wrapConstructor(OrigRegExp, RegExpShim, {
       $input: true // Chrome < v39 & Opera < 26 have a nonstandard "$input" property
     });
-    /* globals RegExp: true */
     /* eslint-disable no-undef, no-global-assign */
     RegExp = RegExpShim;
     Value.redefine(globals, 'RegExp', RegExpShim);
     /* eslint-enable no-undef, no-global-assign */
-    /* globals RegExp: false */
   }
 
   if (supportsDescriptors) {
@@ -2088,6 +2090,8 @@
   // FF 35 on Linux reports 22025.465794806725 for Math.expm1(10)
   var expm1OfTen = Math.expm1(10);
   defineProperty(Math, 'expm1', MathShims.expm1, expm1OfTen > 22025.465794806719 || expm1OfTen < 22025.4657948067165168);
+  // node v12.11 - v12.15 report NaN
+  defineProperty(Math, 'hypot', MathShims.hypot, Math.hypot(Infinity, NaN) !== Infinity);
 
   var origMathRound = Math.round;
   // breaks in e.g. Safari 8, Internet Explorer 11, Opera 12
@@ -2170,7 +2174,6 @@
 
     // find an appropriate setImmediate-alike
     var makeZeroTimeout;
-    /*global window */
     if (typeof window !== 'undefined' && ES.IsCallable(window.postMessage)) {
       makeZeroTimeout = function () {
         // from http://dbaron.org/log/20100309-faster-timeouts
@@ -2203,7 +2206,6 @@
         return pr.then(task);
       };
     };
-    /*global process */
     var enqueue = ES.IsCallable(globals.setImmediate) ?
       globals.setImmediate :
       typeof process === 'object' && process.nextTick ? process.nextTick : makePromiseAsap() ||
@@ -2688,7 +2690,6 @@
       /* eslint-disable no-undef, no-global-assign */
       Promise = PromiseShim;
       /* eslint-enable no-undef, no-global-assign */
-      /* globals Promise: false */
       overrideNative(globals, 'Promise', PromiseShim);
     }
     if (Promise.all.length !== 1) {

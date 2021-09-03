@@ -8,7 +8,7 @@ This package contains type definitions for babel-types (https://github.com/babel
 Files were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/babel-types.
 
 ### Additional Details
- * Last updated: Wed, 02 Sep 2020 15:37:31 GMT
+ * Last updated: Thu, 26 Aug 2021 01:01:27 GMT
  * Dependencies: none
  * Global values: none
 
