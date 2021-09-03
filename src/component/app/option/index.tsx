@@ -102,6 +102,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 <div className="header__ctrl">{isListView &&
                     <SearchInput
                         id="search"
+                        // value={searchText}
                         defaultValue={searchText}
                         disabled={rules.length <= 1}
                         onInputChange={onSearchTextChange}
@@ -308,7 +309,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     label="Filename"
                     required
                     autoFocus
-                    defaultValue={exportFileInput.value}
+                    value={exportFileInput.value}
                     validation={{
                         rules: validationSet.exportConfig,
                         isValid: exportFileInput.isValid,
@@ -346,7 +347,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     id="host-title"
                     label="Title"
                     required
-                    defaultValue={titleInput?.value}
+                    value={titleInput?.value}
                     validation={{
                         rules: validationSet.ruleId,
                         isValid: titleInput.isValid,
@@ -359,7 +360,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     id="host-value"
                     label="Url"
                     required
-                    defaultValue={valueInput?.value}
+                    value={valueInput?.value}
                     validation={{
                         rules: validationSet.ruleUrlHost,
                         isValid: valueInput.isValid,
@@ -398,7 +399,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     id="path-title"
                     label="Title"
                     required
-                    defaultValue={titleInput?.value}
+                    value={titleInput?.value}
                     validation={{
                         rules: validationSet.ruleId,
                         isValid: titleInput.isValid,
@@ -411,7 +412,7 @@ export class OptionApp extends MemoComponent<IProps> {
                     id="path-url"
                     label="Url Path"
                     required
-                    defaultValue={valueInput?.value}
+                    value={valueInput?.value}
                     validation={{
                         rules: validationSet.ruleUrlPath,
                         isValid: valueInput.isValid,
@@ -576,7 +577,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 id="lib-title"
                 label="Title"
                 required
-                defaultValue={titleInput?.value}
+                value={titleInput?.value}
                 validation={{
                     rules: validationSet.ruleId,
                     isValid: titleInput.isValid,
@@ -589,7 +590,7 @@ export class OptionApp extends MemoComponent<IProps> {
                 id="lib-value"
                 label="Url"
                 required
-                defaultValue={valueInput?.value}
+                value={valueInput?.value}
                 validation={{
                     rules: validationSet.libUrl,
                     isValid: valueInput.isValid,

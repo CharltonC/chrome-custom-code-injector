@@ -2,12 +2,6 @@ import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps, IValidationRule, IValidationState } from './type';
 import { TextInput } from '.';
 
-jest.mock('../../../asset/ts/vendor/debounce', () => {
-    return {
-        debounce: (fn: AFn): AFn => fn
-    };
-});
-
 describe('Component - Text Input', () => {
     jest.useFakeTimers();
 
@@ -132,7 +126,6 @@ describe('Component - Text Input', () => {
             const mockEvt: any = {};
             const mockProps: IProps = {
                 id: '',
-                defaultValue: '',
                 onInputChange: jest.fn(),
                 onInputBlur: jest.fn()
             };
@@ -167,11 +160,7 @@ describe('Component - Text Input', () => {
         const mockValidationRules: IValidationRule[] = [
             {rule: /abc/g, msg: 'should contain abc'}
         ];
-        const mockProps: IProps = {
-            id: mockId,
-            label: 'mock-label',
-            defaultValue: '',
-        };
+        const mockProps: IProps = { id: mockId, label: 'mock-label' };
 
         function getChildElem() {
             $root = $elem.children[0] as HTMLElement;
@@ -299,7 +288,7 @@ describe('Component - Text Input', () => {
             });
 
             it('should render the passed text input', () => {
-                TestUtil.renderPlain($elem, TextInput, {...mockProps, defaultValue: mockTxtInput});
+                TestUtil.renderPlain($elem, TextInput, {...mockProps, value: mockTxtInput});
                 getChildElem();
 
                 expect($input.value).toBe(mockTxtInput);

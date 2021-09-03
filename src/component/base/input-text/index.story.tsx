@@ -18,7 +18,7 @@ export const ExternalStateWithoutValidation = () => {
             <TextInput
                 id="lorem2"
                 placeholder="some text"
-                defaultValue={text}
+                value={text}
                 onInputChange={onInputChange}
                 />
         </div>
@@ -49,7 +49,7 @@ export const ExternalStateWithValidationAndLabel = () => {
             <TextInput
                 id="lorem2"
                 label="label"
-                defaultValue={text}
+                value={text}
                 required
                 onInputChange={onInputChange}
                 onInputBlur={onInputBlur}

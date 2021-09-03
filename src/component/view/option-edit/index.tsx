@@ -128,7 +128,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-id"
                         label="ID"
                         required
-                        defaultValue={titleInput.value}
+                        value={titleInput.value}
                         validation={{
                             rules: ruleId,
                             isValid: titleInput.isValid,
@@ -143,7 +143,7 @@ export class OptionEditView extends MemoComponent<IProps> {
                         id="edit-target-value"
                         label={isHost ? 'Host' : 'Path'}
                         required
-                        defaultValue={valueInput.value}
+                        value={valueInput.value}
                         validation={{
                             rules: isHost ? ruleUrlHost : ruleUrlPath,
                             isValid: valueInput.isValid,
