@@ -2,6 +2,7 @@
 dist
 demo/
 !node_modules/
+node_modules/.cache/
 doc/design/
 doc/temp-file/
 doc/ui-component/
