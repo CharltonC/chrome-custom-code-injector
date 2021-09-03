@@ -22,6 +22,13 @@ jest.mock('react-codemirror2', () => ({
     )
 }));
 
+// Mock the debounce used in Search Input and Text Input
+jest.mock('../../../asset/ts/vendor/debounce', () => {
+    return {
+        debounce: (fn: AFn): AFn => fn
+    };
+});
+
 describe('Component - Option App (E2E)', () => {
     const modal = {
         CONFIRM_BTN: '.modal__footer button[type="submit"]',

@@ -1,4 +1,5 @@
 import React from 'react';
+import { debounce } from '../../../asset/ts/vendor/debounce';
 import { MemoComponent } from '../../extendable/memo-component';
 import { inclStaticIcon } from '../../static/icon';
 import { IProps } from './type';
@@ -11,7 +12,7 @@ export class SearchInput extends MemoComponent<IProps> {
 
     constructor(props: IProps) {
         super(props);
-        this.onChange = this.onChange.bind(this);
+        this.onChange = debounce(this.onChange, 250).bind(this);
         this.onClick = this.onClick.bind(this);
     }
 
