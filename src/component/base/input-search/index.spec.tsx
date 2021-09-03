@@ -9,14 +9,9 @@ describe('Component - Search', () => {
     });
 
     describe('Component Class', () => {
-        const mockBaseProps: IProps = {
-            id: 'id',
-            defaultValue: 'text'
-        };
+        const mockBaseProps: IProps = {id: 'id', value: 'text'};
         const mockNewText = 'diff text';
-        const mockEvt: any = {
-            target: { value: mockNewText }
-        };
+        const mockEvt: any = {target: {value: mockNewText}};
         let searchInput: SearchInput;
         let mockCbFn: jest.Mock;
 
@@ -105,12 +100,7 @@ describe('Component - Search', () => {
             mockOnChange = jest.fn();
             mockOnClear = jest.fn();
             $elem = TestUtil.setupElem();
-            mockProps = {
-                id: mockId,
-                defaultValue: '',
-                onInputChange: mockOnChange,
-                onInputClear: mockOnClear
-            };
+            mockProps = {id: mockId, onInputChange: mockOnChange, onInputClear: mockOnClear};
         });
 
         afterEach(() => {
@@ -129,7 +119,7 @@ describe('Component - Search', () => {
             });
 
             it('should reflect non-disabled state in form elements when value is empty or when value is not passed', () => {
-                TestUtil.renderPlain($elem, SearchInput, {...mockProps, defaultValue: ''});
+                TestUtil.renderPlain($elem, SearchInput, {...mockProps, value: ''});
                 helper.assignChildrenElem();
 
                 expect($label.className).not.toContain('search--disabled');
@@ -137,7 +127,7 @@ describe('Component - Search', () => {
             });
 
             it('should reflect disabled state in form elements when value is not empty ', () => {
-                TestUtil.renderPlain($elem, SearchInput, {...mockProps, disabled: true, defaultValue: mockText});
+                TestUtil.renderPlain($elem, SearchInput, {...mockProps, disabled: true, value: mockText});
                 helper.assignChildrenElem();
 
                 expect($label.className).toContain('search--disabled');

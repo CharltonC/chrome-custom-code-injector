@@ -33,12 +33,7 @@ export const WithPassedValue = () => {
         <div style={defStyle} >
             <p>Text passed to search component: {text}</p>
             <br/>
-            <SearchInput
-                id="lorem"
-                defaultValue={text}
-                onInputChange={onChange}
-                onInputClear={onClear}
-                />
+            <SearchInput id="lorem" value={text} onInputChange={onChange} onInputClear={onClear}/>
         </div>
     )
 };

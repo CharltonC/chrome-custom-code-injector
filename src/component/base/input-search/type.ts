@@ -1,6 +1,5 @@
 export interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     id: string;
-    defaultValue: string;
     onInputClear?: (arg: IOnInputClearArg) => void;
     onInputChange?: (arg: IOnInputChangeArg) => void;
 }
