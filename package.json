@@ -31,8 +31,7 @@
     "pubsub-js": "1.9.0",
     "react": "16.13.1",
     "react-codemirror2": "7.2.1",
-    "react-dom": "16.13.1",
-    "webpack-cli": "^4.8.0"
+    "react-dom": "16.13.1"
   },
   "devDependencies": {
     "@babel/core": "7.10.2",
@@ -112,7 +111,6 @@
     "vinyl-buffer": "1.0.1",
     "vinyl-source-stream": "2.0.0",
     "watchify": "3.11.1",
-    "webpack": "^5.51.1",
     "yargs": "15.3.1"
   }
 }
