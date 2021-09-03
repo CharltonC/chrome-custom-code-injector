@@ -2,12 +2,6 @@ import { TestUtil } from '../../../asset/ts/test-util';
 import { IProps } from './type';
 import { SearchInput } from '.';
 
-jest.mock('../../../asset/ts/vendor/debounce', () => {
-    return {
-        debounce: (fn: AFn): AFn => fn
-    };
-});
-
 describe('Component - Search', () => {
     afterEach(() => {
         jest.clearAllMocks();
