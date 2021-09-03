@@ -41,11 +41,13 @@ export class PopupApp extends MemoComponent<IProps> {
                     <IconBtn
                         icon="doc"
                         theme="white"
+                        clsSuffix="doc"
                         onClick={onOpenExtUserguide}
                         />
                     <IconBtn
                         icon="option"
                         theme="white"
+                        clsSuffix="option"
                         onClick={() => onOpenExtOption()}
                         />
                 </header>
@@ -81,17 +83,20 @@ export class PopupApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="edit"
                             theme="gray"
+                            clsSuffix="host-edit"
                             onClick={() => onOpenExtOptionForEdit(hostIdCtx)}
                             /> :
                         <IconBtn
                             icon="add"
                             theme="gray"
+                            clsSuffix="host-add"
                             disabled={isAddHostDisabled}
                             onClick={() => onOpenExtOptionForAddHost({ hostUrl })}
                             />}
                         <IconBtn
                             icon="delete"
                             theme="gray"
+                            clsSuffix="host-delete"
                             disabled={!matchHost}
                             onClick={() => onDelHostOrPath(hostIdCtx)}
                             />
@@ -122,17 +127,20 @@ export class PopupApp extends MemoComponent<IProps> {
                         <IconBtn
                             icon="edit"
                             theme="gray"
+                            clsSuffix="path-edit"
                             onClick={() => onOpenExtOptionForEdit(pathIdCtx)}
                             /> :
                         <IconBtn
                             icon="add"
                             theme="gray"
+                            clsSuffix="path-add"
                             disabled={isAddPathDisabled}
                             onClick={() => onOpenExtOptionForAddPath({hostId, path :pathname})}
                             />}
                         <IconBtn
                             icon="delete"
                             theme="gray"
+                            clsSuffix="path-delete"
                             disabled={!matchPath}
                             onClick={() => onDelHostOrPath(pathIdCtx)}
                             />
