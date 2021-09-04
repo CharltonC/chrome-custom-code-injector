@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { KeyboardEvent } from 'react';
 import { dataHandle } from '../../../handle/data';
+import { DomHandle } from '../../../handle/dom';
 import { modalSet } from '../../../constant/modal-set';
 import { urlSet } from '../../../constant/url-set';
 import { resultsPerPageList } from '../../../constant/result-per-page-list';
@@ -20,11 +21,28 @@ import { OptionEditView } from '../../view/option-edit';
 import { inclStaticIcon } from '../../static/icon';
 
 import { AHostPathRule } from '../../../handle/data/type';
+import { EGlobalTarget } from '../../../handle/dom/type';
 import { IProps } from './type';
 
 const $docIcon = inclStaticIcon('doc', 'white');
+const domHandle = new DomHandle();
 
 export class OptionApp extends MemoComponent<IProps> {
+    cachedOnEscKey: AFn;
+
+    componentDidMount() {
+        const onEscKey = this.onEscKey.bind(this);
+        this.cachedOnEscKey = onEscKey;
+        this.toggleEscKeyEvt(onEscKey);
+    }
+
+    componentWillUnmount() {
+        const onEscKey = this.cachedOnEscKey;
+        if (!onEscKey) return;
+        this.toggleEscKeyEvt(onEscKey, false);
+        this.cachedOnEscKey =  null;
+    }
+
     render() {
         const { props } = this;
         const { isListView } = this.appState.localState;
@@ -38,7 +56,6 @@ export class OptionApp extends MemoComponent<IProps> {
                     ? <OptionListView {...props} />
                     : <OptionEditView {...props} />}
                 </main>{currentId && (
-                    /* ID, disable submit */
                 <form className="modals">
                     {this.$settingModal}
                     {this.$importDataModal}
@@ -54,6 +71,21 @@ export class OptionApp extends MemoComponent<IProps> {
                 </form>)}
             </div>
         );
+    }
+
+    toggleEscKeyEvt(handler: AFn, isAdd = true): void {
+        domHandle.addGlobalEvt({
+            targetType: EGlobalTarget.DOC,
+            evtType: 'keyup',
+            handler
+        }, isAdd);
+    }
+
+    onEscKey({ key }: KeyboardEvent): void {
+        const isEsc = key === 'Escape';
+        const { currentId } = this.appState.localState.modal;
+        if (!isEsc || !currentId) return;
+        this.appStateHandle.onModalCancel();
     }
 
     get $header() {

@@ -3,9 +3,14 @@ import { TestUtil } from '../../../asset/ts/test-util';
 import { AppStateHandle } from '../../../handle/app-state';
 import { StateHandle } from '../../../handle/state';
 import PgnHandle from '../../../handle/pagination';
+import { DomHandle } from '../../../handle/dom';
+import { OptionApp } from '.';
+
 import { AppState } from '../../../model/app-state';
 import { createMockAppState } from '../../../mock/state';
-import { OptionApp } from '.';
+import { AMethodSpy } from '../../../asset/ts/test-util/type';
+import { EGlobalTarget } from '../../../handle/dom/type';
+
 
 // Mock the CodeMirror Edit component to prevent errors thrown during test due to the test is not within exact browser cotnext
 // - props API to align with CodeMirror component for testing
@@ -254,6 +259,100 @@ describe('Component - Option App (E2E)', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+    });
+
+    describe('Component Class', () => {
+        // mock props + spy appStateHandle
+        let appStateHandleSpy: AMethodSpy<typeof AppStateHandle>;
+        let domHandleSpy: AMethodSpy<DomHandle>;
+        let cmpSpy: AMethodSpy<OptionApp>;
+        let cmp: OptionApp;
+        const mockFn = () => {};
+
+        beforeEach(() => {
+            const mockProps: any = {
+                appState: mockAppState,
+                appStateHandle: new AppStateHandle(),
+            };
+            cmp = new OptionApp(mockProps);
+
+            cmpSpy = TestUtil.spyProtoMethods(OptionApp);
+            jest.spyOn(cmp.onEscKey as any, 'bind').mockReturnValue(mockFn);
+
+            domHandleSpy = TestUtil.spyProtoMethods(DomHandle);
+            domHandleSpy.addGlobalEvt.mockImplementation(mockFn);
+
+            appStateHandleSpy = TestUtil.spyProtoMethods(AppStateHandle);
+            appStateHandleSpy.onModalCancel.mockImplementation(mockFn);
+        });
+
+        describe('Method - componentDidMount', () => {
+            it('should add the ESC key event and cache the event handler for later removal when unmount', () => {
+                cmp.componentDidMount();
+                expect(cmp.cachedOnEscKey).toBe(mockFn);
+                expect(cmpSpy.toggleEscKeyEvt).toHaveBeenCalledWith(mockFn);
+            });
+        });
+
+        describe('Method - componentWillUnmount', () => {
+            it('should skip if there is no cached event handler', () => {
+                cmp.componentWillUnmount();
+                expect(cmpSpy.toggleEscKeyEvt).not.toHaveBeenCalled();
+            });
+
+            it('should remove event handler and clear cached event handler', () => {
+                cmp.cachedOnEscKey = mockFn;
+                cmp.componentWillUnmount();
+
+                expect(cmpSpy.toggleEscKeyEvt).toHaveBeenCalled();
+                expect(cmp.cachedOnEscKey).toBeFalsy();
+            });
+        });
+
+        describe('Method - toggleEscKeyEvt', () => {
+            it('should add event', () => {
+                cmp.toggleEscKeyEvt(mockFn);
+
+                expect(domHandleSpy.addGlobalEvt).toHaveBeenCalledWith({
+                    targetType: EGlobalTarget.DOC,
+                    evtType: 'keyup',
+                    handler: mockFn,
+                }, true);
+            });
+
+            it('should remove event', () => {
+                cmp.toggleEscKeyEvt(mockFn, false);
+
+                expect(domHandleSpy.addGlobalEvt).toHaveBeenCalledWith({
+                    targetType: EGlobalTarget.DOC,
+                    evtType: 'keyup',
+                    handler: mockFn,
+                }, false);
+            });
+        });
+
+        describe('Method - onEscKey', () => {
+            it('should skip if it is not esc key', () => {
+                const mockEvt: any = { key: 'lorem' };
+                cmp.onEscKey(mockEvt);
+                expect(appStateHandleSpy.onModalCancel).not.toHaveBeenCalled();
+            });
+
+            it('should skip if there is no current modal ID', () => {
+                const mockEvt: any = { key: 'Escape' };
+                cmp.onEscKey(mockEvt);
+                expect(appStateHandleSpy.onModalCancel).not.toHaveBeenCalled();
+            });
+
+            it('should cancel modal if it is esc key and has current modal ID', () => {
+                const mockModalId = 'lorem';
+                const mockEvt: any = { key: 'Escape' };
+                cmp.props.appState.localState.modal.currentId = mockModalId;
+                cmp.onEscKey(mockEvt);
+
+                expect(appStateHandleSpy.onModalCancel).toHaveBeenCalled();
+            });
+        });
     });
 
     describe('List View - Row CRUD', () => {
@@ -560,6 +659,21 @@ describe('Component - Option App (E2E)', () => {
         describe('Add Host/Path', () => {
             beforeEach(() => {
                 initApp();
+            });
+
+            it('should dismiss modal via ESC key', () => {
+                const { $addHost } = getListViewElem();
+                TestUtil.triggerEvt($addHost, 'click');
+
+                expect( getModalElem().$confirm).toBeTruthy();
+
+                TestUtil.triggerEvt(
+                    document,
+                    'keyup',
+                    KeyboardEvent,
+                    { key: 'Escape' }
+                );
+                expect( getModalElem().$confirm).toBeFalsy();
             });
 
             it('should add valid host', () => {
