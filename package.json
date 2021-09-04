@@ -18,7 +18,7 @@
     "ts:dev": "npx webpack",
     "test": "gulp build-ts:test",
     "build": "npm run json-schema && gulp build --prod && npm run compile && gulp zip --prod",
-    "build:dev": "npm run json-schema && gulp build && npm run compile:dev",
+    "build:dev": "npm run json-schema && gulp build && npm run compile:dev"
   },
   "private": true,
   "dependencies": {
