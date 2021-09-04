@@ -55,6 +55,10 @@ export class Modal extends MemoComponent<IProps, IState> {
                             />}
                     </div>}
                 </div>
+                {/*
+                  * a full size overlay clickable to dismiss the modal, instead of using global keyup event binding
+                  * however dismiss via ESC key will required global event binding
+                 */}
                 <div className="modal__overlay" onClick={onCancel}></div>
             </div>
         );
