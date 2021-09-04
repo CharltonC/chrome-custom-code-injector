@@ -1,9 +1,8 @@
 export const debounce = (func: any, threshold: number, execAsap?: boolean) => {
     let timeout;
 
-    return function debounced() {
+    return function debounced(...args: any[]) {
         const obj = this;
-        const args = arguments;
 
         function delayed() {
             if (!execAsap) func.apply(obj, args);
