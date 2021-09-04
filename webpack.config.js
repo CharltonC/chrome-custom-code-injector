@@ -1,5 +1,6 @@
 const path = require('path');
 const isProd = process.env.NODE_ENV === 'production';
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 //// For root folder, `./` is recommeneded in `entry` and `output.path`
 // - e.g. `./` in `./src`
@@ -57,6 +58,11 @@ module.exports = {
         }
     },
     optimization: {
+        // Prod only (not run in Dev mode)
+        minimizer: [
+            new UglifyJsPlugin(),
+        ],
+
         //// common/shared js file (aka vendor)
         splitChunks: {
             //// Random generated name
