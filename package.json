@@ -17,8 +17,8 @@
     "ts": "npx webpack --mode=production",
     "ts:dev": "npx webpack",
     "test": "gulp build-ts:test",
-    "build": "npm run json-schema && gulp build --prod && npm run compile && gulp zip --prod",
-    "build:dev": "npm run json-schema && gulp build && npm run compile:dev"
+    "build": "npm run schema && gulp build --prod && npm run ts && gulp zip --prod",
+    "build:dev": "npm run schema && gulp build && npm run ts:dev"
   },
   "private": true,
   "dependencies": {
