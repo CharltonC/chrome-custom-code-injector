@@ -51,16 +51,21 @@ export const TestUtil = {
         });
     },
 
-    triggerEvt(elem: HTMLElement, evtType: string, EvtCls: IEvtCls = Event, bubbles = true): void {
-        // Cater for Checkbox/Radio element so it doesnt have to pass `EvtCls` param
-        const { tagName, type } = elem as HTMLInputElement;
-        const isCheckboxOrRadioClick = tagName.toLowerCase() === 'input'
-            && (type === 'checkbox' || type === 'radio')
-            && evtType === 'click';
-        EvtCls = isCheckboxOrRadioClick ? MouseEvent : EvtCls;
+    triggerEvt(elem: HTMLElement | Document, evtType: string, EvtCls: IEvtCls = Event, evtInit: AObj = {}): void {
+        const defEvtInit = { bubbles: true };
+        Object.assign(defEvtInit, evtInit);
+
+        if (elem !== document) {
+            // Cater for Checkbox/Radio element so it doesnt have to pass `EvtCls` param
+            const { tagName, type } = elem as HTMLInputElement;
+            const isCheckboxOrRadioClick = tagName.toLowerCase() === 'input'
+                && (type === 'checkbox' || type === 'radio')
+                && evtType === 'click';
+            EvtCls = isCheckboxOrRadioClick ? MouseEvent : EvtCls;
+        }
 
         act(() => {
-            elem.dispatchEvent(new EvtCls(evtType, { bubbles }));
+            elem.dispatchEvent(new EvtCls(evtType, defEvtInit));
         });
     },
 
