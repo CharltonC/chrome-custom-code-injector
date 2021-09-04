@@ -1,5 +1,11 @@
 export interface IGlobalEvtConfig {
-    targetType: string;
+    targetType: EGlobalTarget;
     evtType: string;
     handler: AFn;
+}
+
+export enum EGlobalTarget {
+    WIN = 'win',
+    DOC = 'doc',
+    BODY = 'body',
 }

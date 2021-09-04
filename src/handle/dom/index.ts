@@ -1,7 +1,9 @@
-import { IGlobalEvtConfig } from './type';
+import { IGlobalEvtConfig, EGlobalTarget } from './type';
+
+const { WIN, DOC, BODY } = EGlobalTarget;
 
 export class DomHandle {
-    addGlobalEvt({ targetType, evtType, handler }: IGlobalEvtConfig, isAdd: boolean = true): void | undefined {
+    addGlobalEvt({ targetType, evtType, handler }: IGlobalEvtConfig, isAdd: boolean = true): void {
         let target = this.getGlobalTarget(targetType);
         if (!target) return;
         if (isAdd) return target.addEventListener(evtType, handler);
@@ -23,13 +25,13 @@ export class DomHandle {
         let target: Window | Document | HTMLElement;
 
         switch (targetType) {
-            case 'win':
+            case WIN:
                 target = window;
                 break;
-            case 'doc':
+            case DOC:
                 target = document;
                 break;
-            case 'body':
+            case BODY:
                 target = document.body;
                 break;
             default:

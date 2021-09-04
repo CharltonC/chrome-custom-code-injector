@@ -1,4 +1,8 @@
 import { DomHandle } from '.';
+import { EGlobalTarget } from './type';
+
+const { WIN, DOC, BODY } = EGlobalTarget;
+
 describe('Dom Handle', () => {
     let handle: DomHandle;
 
@@ -15,7 +19,7 @@ describe('Dom Handle', () => {
         const mockEvtType = 'click';
         const mockHandler = () => {};
         const mockBaseEvtConfig = {
-            targetType: 'win',
+            targetType: WIN,
             evtType: mockEvtType,
             handler: mockHandler
         };
@@ -66,9 +70,9 @@ describe('Dom Handle', () => {
         const { getGlobalTarget } = DomHandle.prototype;
 
         it('should return the matching dom element', () => {
-            expect(getGlobalTarget('win')).toBe(window);
-            expect(getGlobalTarget('doc')).toBe(document);
-            expect(getGlobalTarget('body')).toBe(document.body);
+            expect(getGlobalTarget(WIN)).toBe(window);
+            expect(getGlobalTarget(DOC)).toBe(document);
+            expect(getGlobalTarget(BODY)).toBe(document.body);
             expect(getGlobalTarget('lorem')).toBeFalsy();
         });
     });
