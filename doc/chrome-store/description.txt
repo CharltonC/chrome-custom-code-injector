@@ -1,0 +1,33 @@
+Inject custom javascript and css in a webpage with ease
+
+Ease of use
+✓ Run your own javascript and/or css code
+✓ Run 3rd party library javascript and/or css
+✓ Automatic save
+✓ Target url host as well as path
+✓ Exportable and Importable rules
+✓ Enable/Disable, Add, Edit, Delete at your finger tips
+
+
+≡ How to Use
+
+1. Click the Extension Icon (Popup)
+2. Click the "+" button to add host rule first (this will take you to the Extension option page)
+3. After a title has been set, edit the rule to paste in your own javascript code and/or css code and/or add 3rd party library url
+4. Flip the switch to allow the javascript or css or library to run (either at popup or in extension option page)
+5. Refresh your url to see the code get applied
+
+* For details, refer to User Guide: https://github.com/CharltonC/chrome-custom-code-injector/tree/master/doc/userguide/README.md
+* For optimization, javascript/css code can be optimized prior to be pasted in the code area.
+* The editor in the extension is not intended to be a full blown propery code editor. Instead it should be treated as just a pasteboard to store the code. For best editing experience, a propert code editor should be used.
+
+
+≡ Privacy
+
+* The extension does NOT collect any data or send data to third party.
+
+
+≡ Release
+
+* 1.0.0 (2021.09.10)
+  - Initial Release
