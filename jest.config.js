@@ -1,5 +1,4 @@
-const { $ } = require('./gulp/common');
-const reportSubPath = $.isProd ? 'userguide/test-report/' : 'temp-file/test-report/';
+const reportSubPath = 'test-report/';
 
 const { defaults } = require('jest-config');  // def. jest config object
 
