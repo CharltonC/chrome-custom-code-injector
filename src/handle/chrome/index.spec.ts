@@ -351,11 +351,25 @@ describe('Chrome Handle', () => {
         });
 
         describe('Method - addCspSubPolicyValue', () => {
-            it('should add a partial value to the existing policy in the CSP', () => {
-                const mockPolicy = `style-src 'none' abc.com`;
+            it('should add a partial value to the existing policy in the CSP if \'self\' value doesnt exist', () => {
+                const mockPolicy = `style-src abc.com`;
                 const mockCsp = `default-src 'none'; ${mockPolicy}`;
                 const csp = chromeHandle.addCspSubPolicyValue(mockCsp, mockPolicy);
                 expect(csp).toBe(`${mockCsp} *`);
+            });
+
+            it('should replace \'self\' in the existing policy in the CSP if \'self\' value exists', () => {
+                const mockPolicy = `style-src 'self' abc.com`;
+                const mockCsp = `default-src 'none'; ${mockPolicy}`;
+                const csp = chromeHandle.addCspSubPolicyValue(mockCsp, mockPolicy);
+                expect(csp).toBe(`default-src 'none'; style-src * abc.com`);
+            });
+
+            it('should replace \'none\' in the existing policy in the CSP if \'none\' value exists', () => {
+                const mockPolicy = `style-src 'none' abc.com`;
+                const mockCsp = `default-src 'none'; ${mockPolicy}`;
+                const csp = chromeHandle.addCspSubPolicyValue(mockCsp, mockPolicy);
+                expect(csp).toBe(`default-src 'none'; style-src * abc.com`);
             });
         });
     });

@@ -131,6 +131,7 @@ export class ChromeHandle {
 
     /**
      * Add a new policy `<policy-name> *` to the CSP value
+     * - this will override the fallback via `default-src`
      */
     addCspSubPolicy(cspValue: string, policy: string): string {
         const newPolicy = `; ${policy} *`;
@@ -139,9 +140,19 @@ export class ChromeHandle {
 
     /**
      * Add a new value `*` to existing policy in the CSP value
+     * - this will replace any 'self' or 'none' (if any)
      */
     addCspSubPolicyValue(cspValue: string, policyValue: string): string {
-        const updatedPolicy = policyValue + ` *`;
+        const SELF = `'self'`;
+        const NONE = `'none'`;
+        const ALL = '*';
+        const hasSelf = policyValue.includes(SELF);
+        const hasNone = policyValue.includes(NONE);
+        const updatedPolicy = hasSelf
+            ? policyValue.replace(SELF, ALL)
+            : hasNone
+                ? policyValue.replace(NONE, ALL)
+                : policyValue + ` ${ALL}`;
         return cspValue.replace(policyValue, updatedPolicy);
     }
 
