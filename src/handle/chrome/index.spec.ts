@@ -255,7 +255,7 @@ describe('Chrome Handle', () => {
             it('should open user guide', () => {
                 chromeHandle.openUserguide();
                 expect(chromeTabCreateSpy).toHaveBeenCalledWith(
-                    { url: `https://github.com/CharltonC/chrome-custom-code-injector-userguide` }
+                    { url: `https://github.com/CharltonC/chrome-custom-code-injector/tree/master/doc/userguide/README.md` }
                 );
             });
         });

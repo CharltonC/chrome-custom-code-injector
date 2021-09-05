@@ -79,7 +79,7 @@ export class ChromeHandle {
 
     openUserguide(): void {
         chrome.tabs.create({
-            url: `https://github.com/CharltonC/chrome-custom-code-injector-userguide`
+            url: `https://github.com/CharltonC/chrome-custom-code-injector/tree/master/doc/userguide/README.md`
         });
     }
 
