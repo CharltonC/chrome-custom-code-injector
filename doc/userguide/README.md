@@ -9,9 +9,9 @@
 #### Table of Contents:
 * [About the Extension](#about-the-extension)
 * [UI Layout](#ui-layout)
-    * [Extension Icon (Popup)](#Extension-Icon-\(Popup\))
-    * [Extension Option (List View)](#Extension-Option-\(List-View\))
-    * [Extension Option (Edit View)](#Extension-Option-\(Edit-View\))
+    * [Extension Icon (Popup)](#Extension-Icon-Popup)
+    * [Extension Option (List View)](#Extension-Option-List-View)
+    * [Extension Option (Edit View)](#Extension-Option-Edit-View)
 * [FAQ](#faq)
 * [Privacy](#privacy)
 * [Issues/Support](#issuessupport)
