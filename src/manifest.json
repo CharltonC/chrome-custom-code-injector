@@ -3,7 +3,7 @@
     "name": "Custom Code Injector",
     "version": "1.0.0",
     "minimum_chrome_version": "68",
-    "description": "Run custom code in a webpage",
+    "description": "Run custom javascript and css in a webpage with ease",
     "author": "Charlton Cheng",
     "permissions": [
         "storage",
