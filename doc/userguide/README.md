@@ -1,4 +1,4 @@
-# Chrome Extension: Custom Code Injector
+# Userguide for Chrome Extension: Custom Code Injector 
 > User guide and Support page for chrome custom code injector extension
 
 
@@ -14,13 +14,12 @@
     * Extension Option (Edit View)
 * [FAQ](#faq)
 * [Privacy](#privacy)
-* [Issues/Support](#issues\/support)
-* [Release Notes](#eelease-notes)
+* [Issues/Support](#issues-support)
+* [Release Notes](#release-notes)
 
 ----------------
 
 ## About the Extension
-* Another free extension as well as final personal practice project prior to developing a product. Compared to the last css selector capture extension, it is more complex due to the nature of dashboard ui. As per past project, I take care of the work from start to finish, i.e. design to code including 100% test coverage.
 * The plugin gives you control to run custom javascript code, css code as well as 3rd party libraries (javascript/css) on top of a website
 * THe extension comes with a default rule for ycombinator site, have a play to see how it works. You can delete it afterwards.
 * The extension focuses on "pasting" the ready-to-run code in the editor area. The builtin editor is not intended to be a full blown proper editor. For best development experience, please use a proper code editor to write the code and possibly optimize it prior to pasting them.
