@@ -4,6 +4,6 @@ demo/
 !node_modules/
 node_modules/.cache/
 doc/design/
-doc/temp-file/
+doc/test-report/
 doc/youtube/
 package-lock.json
