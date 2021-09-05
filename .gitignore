@@ -5,5 +5,5 @@ demo/
 node_modules/.cache/
 doc/design/
 doc/temp-file/
-doc/ui-component/
+doc/youtube/
 package-lock.json
