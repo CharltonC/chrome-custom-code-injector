@@ -17,6 +17,8 @@
     "ts": "npx webpack --mode=production",
     "ts:dev": "npx webpack",
     "test": "gulp build-ts:test",
+    "test-with-cov": "npm run test -- --collectCov=true",
+    "test-collect-cov": "cat ./doc/test-report/lcov.info | coveralls",
     "build": "npm run schema && gulp build --prod && npm run ts && gulp zip --prod",
     "build:dev": "npm run schema && gulp build && npm run ts:dev"
   },
@@ -58,6 +60,7 @@
     "browserify": "16.2.0",
     "chalk": "4.0.0",
     "common-shakeify": "0.6.2",
+    "coveralls": "3.1.0",
     "envify": "4.1.0",
     "eslint": "6.8.0",
     "eslint-config-react-app": "5.2.1",
