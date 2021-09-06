@@ -16,11 +16,11 @@
     "schema": "./node_modules/.bin/typescript-json-schema 'src/model/rule/index.ts' Rules --required --out src/model/rule/schema.json",
     "ts": "npx webpack --mode=production",
     "ts:dev": "npx webpack",
-    "test": "gulp build-ts:test",
+    "test": "npx gulp build-ts:test",
     "test-with-cov": "npm run test -- --collectCov=true",
     "test-collect-cov": "cat ./doc/test-report/lcov.info | coveralls",
-    "build": "npm run schema && gulp build --prod && npm run ts && gulp zip --prod",
-    "build:dev": "npm run schema && gulp build && npm run ts:dev"
+    "build": "npm run schema && npx gulp build --prod && npm run ts && npx gulp zip --prod",
+    "build:dev": "npm run schema && npx gulp build && npm run ts:dev"
   },
   "private": true,
   "dependencies": {
