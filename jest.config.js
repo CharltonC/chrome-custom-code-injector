@@ -1,5 +1,4 @@
 const { defaults } = require('jest-config');  // def. jest config object
-const { collectCov } = require('yargs').argv;
 
 // JEST Option (not cli option)
 // - Ref: https://jestjs.io/docs/en/configuration#testmatch-arraystring
@@ -15,7 +14,6 @@ module.exports = {
     // # Coverage & Report
     collectCoverage: true,
     coverageDirectory: './doc/test-report/',
-    coverageReporters: [ collectCov ? 'lcov' : 'text' ],
 
     // # File to test (either use `testMatch` or `tesstRegex`)
     testMatch: [
