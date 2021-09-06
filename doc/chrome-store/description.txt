@@ -18,8 +18,8 @@ Ease of use
 5. Refresh your url to see the code get applied
 
 * For details, refer to User Guide: https://github.com/CharltonC/chrome-custom-code-injector/tree/master/doc/userguide/README.md
-* For optimization, javascript/css code can be optimized prior to be pasted in the code area.
-* The editor in the extension is not intended to be a full blown propery code editor. Instead it should be treated as just a pasteboard to store the code. For best editing experience, a propert code editor should be used.
+* For optimisation, javascript/css code can be optimised prior to be pasted in the code area.
+* The editor in the extension is not intended to be a full blown proper code editor. Instead it should be treated as just a pasteboard to store the code. For best editing experience, a proper code editor should be used.
 
 
 ≡ Privacy
