@@ -14,7 +14,7 @@ module.exports = {
 
     // # Coverage & Report
     collectCoverage: true,
-    coverageDirectory: './doc/test-report/',
+    coverageDirectory: collectCov ? './coverage/' : './doc/test-report/',
     coverageReporters: [ collectCov ? 'lcov' : 'text' ],
 
     // # File to test (either use `testMatch` or `tesstRegex`)
