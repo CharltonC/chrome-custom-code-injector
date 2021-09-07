@@ -1,4 +1,8 @@
-# Custom Code Insertion
+# Custom Code Injector
+> Custom Code Injector Chrome Extension
+
+[![Build Status](https://github.com/CharltonC/chrome-custom-code-injector/actions/workflows/main.yml/badge.svg)](https://github.com/CharltonC/chrome-custom-code-injector/actions/workflows/main.yml)
+[![Coverage Status](https://coveralls.io/repos/github/CharltonC/chrome-custom-code-injector/badge.svg?branch=master)](https://coveralls.io/github/CharltonC/chrome-custom-code-injector?branch=master)
 
 #### Table of Contents:
 * About
