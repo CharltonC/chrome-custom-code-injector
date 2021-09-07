@@ -14,13 +14,15 @@
     "typedoc": "./node_modules/typedoc/bin/typedoc src",
     "dir-tree": "./node_modules/.bin/tree -l 10 --ignore 'node_modules, doc, coverage'",
     "schema": "./node_modules/.bin/typescript-json-schema 'src/model/rule/index.ts' Rules --required --out src/model/rule/schema.json",
-    "ts": "npx webpack --mode=production",
-    "ts:dev": "npx webpack",
+    "lint": "npx gulp build-ts:lint",
     "test": "npx jest --detectOpenHandles",
     "test-generate-cov": "npm run test -- --collectCov=true",
-    "test-collect-cov": "cat ./doc/test-report/lcov.info | coveralls",
-    "build": "npm run schema && npm run test && npx gulp build --prod && npm run ts && npx gulp zip --prod",
-    "build:dev": "npm run schema && npm run test && npx gulp build && npm run ts:dev"
+    "ts": "npx webpack --mode=production",
+    "ts:dev": "npx webpack",
+    "build": "npm run schema && npx gulp build --prod && npm run test && npm run ts && npx gulp zip",
+    "build-check": "npm run schema && npx gulp build --prod && npm run test-generate-cov && npm run ts",
+    "build:dev": "npm run schema && npx gulp build && npm run test && npm run ts:dev",
+    "build:demo": "npx gulp build-ts:compile --prod"
   },
   "private": true,
   "dependencies": {
