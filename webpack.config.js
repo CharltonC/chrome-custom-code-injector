@@ -58,6 +58,8 @@ module.exports = {
         }
     },
     optimization: {
+        usedExports: true,
+
         // Prod only (not run in Dev mode)
         minimizer: [
             new UglifyJsPlugin(),

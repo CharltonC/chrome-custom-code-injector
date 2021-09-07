@@ -2,12 +2,6 @@ const { gulp, $path, $, util } = require('../common');
 const { tasks, defOption } = require('./config');
 
 module.exports = (done) => {
-    // Skip if not production mode
-    if (!$.yargs.prod) {
-        console.log($.chalk.magenta('"zip" task not run for dev mode'));
-        return done();
-    }
-
     return util.loopTasks(done, tasks, (task) => {
         const { version } = require( $path.resolve(task.versionFile) );
         return gulp.src( task.inputFiles )
