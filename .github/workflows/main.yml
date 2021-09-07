@@ -39,9 +39,9 @@ jobs:
         run: npm install
 
       - name: Test with coverage
-        run: npm run test-with-cov
+        run: npm run test-generate-cov
 
-      - name: Publish coverage to Coveralls
+      - name: Publish test coverage to Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

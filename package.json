@@ -16,8 +16,8 @@
     "schema": "./node_modules/.bin/typescript-json-schema 'src/model/rule/index.ts' Rules --required --out src/model/rule/schema.json",
     "ts": "npx webpack --mode=production",
     "ts:dev": "npx webpack",
-    "test-with-cov": "npm run test -- --collectCov=true",
     "test": "npx jest --detectOpenHandles",
+    "test-generate-cov": "npm run test -- --collectCov=true",
     "test-collect-cov": "cat ./doc/test-report/lcov.info | coveralls",
     "build": "npm run schema && npm run test && npx gulp build --prod && npm run ts && npx gulp zip --prod",
     "build:dev": "npm run schema && npm run test && npx gulp build && npm run ts:dev"
