@@ -171,8 +171,7 @@ describe('Component - Dropdown', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
         });
 
         it('should render the dropdown without border and withou label', () => {

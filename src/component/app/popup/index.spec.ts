@@ -80,6 +80,7 @@ describe('Popup App (E2E)', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        $elem = TestUtil.teardown($elem);
     });
 
     describe('Disabled state of Checkboxes and Buttons, Show/Hide of Add and Edit button', () => {

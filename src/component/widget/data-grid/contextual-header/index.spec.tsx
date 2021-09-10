@@ -51,6 +51,10 @@ describe('Component - Grid Header', () => {
             $2ndRowCells = $rows[1].querySelectorAll('th');
         });
 
+        afterEach(() => {
+            $elem = TestUtil.teardown($elem);
+        });
+
         it('should render correct number of cells', () => {
             expect($rows.length).toBe(2);
             expect($1stRowCells.length).toBe(2);
@@ -96,6 +100,10 @@ describe('Component - Grid Header', () => {
             $rows = $elem.querySelectorAll('li');
             $1stRowCell = $rows[0];
             $3rdRowCell = $rows[2];
+        });
+
+        afterEach(() => {
+            $elem = TestUtil.teardown($elem);
         });
 
         it('should render correct number of cells', () => {

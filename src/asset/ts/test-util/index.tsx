@@ -11,9 +11,10 @@ export const TestUtil = {
         return elem;
     },
 
-    teardown(elem: HTMLElement): void {
+    teardown(elem: HTMLElement): null {
         unmountComponentAtNode(elem);
         elem.remove();
+        return null;
     },
 
     // Fix to Issue w/ Change event not fired when Setting Input value

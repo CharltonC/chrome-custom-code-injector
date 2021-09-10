@@ -259,6 +259,7 @@ describe('Component - Option App (E2E)', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
+        $elem = TestUtil.teardown($elem);
     });
 
     describe('Component Class', () => {

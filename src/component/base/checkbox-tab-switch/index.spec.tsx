@@ -104,8 +104,7 @@ describe('Component - Tab Switch', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown(elem);
-            elem = null;
+            elem = TestUtil.teardown(elem);
         });
 
         it('should not render if empty-list is passed', () => {

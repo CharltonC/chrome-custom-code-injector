@@ -18,8 +18,7 @@ describe('Component - Icon Button', () => {
     });
 
     afterEach(() => {
-        TestUtil.teardown($elem);
-        $elem = null;
+        $elem = TestUtil.teardown($elem);
     });
 
     it('should pass class suffix to button', () => {

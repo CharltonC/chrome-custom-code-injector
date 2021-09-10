@@ -175,8 +175,7 @@ describe('Component - Text Input', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
         });
 
         describe('general', () => {

@@ -23,8 +23,7 @@ describe('Component - Sort Button', () => {
     });
 
     afterEach(() => {
-        TestUtil.teardown($elem);
-        $elem = null;
+        $elem = TestUtil.teardown($elem);
     });
 
     it('should reflect no sort order if not specified', () => {

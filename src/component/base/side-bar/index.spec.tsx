@@ -44,8 +44,7 @@ describe('Component - Side Nav', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
         });
 
         describe('general', () => {

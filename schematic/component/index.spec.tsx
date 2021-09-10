@@ -51,8 +51,7 @@ describe('Component - TODO: Component Name', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
         });
 
         describe('default render', () => {

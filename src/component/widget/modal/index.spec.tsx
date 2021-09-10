@@ -80,8 +80,7 @@ describe('Component - Modal', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
         });
 
         describe('default', () => {

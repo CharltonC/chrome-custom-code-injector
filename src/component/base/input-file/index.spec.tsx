@@ -158,8 +158,7 @@ describe('Component - File Input', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
         });
 
         it('should render', () => {

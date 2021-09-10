@@ -151,8 +151,7 @@ describe('Component - DataGridPagination', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
         });
 
         it('should get the props for elements', () => {

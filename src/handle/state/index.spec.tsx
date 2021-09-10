@@ -11,7 +11,7 @@ describe('State Handle', () => {
     });
 
     afterEach(() => {
-        TestUtil.teardown($elem);
+        $elem = TestUtil.teardown($elem);
     });
 
     describe('Single State and State Handler', () => {

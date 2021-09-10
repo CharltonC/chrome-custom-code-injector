@@ -104,8 +104,7 @@ describe('Component - Search', () => {
         });
 
         afterEach(() => {
-            TestUtil.teardown($elem);
-            $elem = null;
+            $elem = TestUtil.teardown($elem);
             jest.clearAllMocks();
         });
 
