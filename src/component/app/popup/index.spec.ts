@@ -10,11 +10,12 @@ import { ChromeHandle } from '../../../handle/chrome';
 import { EPrefillAction } from '../../../handle/query-param/type';
 import { HostRule, PathRule } from '../../../model/rule';
 
-describe('Popup App (E2E)', () => {
-    const mockUrl = new URL('http://xyz.com');
-    const mockUrlWithPath = new URL('http://xyz.com/path');
+fdescribe('Popup App (E2E)', () => {
     const mockFn = () => {};
     const { EDIT, ADD_HOST, ADD_PATH } = EPrefillAction;
+
+    let mockUrl: URL;
+    let mockUrlWithPath: URL;
 
     let mockRules: HostRule[];
     let mockMatchHost: HostRule;
@@ -69,6 +70,8 @@ describe('Popup App (E2E)', () => {
         mockRules = createMockRules();
         mockMatchHost = mockRules[0];
         mockMatchPath = mockMatchHost.paths[0];
+        mockUrl = new URL(`http://${mockMatchHost.value}`);
+        mockUrlWithPath = new URL(`http://${mockMatchHost.value}${mockMatchPath.value}`);
 
         $elem = TestUtil.setupElem();
         dataHandleSpy = TestUtil.spyProtoMethods(DataHandle);
@@ -190,12 +193,6 @@ describe('Popup App (E2E)', () => {
 
     describe('Toggling Checkboxes', () => {
         beforeEach(() => {
-            // Mock so that host/path is found
-            const mockMatchHost = mockRules[0];
-            const mockMatchPath = mockMatchHost.paths[0];
-            dataHandleSpy.getHostFromUrl.mockReturnValue(mockMatchHost);
-            dataHandleSpy.getPathFromUrl.mockReturnValue(mockMatchPath);
-
             mockAppState = { rules: mockRules, url: mockUrlWithPath };
             initApp(mockAppState);
             refreshElems();
@@ -210,17 +207,11 @@ describe('Popup App (E2E)', () => {
             const isPathLibChecked = $pathLibSwitch.checked;
 
             TestUtil.triggerEvt($hostJsSwitch, 'click');
-            TestUtil.triggerEvt($hostJsSwitch, 'change');
             TestUtil.triggerEvt($hostCssSwitch, 'click');
-            TestUtil.triggerEvt($hostCssSwitch, 'change');
             TestUtil.triggerEvt($hostLibSwitch, 'click');
-            TestUtil.triggerEvt($hostLibSwitch, 'change');
             TestUtil.triggerEvt($pathJsSwitch, 'click');
-            TestUtil.triggerEvt($pathJsSwitch, 'change');
             TestUtil.triggerEvt($pathCssSwitch, 'click');
-            TestUtil.triggerEvt($pathCssSwitch, 'change');
             TestUtil.triggerEvt($pathLibSwitch, 'click');
-            TestUtil.triggerEvt($pathLibSwitch, 'change');
 
             expect($hostJsSwitch.checked).toBe(!isHostJsChecked);
             expect($hostCssSwitch.checked).toBe(!isHostCssChecked);
@@ -316,13 +307,7 @@ describe('Popup App (E2E)', () => {
 
     describe('Delete', () => {
         beforeEach(() => {
-            // Mock so that host/path is found
-            dataHandleSpy.getHostFromUrl.mockReturnValueOnce(mockMatchHost);
-            dataHandleSpy.getPathFromUrl.mockReturnValueOnce(mockMatchPath);
-
-            // Mock the exact URL based the `mockMatchHost` and `mockMatchPath` which are to be deleted
-            const mockExactUrl = new URL(`http://${mockMatchHost.value}${mockMatchPath.value}`);
-            mockAppState = { rules: mockRules, url: mockExactUrl };
+            mockAppState = { rules: mockRules, url: mockUrlWithPath };
             initApp(mockAppState);
             refreshElems();
         });
@@ -330,8 +315,6 @@ describe('Popup App (E2E)', () => {
         it('should delete host rule', () => {
             TestUtil.triggerEvt($hostDelBtn, 'click');
             refreshElems();
-
-            expect(mockRules.includes(mockMatchHost)).toBeFalsy();
 
             expect($hostJsSwitch.disabled).toBeTruthy();
             expect($hostCssSwitch.disabled).toBeTruthy();
@@ -351,8 +334,6 @@ describe('Popup App (E2E)', () => {
         it('should delete path rule', () => {
             TestUtil.triggerEvt($pathDelBtn, 'click');
             refreshElems();
-
-            expect(mockMatchHost.paths.includes(mockMatchPath)).toBeFalsy();
 
             expect($hostJsSwitch.disabled).toBeFalsy();
             expect($hostCssSwitch.disabled).toBeFalsy();

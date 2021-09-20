@@ -163,7 +163,7 @@ describe('Option Edit View State Handle', () => {
             dataHandleSpy.setLastActiveTab.mockImplementation(mockFn);
             const state = handle.onActiveTabChange(mockState, mockPayload);
 
-            expect(state).toEqual({});
+            expect(state).toEqual({ rules: mockState.rules });
             expect(dataHandleSpy.setLastActiveTab).toHaveBeenCalled();
             expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });

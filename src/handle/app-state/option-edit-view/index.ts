@@ -1,8 +1,10 @@
+import { cloneDeep } from 'lodash';
 import { dataHandle } from '../../data';
 import { StateHandle } from '../../state';
 import { RowSelectHandle } from '../../row-select';
 import { chromeHandle } from '../../chrome';
 
+import { HostRule } from '../../../model/rule';
 import { TextInputState } from '../../../model/text-input-state';
 import { DataGridState } from '../../../model/data-grid-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
@@ -64,7 +66,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
     }
 
     //// TEXT INPUTS
-    onActiveTitleInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState> {
+    onActiveTitleInput({ rules: _rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState> {
         const { isValid, val, errMsg } = payload;
         const { editView } = localState;
         const { ruleIdCtx } = editView;
@@ -86,15 +88,16 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
         if (!isValid) return baseState;
 
         // If valid value, set/sync the item title
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.setTitle(rules, ruleIdCtx, val);
         chromeHandle.saveState({rules});
         return {
             ...baseState,
-            rules: [...rules], // force rerender for Side Nav
+            rules
         }
     }
 
-    onActiveValueInput({ rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState> {
+    onActiveValueInput({ rules: _rules, localState }: AppState, payload: TTextInput.IOnInputChangeArg): Partial<AppState> {
         const { isValid, val, errMsg } = payload;
         const { editView } = localState;
         const { ruleIdCtx } = editView;
@@ -116,20 +119,22 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
         if (!isValid) return baseState;
 
         // If valid value, set/sync the item value
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.setValue(rules, ruleIdCtx, val);
         chromeHandle.saveState({rules});
         return {
             ...baseState,
-            rules: [...rules], // force rerender for Side Nav
+            rules
         }
     }
 
     //// TABS
-    onActiveTabChange({ rules }: AppState, payload: IOnActiveTabChangePayload): Partial<AppState> {
+    onActiveTabChange({ rules: _rules }: AppState, payload: IOnActiveTabChangePayload): Partial<AppState> {
         const { ruleIdCtx, idx } = payload;
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.setLastActiveTab(rules, ruleIdCtx, idx);
         chromeHandle.saveState({rules});
-        return {};
+        return { rules };
     }
 
     onTabToggle({ rules }: AppState, payload: IOnTabTogglePayload): Partial<AppState> {
@@ -148,12 +153,13 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
                 return {};
         }
         chromeHandle.saveState({rules});
-        return {};
+        return { rules };
     }
 
-    onCodeChange({ rules }: AppState, payload: IOnCodeChangePayload): Partial<AppState> {
+    onCodeChange({ rules: _rules }: AppState, payload: IOnCodeChangePayload): Partial<AppState> {
         const { ruleIdCtx, codeMode, codeMirrorArgs } = payload;
         const [,,value] = codeMirrorArgs;
+        const rules: HostRule[] = cloneDeep(_rules);
         switch (codeMode) {
             case 'js':
                 dataHandle.setJsCode(rules, ruleIdCtx, value);
@@ -165,7 +171,7 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
                 return {};
         }
         chromeHandle.saveState({rules});
-        return {};
+        return { rules };
     }
 
     //// DATA GRID FOR LIBRARIES
@@ -235,31 +241,34 @@ export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onLibTypeChange({ rules, localState }: AppState, payload: IOnLibTypeChangePayload): Partial<AppState> {
+    onLibTypeChange({ rules: _rules, localState }: AppState, payload: IOnLibTypeChangePayload): Partial<AppState> {
         const { selectValue, id } = payload;
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.setLibType(rules, {
             ...localState.editView.ruleIdCtx,
             libId: id
         }, selectValue);
         chromeHandle.saveState({rules});
-        return {};
+        return { rules };
     }
 
-    onLibAsyncToggle({ rules, localState }: AppState, payload: {id: string}): Partial<AppState> {
+    onLibAsyncToggle({ rules: _rules, localState }: AppState, payload: {id: string}): Partial<AppState> {
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.toggleLibAsyncSwitch(rules, {
             ...localState.editView.ruleIdCtx,
             libId: payload.id
         });
         chromeHandle.saveState({rules});
-        return {};
+        return { rules };
     }
 
-    onLibIsOnToggle({ rules,  localState }: AppState, payload: {id: string}): Partial<AppState> {
+    onLibIsOnToggle({ rules: _rules, localState }: AppState, payload: {id: string}): Partial<AppState> {
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.toggleLibIsOnSwitch(rules, {
             ...localState.editView.ruleIdCtx,
             libId: payload.id
         });
         chromeHandle.saveState({rules});
-        return {};
+        return { rules };
     }
 }

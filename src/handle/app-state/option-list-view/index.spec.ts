@@ -132,7 +132,7 @@ describe('Option List View State Handle', () => {
             dataHandleSpy.toggleHttpsSwitch.mockImplementation(mockFn);
             const state = handle.onHttpsToggle(mockState, mockPayload);
 
-            expect(state).toEqual({});
+            expect(state).toEqual({ rules: mockState.rules });
             expect(dataHandleSpy.toggleHttpsSwitch).toHaveBeenCalled();
             expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
@@ -141,7 +141,7 @@ describe('Option List View State Handle', () => {
             dataHandleSpy.toggleExactSwitch.mockImplementation(mockFn);
             const state = handle.onExactMatchToggle(mockState, mockPayload);
 
-            expect(state).toEqual({});
+            expect(state).toEqual({ rules: mockState.rules });
             expect(dataHandleSpy.toggleExactSwitch).toHaveBeenCalled();
             expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
@@ -150,7 +150,7 @@ describe('Option List View State Handle', () => {
             dataHandleSpy.toggleJsExecStep.mockImplementation(mockFn);
             const state = handle.onJsExecStepChange(mockState, mockPayload);
 
-            expect(state).toEqual({});
+            expect(state).toEqual({ rules: mockState.rules });
             expect(dataHandleSpy.toggleJsExecStep).toHaveBeenCalled();
             expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
@@ -159,7 +159,7 @@ describe('Option List View State Handle', () => {
             dataHandleSpy.toggleJsSwitch.mockImplementation(mockFn);
             const state = handle.onJsToggle(mockState, mockPayload);
 
-            expect(state).toEqual({});
+            expect(state).toEqual({ rules: mockState.rules });
             expect(dataHandleSpy.toggleJsSwitch).toHaveBeenCalled();
             expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
@@ -168,7 +168,7 @@ describe('Option List View State Handle', () => {
             dataHandleSpy.toggleCssSwitch.mockImplementation(mockFn);
             const state = handle.onCssToggle(mockState, mockPayload);
 
-            expect(state).toEqual({});
+            expect(state).toEqual({ rules: mockState.rules });
             expect(dataHandleSpy.toggleCssSwitch).toHaveBeenCalled();
             expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });
@@ -177,7 +177,7 @@ describe('Option List View State Handle', () => {
             dataHandleSpy.toggleLibSwitch.mockImplementation(mockFn);
             const state = handle.onLibToggle(mockState, mockPayload);
 
-            expect(state).toEqual({});
+            expect(state).toEqual({ rules: mockState.rules });
             expect(dataHandleSpy.toggleLibSwitch).toHaveBeenCalled();
             expect(chromeHandleSpy.saveState).toHaveBeenCalled();
         });

@@ -1,6 +1,9 @@
+import { cloneDeep } from 'lodash';
 import { StateHandle } from '../../state';
 import { chromeHandle } from '../../chrome';
 import { queryParamHandle } from '../../query-param';
+
+import { HostRule } from '../../../model/rule';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { IAppState } from '../../../component/app/popup/type';
 import { dataHandle } from '../../data';
@@ -36,14 +39,13 @@ export class PopupViewStateHandle extends StateHandle.BaseStateManager {
         return {};
     }
 
-    onDelHostOrPath({ rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
+    onDelHostOrPath({ rules: _rules }: IAppState, payload: RuleIdCtxState): Partial<IAppState> {
         const { pathId } = payload;
+        const rules: HostRule[] = cloneDeep(_rules);
         pathId
             ? dataHandle.rmvPath(rules, payload)
             : dataHandle.rmvHost(rules, payload);
         chromeHandle.saveState({ rules });
-        return {
-            rules: [...rules]
-        };
+        return { rules };
     }
 }

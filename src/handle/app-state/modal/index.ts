@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { StateHandle } from '../../state';
 import { FileHandle } from '../../file';
 import { PgnHandle } from '../../pagination';
@@ -237,17 +238,19 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     }
 
     onAddHostModalOk(state: AppState): Partial<AppState> {
-        const { localState, rules, setting } = state;
+        const { localState, rules: _rules, setting } = state;
         const { titleInput, valueInput } = localState.modal;
 
         const title = titleInput.value;
         const url = valueInput.value;
         const host = new HostRule(title, url);
         Object.assign(host, setting.defRuleConfig);
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.addHost(rules, host);
         chromeHandle.saveState({ rules });
 
         return {
+            rules,
             localState: {
                 ...localState,
                 modal: new ModalState()
@@ -275,7 +278,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             : baseState;
     }
 
-    onAddPathModalOk({ localState, rules, setting }: AppState): Partial<AppState> {
+    onAddPathModalOk({ localState, rules: _rules, setting }: AppState): Partial<AppState> {
         const { modal, isListView, listView, editView } = localState;
         const { ruleIdCtx } = isListView ? listView : editView;
         const { titleInput, valueInput } = modal;
@@ -285,6 +288,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const urlPath = valueInput.value;
         const path = new PathRule(title, urlPath);
         Object.assign(path, setting.defRuleConfig);
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.addPath(rules, ruleIdCtx, path);
         chromeHandle.saveState({ rules });
 
@@ -300,6 +304,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             const pgnState = pgnHandle.getState(rules.length, pgnOption);
 
             return {
+                rules,
                 localState: {
                     ...resetLocalState,
                     listView: {
@@ -313,7 +318,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             };
         } else {
             return {
-                rules: [...rules],
+                rules,
                 localState: resetLocalState
             };
         }
@@ -325,17 +330,19 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         });
     }
 
-    onAddLibModalOk({ rules, localState }: AppState): Partial<AppState> {
+    onAddLibModalOk({ rules: _rules, localState }: AppState): Partial<AppState> {
         const { modal, editView } = localState;
         const { titleInput, valueInput } = modal;
         const { ruleIdCtx } = editView;
         const { value: title } = titleInput;
         const { value } = valueInput;
         const lib = new LibRule(title, value);
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.addLib(rules, ruleIdCtx, lib);
         chromeHandle.saveState({ rules });
 
         return {
+            rules,
             localState: {
                 ...localState,
                 modal: new ModalState()
@@ -383,7 +390,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     }
 
     onDelHostOrPathModalOk(state: AppState): Partial<AppState> {
-        const { rules, localState } = state;
+        const { rules: _rules, localState } = state;
         const { isListView, listView, editView } = localState;
 
         // Get the ID context (host, path) depending on the view
@@ -391,6 +398,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const isHost = !ruleIdCtx.pathId;
 
         // Delete Host or Path
+        const rules: HostRule[] = cloneDeep(_rules);
         ruleIdCtx.pathId
             ? dataHandle.rmvPath(rules, ruleIdCtx)
             : dataHandle.rmvHost(rules, ruleIdCtx);
@@ -417,6 +425,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
                 : dataGrid;
 
             return {
+                rules,
                 localState: {
                     ...resetLocalState,
                     listView: {
@@ -431,6 +440,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         // If Edit View but all rules are deleted
         } else if (!isListView && !hasRules) {
             return {
+                rules,
                 localState: {
                     ...resetLocalState,
                     isListView: true
@@ -441,6 +451,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         } else {
             const newRuleIdCtx = dataHandle.getNextAvailRuleIdCtx(rules, ruleIdCtx);
             return {
+                rules,
                 localState: {
                     ...resetLocalState,
                     editView: {
@@ -483,7 +494,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
     }
 
     onDelHostsModalOk(state: AppState): Partial<AppState> {
-        const { rules, localState } = state;
+        const { rules: _rules, localState } = state;
         const { listView } = localState;
         const { dataGrid, searchText: currSearchText } = listView;
 
@@ -492,6 +503,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         const { areAllRowsSelected, selectedRowKeyCtx } = selectState;
         const { startIdx, endIdx } = sliceIdxCtx;
         const delIds = srcRules.slice(startIdx, endIdx).map(({ id }) => id)
+        const rules: HostRule[] = cloneDeep(_rules);
         areAllRowsSelected
             ? dataHandle.rmvHostsFromIds(rules, delIds)
             : dataHandle.rmvPartialHosts(rules, selectedRowKeyCtx);
@@ -509,6 +521,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
 
         return {
             ...state,
+            rules,
             localState: {
                 ...localState,
                 modal: new ModalState(),
@@ -549,13 +562,15 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             });
     }
 
-    onDelLibModalOk({ rules, localState }: AppState): Partial<AppState> {
+    onDelLibModalOk({ rules: _rules, localState }: AppState): Partial<AppState> {
         const { editView } = localState;
         const { libRuleIdCtx } = editView;
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.rmvLib(rules, libRuleIdCtx);
         chromeHandle.saveState({ rules });
 
         return {
+            rules,
             localState: {
                 ...localState,
                 modal: new ModalState(),
@@ -581,17 +596,19 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
             });
     }
 
-    onDelLibsModalOk({ rules, localState }: AppState): Partial<AppState> {
+    onDelLibsModalOk({ rules: _rules, localState }: AppState): Partial<AppState> {
         const { editView } = localState;
         const { ruleIdCtx, dataGrid } = editView;
         const { areAllRowsSelected, selectedRowKeyCtx } = dataGrid.selectState;
 
+        const rules: HostRule[] = cloneDeep(_rules);
         areAllRowsSelected
             ? dataHandle.rmvAllLibs(rules, ruleIdCtx)
             : dataHandle.rmvPartialLibs(rules, selectedRowKeyCtx, ruleIdCtx);
         chromeHandle.saveState({ rules });
 
         return {
+            rules,
             localState: {
                 ...localState,
                 modal: new ModalState(),
@@ -632,12 +649,13 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onEditLibModalOk({ rules, localState }: AppState): Partial<AppState> {
+    onEditLibModalOk({ rules: _rules, localState }: AppState): Partial<AppState> {
         const { modal, editView } = localState;
         const { titleInput, valueInput } = modal;
         const { libRuleIdCtx } = editView;
         const { value: title } = titleInput;
         const { value } = valueInput;
+        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.setProps(rules, libRuleIdCtx, {
             title,
             value
@@ -645,6 +663,7 @@ export class ModalStateHandle extends StateHandle.BaseStateManager {
         chromeHandle.saveState({ rules });
 
         return {
+            rules,
             localState: {
                 ...localState,
                 editView: {
