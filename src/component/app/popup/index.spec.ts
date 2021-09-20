@@ -10,7 +10,7 @@ import { ChromeHandle } from '../../../handle/chrome';
 import { EPrefillAction } from '../../../handle/query-param/type';
 import { HostRule, PathRule } from '../../../model/rule';
 
-fdescribe('Popup App (E2E)', () => {
+describe('Popup App (E2E)', () => {
     const mockFn = () => {};
     const { EDIT, ADD_HOST, ADD_PATH } = EPrefillAction;
 
