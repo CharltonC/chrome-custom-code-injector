@@ -41,10 +41,10 @@ jobs:
       - name: Check build with test coverage
         run: npm run build-check
 
-      - name: Publish test coverage to Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Publish test coverage to Coveralls
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
       #  run: |
       #    echo Add other actions to build,
