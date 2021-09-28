@@ -160,7 +160,6 @@ export class OptionListViewStateHandle extends StateHandle.BaseStateManager {
         const valueInput = new TextInputState({ value });
 
         return {
-            rules,
             localState: {
                 ...localState,
 
