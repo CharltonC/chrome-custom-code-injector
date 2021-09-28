@@ -1,5 +1,7 @@
 import { Component } from 'react';
+import { cloneDeep } from 'lodash';
 import { BaseStateManager } from '../base-state-manager';
+import { UtilHandle } from '../../util';
 import { IStateConfigs, ITransfmStateConfigs } from '../type';
 
 export class BaseStateComponent extends Component<any, AObj> {
@@ -50,20 +52,17 @@ export class BaseStateComponent extends Component<any, AObj> {
 
                 // If proxied method is called, then return a wrapped method which includes setting the state
                 return async (...args: any[]) => {
-                    const modPartialState: AObj = getModPartialState(method, proxy, args);
+                    let modPartialState: AObj = getModPartialState(method, proxy, args);
 
-                    if (!modPartialState) return;   // skip state update if `falsy` value is returned
+                    // skip state update if `falsy` value is returned
+                    if (!modPartialState) return;
 
                     // If contains promise or async/await logic
                     if (modPartialState instanceof Promise) {
-                        const partialState = await modPartialState;
-                        updateState(partialState, appStateHandle, name);
-
-                    } else {
-                        // MAYBE - Check type if its not object, throw error
-                        updateState(modPartialState, appStateHandle, name);
+                        modPartialState = await modPartialState;
                     }
 
+                    updateState(modPartialState, appStateHandle, name);
                 };
             }
         });
@@ -80,7 +79,8 @@ export class BaseStateComponent extends Component<any, AObj> {
     }
 
     getModPartialState(fn: AFn, proxy: BaseStateManager, args: any[]): AObj {
-        return fn.apply(proxy, [this.state, ...args]);
+        const stateClone = cloneDeep(this.state);
+        return fn.apply(proxy, [stateClone, ...args]);
     }
 
     updateState(modPartialState: AObj, appStateHandle: BaseStateManager, name?: string): void {
@@ -90,11 +90,19 @@ export class BaseStateComponent extends Component<any, AObj> {
             { ...state, ...modPartialState };
         const diffState = { prev: state, curr: modState };
         this.setState(modState, () => appStateHandle.pub(diffState, name));
+        this.logStateInDev(modPartialState);
     }
 
     checkStateName(name: string, appState: AObj, appStateHandle: AObj): void {
         const isInState: boolean = name in appState;
         const isInHandler: boolean = name in appStateHandle;
         if (isInState || isInHandler) throw new Error(`${name} ${this.STATE_NAME_ERR}`);
+    }
+
+    logStateInDev(mergedState: AObj): void {
+        if (UtilHandle.isJestOrProd) return;
+        const time = new Date().toLocaleString();
+        const label = `Merged state at ${time}: \n`;
+        console.info(label, mergedState);
     }
 }

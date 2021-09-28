@@ -36,7 +36,7 @@ describe('Popup View State Handle', () => {
     it('Method - onOpenExtOption: should open a new option tab', () => {
         const state = handle.onOpenExtOption();
 
-        expect(state).toEqual({});
+        expect(state).toBeFalsy();
         expect(chromeHandleSpy.openExtOption).toHaveBeenCalled();
     });
 
@@ -44,7 +44,7 @@ describe('Popup View State Handle', () => {
         const mockPayload: any = {};
         const state = handle.onOpenExtOptionForEdit(mockState, mockPayload);
 
-        expect(state).toEqual({});
+        expect(state).toBeFalsy();
         expect(queryParamHandleSpy.createEditParam).toHaveBeenCalledWith(mockPayload);
         expect(chromeHandleSpy.openExtOption).toHaveBeenCalledWith(mockParam);
     });
@@ -53,7 +53,7 @@ describe('Popup View State Handle', () => {
         const mockPayload = { hostUrl: 'host' };
         const state = handle.onOpenExtOptionForAddHost(mockState, mockPayload);
 
-        expect(state).toEqual({});
+        expect(state).toBeFalsy();
         expect(queryParamHandleSpy.createAddHostParam).toHaveBeenCalledWith(mockPayload.hostUrl);
         expect(chromeHandleSpy.openExtOption).toHaveBeenCalledWith(mockParam);
     });
@@ -64,7 +64,7 @@ describe('Popup View State Handle', () => {
         const mockPayload = { hostId: mockHostId, path: mockPath };
         const state = handle.onOpenExtOptionForAddPath(mockState, mockPayload);
 
-        expect(state).toEqual({});
+        expect(state).toBeFalsy();
         expect(queryParamHandleSpy.createAddPathParam).toHaveBeenCalledWith(mockHostId, mockPath);
         expect(chromeHandleSpy.openExtOption).toHaveBeenCalledWith(mockParam);
     });
@@ -73,7 +73,7 @@ describe('Popup View State Handle', () => {
         chromeHandleSpy.openUserguide.mockImplementation(mockFn);
         const state = handle.onOpenExtUserguide();
 
-        expect(state).toEqual({});
+        expect(state).toBeFalsy();
         expect(chromeHandleSpy.openUserguide).toHaveBeenCalled();
     });
 

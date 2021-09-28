@@ -1,10 +1,8 @@
-import { cloneDeep } from 'lodash';
 import { StateHandle } from '../../state';
 import { RowSelectHandle } from '../../row-select';
 import { dataHandle } from '../../data';
 import { chromeHandle } from '../../chrome';
 
-import { HostRule } from '../../../model/rule';
 import { TextInputState } from '../../../model/text-input-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { AppState } from '../../../model/app-state';
@@ -153,11 +151,10 @@ export class OptionListViewStateHandle extends StateHandle.BaseStateManager {
         };
     }
 
-    onEditView({ rules: _rules, localState }: AppState, payload: RuleIdCtxState): Partial<AppState> {
+    onEditView({ rules, localState }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         const { editView } = localState;
 
         // Get the title and value of the item to be used in input placeholders
-        const rules: HostRule[] = cloneDeep(_rules);
         const { title, value } = dataHandle.getRuleFromIdCtx(rules, payload);
         const titleInput = new TextInputState({ value: title });
         const valueInput = new TextInputState({ value });
@@ -181,46 +178,40 @@ export class OptionListViewStateHandle extends StateHandle.BaseStateManager {
     }
 
     // Shared btw List & Edit View
-    onHttpsToggle({ rules: _rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
-        const rules: HostRule[] = cloneDeep(_rules);
+    onHttpsToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleHttpsSwitch(rules, payload);
         chromeHandle.saveState({rules});
         return { rules };
     }
 
     // Shared btw List & Edit View
-    onExactMatchToggle({ rules: _rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
-        const rules: HostRule[] = cloneDeep(_rules);
+    onExactMatchToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleExactSwitch(rules, payload);
         chromeHandle.saveState({rules});
         return { rules };
     }
 
     // Shared btw List & Edit View
-    onJsExecStepChange({ rules: _rules }: AppState, payload: IOnJsExecStepChangePayload): Partial<AppState> {
+    onJsExecStepChange({ rules }: AppState, payload: IOnJsExecStepChangePayload): Partial<AppState> {
         const { selectValueAttrVal, ...ruleIdCtx } = payload;
-        const rules: HostRule[] = cloneDeep(_rules);
         dataHandle.toggleJsExecStep(rules, ruleIdCtx, selectValueAttrVal);
         chromeHandle.saveState({rules});
         return { rules };
     }
 
-    onJsToggle({ rules: _rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
-        const rules: HostRule[] = cloneDeep(_rules);
+    onJsToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleJsSwitch(rules, payload);
         chromeHandle.saveState({rules});
         return { rules };
     }
 
-    onCssToggle({ rules: _rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
-        const rules: HostRule[] = cloneDeep(_rules);
+    onCssToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleCssSwitch(rules, payload);
         chromeHandle.saveState({rules});
         return { rules };
     }
 
-    onLibToggle({ rules: _rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
-        const rules: HostRule[] = cloneDeep(_rules);
+    onLibToggle({ rules }: AppState, payload: RuleIdCtxState): Partial<AppState> {
         dataHandle.toggleLibSwitch(rules, payload);
         chromeHandle.saveState({rules});
         return { rules };
