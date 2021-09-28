@@ -20,10 +20,6 @@ const $closeIcon = inclStaticIcon('close');
 export class Modal extends MemoComponent<IProps, IState> {
     static defaultProps = { confirmType: 'submit' };
 
-    componentWillUnmount() {
-        this.props.onCancel();
-    }
-
     render() {
         const {
             header, subHeader,

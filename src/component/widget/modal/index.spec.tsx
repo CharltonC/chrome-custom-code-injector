@@ -34,13 +34,6 @@ describe('Component - Modal', () => {
             modal = new Modal(mockProps);
         });
 
-        describe('Lifecycle - componentWillUnmount', () => {
-            it('should trigger onCancel', () => {
-                modal.componentWillUnmount();
-                expect(mockOnCancel).toHaveBeenCalled();
-            });
-        });
-
         describe('Method - isVisible: Check if current visible modal id is same as modal id', () => {
             it('should be visible when both are defined and equal', () => {
                 expect(modal.isVisible('a', 'a')).toBeTruthy();
