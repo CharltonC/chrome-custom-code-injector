@@ -1,9 +1,4 @@
-const isJest = !!process.argv.find(arg => arg.includes('jest'));
-const isProd = process.env.NODE_ENV === 'production';
-
 export const UtilHandle = {
-    isJestOrProd: isJest || isProd,
-
     cssCls(baseCls: string, clsSuffix: string = ''): string {
         if (!clsSuffix) return baseCls;
 
