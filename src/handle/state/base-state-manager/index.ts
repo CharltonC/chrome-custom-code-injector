@@ -32,9 +32,10 @@ export class BaseStateManager {
         return token;
     }
 
-    pub(data: any, subTopic?: string): void {
+    pub(data: any, subTopic?: string): this {
         const TOPIC: string = this.getTopic(subTopic);
         this.PubSub.publish(TOPIC, data);
+        return this;
     }
 
     unsub(token: string): void {
@@ -43,5 +44,12 @@ export class BaseStateManager {
 
     getTopic(subTopic?: string): string {
         return this.CHANGE_EVT + (subTopic ? `.${subTopic}` : '');
+    }
+
+    log(method: string, mergedState: AObj, skipLog = false): void {
+        if (skipLog) return;
+        const time = new Date().toLocaleString();
+        const label = `${time} | Merged state via handler method "${method}":\n`;
+        console.info(label, mergedState);
     }
 }
