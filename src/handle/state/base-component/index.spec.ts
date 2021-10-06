@@ -58,67 +58,116 @@ describe('Base State Component', () => {
         });
     });
 
-    describe('Method - getProxyStateHandler: Get proxy `get` handler function for a appState handler', () => {
+    describe('Method - getProxyStateHandler: Get a proxied appState handler', () => {
+        const mockProxiedValue = 'lorem';
+        const mockStateKey = '';
+        class MockHandler extends BaseStateManager {
+            mockMethod () {}
+        }
+
+        beforeEach(() => {
+            spy.getAllowedMethodNames.mockReturnValue([]);
+            spy.getStateChangeCallback.mockReturnValue(() => {});
+            spy.getWrappedHandle.mockReturnValue(() => mockProxiedValue);
+        });
+
+        it('should return proxied value', () => {
+            const mockHandler = new MockHandler();
+            const proxyHandler = cmp.getProxyStateHandler(mockHandler, mockStateKey);
+            expect(proxyHandler['someRandomProp']).toBe(mockProxiedValue);
+        });
+    });
+
+    describe('Method - getWrappedHandle: Get proxy `get` handler function for a appState handler', () => {
         const MOCK_METHOD_NAME = 'sayHello';
         const mockAllowedMethodNames = [ MOCK_METHOD_NAME ];
         const MOCK_STATE_NAME = 'state_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
-        class MockHandler extends BaseStateManager {
-            age = 10;
-            [MOCK_METHOD_NAME]() {}
-        }
-        let getModPartialStateSpy: jest.SpyInstance;
-        let mockHandler: MockHandler;
+        const mockProxy = {};
+        let setStateSpy: jest.SpyInstance;
+        let mockCallback: jest.Mock;
         let proxyHandler;
 
-        beforeEach(() => {
-            mockHandler = new MockHandler();
-            spy.getAllowedMethodNames.mockReturnValue(mockAllowedMethodNames);
-            spy.updateState.mockImplementation(() => {});
-            getModPartialStateSpy = jest.spyOn(cmp, 'getModPartialState');
-            getModPartialStateSpy.mockReturnValue(mockModPartialState);
 
+        beforeEach(() => {
+            setStateSpy = jest.spyOn(cmp, 'setState');
             cmp.state = mockState;
-            proxyHandler = cmp.getProxyStateHandler(mockHandler, MOCK_STATE_NAME);
+            mockCallback = jest.fn();
+            proxyHandler = cmp.getWrappedHandle(mockAllowedMethodNames, MOCK_STATE_NAME, mockCallback);
         });
 
-        describe('return value', () => {
-            it('should return the value if the key is not allowed or is not a function', () => {
-                expect(proxyHandler.lorem).toBeFalsy();
-                expect(proxyHandler.age).toBe(10)
+        describe('non-allowed methods', () => {
+            const mockKey = 'sayHi';
+            const mockMethod = () => {};
+            const mockTarget = {
+                [mockKey]: mockMethod
+            };
+
+            it('should return method itself if it is not allwed', () => {
+                const method = proxyHandler(mockTarget, mockKey, mockProxy);
+                expect(method).toBe(mockMethod);
             });
         });
 
-        describe('return wrapped function', () => {
-            const mockArgs = [1,2];
-            let method;
+        describe('allowed methods', () => {
+            const mockMethod = () => {};
+            const mockTarget = {
+                [MOCK_METHOD_NAME]: mockMethod
+            };
+            const mockNextState = { lorem: 'sum' };
+            let wrappedMethod: AFn;
 
             beforeEach(() => {
-                method = proxyHandler[MOCK_METHOD_NAME];
+                wrappedMethod = proxyHandler(mockTarget, MOCK_METHOD_NAME, mockProxy);
+                setStateSpy.mockImplementation(() => {});
+                spy.getNextState.mockReturnValue(mockNextState);
             });
 
-            it('should return a wrapped function if the key is allowed and is a method', () => {
-                method(...mockArgs);
-
-                expect(typeof method).toBe('function');
-                expect(getModPartialStateSpy).toHaveBeenCalledWith(mockHandler[MOCK_METHOD_NAME], proxyHandler, mockArgs);
-                expect(spy.updateState).toHaveBeenCalledWith(mockModPartialState, mockHandler, MOCK_STATE_NAME);
+            it('should return a wrapped method if it is allowed', () => {
+                expect(typeof wrappedMethod).toBe('function');
+                expect(wrappedMethod).not.toBe(mockMethod);
             });
 
-            it('should return a wrapped function where state is not updated when returned state is falsy', () => {
-                getModPartialStateSpy.mockReturnValue(false);
-                method(...mockArgs);
+            it('should skip set state if returned modified partial state is falsy', () => {
+                spy.getModPartialState.mockReturnValue(null);
+                wrappedMethod();
 
-                expect(spy.updateState).not.toHaveBeenCalled();
+                expect(setStateSpy).not.toHaveBeenCalled();
             });
 
-            it('should return a wrapped function where state is only updated when promise is resolved', async () => {
-                const mockResolvePartialState = {lorem: 123};
-                getModPartialStateSpy.mockReturnValue(Promise.resolve(mockResolvePartialState));
-                await method(...mockArgs);
+            it('should set state if returned modified partial state is promise ', async () => {
+                spy.getModPartialState.mockReturnValueOnce(Promise.resolve(mockModPartialState));
+                await wrappedMethod();
 
-                expect(spy.updateState.mock.calls[0][0]).toBe(mockResolvePartialState);
+                const [ nextState, callback ] = setStateSpy.mock.calls[0];
+                expect(nextState).toEqual(mockNextState);
+
+                callback();
+                expect(mockCallback).toHaveBeenCalledWith({
+                    key: MOCK_STATE_NAME,
+                    method: MOCK_METHOD_NAME,
+                    mod: mockModPartialState,
+                    prev: mockState,
+                    curr: mockNextState,
+                });
+            });
+
+            it('should set state if returned modified partial state is not promise ', async () => {
+                spy.getModPartialState.mockReturnValue(mockModPartialState);
+                await wrappedMethod();
+
+                const [ nextState, callback ] = setStateSpy.mock.calls[0];
+                expect(nextState).toEqual(mockNextState);
+
+                callback();
+                expect(mockCallback).toHaveBeenCalledWith({
+                    key: MOCK_STATE_NAME,
+                    method: MOCK_METHOD_NAME,
+                    mod: mockModPartialState,
+                    prev: mockState,
+                    curr: mockNextState,
+                });
             });
         });
     });
@@ -154,47 +203,30 @@ describe('Base State Component', () => {
         });
     });
 
-    describe('Method - updateState', () => {
+    describe('Method - getNextState', () => {
         const MOCK_STATE_NAME = 'state_name';
         const mockModPartialState = { age: 99 };
         const mockState = { age: 11 };
-        const mockHandler: any = { pub: null };
-        let setStateSpy: jest.SpyInstance;
 
         beforeEach(() => {
             cmp.state = mockState;
-            mockHandler.pub = jest.fn();
-            setStateSpy = jest.spyOn(cmp, 'setState');
-            setStateSpy.mockImplementation(() => {});
         });
 
-        it('should update state when given a appState name', () => {
+        it('should return next state when given a appState name', () => {
             const expectedCurrState = {
                 'age': 11,
                 [MOCK_STATE_NAME]: { 'age': 99 }
             };
-            cmp.updateState(mockModPartialState, mockHandler, MOCK_STATE_NAME);
-            const [ modState, callback ] = setStateSpy.mock.calls[0];
-            callback();
+            const state = cmp.getNextState(mockModPartialState, MOCK_STATE_NAME);
 
-            expect(modState).toEqual(expectedCurrState);
-            expect(mockHandler.pub).toHaveBeenCalledWith({
-                prev: mockState,
-                curr: expectedCurrState
-            }, MOCK_STATE_NAME);
+            expect(state).toEqual(expectedCurrState);
         });
 
-        it('should update state when not given a appState name', () => {
+        it('should return next state when not given a appState name', () => {
             const expectedCurrState = { 'age': 99 };
-            cmp.updateState(mockModPartialState, mockHandler);
-            const [ modState, callback ] = setStateSpy.mock.calls[0];
-            callback();
+            const state = cmp.getNextState(mockModPartialState);
 
-            expect(modState).toEqual(expectedCurrState);
-            expect(mockHandler.pub).toHaveBeenCalledWith({
-                prev: mockState,
-                curr: expectedCurrState
-            }, undefined);
+            expect(state).toEqual(expectedCurrState);
         });
     });
 

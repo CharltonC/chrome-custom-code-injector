@@ -63,9 +63,9 @@ export class BaseStateComponent extends Component<any, AObj> {
                 if (!modPartialState) return;
 
                 // If contains promise or async/await logic
-                modPartialState = modPartialState instanceof Promise
-                    ? await modPartialState
-                    : modPartialState;
+                if (modPartialState instanceof Promise) {
+                    modPartialState = await modPartialState;
+                }
 
                 const nextState = this.getNextState(modPartialState, name);
                 this.setState(nextState, () => {
