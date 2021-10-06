@@ -6,6 +6,7 @@ describe('Base State Manager', () => {
     let mockPubSub: Partial<PubSub>;
     let handle: BaseStateManager;
     let getTopicSpy: jest.SpyInstance;
+    let logInfoSpy: jest.SpyInstance;
 
     beforeEach(() => {
         mockPubSub = {
@@ -17,6 +18,7 @@ describe('Base State Manager', () => {
 
         (handle as any).PubSub = mockPubSub;
         getTopicSpy = jest.spyOn(handle, 'getTopic');
+        logInfoSpy = jest.spyOn(console, 'info');
     });
 
     afterEach(() => {
@@ -68,5 +70,16 @@ describe('Base State Manager', () => {
 
         expect(handle.getTopic()).toBe(handle.CHANGE_EVT);
         expect(handle.getTopic(MOCK_SUB_TOPIC)).toBe(`${handle.CHANGE_EVT}.${MOCK_SUB_TOPIC}`);
+    });
+
+    it('method - `log`: should log message', () => {
+        const MOCK_METHOD = 'method';
+        const mockData = { lorem: 'sum' };
+
+        handle.log(MOCK_METHOD, mockData, true);
+        expect(logInfoSpy).not.toHaveBeenCalled();
+
+        handle.log(MOCK_METHOD, mockData);
+        expect(logInfoSpy).toHaveBeenCalled();
     });
 });

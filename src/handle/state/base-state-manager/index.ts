@@ -46,10 +46,10 @@ export class BaseStateManager {
         return this.CHANGE_EVT + (subTopic ? `.${subTopic}` : '');
     }
 
-    log(method: string, mergedState: AObj, skipLog = false): void {
+    log(method: string, data: AObj, skipLog = false): void {
         if (skipLog) return;
         const time = new Date().toLocaleString();
         const label = `${time} | Merged state via handler method "${method}":\n`;
-        console.info(label, mergedState);
+        console.info(label, data);
     }
 }

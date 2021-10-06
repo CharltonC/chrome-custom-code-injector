@@ -1,10 +1,7 @@
 import { Component } from 'react';
 import { cloneDeep } from 'lodash';
 import { BaseStateManager } from '../base-state-manager';
-import { UtilHandle } from '../../util';
 import { IStateConfigs, ITransfmStateConfigs, IStateChangeSummary } from '../type';
-
-const { isJestOrProd } = UtilHandle;
 
 export class BaseStateComponent extends Component<any, AObj> {
     readonly STATE_NAME_ERR: string = 'already exists in app state or app state handler';
@@ -86,7 +83,7 @@ export class BaseStateComponent extends Component<any, AObj> {
             const { key, method, mod, prev, curr } = summary;
             appStateHandle
                 .pub({ prev, curr }, key)
-                .log(method, mod, isJestOrProd)
+                .log(method, mod);
         };
     }
 
