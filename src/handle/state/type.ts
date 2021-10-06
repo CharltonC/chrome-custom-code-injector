@@ -18,3 +18,11 @@ export interface IAppProps<T, U> {
     appState: T;
     appStateHandle: Record<keyof U, (...args: any[]) => any>;
 }
+
+export interface IStateChangeSummary {
+    key: string;
+    method: string;
+    mod: AObj;
+    prev: AObj;
+    curr: AObj;
+}
