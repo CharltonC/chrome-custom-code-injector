@@ -5,3 +5,4 @@ node_modules/
 doc/design/
 doc/test-report/
 doc/youtube/
+coverage/
