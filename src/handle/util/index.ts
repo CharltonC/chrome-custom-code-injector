@@ -1,4 +1,4 @@
-const isJest = process.argv.find(arg => arg.includes('jest'));
+const isJest = !!process.argv.find(arg => arg.includes('jest'));
 const isProd = process.env.NODE_ENV === 'production';
 
 export const UtilHandle = {
