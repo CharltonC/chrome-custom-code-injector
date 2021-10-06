@@ -2,7 +2,9 @@ import { Component } from 'react';
 import { cloneDeep } from 'lodash';
 import { BaseStateManager } from '../base-state-manager';
 import { UtilHandle } from '../../util';
-import { IStateConfigs, ITransfmStateConfigs } from '../type';
+import { IStateConfigs, ITransfmStateConfigs, IStateChangeSummary } from '../type';
+
+const { isJestOrProd } = UtilHandle;
 
 export class BaseStateComponent extends Component<any, AObj> {
     readonly STATE_NAME_ERR: string = 'already exists in app state or app state handler';
@@ -36,36 +38,56 @@ export class BaseStateComponent extends Component<any, AObj> {
     }
 
     getProxyStateHandler(appStateHandle: BaseStateManager, name?: string): BaseStateManager {
-        const allowedMethodNames: string[] = this.getAllowedMethodNames(appStateHandle);
-        const getModPartialState = this.getModPartialState.bind(this);
-        const updateState = this.updateState.bind(this);
-
+        const allowedMethodNames = this.getAllowedMethodNames(appStateHandle);
+        const callback = this.getStateChangeCallback(appStateHandle);
         return new Proxy(appStateHandle, {
-            get: (target: BaseStateManager, key: string, proxy: BaseStateManager) => {
-                const method: any = target[key];
-
-                // MAYBE - if User requests the root appState handler, `rootHandler`, return the rootHandler object
-                // e.g. if (key === 'rootHandler')
-
-                // Filter out non-own prototype methods
-                if (allowedMethodNames.indexOf(key) === -1) return method;
-
-                // If proxied method is called, then return a wrapped method which includes setting the state
-                return async (...args: any[]) => {
-                    let modPartialState: AObj = getModPartialState(method, proxy, args);
-
-                    // skip state update if `falsy` value is returned
-                    if (!modPartialState) return;
-
-                    // If contains promise or async/await logic
-                    if (modPartialState instanceof Promise) {
-                        modPartialState = await modPartialState;
-                    }
-
-                    updateState(modPartialState, appStateHandle, name);
-                };
-            }
+            get: this.getWrappedHandle(allowedMethodNames, name, callback)
         });
+    }
+
+    getWrappedHandle(allowedMethodNames: string[], name: string = '', callback: AFn): AFn {
+        return (target: BaseStateManager, key: string, proxy: BaseStateManager): AFn => {
+            const method: any = target[key];
+
+            // MAYBE - if User requests the root appState handler, `rootHandler`, return the rootHandler object
+            // e.g. if (key === 'rootHandler')
+
+            // Filter out non-own prototype methods
+            if (allowedMethodNames.indexOf(key) === -1) return method;
+
+            // If proxied method is called, then return a wrapped method which includes setting the state
+            return async (...args: any[]) => {
+                let modPartialState: AObj = this.getModPartialState(method, proxy, args);
+
+                // skip state update if `falsy` value is returned
+                if (!modPartialState) return;
+
+                // If contains promise or async/await logic
+                modPartialState = modPartialState instanceof Promise
+                    ? await modPartialState
+                    : modPartialState;
+
+                const nextState = this.getNextState(modPartialState, name);
+                this.setState(nextState, () => {
+                    callback.call(this, {
+                        key: name,
+                        method: key,
+                        mod: modPartialState,
+                        curr: nextState,
+                        prev: this.state
+                    });
+                });
+            };
+        }
+    }
+
+    getStateChangeCallback(appStateHandle: BaseStateManager) {
+        return (summary: IStateChangeSummary) => {
+            const { key, method, mod, prev, curr } = summary;
+            appStateHandle
+                .pub({ prev, curr }, key)
+                .log(method, mod, isJestOrProd)
+        };
     }
 
     getAllowedMethodNames(obj: AObj): string[] {
@@ -83,26 +105,25 @@ export class BaseStateComponent extends Component<any, AObj> {
         return fn.apply(proxy, [stateClone, ...args]);
     }
 
-    updateState(modPartialState: AObj, appStateHandle: BaseStateManager, name?: string): void {
+    getNextState(modPartialState: AObj, key: string = '') {
         const { state } = this;
-        const modState = name ?
-            { ...state, [name]: { ...state[name] , ...modPartialState } } :
-            { ...state, ...modPartialState };
-        const diffState = { prev: state, curr: modState };
-        this.setState(modState, () => appStateHandle.pub(diffState, name));
-        this.logStateInDev(modPartialState);
+        return key
+            ? {
+                ...state,
+                [key]: {
+                    ...state[key],
+                    ...modPartialState
+                }
+            }
+            : {
+                ...state,
+                ...modPartialState
+            } ;
     }
 
     checkStateName(name: string, appState: AObj, appStateHandle: AObj): void {
         const isInState: boolean = name in appState;
         const isInHandler: boolean = name in appStateHandle;
         if (isInState || isInHandler) throw new Error(`${name} ${this.STATE_NAME_ERR}`);
-    }
-
-    logStateInDev(mergedState: AObj): void {
-        if (UtilHandle.isJestOrProd) return;
-        const time = new Date().toLocaleString();
-        const label = `Merged state at ${time}: \n`;
-        console.info(label, mergedState);
     }
 }
