@@ -4,6 +4,7 @@ import { AppStateHandle } from '../../../handle/app-state';
 import { StateHandle } from '../../../handle/state';
 import PgnHandle from '../../../handle/pagination';
 import { DomHandle } from '../../../handle/dom';
+import { BaseStateManager } from '../../../handle/state/base-state-manager';
 import { OptionApp } from '.';
 
 import { AppState } from '../../../model/app-state';
@@ -254,6 +255,9 @@ describe('Component - Option App (E2E)', () => {
     beforeEach(() => {
         $elem = TestUtil.setupElem();
         mockAppState = createMockAppState();    // 4 rows w/ 3 sub rows for each row
+
+        // Disable any logging in Jest
+        jest.spyOn(BaseStateManager.prototype, 'log').mockImplementation(() => {});
     });
 
     afterEach(() => {

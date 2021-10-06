@@ -2,6 +2,7 @@ import { TestUtil } from '../../../asset/ts/test-util';
 import { AppStateHandle } from '../../../handle/app-state';
 import { StateHandle } from '../../../handle/state';
 import { DataHandle } from '../../../handle/data';
+import { BaseStateManager } from '../../../handle/state/base-state-manager';
 import { createMockRules } from '../../../mock/data';
 import { AMethodSpy } from '../../../asset/ts/test-util/type';
 import { PopupApp } from '.';
@@ -78,6 +79,9 @@ describe('Popup App (E2E)', () => {
         chromeHandleSpy = TestUtil.spyProtoMethods(ChromeHandle);
         chromeHandleSpy.openExtOption.mockImplementation(mockFn);
         chromeHandleSpy.openUserguide.mockImplementation(mockFn);
+
+        // Disable any logging in Jest
+        jest.spyOn(BaseStateManager.prototype, 'log').mockImplementation(() => {});
     });
 
     afterEach(() => {
