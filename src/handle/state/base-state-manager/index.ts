@@ -49,7 +49,7 @@ export class BaseStateManager {
     log(method: string, data: AObj, skipLog = false): void {
         if (skipLog) return;
         const time = new Date().toLocaleString();
-        const label = `${time} | Merged state via handler method "${method}":\n`;
-        console.info(label, data);
+        const label = `%c ${time} | Merged state via handler method "${method}":\n`;
+        console.info(label, 'background: green; color: white', data);
     }
 }
