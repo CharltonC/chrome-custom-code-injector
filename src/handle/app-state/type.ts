@@ -10,4 +10,5 @@ export interface IStateHandle
         OptionEditViewStateHandle,
         PopupViewStateHandle {
     new (...args: any[]): IStateHandle;
+    reflect: any;
 }
