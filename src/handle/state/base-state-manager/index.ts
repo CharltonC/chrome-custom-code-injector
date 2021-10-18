@@ -27,13 +27,13 @@ export class BaseStateManager {
     }
 
     sub(callback: AFn, subTopic?: string): string {
-        const TOPIC: string = this.getTopic(subTopic);
+        const TOPIC = this.getTopic(subTopic);
         const token: string = this.PubSub.subscribe(TOPIC, callback);
         return token;
     }
 
     pub(data: any, subTopic?: string): this {
-        const TOPIC: string = this.getTopic(subTopic);
+        const TOPIC = this.getTopic(subTopic);
         this.PubSub.publish(TOPIC, data);
         return this;
     }
