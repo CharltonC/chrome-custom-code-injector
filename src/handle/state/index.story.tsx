@@ -19,9 +19,16 @@ export const SingleState = () => {
     // 2. State Handler
     class SampleStateHandler extends BaseStateManager {
         onNameChange(appState, evt?) {
+            // Setting state Directly (it is ok since it is a clone of state)
+            // - is equivalent to `return { name: 'jane' };`
+            appState.name = 'jane';
+            return appState;
+        }
+
+        onAddressChange(appState, evt?) {
             // Setting state Directly
             return {
-                name: 'jane'
+                address: '20 Joseph Street'
             };
         }
 
@@ -43,13 +50,6 @@ export const SingleState = () => {
                 age,
                 address,
                 gender: age === 20 ? 'female' : 'n/a'
-            };
-        }
-
-        onAddressChange(appState, evt?) {
-            // Setting state Directly
-            return {
-                address: '20 Joseph Street'
             };
         }
     }
