@@ -2,8 +2,8 @@ import PubSub from 'pubsub-js';
 import { IStateHandleClass } from '../type';
 
 export class BaseStateManager {
-    readonly CHANGE_EVT: string = 'CHANGE';
-    readonly PubSub: PubSub = PubSub;
+    readonly CHANGE_EVT = 'CHANGE';
+    readonly PubSub = PubSub;
 
     static join<T extends BaseStateManager>(Handlers: IStateHandleClass[]): T {
         class BaseClass extends BaseStateManager {}
