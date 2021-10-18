@@ -117,16 +117,29 @@ describe('Base State Component', () => {
             };
             const mockNextState = { lorem: 'sum' };
             let wrappedMethod: AFn;
+            let consoleErrSpy: jest.SpyInstance;
 
             beforeEach(() => {
                 wrappedMethod = proxyHandler(mockTarget, MOCK_METHOD_NAME, mockProxy);
                 setStateSpy.mockImplementation(() => {});
                 spy.getNextState.mockReturnValue(mockNextState);
+
+                consoleErrSpy = jest.spyOn(console, 'error');
             });
 
             it('should return a wrapped method if it is allowed', () => {
                 expect(typeof wrappedMethod).toBe('function');
                 expect(wrappedMethod).not.toBe(mockMethod);
+            });
+
+            it('should skip set state if an error is encounted during getting the modified state', () => {
+                spy.getModPartialState.mockImplementation(() => {
+                    throw new Error();
+                });
+                wrappedMethod();
+
+                expect(consoleErrSpy).toHaveBeenCalled();
+                expect(setStateSpy).not.toHaveBeenCalled();
             });
 
             it('should skip set state if returned modified partial state is falsy', () => {
