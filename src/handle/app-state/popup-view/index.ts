@@ -2,11 +2,12 @@ import { StateHandle } from '../../state';
 import { chromeHandle } from '../../chrome';
 import { queryParamHandle } from '../../query-param';
 
+import { IStateHandle } from '../type';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { IAppState } from '../../../component/app/popup/type';
 import { dataHandle } from '../../data';
 
-export class PopupViewStateHandle extends StateHandle.BaseStateManager {
+export class PopupViewStateHandle extends StateHandle.BaseStateManager<IStateHandle> {
     onOpenExtOption(): Partial<IAppState> {
         chromeHandle.openExtOption();
         return null;

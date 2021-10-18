@@ -1,7 +1,7 @@
 import PubSub from 'pubsub-js';
 import { IStateHandleClass } from '../type';
 
-export class BaseStateManager {
+export class BaseStateManager<K = unknown> {
     readonly CHANGE_EVT = 'CHANGE';
     readonly PubSub = PubSub;
 
@@ -23,7 +23,7 @@ export class BaseStateManager {
     }
 
     get reflect() {
-        return this;
+        return this as K extends BaseStateManager ? K : this;
     }
 
     sub(callback: AFn, subTopic?: string): string {

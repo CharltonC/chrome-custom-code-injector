@@ -13,6 +13,7 @@ import { ModalState } from '../../../model/modal-state';
 import { AppState } from '../../../model/app-state';
 import { IOnDelHostsModalPayload } from './type';
 import { TextInputState } from '../../../model/text-input-state';
+import { IStateHandle } from '../type';
 import * as TSelectDropdown from '../../../component/base/select-dropdown/type';
 import * as TFileInput from  '../../../component/base/input-file/type';
 import * as TTextInput from '../../../component/base/input-text/type';
@@ -20,7 +21,7 @@ import * as TTextInput from '../../../component/base/input-text/type';
 const fileHandle = new FileHandle();
 const pgnHandle = new PgnHandle();
 
-export class ModalStateHandle extends StateHandle.BaseStateManager {
+export class ModalStateHandle extends StateHandle.BaseStateManager<IStateHandle> {
     //// BASE
     // used ONLY WHEN setting modal Id is the only thing required to be altered
     onModal({ localState }: AppState, payload: {id: string}): Partial<AppState> {

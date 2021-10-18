@@ -7,6 +7,7 @@ import { TextInputState } from '../../../model/text-input-state';
 import { DataGridState } from '../../../model/data-grid-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
 import { AppState } from '../../../model/app-state';
+import { IStateHandle } from '../type';
 import * as TTextInput from '../../../component/base/input-text/type';
 import * as TSortHandle from '../../sort/type';
 import {
@@ -20,7 +21,7 @@ import {
 
 const rowSelectHandle = new RowSelectHandle();
 
-export class OptionEditViewStateHandle extends StateHandle.BaseStateManager {
+export class OptionEditViewStateHandle extends StateHandle.BaseStateManager<IStateHandle> {
     //// HEADER
     onListView({ localState }: AppState): Partial<AppState> {
         // Not required to reset Edit View state as already covered by `onEditView`

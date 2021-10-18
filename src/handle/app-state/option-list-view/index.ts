@@ -2,6 +2,7 @@ import { StateHandle } from '../../state';
 import { RowSelectHandle } from '../../row-select';
 import { dataHandle } from '../../data';
 import { chromeHandle } from '../../chrome';
+import { IStateHandle } from '../type';
 
 import { TextInputState } from '../../../model/text-input-state';
 import { RuleIdCtxState } from '../../../model/rule-id-ctx-state';
@@ -10,7 +11,7 @@ import { IOnPaginatePayload, IOnSortPayload, IOnRowSelectTogglePayload, IOnJsExe
 
 const rowSelectHandle = new RowSelectHandle();
 
-export class OptionListViewStateHandle extends StateHandle.BaseStateManager {
+export class OptionListViewStateHandle extends StateHandle.BaseStateManager<IStateHandle> {
     //// DATA GRID
     onSearchTextChange({ localState }: AppState, payload: {value: string}): Partial<AppState> {
         const { value } = payload;
