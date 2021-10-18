@@ -54,7 +54,13 @@ export class BaseStateComponent extends Component<any, AObj> {
 
             // If proxied method is called, then return a wrapped method which includes setting the state
             return async (...args: any[]) => {
-                let modPartialState: AObj = this.getModPartialState(method, proxy, args);
+                let modPartialState: AObj;
+                try {
+                    modPartialState = this.getModPartialState(method, proxy, args);
+                } catch (e) {
+                    console.error(e);
+                    return;
+                }
 
                 // skip state update if `falsy` value is returned
                 if (!modPartialState) return;
