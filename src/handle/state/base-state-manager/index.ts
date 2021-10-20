@@ -12,6 +12,7 @@ export class BaseStateManager<K = unknown> {
             const { prototype } = Handler;
 
             const keys = Object.getOwnPropertyNames(prototype).filter((key) => {
+                // We dont need to filter out prototypal methods of `BaseStateManager` as it is not the direct prototype chain
                 return typeof prototype[key] === 'function' && key !== 'constructor';
             });
 
