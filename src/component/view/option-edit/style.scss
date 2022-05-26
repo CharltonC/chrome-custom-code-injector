@@ -9,6 +9,7 @@
         // Expand to remaining height
         display: flex;
         flex-direction: column;
+        overflow-x: auto;
 
         .react-codemirror2,
         .datagrid {
