@@ -120,7 +120,7 @@ export class CodeRunnerHandle {
 
     addToDom({ $code, isHost, id, injectType, lang }: IAddToDomArg) {
         try {
-            lang === 'js' && document.body.appendChild($code);
+            lang === 'js' && document.head.appendChild($code);
             lang === 'css' && document.head.appendChild($code);
         } catch (err) {
             const ruleType = isHost ? 'host' : 'path';

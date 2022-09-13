@@ -40,7 +40,7 @@ Primary Tech Stack:
 ## CLI Command
 * Generate Compnents (dev):
 ```
-npm run cmp-[s|p|g|v|c]
+npm run cmp-[s|b|g|w|c|v]
 ```
 
 * Start a Server to View All UI Components (dev):
@@ -139,7 +139,7 @@ npm run test
                 main.ts         // if the page doesnt just run a script (e.g. background script)
                 main.spec.ts?   // test file
                 index.pug?      // index page (if the pages doesn't just run a script)
-                style.scss?     // styel for index page                
+                style.scss?     // style for index page                
 
         manifest.json           // manifest ("config") for the chrome extension 
 
