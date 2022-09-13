@@ -40,7 +40,7 @@ Primary Tech Stack:
 ## CLI Command
 * Generate Compnents (dev):
 ```
-npm run cmp-[s|p|g|v|c]
+npm run cmp-[s|b|g|w|c|v]
 ```
 
 * Start a Server to View All UI Components (dev):
