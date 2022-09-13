@@ -139,7 +139,7 @@ npm run test
                 main.ts         // if the page doesnt just run a script (e.g. background script)
                 main.spec.ts?   // test file
                 index.pug?      // index page (if the pages doesn't just run a script)
-                style.scss?     // styel for index page                
+                style.scss?     // style for index page                
 
         manifest.json           // manifest ("config") for the chrome extension 
 
